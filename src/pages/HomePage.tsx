@@ -1,4 +1,4 @@
-import useNameStore from "./store";
+import useNameStore from "../stores/store";
 
 const HomePage = () => {
   const { name } = useNameStore();
