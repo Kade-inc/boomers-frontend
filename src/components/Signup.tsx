@@ -1,4 +1,5 @@
 import image from "../assets/khamkeo-vilaysing-rpVQJbZMw8o-unsplash (1) 1.png";
+import SignupForm from "./SignupForm";
 
 const Signup = () => {
   return (
@@ -13,7 +14,7 @@ const Signup = () => {
         </div>
       </div>
       <div className="w-[71.11%] bg-[#F8B500] rounded-tl-lg rounded-bl-lg">
-        <h1>form</h1>
+        <SignupForm />
       </div>
     </div>
   );
