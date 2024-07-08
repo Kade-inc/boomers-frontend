@@ -2,6 +2,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FieldValues } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
+import useSignup from "../hooks/useSignup";
+import User from "../entities/User";
 
 const schema = z.object({
   email: z.string().email(),
@@ -9,18 +11,23 @@ const schema = z.object({
   password: z
     .string()
     .min(3, { message: "Password must be atleast three characters" }),
-  confirmpassword: z.string().min(3),
+  // confirmpassword: z.string().min(3),
 });
 
 type FormData = z.infer<typeof schema>;
 
 const SignupForm = () => {
+  const mutation = useSignup();
+
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
-  const onSubmit = (data: FieldValues) => console.log(data);
+  const onSubmit = (data: User) => {
+    console.log(data);
+    mutation.mutate(data);
+  };
 
   return (
     <div className="text-[#393E46]">
@@ -78,7 +85,7 @@ const SignupForm = () => {
             {...register("password")}
           />
         </div>
-        <div className="mb-[3%]">
+        {/* <div className="mb-[3%]">
           <label
             className="block text-base font-bold mb-[1%]"
             htmlFor="confirmpassword"
@@ -94,7 +101,7 @@ const SignupForm = () => {
             style={{ backgroundColor: "transparent" }}
             {...register("confirmpassword")}
           />
-        </div>
+        </div> */}
 
         <button
           className="btn w-full bg-[#393E46] text-[20px] mb-[3%] disabled:text-gray-500"
