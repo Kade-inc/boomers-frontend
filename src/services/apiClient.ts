@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosError, AxiosInstance } from "axios";
 import User from "../entities/User";
 
 class APIClient {
@@ -18,9 +18,15 @@ class APIClient {
         "api/users/register",
         data
       );
+      console.log("Signup successful:", response.data);
       return response.data;
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      console.error(
+        "Signup error:",
+        axiosError.response?.data ?? axiosError.message
+      );
+      throw axiosError;
     }
   };
 }

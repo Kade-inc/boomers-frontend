@@ -1,18 +1,33 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, FieldValues } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
 import useSignup from "../hooks/useSignup";
 import User from "../entities/User";
 
-const schema = z.object({
-  email: z.string().email(),
-  username: z.string(),
-  password: z
-    .string()
-    .min(3, { message: "Password must be atleast three characters" }),
-  // confirmpassword: z.string().min(3),
-});
+const schema = z
+  .object({
+    email: z.string().email(),
+    username: z.string(),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters long")
+      .max(15, "Password must be no more than 15 characters long")
+      .regex(
+        /[A-Za-z]/,
+        "Password must contain at least one alphabet (uppercase or lowercase)"
+      )
+      .regex(/\d/, "Password must contain at least one number")
+      .regex(
+        /[-.@$!%+=<>,#?&]/,
+        "Password must contain at least one special character (-,.,@,$,!,%,+,=,<,>,#,?,&)"
+      ),
+    confirmpassword: z.string(),
+  })
+  .refine(data => data.password === data.confirmpassword, {
+    message: "Passwords do not match",
+    path: ["confirmpassword"],
+  });
 
 type FormData = z.infer<typeof schema>;
 
@@ -24,9 +39,11 @@ const SignupForm = () => {
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
-  const onSubmit = (data: User) => {
-    console.log(data);
-    mutation.mutate(data);
+
+  const onSubmit = (data: FormData) => {
+    const { confirmpassword, ...userData } = data; // Exclude confirmpassword
+    console.log(userData);
+    mutation.mutate(userData);
   };
 
   return (
@@ -68,6 +85,9 @@ const SignupForm = () => {
             {...register("username")}
           />
         </div>
+        {errors.username && (
+          <p className="text-red-700">{errors.username.message}</p>
+        )}
         <div className="mb-[3%]">
           <label
             className="block text-base font-bold mb-[1%]"
@@ -85,7 +105,10 @@ const SignupForm = () => {
             {...register("password")}
           />
         </div>
-        {/* <div className="mb-[3%]">
+        {errors.password && (
+          <p className="text-red-700">{errors.password.message}</p>
+        )}
+        <div className="mb-[3%]">
           <label
             className="block text-base font-bold mb-[1%]"
             htmlFor="confirmpassword"
@@ -101,12 +124,15 @@ const SignupForm = () => {
             style={{ backgroundColor: "transparent" }}
             {...register("confirmpassword")}
           />
-        </div> */}
+        </div>
+        {errors.confirmpassword && (
+          <p className="text-red-700">{errors.confirmpassword.message}</p>
+        )}
 
         <button
           className="btn w-full bg-[#393E46] text-[20px] mb-[3%] disabled:text-gray-500"
           type="submit"
-          disabled={!isValid}
+          // disabled={!isValid}
         >
           Sign Up
         </button>
