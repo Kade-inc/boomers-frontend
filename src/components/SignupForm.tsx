@@ -48,7 +48,10 @@ const SignupForm = () => {
 
   return (
     <div className="text-[#393E46]">
-      <form className="w-full px-24 py-[2%]" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className="w-full px-4 py-[2%] md:px-24"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <p className="font-extrabold text-[50px] leading-[53px]">SIGN UP</p>
         <p className="py-[2.6%] text-[25px] font-semibold">
           Create an account to begin your journey

@@ -4,7 +4,7 @@ import SignupForm from "./SignupForm";
 const Signup = () => {
   return (
     <div className="flex min-h-screen">
-      <div className="w-[35%] relative">
+      <div className="hidden md:block w-[35%] relative">
         <img src={image} alt="image" className="w-full h-full object-cover" />
         <div className="absolute top-[4%] left-[5%] p-4 text-white font-normal text-[40px]">
           <h1>LOGO</h1>
@@ -13,7 +13,7 @@ const Signup = () => {
           WELCOME BOOMER!
         </div>
       </div>
-      <div className="w-[65%] bg-[#F8B500] rounded-tl-lg rounded-bl-lg">
+      <div className="w-full md:w-[65%] bg-[#F8B500] md:rounded-tl-lg md:rounded-bl-lg">
         <SignupForm />
       </div>
     </div>
