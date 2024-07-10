@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
 import User from "../entities/User";
+import toast from "react-hot-toast";
 
 class APIClient {
   endpoint: string;
@@ -18,11 +19,12 @@ class APIClient {
         "api/users/register",
         data
       );
-      console.log("Signup successful:", response.data);
+      //   console.log("Signup successful:", response.data);
+      toast.success("Signup successful");
       return response.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
-      console.error(
+      toast.error(
         "Signup error:",
         axiosError.response?.data ?? axiosError.message
       );

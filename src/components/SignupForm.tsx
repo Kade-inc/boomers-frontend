@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
 import useSignup from "../hooks/useSignup";
-import User from "../entities/User";
+import { Toaster } from "react-hot-toast";
 
 const schema = z
   .object({
@@ -53,6 +53,7 @@ const SignupForm = () => {
         <p className="py-[2.6%] text-[25px] font-semibold">
           Create an account to begin your journey
         </p>
+        <Toaster />
         <div className="mb-[3%]">
           <label className="block text-base font-bold mb-[1%]" htmlFor="email">
             Email
