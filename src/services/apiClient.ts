@@ -9,7 +9,7 @@ class APIClient {
   constructor(endpoint: string) {
     this.endpoint = endpoint;
     this.axiosInstance = axios.create({
-      baseURL: "http://localhost:5000",
+      baseURL: "http://localhost:5001",
     });
   }
 

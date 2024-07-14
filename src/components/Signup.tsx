@@ -13,7 +13,7 @@ const Signup = () => {
           WELCOME BOOMER!
         </div>
       </div>
-      <div className="w-full md:w-[65%] bg-[#F8B500] md:rounded-tl-lg md:rounded-bl-lg">
+      <div className="w-full md:w-[65%] bg-[#F8B500]">
         <SignupForm />
       </div>
     </div>

@@ -52,30 +52,30 @@ const SignupForm = () => {
         className="w-full px-4 py-[2%] md:px-24"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <p className="font-extrabold text-[50px] leading-[53px]">SIGN UP</p>
-        <p className="py-[2.6%] text-[25px] font-semibold">
+        <p className="font-extrabold text-[50px] leading-[53px] font-heading">SIGN UP</p>
+        <p className="py-[2.6%] text-[25px] font-semibold font-body">
           Create an account to begin your journey
         </p>
         <Toaster />
         <div className="mb-[3%]">
-          <label className="block text-base font-bold mb-[1%]" htmlFor="email">
+          <label className="block text-base font-bold mb-[1%] font-body" htmlFor="email">
             Email
           </label>
           <input
             type="text"
             placeholder="Enter your email"
-            className="input w-full border border-gray-700 bg-transparent rounded-md"
+            className="input w-full border border-gray-700 bg-transparent rounded-md font-body"
             style={{ backgroundColor: "transparent" }}
             {...register("email")}
             id="email"
           />
         </div>
         {errors.email && (
-          <p className="text-red-700">{errors.email?.message}</p>
+          <p className="text-red-700 font-body">{errors.email?.message}</p>
         )}
         <div className="mb-[3%]">
           <label
-            className="block text-base font-bold mb-[1%]"
+            className="block text-base font-bold mb-[1%] font-body"
             htmlFor="username"
           >
             Username
@@ -84,7 +84,7 @@ const SignupForm = () => {
             type="text"
             id="username"
             placeholder="Enter your username"
-            className="input w-full border border-gray-700 bg-transparent rounded-md"
+            className="input w-full border border-gray-700 bg-transparent rounded-md font-body"
             style={{ backgroundColor: "transparent" }}
             {...register("username")}
           />
@@ -94,7 +94,7 @@ const SignupForm = () => {
         )}
         <div className="mb-[3%]">
           <label
-            className="block text-base font-bold mb-[1%]"
+            className="block text-base font-bold mb-[1%] font-body"
             htmlFor="password"
           >
             Password
@@ -104,17 +104,17 @@ const SignupForm = () => {
             autoComplete="on"
             id="password"
             placeholder="Create a password"
-            className="input w-full border border-gray-700 bg-transparent rounded-md"
+            className="input w-full border border-gray-700 bg-transparent rounded-md font-body"
             style={{ backgroundColor: "transparent" }}
             {...register("password")}
           />
         </div>
         {errors.password && (
-          <p className="text-red-700">{errors.password.message}</p>
+          <p className="text-red-700 font-body">{errors.password.message}</p>
         )}
         <div className="mb-[3%]">
           <label
-            className="block text-base font-bold mb-[1%]"
+            className="block text-base font-bold mb-[1%] font-body"
             htmlFor="confirmpassword"
           >
             Confirm password
@@ -124,17 +124,17 @@ const SignupForm = () => {
             autoComplete="on"
             id="confirmpassword"
             placeholder="Confirm your password"
-            className="input w-full border border-gray-700  rounded-md"
+            className="input w-full border border-gray-700  rounded-md font-body"
             style={{ backgroundColor: "transparent" }}
             {...register("confirmpassword")}
           />
         </div>
         {errors.confirmpassword && (
-          <p className="text-red-700">{errors.confirmpassword.message}</p>
+          <p className="text-red-700 font-body">{errors.confirmpassword.message}</p>
         )}
 
         <button
-          className="btn w-full bg-[#393E46] text-[20px] mb-[3%] disabled:text-gray-500"
+          className="btn w-full bg-[#393E46] text-[20px] mb-[3%] text-white border-none disabled:text-gray-500 font-body"
           type="submit"
           // disabled={!isValid}
         >
@@ -144,24 +144,24 @@ const SignupForm = () => {
         <div className="flex gap-5 justify-center text-center mb-[3%]">
           <div
             className="border-t-2 border-black my-4 flex-grow "
-            style={{ width: "400px" }}
+            style={{ width: "200px" }}
           ></div>
 
-          <p className="text-[20px] font-semibold">Or sign up with</p>
+          <p className="text-[20px] font-semibold font-body">Or sign up with</p>
           <div
             className="border-t-2 border-black my-4 flex-grow"
-            style={{ width: "400px" }}
+            style={{ width: "200px" }}
           ></div>
         </div>
 
         <button
-          className="btn bg-white w-full text-[#393E46] border-none text-[20px] mb-[3%]"
+          className="btn bg-white w-full text-[#393E46] border-none text-[20px] mb-[3%] font-body"
           type="button"
         >
           <FcGoogle style={{ fontSize: "1.5em" }} /> Google
         </button>
 
-        <p className="text-center text-[20px] font-semibold text-black">
+        <p className="text-center text-[20px] font-regular text-black font-body">
           Already have an account? <span className="font-bold">Sign in</span>
         </p>
       </form>
