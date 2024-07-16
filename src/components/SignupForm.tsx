@@ -4,6 +4,7 @@ import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
 import useSignup from "../hooks/useSignup";
 import { Toaster } from "react-hot-toast";
+import { useEffect } from "react";
 
 const schema = z
   .object({
@@ -46,6 +47,10 @@ const SignupForm = () => {
     mutation.mutate(userData);
   };
 
+  useEffect(() => {
+    console.log("IS VALID: ", isValid)
+  },[])
+
   return (
     <div className="text-[#393E46]">
       <form
@@ -69,10 +74,11 @@ const SignupForm = () => {
             {...register("email")}
             id="email"
           />
-        </div>
-        {errors.email && (
-          <p className="text-red-700 font-body">{errors.email?.message}</p>
+          {errors.email && (
+          <p className="text-white text-[14px] font-body bg-error pl-3 py-1 rounded-sm mt-3">{errors.email?.message}</p>
         )}
+        </div>
+        
         <div className="mb-[3%]">
           <label
             className="block text-base font-bold mb-[1%] font-body"
@@ -88,10 +94,11 @@ const SignupForm = () => {
             style={{ backgroundColor: "transparent" }}
             {...register("username")}
           />
-        </div>
-        {errors.username && (
-          <p className="text-red-700">{errors.username.message}</p>
+          {errors.username && (
+          <p className="text-white text-[14px] font-body bg-error pl-3 py-1 rounded-sm mt-3">{errors.username.message}</p>
         )}
+        </div>
+        
         <div className="mb-[3%]">
           <label
             className="block text-base font-bold mb-[1%] font-body"
@@ -108,10 +115,11 @@ const SignupForm = () => {
             style={{ backgroundColor: "transparent" }}
             {...register("password")}
           />
-        </div>
-        {errors.password && (
-          <p className="text-red-700 font-body">{errors.password.message}</p>
+           {errors.password && (
+          <p className="text-white text-[14px] font-body bg-error pl-3 py-1 rounded-sm mt-3">{errors.password.message}</p>
         )}
+        </div>
+       
         <div className="mb-[3%]">
           <label
             className="block text-base font-bold mb-[1%] font-body"
@@ -128,15 +136,16 @@ const SignupForm = () => {
             style={{ backgroundColor: "transparent" }}
             {...register("confirmpassword")}
           />
-        </div>
-        {errors.confirmpassword && (
-          <p className="text-red-700 font-body">{errors.confirmpassword.message}</p>
+          {errors.confirmpassword && (
+          <p className="text-white text-[14px] font-body bg-error pl-3 py-1 rounded-sm mt-3">{errors.confirmpassword.message}</p>
         )}
+        </div>
+        
+          
 
         <button
-          className="btn w-full bg-[#393E46] text-[20px] mb-[3%] text-white border-none disabled:text-gray-500 font-body "
+          className="btn w-full bg-[#393E46] text-[20px] mb-[3%] text-white border-none disabled:text-gray-500 font-body hover:bg-black"
           type="submit"
-          // disabled={!isValid}
         >
           Sign Up
         </button>
