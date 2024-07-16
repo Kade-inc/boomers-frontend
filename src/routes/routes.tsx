@@ -1,11 +1,16 @@
 import { createBrowserRouter } from "react-router-dom";
-import HomePage from "../pages/HomePage";
+import Layout from "../pages/Layout";
+import SignupForm from "../components/SignupForm";
+import LoginForm from "../components/LoginForm";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomePage />,
+    element: <Layout />,
+    children: [
+      { index: true, element: <SignupForm /> },
+      { path: "login", element: <LoginForm /> },
+    ],
   },
 ]);
-
 export default router;
