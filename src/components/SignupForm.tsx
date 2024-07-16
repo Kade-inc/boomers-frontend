@@ -4,7 +4,6 @@ import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
 import useSignup from "../hooks/useSignup";
 import { Toaster } from "react-hot-toast";
-import { useEffect } from "react";
 
 const schema = z
   .object({
@@ -46,10 +45,6 @@ const SignupForm = () => {
     console.log(userData);
     mutation.mutate(userData);
   };
-
-  useEffect(() => {
-    console.log("IS VALID: ", isValid)
-  },[])
 
   return (
     <div className="text-[#393E46]">
