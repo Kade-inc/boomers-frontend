@@ -32,6 +32,7 @@ const schema = z
 type FormData = z.infer<typeof schema>;
 
 const SignupForm = () => {
+  
   const mutation = useSignup();
 
   const {
@@ -47,14 +48,16 @@ const SignupForm = () => {
   };
 
   return (
-    <div className="text-[#393E46]">
+    <div className="text-darkgrey">
+      
       <form
         className="w-full px-4 py-[2%] md:px-24"
         onSubmit={handleSubmit(onSubmit)}
       >
+        <h2 className="block md:hidden font-heading text-[30px]">LOGO</h2>
         <p className="font-extrabold text-[50px] leading-[53px] font-heading">SIGN UP</p>
-        <p className="py-[2.6%] text-[25px] font-semibold font-body">
-          Create an account to begin your journey
+        <p className="py-[2.6%] text-[18px] font-semibold font-body">
+          Create an account to begin your journey.
         </p>
         <Toaster />
         <div className="mb-[3%]">
@@ -70,7 +73,7 @@ const SignupForm = () => {
             id="email"
           />
           {errors.email && (
-          <p className="text-white text-[14px] font-body bg-error pl-3 py-1 rounded-sm mt-3">{errors.email?.message}</p>
+          <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">{errors.email?.message}</p>
         )}
         </div>
         
@@ -90,7 +93,7 @@ const SignupForm = () => {
             {...register("username")}
           />
           {errors.username && (
-          <p className="text-white text-[14px] font-body bg-error pl-3 py-1 rounded-sm mt-3">{errors.username.message}</p>
+          <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">{errors.username.message}</p>
         )}
         </div>
         
@@ -111,7 +114,7 @@ const SignupForm = () => {
             {...register("password")}
           />
            {errors.password && (
-          <p className="text-white text-[14px] font-body bg-error pl-3 py-1 rounded-sm mt-3">{errors.password.message}</p>
+          <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">{errors.password.message}</p>
         )}
         </div>
        
@@ -132,40 +135,37 @@ const SignupForm = () => {
             {...register("confirmpassword")}
           />
           {errors.confirmpassword && (
-          <p className="text-white text-[14px] font-body bg-error pl-3 py-1 rounded-sm mt-3">{errors.confirmpassword.message}</p>
+          <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">{errors.confirmpassword.message}</p>
         )}
         </div>
         
           
-
         <button
-          className="btn w-full bg-[#393E46] text-[20px] mb-[3%] text-white border-none disabled:text-gray-500 font-body hover:bg-black"
+          className="btn w-full bg-darkgrey mb-[3%] text-white border-none font-body hover:bg-black disabled:opacity-100"
           type="submit"
         >
-          Sign Up
+          {mutation.isPending ? <span className="loading loading-dots loading-md"></span> : <span>Sign Up</span>}
         </button>
 
-        <div className="flex gap-5 justify-center text-center mb-[3%]">
+        <div className="flex items-center gap-5 justify-center text-center mb-[3%]">
           <div
-            className="border-t-2 border-black my-4 flex-grow "
-            style={{ width: "200px" }}
+            className="border-t-2 border-black my-4 flex-grow w-200"
           ></div>
 
-          <p className="text-[20px] font-semibold font-body">Or sign up with</p>
+          <p className="font-semibold font-body">Or sign up with</p>
           <div
-            className="border-t-2 border-black my-4 flex-grow"
-            style={{ width: "200px" }}
+            className="border-t-2 border-black my-4 flex-grow w-200"
           ></div>
         </div>
 
         <button
-          className="btn bg-white w-full text-[#393E46] border-none text-[20px] mb-[3%] font-body"
+          className="btn bg-white w-full text-[#393E46] border-none mb-[3%] font-body"
           type="button"
         >
           <FcGoogle style={{ fontSize: "1.5em" }} /> Google
         </button>
 
-        <p className="text-center text-[20px] font-regular text-black font-body">
+        <p className="text-center font-regular text-black font-body">
           Already have an account? <span className="font-bold">Sign in</span>
         </p>
       </form>
