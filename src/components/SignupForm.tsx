@@ -64,7 +64,7 @@ const SignupForm = () => {
           <input
             type="text"
             placeholder="Enter your email"
-            className="input w-full border border-gray-700 bg-transparent rounded-md font-body"
+            className="input w-full border border-gray-700 hover:border-gray-700 focus:outline-none bg-transparent rounded-md font-body placeholder-gray-600"
             style={{ backgroundColor: "transparent" }}
             {...register("email")}
             id="email"
@@ -84,7 +84,7 @@ const SignupForm = () => {
             type="text"
             id="username"
             placeholder="Enter your username"
-            className="input w-full border border-gray-700 bg-transparent rounded-md font-body"
+            className="input w-full border border-gray-700 bg-transparent rounded-md font-body placeholder-gray-600 hover:border-gray-700 focus:outline-none"
             style={{ backgroundColor: "transparent" }}
             {...register("username")}
           />
@@ -104,7 +104,7 @@ const SignupForm = () => {
             autoComplete="on"
             id="password"
             placeholder="Create a password"
-            className="input w-full border border-gray-700 bg-transparent rounded-md font-body"
+            className="input w-full border border-gray-700 bg-transparent rounded-md font-body placeholder-gray-600 hover:border-gray-700 focus:outline-none"
             style={{ backgroundColor: "transparent" }}
             {...register("password")}
           />
@@ -124,7 +124,7 @@ const SignupForm = () => {
             autoComplete="on"
             id="confirmpassword"
             placeholder="Confirm your password"
-            className="input w-full border border-gray-700  rounded-md font-body"
+            className="input w-full border border-gray-700  rounded-md font-body placeholder-gray-600 hover:border-gray-700 focus:outline-none"
             style={{ backgroundColor: "transparent" }}
             {...register("confirmpassword")}
           />
@@ -134,7 +134,7 @@ const SignupForm = () => {
         )}
 
         <button
-          className="btn w-full bg-[#393E46] text-[20px] mb-[3%] text-white border-none disabled:text-gray-500 font-body"
+          className="btn w-full bg-[#393E46] text-[20px] mb-[3%] text-white border-none disabled:text-gray-500 font-body "
           type="submit"
           // disabled={!isValid}
         >
