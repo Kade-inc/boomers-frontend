@@ -32,6 +32,7 @@ const schema = z
 type FormData = z.infer<typeof schema>;
 
 const SignupForm = () => {
+  
   const mutation = useSignup();
 
   const {
@@ -137,12 +138,11 @@ const SignupForm = () => {
         </div>
         
           
-
         <button
-          className="btn w-full bg-[#393E46] text-[20px] mb-[3%] text-white border-none disabled:text-gray-500 font-body hover:bg-black"
+          className="btn w-full bg-darkgrey text-[20px] mb-[3%] text-white border-none font-body hover:bg-black disabled:opacity-100"
           type="submit"
         >
-          Sign Up
+          {mutation.isPending ? <span className="loading loading-dots loading-md"></span> : <span>Sign Up</span>}
         </button>
 
         <div className="flex gap-5 justify-center text-center mb-[3%]">
