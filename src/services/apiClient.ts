@@ -19,7 +19,7 @@ class APIClient {
         "api/users/register",
         data
       );
-      //   console.log("Signup successful:", response.data);
+      console.log("Verification code:", response.data);
       toast.success("Signup successful");
       return response.data;
     } catch (error: unknown) {

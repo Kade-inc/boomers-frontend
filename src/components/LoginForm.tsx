@@ -5,30 +5,29 @@ import { z } from "zod";
 import { Toaster } from "react-hot-toast";
 import { Link } from "react-router-dom";
 
+const emailOrUsername = z.union([z.string().email(), z.string()]);
+
 const schema = z.object({
-  email: z.string().email(),
-  username: z.string(),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters long")
-    .max(15, "Password must be no more than 15 characters long")
-    .regex(
-      /[A-Za-z]/,
-      "Password must contain at least one alphabet (uppercase or lowercase)"
-    )
-    .regex(/\d/, "Password must contain at least one number")
-    .regex(
-      /[-.@$!%+=<>,#?&]/,
-      "Password must contain at least one special character (-,.,@,$,!,%,+,=,<,>,#,?,&)"
-    ),
+  emailOrUsername,
+  password: z.string(),
 });
 
 type FormData = z.infer<typeof schema>;
 
 const LoginForm = () => {
+  const { register, handleSubmit } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit = (data: FormData) => {
+    console.log(data);
+  };
   return (
     <div className="text-[#393E46]">
-      <form className="w-full px-4 py-[2%] md:px-24">
+      <form
+        className="w-full px-4 py-[2%] md:px-24"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <p className="font-extrabold text-[50px] leading-[53px] font-heading">
           SIGN IN
         </p>
@@ -45,10 +44,11 @@ const LoginForm = () => {
           </label>
           <input
             type="text"
+            {...register("emailOrUsername")}
             placeholder="Enter email or username"
             className="input w-full border border-gray-700 hover:border-gray-700 focus:outline-none bg-transparent rounded-md font-body placeholder-gray-600"
             style={{ backgroundColor: "transparent" }}
-            id="email"
+            id="emailOrUsername"
           />
         </div>
 
@@ -63,6 +63,7 @@ const LoginForm = () => {
             type="password"
             autoComplete="on"
             id="password"
+            {...register("password")}
             placeholder="Create a password"
             className="input w-full border border-gray-700 bg-transparent rounded-md font-body placeholder-gray-600 hover:border-gray-700 focus:outline-none"
             style={{ backgroundColor: "transparent" }}
