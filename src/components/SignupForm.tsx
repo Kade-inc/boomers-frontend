@@ -4,7 +4,7 @@ import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
 import useSignup from "../hooks/useSignup";
 import { Toaster } from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const schema = z
   .object({
@@ -33,6 +33,7 @@ const schema = z
 type FormData = z.infer<typeof schema>;
 
 const SignupForm = () => {
+  const navigate = useNavigate();
   const mutation = useSignup();
 
   const {
@@ -41,10 +42,15 @@ const SignupForm = () => {
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     const { confirmpassword, ...userData } = data;
     console.log(userData);
-    mutation.mutate(userData);
+    try {
+      await mutation.mutateAsync(userData);
+      navigate("/success");
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
