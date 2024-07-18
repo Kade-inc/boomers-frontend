@@ -31,6 +31,22 @@ class APIClient {
       throw axiosError;
     }
   };
+
+  signin = async (data: User): Promise<any> => {
+    try {
+      const response = await this.axiosInstance.post("api/users/login", data);
+      console.log("Login successful:", response.data);
+      toast.success("Login successful");
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Login error:",
+        axiosError.response?.data ?? axiosError.message
+      );
+      throw axiosError;
+    }
+  };
 }
 
 export default APIClient;

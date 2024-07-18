@@ -4,23 +4,29 @@ import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
 import { Toaster } from "react-hot-toast";
 import { Link } from "react-router-dom";
-
-const emailOrUsername = z.union([z.string().email(), z.string()]);
+import useSignin from "../hooks/useSignin";
 
 const schema = z.object({
-  emailOrUsername,
-  password: z.string(),
+  accountId: z.string().min(1),
+  password: z.string().min(1),
 });
 
 type FormData = z.infer<typeof schema>;
 
 const LoginForm = () => {
+  const mutation = useSignin();
+
   const { register, handleSubmit } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     console.log(data);
+    try {
+      await mutation.mutateAsync(data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
   return (
     <div className="text-[#393E46]">
@@ -44,7 +50,7 @@ const LoginForm = () => {
           </label>
           <input
             type="text"
-            {...register("emailOrUsername")}
+            {...register("accountId")}
             placeholder="Enter email or username"
             className="input w-full border border-gray-700 hover:border-gray-700 focus:outline-none bg-transparent rounded-md font-body placeholder-gray-600"
             style={{ backgroundColor: "transparent" }}
