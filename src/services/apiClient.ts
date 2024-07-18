@@ -15,10 +15,7 @@ class APIClient {
 
   signup = async (data: User): Promise<any> => {
     try {
-      const response = await this.axiosInstance.post(
-        "api/users/register",
-        data
-      );
+      const response = await this.axiosInstance.post(this.endpoint, data);
       console.log("Verification code:", response.data);
       toast.success("Signup successful");
       return response.data;
@@ -34,7 +31,7 @@ class APIClient {
 
   signin = async (data: User): Promise<any> => {
     try {
-      const response = await this.axiosInstance.post("api/users/login", data);
+      const response = await this.axiosInstance.post(this.endpoint, data);
       console.log("Login successful:", response.data);
       toast.success("Login successful");
       return response.data;

@@ -3,8 +3,10 @@ import Layout from "../pages/Layout";
 import SignupForm from "../components/SignupForm";
 import LoginForm from "../components/LoginForm";
 import SignupSuccess from "../components/SignupSuccess";
+import HomePage from "../pages/HomePage";
 
 const router = createBrowserRouter([
+  { path: "/home", element: <HomePage /> },
   {
     path: "/",
     element: <Layout />,

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
 import { Toaster } from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useSignin from "../hooks/useSignin";
 
 const schema = z.object({
@@ -14,6 +14,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const LoginForm = () => {
+  const navigate = useNavigate();
   const mutation = useSignin();
 
   const { register, handleSubmit } = useForm<FormData>({
@@ -24,6 +25,7 @@ const LoginForm = () => {
     console.log(data);
     try {
       await mutation.mutateAsync(data);
+      navigate("/home");
     } catch (error) {
       console.error("Error:", error);
     }
