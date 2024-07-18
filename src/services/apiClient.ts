@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
 import User from "../entities/User";
 import toast from "react-hot-toast";
+import Cookies from "js-cookie";
 
 class APIClient {
   endpoint: string;
@@ -33,6 +34,7 @@ class APIClient {
     try {
       const response = await this.axiosInstance.post(this.endpoint, data);
       console.log("Login successful:", response.data);
+      Cookies.set("jwt", response.data.token, { expires: 7 });
       toast.success("Login successful");
       return response.data;
     } catch (error: unknown) {
