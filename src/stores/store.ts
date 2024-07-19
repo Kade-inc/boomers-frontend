@@ -1,20 +1,17 @@
 import { mountStoreDevtool } from "simple-zustand-devtools";
 import { create } from "zustand";
 
-interface NameStore {
-  name: string;
+interface SignUpStore {
+  signUpSuccess: boolean;
 }
-const useNameStore = create<NameStore>(() => ({
-  name: "Boomers",
-}));
 
 const useSignUpStore = create<SignUpStore>((set) => ({
   signUpSuccess: false,
-  setSignUpSuccess: (signUpSuccess) => set(() => ({ signUpSuccess })),
+  setSignUpSuccess: (signUpSuccess:boolean) => set(() => ({ signUpSuccess })),
 }));
 
 // Inspect store
 if (process.env.NODE_ENV === "development")
-  mountStoreDevtool("Name Store", useNameStore);
+  mountStoreDevtool("SignUp Store", useSignUpStore);
 
 export default useSignUpStore;

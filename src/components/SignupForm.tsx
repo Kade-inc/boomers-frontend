@@ -45,7 +45,6 @@ const SignupForm = () => {
 
   const onSubmit = async (data: FormData) => {
     const { confirmpassword, ...userData } = data;
-    console.log(userData);
     try {
       await mutation.mutateAsync(userData);
       setSignUpSuccess(true)
