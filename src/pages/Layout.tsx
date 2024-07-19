@@ -1,8 +1,8 @@
+import { Outlet } from "react-router-dom";
 import image from "../assets/khamkeo-vilaysing-rpVQJbZMw8o-unsplash (1) 1.png";
-import SignupForm from "./SignupForm";
-import boomer from '../assets/boomer.svg';
+import boomer from "../assets/boomer.svg";
 
-const Signup = () => {
+const Layout = () => {
   return (
     <div className="flex min-h-screen">
       <div className="hidden md:block w-[35%] relative">
@@ -11,15 +11,14 @@ const Signup = () => {
           <h1 className="font-heading">LOGO</h1>
         </div>
         <div className="absolute top-[28.6%] left-1/2 p-4  -translate-x-1/2 w-[87%]">
-
           <img src={boomer} alt="image" className="" />
         </div>
       </div>
       <div className="w-full md:w-[65%] bg-[#F8B500]">
-        <SignupForm />
+        <Outlet />
       </div>
     </div>
   );
 };
 
-export default Signup;
+export default Layout;

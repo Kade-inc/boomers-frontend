@@ -1,8 +1,9 @@
 export default interface User {
-  email: string;
+  email?: string;
   phoneNumber?: string;
   password: string;
   confirmpassword?: string;
   isVerified?: boolean;
   username?: string;
+  accountId?: string;
 }
