@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
 import useSignup from "../hooks/useSignup";
-import toast, { ToastBar, Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import useSignUpStore from "../stores/store";
 
