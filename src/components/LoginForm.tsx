@@ -42,7 +42,21 @@ const LoginForm = () => {
         <p className="py-[2.6%] text-[18px] font-semibold font-body">
           Enter your credentials to sign in
         </p>
-        <Toaster />
+        <Toaster 
+        position="bottom-center" 
+        reverseOrder={true}
+        toastOptions={{
+          error: {
+            style: {
+              background: '#D92D2D',
+              color: 'white'
+            },
+            iconTheme: {
+              primary: 'white',
+              secondary: '#D92D2D',
+            },
+          },
+        }}/>
         <div className="mb-[3%]">
           <label
             className="block text-base font-bold mb-[1%] font-body"
@@ -86,26 +100,26 @@ const LoginForm = () => {
         </button>
 
         <div className="flex items-center gap-5 justify-center text-center mb-[3%]">
-          <div className="border-t-2 border-black my-4 flex-grow w-200"></div>
+          <div className="border-t-2 border-darkgrey my-4 flex-grow w-200"></div>
 
           <p className="font-semibold font-body">Or sign up with</p>
-          <div className="border-t-2 border-black my-4 flex-grow w-200"></div>
+          <div className="border-t-2 border-darkgrey my-4 flex-grow w-200"></div>
         </div>
 
         <button
-          className="btn bg-white w-full text-[#393E46] border-none text-[17px] mb-[3%] font-body"
+          className="btn bg-white w-full text-darkgrey border-none text-[17px] mb-[3%] font-body"
           type="button"
         >
           <FcGoogle style={{ fontSize: "1.5em" }} /> Google
         </button>
 
-        <p className="text-center font-regular text-black font-body">
+        <p className="text-center font-regular text-darkgrey font-body">
           Don't have an account?
           <Link to="/">
             <span className="font-bold"> Sign Up</span>
           </Link>
         </p>
-        <p className="text-center font-regular text-black font-body font-[600] mt-6">
+        <p className="text-center font-regular text-darkgrey font-body font-[600] mt-6">
           Forgot your password
         </p>
       </form>

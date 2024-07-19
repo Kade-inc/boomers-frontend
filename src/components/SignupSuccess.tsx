@@ -1,9 +1,20 @@
 import { useNavigate } from "react-router-dom";
 import success from "../assets/success.svg";
+import useSignUpStore from "../stores/store";
+import { useEffect } from "react";
 
 const SignupSuccess = () => {
   const navigate = useNavigate();
 
+  const signUpSuccess = useSignUpStore((s) => s.signUpSuccess);
+  const setSignUpSuccess = useSignUpStore((s) => s.setSignUpSuccess);
+
+  useEffect(() => {
+    if (!signUpSuccess) {
+      navigate("/");
+    }
+  }, [signUpSuccess])
+ 
   return (
     <div className="text-center text-[#393E46] mx-2 mt-[40px]">
       <p className="mt-9 mb-9 font-bold text-3xl font-body">Thank you for Signing Up!</p>
@@ -16,7 +27,10 @@ const SignupSuccess = () => {
         signing in.
       </p>
       <button
-        onClick={() => navigate("/login")}
+        onClick={() => {
+          navigate("/login")
+          setSignUpSuccess(false)
+        }}
         className="btn w-[47%] bg-darkgrey mb-[3%] text-white border-none text-[17px] font-body hover:bg-black mt-[40px]"
       >
         Go to Sign In
