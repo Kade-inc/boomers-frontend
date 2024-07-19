@@ -5,6 +5,7 @@ import { z } from "zod";
 import useSignup from "../hooks/useSignup";
 import { Toaster } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
+import useSignUpStore from "../stores/store";
 
 const schema = z
   .object({
@@ -13,7 +14,6 @@ const schema = z
     password: z
       .string()
       .min(8, "Password must be at least 8 characters long")
-      .max(15, "Password must be no more than 15 characters long")
       .regex(
         /[A-Za-z]/,
         "Password must contain at least one alphabet (uppercase or lowercase)"
@@ -35,6 +35,7 @@ type FormData = z.infer<typeof schema>;
 const SignupForm = () => {
   const navigate = useNavigate();
   const mutation = useSignup();
+  const setSignUpSuccess = useSignUpStore((s) => s.setSignUpSuccess);
 
   const {
     register,
@@ -44,10 +45,10 @@ const SignupForm = () => {
 
   const onSubmit = async (data: FormData) => {
     const { confirmpassword, ...userData } = data;
-    console.log(userData);
     try {
       await mutation.mutateAsync(userData);
-      navigate("/success");
+      setSignUpSuccess(true)
+      navigate("/signup-success");
     } catch (error) {
       console.error("Error:", error);
     }
@@ -66,7 +67,21 @@ const SignupForm = () => {
         <p className="py-[2.6%] text-[18px] font-semibold font-body">
           Create an account to begin your journey.
         </p>
-        <Toaster />
+        <Toaster 
+        position="bottom-center" 
+        reverseOrder={true}
+        toastOptions={{
+          error: {
+            style: {
+              background: '#D92D2D',
+              color: 'white'
+            },
+            iconTheme: {
+              primary: 'white',
+              secondary: '#D92D2D',
+            },
+          },
+        }}/>
         <div className="mb-[3%]">
           <label
             className="block text-base font-bold mb-[1%] font-body"
@@ -158,7 +173,7 @@ const SignupForm = () => {
         </div>
 
         <button
-          className="btn w-full bg-darkgrey mb-[3%] text-white border-none font-body hover:bg-black disabled:opacity-100"
+          className="btn w-full bg-darkgrey mb-[3%] text-white border-none text-[17px] font-body hover:bg-black disabled:opacity-100"
           type="submit"
         >
           {mutation.isPending ? (
@@ -169,21 +184,21 @@ const SignupForm = () => {
         </button>
 
         <div className="flex items-center gap-5 justify-center text-center mb-[3%]">
-          <div className="border-t-2 border-black my-4 flex-grow w-200"></div>
+          <div className="border-t-2 border-darkgrey my-4 flex-grow w-200"></div>
 
           <p className="font-semibold font-body">Or sign up with</p>
-          <div className="border-t-2 border-black my-4 flex-grow w-200"></div>
+          <div className="border-t-2 border-darkgrey my-4 flex-grow w-200"></div>
         </div>
 
         <button
-          className="btn bg-white w-full text-[#393E46] border-none mb-[3%] font-body"
+          className="btn bg-white w-full text-[#393E46] text-[17px] border-none mb-[3%] font-body"
           type="button"
         >
           <FcGoogle style={{ fontSize: "1.5em" }} /> Google
         </button>
 
-        <p className="text-center font-regular text-black font-body">
-          Already have an account?
+        <p className="text-center font-regular text-darkgrey font-body">
+          Already have an account? {' '}
           <Link to="/login">
             <span className="font-bold">Sign in</span>
           </Link>
