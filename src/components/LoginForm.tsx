@@ -39,7 +39,7 @@ const LoginForm = () => {
         <p className="font-extrabold text-[50px] leading-[53px] font-heading">
           SIGN IN
         </p>
-        <p className="py-[2.6%] text-[25px] font-semibold font-body">
+        <p className="py-[2.6%] text-[18px] font-semibold font-body">
           Enter your credentials to sign in
         </p>
         <Toaster />
@@ -79,39 +79,33 @@ const LoginForm = () => {
         </div>
 
         <button
-          className="btn w-full bg-[#393E46] text-[20px] mb-[3%] text-white border-none disabled:text-gray-500 font-body hover:bg-black"
+          className="btn w-full bg-[#393E46] text-[17px] mb-[3%] text-white border-none disabled:text-gray-500 font-body hover:bg-black"
           type="submit"
         >
           Sign In
         </button>
 
-        <div className="flex gap-5 justify-center text-center mb-[3%]">
-          <div
-            className="border-t-2 border-black my-4 flex-grow "
-            style={{ width: "200px" }}
-          ></div>
+        <div className="flex items-center gap-5 justify-center text-center mb-[3%]">
+          <div className="border-t-2 border-black my-4 flex-grow w-200"></div>
 
-          <p className="text-[20px] font-semibold font-body">Or sign In with</p>
-          <div
-            className="border-t-2 border-black my-4 flex-grow"
-            style={{ width: "200px" }}
-          ></div>
+          <p className="font-semibold font-body">Or sign up with</p>
+          <div className="border-t-2 border-black my-4 flex-grow w-200"></div>
         </div>
 
         <button
-          className="btn bg-white w-full text-[#393E46] border-none text-[20px] mb-[3%] font-body"
+          className="btn bg-white w-full text-[#393E46] border-none text-[17px] mb-[3%] font-body"
           type="button"
         >
           <FcGoogle style={{ fontSize: "1.5em" }} /> Google
         </button>
 
-        <p className="text-center text-[20px] font-regular text-black font-body">
+        <p className="text-center font-regular text-black font-body">
           Don't have an account?
           <Link to="/">
             <span className="font-bold"> Sign Up</span>
           </Link>
         </p>
-        <p className="text-center text-[20px] font-regular text-black font-body font-[600] mt-6">
+        <p className="text-center font-regular text-black font-body font-[600] mt-6">
           Forgot your password
         </p>
       </form>

@@ -158,7 +158,7 @@ const SignupForm = () => {
         </div>
 
         <button
-          className="btn w-full bg-darkgrey mb-[3%] text-white border-none font-body hover:bg-black disabled:opacity-100"
+          className="btn w-full bg-darkgrey mb-[3%] text-white border-none text-[17px] font-body hover:bg-black disabled:opacity-100"
           type="submit"
         >
           {mutation.isPending ? (
@@ -176,14 +176,14 @@ const SignupForm = () => {
         </div>
 
         <button
-          className="btn bg-white w-full text-[#393E46] border-none mb-[3%] font-body"
+          className="btn bg-white w-full text-[#393E46] text-[17px] border-none mb-[3%] font-body"
           type="button"
         >
           <FcGoogle style={{ fontSize: "1.5em" }} /> Google
         </button>
 
         <p className="text-center font-regular text-black font-body">
-          Already have an account?
+          Already have an account? {' '}
           <Link to="/login">
             <span className="font-bold">Sign in</span>
           </Link>
