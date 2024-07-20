@@ -12,9 +12,11 @@ const MessageComponent = ({ img, message }: Message) => {
           src={img}
           className="w-[150px] sm:w-1/4 md:w-1/6 lg:w-[200px] h-[150px] sm:h-auto lg:h-[200px]  object-cover mb-6"
         />
-        <p className="text-center font-semibold text-[18px] sm:text-[20px] md:text-[22px] lg:text-[24px] text-gray-600 mb-8">
-          {message}
-        </p>
+        <div className="px-4 w-56 md:w-64 lg:w-72">
+          <p className="text-center font-semibold text-[18px] sm:text-[20px] md:text-[22px] lg:text-[24px] text-gray-600 mb-8 whitespace-normal">
+            {message}
+          </p>
+        </div>
         <button className=" w-[290px] sm:w-[320px] md:w-[350px] lg:w-[380px] h-[47px] sm:h-[50px] md:h-[55px] lg:h-[60px] rounded-[5px] bg-gray-800 text-[15px] sm:text-[18px] md:text-[20px] lg:text-[22px] text-white font-semibold">
           <Link to={"/"}>Go to Sign In</Link>
         </button>
