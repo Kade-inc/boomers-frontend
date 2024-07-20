@@ -32,10 +32,18 @@ class APIClient {
     }
   };
 
-  verifyUser = async ({ queryKey }: { queryKey: [string, string] }) => {
-    const [accountId, verificationCode] = queryKey;
-   return await this.axiosInstance.post(this.endpoint, {accountId, verificationCode})
-   .then(res => res.data)
+  verifyUser = async (accountId: string | null, verificationCode: string | null) => {
+    try {
+      const res = await this.axiosInstance.post(this.endpoint, {accountId, verificationCode});
+   return res.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Verification error:", axiosError.response?.data ?? axiosError.message
+      );
+      throw axiosError;
+    }
+   
   } 
 }
 
