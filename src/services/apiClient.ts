@@ -31,6 +31,12 @@ class APIClient {
       throw axiosError;
     }
   };
+
+  verifyUser = async ({ queryKey }: { queryKey: [string, string] }) => {
+    const [accountId, verificationCode] = queryKey;
+   return await this.axiosInstance.post(this.endpoint, {accountId, verificationCode})
+   .then(res => res.data)
+  } 
 }
 
 export default APIClient;
