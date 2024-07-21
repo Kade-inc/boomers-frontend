@@ -1,8 +1,8 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
 import User from "../entities/User";
 import toast from "react-hot-toast";
-import verifyUser from "../entities/verifyUser";
 import Cookies from "js-cookie";
+import { UserVerificationModel } from "../entities/UserVerificationModel";
 
 class APIClient {
   endpoint: string;
@@ -31,7 +31,7 @@ class APIClient {
     }
   };
 
-  verifyUser = async (data:verifyUser) => {
+  verifyUser = async (data:UserVerificationModel) => {
     try {
       const res = await this.axiosInstance.post(this.endpoint, data);
    return res.data;

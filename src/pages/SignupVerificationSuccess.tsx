@@ -5,7 +5,7 @@ import alert from "../assets/alert-cirlcle-error-svgrepo-com 1.svg";
 import MessageComponent from "../components/MessageComponent";
 import { useEffect, useState } from "react";
 
-const VerifySuccess = () => {
+const SignupVerificationSuccess = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const [emailParam, setEmailParam] = useState<string | null>('')
@@ -52,4 +52,4 @@ const VerifySuccess = () => {
   );
 };
 
-export default VerifySuccess;
+export default SignupVerificationSuccess;

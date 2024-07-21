@@ -1,12 +1,12 @@
 import { useMutation, UseMutationResult, useQuery } from "@tanstack/react-query";
 import APIClient from "../services/apiClient";
-import verifyUser from "../entities/verifyUser";
+import { UserVerificationModel } from "../entities/UserVerificationModel";
 
 const apiClient = new APIClient("/api/users/verify");
 
-const useVerifyUser  = (): UseMutationResult<any, Error, verifyUser, unknown> => {
+const useVerifyUser  = (): UseMutationResult<any, Error, UserVerificationModel, unknown> => {
     return useMutation({
-      mutationFn: (data:verifyUser) => apiClient.verifyUser(data)
+      mutationFn: (data:UserVerificationModel) => apiClient.verifyUser(data)
     });
   };
 
