@@ -1,4 +1,4 @@
-import { useMutation, UseMutationResult, useQuery } from "@tanstack/react-query";
+import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import APIClient from "../services/apiClient";
 import { UserVerificationModel } from "../entities/UserVerificationModel";
 
