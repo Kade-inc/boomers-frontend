@@ -1,4 +1,4 @@
 export default interface verifyUser {
-    accountId: number;
-    verificationCode: string;
+    accountId: string | null;
+    verificationCode: string | null;
   }

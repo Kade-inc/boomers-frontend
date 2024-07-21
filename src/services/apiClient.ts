@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
 import User from "../entities/User";
 import toast from "react-hot-toast";
+import verifyUser from "../entities/verifyUser";
 
 class APIClient {
   endpoint: string;
@@ -32,9 +33,9 @@ class APIClient {
     }
   };
 
-  verifyUser = async (accountId: string | null, verificationCode: string | null) => {
+  verifyUser = async (data:verifyUser) => {
     try {
-      const res = await this.axiosInstance.post(this.endpoint, {accountId, verificationCode});
+      const res = await this.axiosInstance.post(this.endpoint, data);
    return res.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
