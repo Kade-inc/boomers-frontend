@@ -4,7 +4,7 @@ import SignupForm from "../components/SignupForm";
 import LoginForm from "../components/LoginForm";
 import SignupSuccess from "../components/SignupSuccess";
 import HomePage from "../pages/HomePage";
-import VerifySuccess from "../pages/VerifySuccess";
+import SignupVerificationSuccess from "../pages/SignupVerificationSuccess";
 
 const router = createBrowserRouter([
   { path: "/home", element: <HomePage /> },
@@ -19,7 +19,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/verification",
-    element: <VerifySuccess />,
+    element: <SignupVerificationSuccess />,
   },
 ]);
 export default router;

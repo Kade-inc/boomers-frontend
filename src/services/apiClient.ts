@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosInstance } from "axios";
 import User from "../entities/User";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
+import { UserVerificationModel } from "../entities/UserVerificationModel";
 
 class APIClient {
   endpoint: string;
@@ -30,9 +31,9 @@ class APIClient {
     }
   };
 
-  verifyUser = async (accountId: string | null, verificationCode: string | null) => {
+  verifyUser = async (data:UserVerificationModel) => {
     try {
-      const res = await this.axiosInstance.post(this.endpoint, {accountId, verificationCode});
+      const res = await this.axiosInstance.post(this.endpoint, data);
    return res.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
