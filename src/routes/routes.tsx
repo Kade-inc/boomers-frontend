@@ -5,6 +5,7 @@ import LoginForm from "../components/LoginForm";
 import SignupSuccess from "../components/SignupSuccess";
 import HomePage from "../pages/HomePage";
 import SignupVerificationSuccess from "../pages/SignupVerificationSuccess";
+import ForgotPassword from "../components/ForgotPassword";
 
 const router = createBrowserRouter([
   { path: "/home", element: <HomePage /> },
@@ -14,6 +15,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <SignupForm /> },
       { path: "login", element: <LoginForm /> },
+      { path: "login/forgot-password", element: <ForgotPassword /> },
       { path: "signup-success", element: <SignupSuccess /> },
     ],
   },

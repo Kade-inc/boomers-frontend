@@ -42,21 +42,22 @@ const LoginForm = () => {
         <p className="py-[2.6%] text-[18px] font-semibold font-body">
           Enter your credentials to sign in
         </p>
-        <Toaster 
-        position="bottom-center" 
-        reverseOrder={true}
-        toastOptions={{
-          error: {
-            style: {
-              background: '#D92D2D',
-              color: 'white'
+        <Toaster
+          position="bottom-center"
+          reverseOrder={true}
+          toastOptions={{
+            error: {
+              style: {
+                background: "#D92D2D",
+                color: "white",
+              },
+              iconTheme: {
+                primary: "white",
+                secondary: "#D92D2D",
+              },
             },
-            iconTheme: {
-              primary: 'white',
-              secondary: '#D92D2D',
-            },
-          },
-        }}/>
+          }}
+        />
         <div className="mb-[3%]">
           <label
             className="block text-base font-bold mb-[1%] font-body"
@@ -119,9 +120,11 @@ const LoginForm = () => {
             <span className="font-bold"> Sign Up</span>
           </Link>
         </p>
-        <p className="text-center font-regular text-darkgrey font-body font-[600] mt-6">
-          Forgot your password
-        </p>
+        <Link to="/login/forgot-password">
+          <p className="text-center font-regular text-darkgrey font-body font-[600] mt-6">
+            Forgot your password
+          </p>
+        </Link>
       </form>
     </div>
   );
