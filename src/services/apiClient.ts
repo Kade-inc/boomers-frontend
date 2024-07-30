@@ -60,6 +60,20 @@ class APIClient {
       throw axiosError;
     }
   };
+
+  forgotPassword = async (email: string) => {
+    try {
+      const response = await this.axiosInstance.post(this.endpoint, { email });
+      toast.success('Reset password link sent');
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Forgot password error:", axiosError.response?.data ?? axiosError.message
+      );
+      throw axiosError;
+    }
+  };
 }
 
 export default APIClient;
