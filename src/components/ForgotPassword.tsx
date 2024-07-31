@@ -1,21 +1,35 @@
 import { Toaster } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import password from "../assets/password-svgrepo-com 1.svg";
-import { useState } from "react";
 import useForgotPassword from "../hooks/useForgotPassword";
 import ResetLinkSent from "./ResetLinkSent";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const schema = z.object({
+  email: z.string().email(),
+});
+
+type FormData = z.infer<typeof schema>;
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState("");
   const { mutate, isPending, isSuccess } = useForgotPassword();
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    mutate(email, {
-      onSettled: () => {
-        setEmail("");
-      },
-    });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit = async (data: FormData) => {
+    try {
+      await mutate(data.email);
+    } catch (error) {
+      console.log("Error:", error);
+    }
   };
 
   if (isSuccess) {
@@ -35,7 +49,10 @@ const ForgotPassword = () => {
           </p>
         </div>
 
-        <form className="w-full px-4 py-[2%] md:px-24" onSubmit={handleSubmit}>
+        <form
+          className="w-full px-4 py-[2%] md:px-24"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <Toaster
             position="bottom-center"
             reverseOrder={true}
@@ -62,13 +79,17 @@ const ForgotPassword = () => {
               </label>
               <input
                 id="email"
-                type="email"
+                type="text"
+                {...register("email")}
                 placeholder="Enter email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 className="input w-full border border-gray-700 hover:border-gray-700 focus:outline-none bg-transparent rounded-md font-body placeholder-gray-600 "
                 style={{ backgroundColor: "transparent" }}
               />
+              {errors.email && (
+                <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
+                  {errors.email?.message}
+                </p>
+              )}
             </div>
 
             <button
