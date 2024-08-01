@@ -25,7 +25,7 @@ const LoginForm = () => {
     console.log(data);
     try {
       await mutation.mutateAsync(data);
-      navigate("/home");
+      navigate("/dashboard");
     } catch (error) {
       console.error("Error:", error);
     }
