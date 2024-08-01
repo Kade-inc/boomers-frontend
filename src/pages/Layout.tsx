@@ -14,10 +14,7 @@ const Layout = () => {
           <img src={boomer} alt="image" className="" />
         </div>
       </div>
-      <div className="w-full md:w-[65%] bg-[#F8B500]">
-        <div className="absolute top-0 left-0 p-4 text-black font-normal text-[30px] md:hidden">
-          <h1 className="font-heading">LOGO</h1>
-        </div>
+      <div className="w-full md:w-[65%] bg-yellow">
         <Outlet />
       </div>
     </div>
