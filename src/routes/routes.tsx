@@ -5,7 +5,7 @@ import LoginForm from "../components/LoginForm";
 import SignupSuccess from "../components/SignupSuccess";
 import HomePage from "../pages/HomePage";
 import SignupVerificationSuccess from "../pages/SignupVerificationSuccess";
-import ForgotPassword from "../components/ForgotPassword";
+import ForgotPassword from "../pages/ForgotPasswordPage";
 
 const router = createBrowserRouter([
   { path: "/home", element: <HomePage /> },

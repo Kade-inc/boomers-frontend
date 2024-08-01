@@ -2,7 +2,7 @@ import { Toaster } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import password from "../assets/password-svgrepo-com 1.svg";
 import useForgotPassword from "../hooks/useForgotPassword";
-import ResetLinkSent from "./ResetLinkSent";
+import ResetLinkSent from "../components/ResetLinkSent";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
