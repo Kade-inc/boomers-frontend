@@ -14,9 +14,11 @@ const HomePage = () => {
         <p className='font-heading text-[30px] font-extrabold text-white'>LOGO</p>
         <button className="btn bg-yellow  text-darkgrey border-none text-[16px] font-body font-medium px-10 rounded py-0">Sign In</button>
        </div>
-       <p className="absolute text-white top-[28.6%] w-[700px] font-body text-[70px] font-black text-center leading-[5rem]">The platform you need to level up your skills.</p>
-       <p className="absolute top-[58%] text-center font-body text-[20px] text-white">Connect with experienced professionals and challenge yourself with exciting tasks.</p>
-       <button  className="absolute top-[65%] btn bg-yellow text-darkgrey border-none text-[20px] font-body font-medium px-20 rounded">Get Started</button>
+       <p className="hidden md:block absolute md:top-[300px] text-white lg:top-[300px] w-[700px] font-body text-[70px] font-black text-center leading-[5rem]">The platform you need to level up your skills.</p>
+       <p className="sm:block md:hidden absolute text-white top-[28.6%] font-body text-[50px] w-[90%] font-black text-center leading-[4rem]">The platform you need to level up your skills.</p>
+       <p className="hidden md:block absolute md:top-[600px] md:w-[600px] lg:w-full lg:top-[550px] text-center font-body text-[20px] text-white">Connect with experienced professionals and challenge yourself with exciting tasks.</p>
+       <p className="sm:block md:hidden absolute top-[58%] text-center font-body text-[16px] text-white ">Connect with experienced professionals and challenge yourself with exciting tasks.</p>
+       <button  className="absolute top-[600px] md:top-[700px] lg:top-[600px]  btn bg-yellow text-darkgrey border-none text-[20px] font-body font-medium px-20 rounded mt-5">Get Started</button>
        </div>
     </div>
   )
