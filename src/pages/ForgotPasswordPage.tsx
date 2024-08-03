@@ -41,7 +41,7 @@ const ForgotPassword = () => {
       <div className="text-[#393E46]">
         <div className="flex justify-center flex-col items-center mt-16">
           <img src={password} />
-          <p className="font-bold text-[26px] lg:text-[30px] leading-[53px] font-heading">
+          <p className="font-bold text-[26px] lg:text-[30px] leading-[53px] font-body">
             Forgot Password?
           </p>
           <p className="py-[2.6%] text-[16px] lg:text-[20px] font-semibold font-body">

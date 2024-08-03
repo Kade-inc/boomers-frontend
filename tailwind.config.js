@@ -13,7 +13,8 @@ export default {
       colors: {
         'error': '#D92D2D',
         'darkgrey': '#393E46',
-        'lightgrey': '#5C636E'
+        'lightgrey': '#5C636E',
+        'yellow': '#F8B500'
       },
     },
   },
