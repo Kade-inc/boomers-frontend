@@ -116,11 +116,11 @@ const LoginForm = () => {
 
         <p className="text-center font-regular text-darkgrey font-body">
           Don't have an account?
-          <Link to="/">
+          <Link to="/auth">
             <span className="font-bold"> Sign Up</span>
           </Link>
         </p>
-        <Link to="/login/forgot-password">
+        <Link to="/auth/forgot-password">
           <p className="text-center font-regular text-darkgrey font-body font-[600] mt-6">
             Forgot your password
           </p>

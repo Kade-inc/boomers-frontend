@@ -5,7 +5,7 @@ const Dashboard = () => {
   return (
     <>
       <div>Welcome Home</div>
-      <button className="btn" onClick={() => navigate("/login")}>
+      <button className="btn" onClick={() => navigate("/auth/login")}>
         Back
       </button>
     </>

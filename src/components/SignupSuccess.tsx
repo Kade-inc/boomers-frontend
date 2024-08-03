@@ -28,7 +28,7 @@ const SignupSuccess = () => {
       </p>
       <button
         onClick={() => {
-          navigate("/login")
+          navigate("/auth/login")
           setSignUpSuccess(false)
         }}
         className="btn w-[47%] bg-darkgrey mb-[3%] text-white border-none text-[17px] font-body hover:bg-black mt-[40px]"

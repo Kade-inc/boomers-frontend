@@ -48,7 +48,7 @@ const SignupForm = () => {
     try {
       await mutation.mutateAsync(userData);
       setSignUpSuccess(true)
-      navigate("/signup-success");
+      navigate("/auth/signup-success");
     } catch (error) {
       console.error("Error:", error);
     }
@@ -60,7 +60,9 @@ const SignupForm = () => {
         className="w-full px-4 py-[2%] md:px-24"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <h2 className="block md:hidden font-heading text-[30px]">LOGO</h2>
+        <h2 className="block md:hidden font-heading text-[30px]">
+          <Link to="/">LOGO</Link>
+        </h2>
         <p className="font-extrabold text-[50px] leading-[53px] font-heading">
           SIGN UP
         </p>
@@ -199,7 +201,7 @@ const SignupForm = () => {
 
         <p className="text-center font-regular text-darkgrey font-body">
           Already have an account? {' '}
-          <Link to="/login">
+          <Link to="/auth/login">
             <span className="font-bold">Sign in</span>
           </Link>
         </p>
