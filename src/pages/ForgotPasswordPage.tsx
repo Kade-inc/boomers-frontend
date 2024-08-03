@@ -2,10 +2,10 @@ import { Toaster } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import password from "../assets/password-svgrepo-com 1.svg";
 import useForgotPassword from "../hooks/useForgotPassword";
-import ResetLinkSent from "../components/ResetLinkSent";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import ForgotPasswordSuccess from "../components/ForgotPasswordSuccess";
 
 const schema = z.object({
   email: z.string().email(),
@@ -33,7 +33,7 @@ const ForgotPassword = () => {
   };
 
   if (isSuccess) {
-    return <ResetLinkSent />;
+    return <ForgotPasswordSuccess />;
   }
 
   return (
@@ -41,10 +41,10 @@ const ForgotPassword = () => {
       <div className="text-[#393E46]">
         <div className="flex justify-center flex-col items-center mt-16">
           <img src={password} />
-          <p className="font-bold text-[19px] sm:text-[23px] md:text-[26px] lg:text-[30px] leading-[53px] font-heading">
+          <p className="font-bold text-[26px] lg:text-[30px] leading-[53px] font-heading">
             Forgot Password?
           </p>
-          <p className="py-[2.6%] text-[12px] sm:text-[15px] md:text-[17px] lg:text-[20px] font-semibold font-body">
+          <p className="py-[2.6%] text-[16px] lg:text-[20px] font-semibold font-body">
             Enter your email to receive a password reset link
           </p>
         </div>
@@ -69,8 +69,8 @@ const ForgotPassword = () => {
               },
             }}
           />
-          <div className="text-[14px] sm:text-[16px] md:text-[17px] lg:text-[20px]">
-            <div className="mb-[3%] ">
+          <div className="text-[14px]">
+            <div>
               <label
                 className="block  font-bold mb-[1%] font-body"
                 htmlFor="email"
@@ -93,14 +93,14 @@ const ForgotPassword = () => {
             </div>
 
             <button
-              className="btn w-full bg-[#393E46]  mb-[3%] text-white border-none disabled:text-gray-500 font-body hover:bg-black my-5 md:text-[17px] lg:text-[20px]"
+              className="btn w-full bg-[#393E46]  mb-[3%] text-white border-none disabled:text-gray-500 font-body hover:bg-black my-5 text-[17px]"
               type="submit"
               disabled={isPending}
             >
-              {isPending ? "Sending" : "Reset Password"}
+              {isPending ? <span className="loading loading-dots loading-md"></span> : "Reset Password"}
             </button>
 
-            <p className="text-center font-regular text-darkgrey font-body mt-6 ">
+            <p className="text-center font-regular text-darkgrey font-body text-[16px]">
               Remember password?
               <Link to="/login">
                 <span className="font-bold "> Sign In</span>

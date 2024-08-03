@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import mail from "../assets/mail-svgrepo-com 1.svg";
 
-const ResetLinkSent = () => {
+const ForgotPasswordSuccess = () => {
   return (
     <>
       <div className="text-[#393E46]">
@@ -17,7 +17,7 @@ const ResetLinkSent = () => {
 
         <form className="w-full px-4 md:px-24">
           <button
-            className="btn w-full bg-[#393E46] text-[14px] sm:text-[16px] md:text-[17px] lg:text-[20px] mb-[3%] text-white border-none disabled:text-gray-500 font-body hover:bg-black my-5"
+            className="btn w-full bg-[#393E46] text-[17px]  mb-[3%] text-white border-none disabled:text-gray-500 font-body hover:bg-black my-5"
             type="submit"
           >
             <Link to="/login">Go to Sign In</Link>
@@ -28,4 +28,4 @@ const ResetLinkSent = () => {
   );
 };
 
-export default ResetLinkSent;
+export default ForgotPasswordSuccess;
