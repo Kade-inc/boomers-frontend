@@ -18,7 +18,7 @@ const MessageComponent = ({ img, message }: Message) => {
           </p>
         </div>
         <button className="btn w-80 bg-darkgrey mb-[3%] text-white border-none rounded-[5px] bg-darkgrey text-[16px] text-white font-body hover:bg-black">
-          <Link to={"/"}>Go to Sign In</Link>
+          <Link to={"/login"}>Go to Sign In</Link>
         </button>
       </div>
     </div>
