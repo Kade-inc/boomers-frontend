@@ -20,7 +20,7 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/verification",
+    path: "/signup-verification",
     element: <SignupVerificationSuccess />,
   },
 ]);
