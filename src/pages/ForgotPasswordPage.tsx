@@ -102,7 +102,7 @@ const ForgotPassword = () => {
 
             <p className="text-center font-regular text-darkgrey font-body text-[16px]">
               Remember password?
-              <Link to="/login">
+              <Link to="/auth/login">
                 <span className="font-bold "> Sign In</span>
               </Link>
             </p>
