@@ -87,7 +87,7 @@ const LoginForm = () => {
             autoComplete="on"
             id="password"
             {...register("password")}
-            placeholder="Create a password"
+            placeholder="Enter password"
             className="input w-full border border-gray-700 bg-transparent rounded-md font-body placeholder-gray-600 hover:border-gray-700 focus:outline-none"
             style={{ backgroundColor: "transparent" }}
           />
