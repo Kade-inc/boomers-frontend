@@ -15,6 +15,28 @@ const Dashboard = () => {
       </button>
       < AdviceCard/>
       <ProfileCard/>      
+      <div className="h-screen ml-3">
+
+        <div className="card bg-gradient-to-b from-teal-700 via-teal-650 to-teal-600 text-white w-[450px] h-[200px] rounded-[3px]">
+          <div className="card-body">
+            <div className="flex justify-between w-full items-center">
+              <h2 className="font-medium ">Paul and the Funky Bunch</h2>
+              <p className="text-right text-[12px]">Member</p>
+            </div>
+            <div className="flex justify-between w-full mt-[55px]">
+              <div className="flex-grow">
+                <div> Software Engineering . Full-Stack . React +1</div>
+                <div>Very Active</div>
+              </div>
+              <div className=" flex ml-auto">
+                <h2 className="font-normal rotate-[-90deg] origin-bottom-left whitespace-nowrap">
+                  5 Members
+                </h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

@@ -43,6 +43,9 @@ const router = createBrowserRouter([
     path: "/signup-verification",
     element: <SignupVerificationSuccess />,
   },
- 
+  {
+    path: "/dashboard",
+    element: <Dashboard />,
+  },
 ]);
 export default router;
