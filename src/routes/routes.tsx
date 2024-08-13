@@ -6,6 +6,7 @@ import SignupSuccess from "../components/SignupSuccess";
 import SignupVerificationSuccess from "../pages/SignupVerificationSuccess";
 import ForgotPassword from "../pages/ForgotPasswordPage";
 import HomePage from "../pages/HomePage";
+import Dashboard from "../pages/Dashboard";
 
 const router = createBrowserRouter([
   { path: "/", element: <HomePage /> },
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
   {
     path: "/signup-verification",
     element: <SignupVerificationSuccess />,
+  },
+  {
+    path: "/dashboard",
+    element: <Dashboard />,
   },
 ]);
 export default router;
