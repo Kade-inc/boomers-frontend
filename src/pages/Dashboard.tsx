@@ -5,6 +5,14 @@ import ProfileCard from "../components/ProfileCard";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+
+  const profile = {
+    domain: "Software Engineering",
+    subdomain: "Full Stack",
+    topics: ["React Js", "Node js", "Javascript"],
+  };
+
+  const additionalTopics = profile.topics.length - 1;
   return (
     <>
       <div>
@@ -25,7 +33,10 @@ const Dashboard = () => {
             </div>
             <div className="flex justify-between w-full mt-[55px]">
               <div className="flex-grow">
-                <div> Software Engineering . Full-Stack . React +1</div>
+                <div>
+                  {profile.domain} . {profile.subdomain} . {profile.topics[0]}{" "}
+                  {additionalTopics > 0 && `+${additionalTopics}`}
+                </div>
                 <div>Very Active</div>
               </div>
               <div className=" flex ml-auto">
