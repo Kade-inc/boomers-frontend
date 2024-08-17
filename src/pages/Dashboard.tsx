@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import AdviceCard from "../components/AdviceCard";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -8,6 +9,7 @@ const Dashboard = () => {
       <button className="btn" onClick={() => navigate("/auth/login")}>
         Back
       </button>
+      < AdviceCard/>
     </>
   );
 };
