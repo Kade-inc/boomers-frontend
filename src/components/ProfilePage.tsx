@@ -5,9 +5,9 @@ import ellipse from "../assets/Ellipse 81.svg";
 
 const ProfilePage = () => {
   return (
-    <div className="relative flex justify-center h-screen w-full">
-      <div className="flex flex-col w-full max-w-4xl mx-auto">
-        <div className="bg-white pb-2 shadow-custom">
+    <div className=" flex justify-center h-screen w-full">
+      <div className=" flex flex-col w-[90%] max-w-4xl mx-auto">
+        <div className="bg-white relative pb-2 shadow-custom">
           <div className="bg-custom-gradient w-full h-[70px] md:h-[157px]"></div>
           <div className="px-4 md:px-10">
             <div>
@@ -26,7 +26,7 @@ const ProfilePage = () => {
                   Vegas
                 </p>
 
-                <p className="flex flex-col md:flex-row items-center font-body font-normal text-[13px] md:text-base text-darkgrey">
+                <p className="flex flex-col md:flex-row items-start md:items-center font-body font-normal text-[13px] md:text-base text-darkgrey">
                   @Lebron_James
                   <img src={ellipse} className="mx-2 hidden md:block" />
                   <p className="font-semibold font-body text-[13px] md:text-base text-black text-nowrap">
