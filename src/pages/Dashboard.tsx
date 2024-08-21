@@ -3,7 +3,7 @@ import AdviceCard from "../components/AdviceCard";
 import NavigationBar from "../components/NavigationBar";
 import ProfileCard from "../components/ProfileCard";
 
-function Dashboard() {
+const Dashboard = () => {
   const navigate = useNavigate();
   return (
     <>
