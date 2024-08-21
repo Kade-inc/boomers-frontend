@@ -7,8 +7,9 @@ function Dashboard() {
   const navigate = useNavigate();
   return (
     <>
-    <NavigationBar />
-      <div>Welcome Home</div>
+      <div>
+        Welcome Home
+      </div>
       <button className="btn" onClick={() => navigate("/auth/login")}>
         Back
       </button>
