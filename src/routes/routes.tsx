@@ -7,9 +7,25 @@ import SignupVerificationSuccess from "../pages/SignupVerificationSuccess";
 import ForgotPassword from "../pages/ForgotPasswordPage";
 import HomePage from "../pages/HomePage";
 import Dashboard from "../pages/Dashboard";
+import TeamsPage from "../pages/TeamsPage";
+import AppLayout from "../pages/AppLayout";
 
+const isLoggedIn = false
 const router = createBrowserRouter([
-  { path: "/", element: <HomePage /> },
+  { path: "/",
+    element: isLoggedIn ? <HomePage /> : <AppLayout />,
+    children: [
+      {
+        index: true,
+        path: '/dashboard',
+        element: <Dashboard />,
+      },
+      {
+        path: "/teams",
+        element: <TeamsPage />
+      }
+    ]
+  },
   {
     path: "/auth",
     element: <Layout />,
@@ -24,9 +40,6 @@ const router = createBrowserRouter([
     path: "/signup-verification",
     element: <SignupVerificationSuccess />,
   },
-  {
-    path: "/dashboard",
-    element: <Dashboard />,
-  },
+ 
 ]);
 export default router;
