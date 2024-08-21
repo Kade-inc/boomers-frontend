@@ -7,7 +7,7 @@ interface SignUpStore {
 
 const useSignUpStore = create<SignUpStore>((set) => ({
   signUpSuccess: false,
-  setSignUpSuccess: (signUpSuccess:boolean) => set(() => ({ signUpSuccess })),
+  setSignUpSuccess: (signUpSuccess: boolean) => set(() => ({ signUpSuccess })),
 }));
 
 // Inspect store

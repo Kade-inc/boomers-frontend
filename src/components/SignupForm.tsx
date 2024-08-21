@@ -16,16 +16,16 @@ const schema = z
       .min(8, "Password must be at least 8 characters long")
       .regex(
         /[A-Za-z]/,
-        "Password must contain at least one alphabet (uppercase or lowercase)"
+        "Password must contain at least one alphabet (uppercase or lowercase)",
       )
       .regex(/\d/, "Password must contain at least one number")
       .regex(
         /[-.@$!%+=<>,#?&]/,
-        "Password must contain at least one special character (-,.,@,$,!,%,+,=,<,>,#,?,&)"
+        "Password must contain at least one special character (-,.,@,$,!,%,+,=,<,>,#,?,&)",
       ),
     confirmpassword: z.string(),
   })
-  .refine(data => data.password === data.confirmpassword, {
+  .refine((data) => data.password === data.confirmpassword, {
     message: "Passwords do not match",
     path: ["confirmpassword"],
   });
@@ -47,7 +47,7 @@ const SignupForm = () => {
     const { confirmpassword, ...userData } = data;
     try {
       await mutation.mutateAsync(userData);
-      setSignUpSuccess(true)
+      setSignUpSuccess(true);
       navigate("/auth/signup-success");
     } catch (error) {
       console.error("Error:", error);
@@ -69,21 +69,22 @@ const SignupForm = () => {
         <p className="py-[2.6%] text-[18px] font-semibold font-body">
           Create an account to begin your journey.
         </p>
-        <Toaster 
-        position="bottom-center" 
-        reverseOrder={true}
-        toastOptions={{
-          error: {
-            style: {
-              background: '#D92D2D',
-              color: 'white'
+        <Toaster
+          position="bottom-center"
+          reverseOrder={true}
+          toastOptions={{
+            error: {
+              style: {
+                background: "#D92D2D",
+                color: "white",
+              },
+              iconTheme: {
+                primary: "white",
+                secondary: "#D92D2D",
+              },
             },
-            iconTheme: {
-              primary: 'white',
-              secondary: '#D92D2D',
-            },
-          },
-        }}/>
+          }}
+        />
         <div className="mb-[3%]">
           <label
             className="block text-base font-bold mb-[1%] font-body"
@@ -200,7 +201,7 @@ const SignupForm = () => {
         </button>
 
         <p className="text-center font-regular text-darkgrey font-body">
-          Already have an account? {' '}
+          Already have an account?{" "}
           <Link to="/auth/login">
             <span className="font-bold">Sign in</span>
           </Link>

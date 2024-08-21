@@ -5,7 +5,10 @@ const MessageComponent = ({ img, message }: Message) => {
   return (
     <div className="relative h-screen flex flex-col">
       <div className="absolute top-0 left-0 m-2">
-        <h1 className="text-2xl font-bold"> <Link to="/">LOGO</Link></h1>
+        <h1 className="text-2xl font-bold">
+          {" "}
+          <Link to="/">LOGO</Link>
+        </h1>
       </div>
       <div className=" flex flex-col items-center justify-center h-full">
         <img

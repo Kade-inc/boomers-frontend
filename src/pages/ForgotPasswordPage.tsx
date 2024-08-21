@@ -97,7 +97,11 @@ const ForgotPassword = () => {
               type="submit"
               disabled={isPending}
             >
-              {isPending ? <span className="loading loading-dots loading-md"></span> : "Reset Password"}
+              {isPending ? (
+                <span className="loading loading-dots loading-md"></span>
+              ) : (
+                "Reset Password"
+              )}
             </button>
 
             <p className="text-center font-regular text-darkgrey font-body text-[16px]">
