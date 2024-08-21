@@ -1,7 +1,7 @@
 const ProfileCard = () => {
     
     return (
-        <div className="bg-yellow flex absolute flex-col w-[293px] h-[245px] rounded-[5px] items-center justify-center gap-3 shadow-md top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div className="bg-yellow flex absolute flex-col mx-auto p-[10px] w-[293px] h-[245px] rounded-[5px] left-[1089px] top-[110px] items-center justify-center gap-3 shadow-md">
             <div className="rounded-full w-[120px] h-[120px]">
                <img src="src\assets\Mask-group.png" alt="profile Picture" className="w-full rounded-full object-cover"/>
             </div>
