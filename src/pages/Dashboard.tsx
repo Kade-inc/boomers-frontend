@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import AdviceCard from "../components/AdviceCard";
 import NavigationBar from "../components/NavigationBar";
+import ProfileCard from "../components/ProfileCard";
 
-const Dashboard = () => {
+function Dashboard() {
   const navigate = useNavigate();
   return (
     <>
@@ -12,8 +13,9 @@ const Dashboard = () => {
         Back
       </button>
       < AdviceCard/>
+      <ProfileCard/>      
     </>
   );
-};
+}
 
 export default Dashboard;
