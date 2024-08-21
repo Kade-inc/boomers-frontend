@@ -1,6 +1,7 @@
+/* eslint-disable react/react-in-jsx-scope */
 import image from "../assets/Wireframe - 1.png";
 import mobileImage from "../assets/Android Large - 1.png";
-import tabletPotrait from "../assets/iPad Pro 11_ - 1.png";
+// import tabletPotrait from "../assets/iPad Pro 11_ - 1.png";
 import { Link } from "react-router-dom";
 
 const HomePage = () => {

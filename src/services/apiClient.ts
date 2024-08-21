@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError, AxiosInstance } from "axios";
 import User from "../entities/User";
 import toast from "react-hot-toast";

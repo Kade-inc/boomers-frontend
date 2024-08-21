@@ -44,7 +44,7 @@ const SignupForm = () => {
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
   const onSubmit = async (data: FormData) => {
-    const { confirmpassword, ...userData } = data;
+    const { confirmpassword, ...userData } = data; // eslint-disable-line @typescript-eslint/no-unused-vars
     try {
       await mutation.mutateAsync(userData);
       setSignUpSuccess(true);

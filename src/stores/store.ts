@@ -2,6 +2,8 @@ import { mountStoreDevtool } from "simple-zustand-devtools";
 import { create } from "zustand";
 
 interface SignUpStore {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [x: string]: any;
   signUpSuccess: boolean;
 }
 

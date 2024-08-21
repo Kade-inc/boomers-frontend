@@ -5,6 +5,7 @@ import { UserVerificationModel } from "../entities/UserVerificationModel";
 const apiClient = new APIClient("/api/users/verify");
 
 const useVerifyUser = (): UseMutationResult<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   any,
   Error,
   UserVerificationModel,

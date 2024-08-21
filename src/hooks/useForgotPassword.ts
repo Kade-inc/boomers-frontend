@@ -4,6 +4,7 @@ import APIClient from "../services/apiClient";
 const apiClient = new APIClient("/api/users/forgot-password");
 
 const useForgotPassword = (): UseMutationResult<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   any,
   Error,
   string,
