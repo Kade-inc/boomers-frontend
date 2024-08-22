@@ -8,19 +8,21 @@ import { useEffect, useState } from "react";
 const SignupVerificationSuccess = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const [emailParam, setEmailParam] = useState<string | null>('')
-  const [verificationCodeParam, setVerificationCodeParam] = useState<string | null>('')
+  const [emailParam, setEmailParam] = useState<string | null>("");
+  const [verificationCodeParam, setVerificationCodeParam] = useState<
+    string | null
+  >("");
 
   const mutation = useVerifyUser();
   useEffect(() => {
-    setEmailParam(params.get("email"))
-    setVerificationCodeParam(params.get("verificationCode"))
+    setEmailParam(params.get("email"));
+    setVerificationCodeParam(params.get("verificationCode"));
     mutation.mutate({
       accountId: emailParam,
-      verificationCode: verificationCodeParam
+      verificationCode: verificationCodeParam,
     });
-  }, [emailParam, verificationCodeParam])
- 
+  }, [emailParam, verificationCodeParam]);
+
   if (!emailParam || !verificationCodeParam) {
     return (
       <MessageComponent img={alert} message="Invalid verification link." />

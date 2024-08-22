@@ -1,6 +1,6 @@
-import React from 'react'
-import { Outlet } from 'react-router-dom'
-import NavigationBar from '../components/NavigationBar'
+import React from "react";
+import { Outlet } from "react-router-dom";
+import NavigationBar from "../components/NavigationBar";
 
 function AppLayout() {
   return (
@@ -9,9 +9,8 @@ function AppLayout() {
       <div>
         <Outlet />
       </div>
-    
     </>
-  )
+  );
 }
 
-export default AppLayout
+export default AppLayout;

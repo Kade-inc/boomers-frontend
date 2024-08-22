@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";

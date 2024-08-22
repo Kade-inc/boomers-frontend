@@ -10,9 +10,10 @@ import Dashboard from "../pages/Dashboard";
 import TeamsPage from "../pages/TeamsPage";
 import AppLayout from "../pages/AppLayout";
 
-const isLoggedIn = false
+const isLoggedIn = false;
 const router = createBrowserRouter([
-  { path: "/",
+  {
+    path: "/",
     element: isLoggedIn ? <HomePage /> : <AppLayout />,
     children: [
       {
@@ -25,9 +26,9 @@ const router = createBrowserRouter([
       },
       {
         path: "/teams",
-        element: <TeamsPage />
-      }
-    ]
+        element: <TeamsPage />,
+      },
+    ],
   },
   {
     path: "/auth",
@@ -43,6 +44,5 @@ const router = createBrowserRouter([
     path: "/signup-verification",
     element: <SignupVerificationSuccess />,
   },
- 
 ]);
 export default router;

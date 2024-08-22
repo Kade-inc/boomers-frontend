@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError, AxiosInstance } from "axios";
 import User from "../entities/User";
 import toast from "react-hot-toast";
@@ -25,25 +26,25 @@ class APIClient {
       const axiosError = error as AxiosError;
       toast.error(
         "Signup error:",
-        axiosError.response?.data ?? axiosError.message
+        axiosError.response?.data ?? axiosError.message,
       );
       throw axiosError;
     }
   };
 
-  verifyUser = async (data:UserVerificationModel) => {
+  verifyUser = async (data: UserVerificationModel) => {
     try {
       const res = await this.axiosInstance.post(this.endpoint, data);
-   return res.data;
+      return res.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(
-        "Verification error:", axiosError.response?.data ?? axiosError.message
+        "Verification error:",
+        axiosError.response?.data ?? axiosError.message,
       );
       throw axiosError;
     }
-   
-  } 
+  };
   signin = async (data: User): Promise<any> => {
     try {
       const response = await this.axiosInstance.post(this.endpoint, data);
@@ -55,7 +56,7 @@ class APIClient {
       const axiosError = error as AxiosError;
       toast.error(
         "Login error:",
-        axiosError.response?.data ?? axiosError.message
+        axiosError.response?.data ?? axiosError.message,
       );
       throw axiosError;
     }
@@ -64,12 +65,13 @@ class APIClient {
   forgotPassword = async (email: string) => {
     try {
       const response = await this.axiosInstance.post(this.endpoint, { email });
-      toast.success('Reset password link sent');
+      toast.success("Reset password link sent");
       return response.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(
-        "Forgot password error:", axiosError.response?.data ?? axiosError.message
+        "Forgot password error:",
+        axiosError.response?.data ?? axiosError.message,
       );
       throw axiosError;
     }
