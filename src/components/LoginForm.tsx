@@ -40,7 +40,7 @@ const LoginForm = () => {
         <p className="font-extrabold text-[50px] leading-[53px] font-heading">
           SIGN IN
         </p>
-        <p className="py-[2.6%] text-[18px] font-semibold font-body">
+        <p className='py-[2.6%] text-[18px] font-semibold font-body'>
           Enter your credentials to sign in
         </p>
         <Toaster
