@@ -10,7 +10,7 @@ const MessageComponent = ({ img, message }: Message) => {
           <Link to="/">LOGO</Link>
         </h1>
       </div>
-      <div className=" flex flex-col items-center justify-center h-full">
+      <div className="flex flex-col items-center justify-center h-full">
         <img
           src={img}
           className="w-[150px] sm:w-1/4 md:w-1/6 lg:w-[200px] h-[150px] sm:h-auto lg:h-[200px]  object-cover mb-6"

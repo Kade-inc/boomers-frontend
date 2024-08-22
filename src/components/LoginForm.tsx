@@ -44,7 +44,7 @@ const LoginForm = () => {
           Enter your credentials to sign in
         </p>
         <Toaster
-          position='bottom-center'
+          position="bottom-center"
           reverseOrder={true}
           toastOptions={{
             error: {
