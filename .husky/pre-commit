@@ -1,7 +1,17 @@
+# Run the formatting command
 npm run format
 
 # Check for changes after formatting
 if [ -n "$(git diff --name-only)" ]; then
   echo "Unstaged changes detected after formatting. Please stage them before committing."
+  exit 1
+fi
+
+# Run the linting command
+npm run lint
+
+# Check for any linting errors
+if [ $? -ne 0 ]; then
+  echo "Linting errors detected. Please fix them before committing."
   exit 1
 fi
