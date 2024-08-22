@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import AdviceCard from "../components/AdviceCard";
-import NavigationBar from "../components/NavigationBar";
 import ProfileCard from "../components/ProfileCard";
 
 const Dashboard = () => {
@@ -15,14 +14,12 @@ const Dashboard = () => {
   const additionalTopics = profile.topics.length - 1;
   return (
     <>
-      <div>
-        Welcome Home
-      </div>
+      <div>Welcome Home</div>
       <button className="btn" onClick={() => navigate("/auth/login")}>
         Back
       </button>
-      < AdviceCard/>
-      <ProfileCard/>      
+      <AdviceCard />
+      <ProfileCard />
       <div className="h-screen ml-3">
         <div
           className="card bg-gradient-to-b from-[#005E78] to-[#00989B] text-white w-[450px]
@@ -52,6 +49,6 @@ const Dashboard = () => {
       </div>
     </>
   );
-}
+};
 
 export default Dashboard;
