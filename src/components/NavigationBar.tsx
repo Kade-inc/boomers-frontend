@@ -26,7 +26,7 @@ function NavigationBar() {
       
       <div className="flex">
         <div className="hidden lg:grid  lg:grid-flow-col lg:gap-8 lg:auto-rows-max lg:mr-[70px]">
-          <Link to="/" className={pathname === "/" ? "btn btn-ghost bg-yellow rounded-full" : "flex items-center"}>
+          <Link to="/" className={pathname === "/" || pathname === "/dashboard" ? "btn btn-ghost bg-yellow rounded-full" : "flex items-center"}>
           <div className={"flex items-center text-[16px] font-body font-normal"}>
           
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
