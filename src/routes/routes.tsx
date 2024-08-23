@@ -9,7 +9,7 @@ import HomePage from "../pages/HomePage";
 import Dashboard from "../pages/Dashboard";
 import TeamsPage from "../pages/TeamsPage";
 import AppLayout from "../pages/AppLayout";
-import ProfilePage from "../components/ProfilePage";
+import ProfilePage from "../pages/ProfilePage";
 
 const isLoggedIn = false;
 const router = createBrowserRouter([
@@ -46,7 +46,7 @@ const router = createBrowserRouter([
     element: <SignupVerificationSuccess />,
   },
   {
-    path: "/auth/users/:id/profile",
+    path: "/users/:id/profile",
     element: <ProfilePage />,
   },
 ]);

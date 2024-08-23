@@ -5,16 +5,13 @@ import ellipse from "../assets/Ellipse 81.svg";
 
 const ProfilePage = () => {
   return (
-    <div className=" flex justify-center h-screen w-full">
+    <div className="flex justify-center min-h-screen w-full bg-slate-50 pb-8">
       <div className=" flex flex-col w-[90%] max-w-4xl mx-auto">
-        <div className="bg-white relative pb-2 shadow-custom">
+        <div className="bg-white relative pb-2 shadow-custom rounded-[5px] pb-4">
           <div className="bg-custom-gradient w-full h-[70px] md:h-[157px]"></div>
           <div className="px-4 md:px-10">
-            <div>
-              <img
-                src={maskgroup}
-                className="absolute top-[40px] md:top-[110px] w-[70px] h-[70px] md:w-[90px] md:h-[90px]"
-              ></img>
+            <div className="absolute top-[40px] md:top-[110px] w-[70px] h-[70px] md:w-[90px] md:h-[90px]">
+              <img src={maskgroup} />
             </div>
             <div className="flex justify-between mt-16 md:mt-12">
               <div>
@@ -35,14 +32,15 @@ const ProfilePage = () => {
                 </p>
               </div>
               <div>
-                <button className="px-4 md:px-6 h-[32px] rounded-[5px] bg-yellow font-body font-semibold text-[11px] md:text-sm text-darkgrey mr-10 text-nowrap">
-                  Update Profile
+                <button className="px-4 md:px-6 h-[32px] max-w-full rounded-[5px] bg-yellow font-body font-semibold text-[11px] md:text-sm text-darkgrey text-nowrap">
+                  <span className="block md:hidden">Edit</span>
+                  <span className="hidden md:block">Edit Profile</span>
                 </button>
               </div>
             </div>
           </div>
         </div>
-        <div className="bg-white mt-4 shadow-custom">
+        <div className="bg-white mt-4 shadow-custom rounded-[5px] pb-2">
           <div className="font-body text-darkgrey ml-6 my-4">
             <h1 className=" font-semibold text-base md:text-lg ">Bio</h1>
             <p className="font-medium text-[13px] md:text-base  mt-2">
@@ -50,7 +48,7 @@ const ProfilePage = () => {
             </p>
           </div>
         </div>
-        <div className="bg-white mt-4 shadow-custom">
+        <div className="bg-white mt-4 shadow-custom rounded-[5px] pb-4">
           <div className="ml-6 my-4">
             <h1 className="font-body font-semibold text-base md:text-lg text-darkgrey">
               Your Interests
@@ -71,12 +69,15 @@ const ProfilePage = () => {
             </div>
           </div>
         </div>
-        <div className="bg-white mt-4 shadow-custom">
+        <div className="bg-white mt-4 shadow-custom rounded-[5px] pb-12">
           <div className="ml-6 my-4">
             <h1 className="font-body font-semibold text-base md:text-lg text-darkgrey">
               Your Houses
             </h1>
-            <img src={groupcard} className="mt-6"></img>
+            <img
+              src={groupcard}
+              className="mt-6 w-[95%] md:w-[40%] h-auto object-contain"
+            ></img>
           </div>
         </div>
       </div>
