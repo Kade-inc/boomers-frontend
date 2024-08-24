@@ -46,7 +46,7 @@ const router = createBrowserRouter([
     element: <SignupVerificationSuccess />,
   },
   {
-    path: "/users/:id/profile",
+    path: "/profile",
     element: <ProfilePage />,
   },
 ]);
