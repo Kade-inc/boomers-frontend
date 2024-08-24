@@ -23,13 +23,13 @@ const ProfilePage = () => {
                   Vegas
                 </p>
 
-                <p className="flex flex-col md:flex-row items-start md:items-center font-body font-normal text-[13px] md:text-base text-darkgrey">
+                <div className="flex flex-col md:flex-row items-start md:items-center font-body font-normal text-[13px] md:text-base text-darkgrey">
                   @Lebron_James
                   <img src={ellipse} className="mx-2 hidden md:block" />
-                  <p className="font-semibold font-body text-[13px] md:text-base text-black text-nowrap">
+                  <p className="font-semibold font-body text-[13px] md:text-base text-darkgrey text-nowrap">
                     Software Engineer at Apple
                   </p>
-                </p>
+                </div>
               </div>
               <div>
                 <button className="px-4 md:px-6 h-[32px] max-w-full rounded-[5px] bg-yellow font-body font-semibold text-[11px] md:text-sm text-darkgrey text-nowrap">

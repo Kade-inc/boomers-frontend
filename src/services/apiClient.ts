@@ -6,7 +6,6 @@ import Cookies from "js-cookie";
 import { UserVerificationModel } from "../entities/UserVerificationModel";
 import { jwtDecode } from "jwt-decode";
 
-
 class APIClient {
   endpoint: string;
   axiosInstance: AxiosInstance;
@@ -81,32 +80,36 @@ class APIClient {
 
   getUserProfile = async () => {
     try {
-      const response = await this.axiosInstance.get(`${this.endpoint}/${this.decodeToken().aud}/profile`, {
-        headers: {
-          Authorization: `Bearer ${this.getToken()}`
-        }
-      });
-      console.log("RESPONSE: ", response.data)
+      const response = await this.axiosInstance.get(
+        `${this.endpoint}/${this.decodeToken().aud}/profile`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.getToken()}`,
+          },
+        },
+      );
+      console.log("RESPONSE: ", response.data);
       return response.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(
-        "Could not load user profile:", axiosError.response?.data ?? axiosError.message
+        "Could not load user profile:",
+        axiosError.response?.data ?? axiosError.message,
       );
       throw axiosError;
     }
-  }
+  };
 
   getToken = () => {
-    return Cookies.get('jwt');
-  }
+    return Cookies.get("jwt");
+  };
 
   decodeToken = () => {
-    const value: any= Cookies.get('jwt');
-    const decoded = jwtDecode(value)
+    const value: any = Cookies.get("jwt");
+    const decoded = jwtDecode(value);
 
-    return decoded
-  }
+    return decoded;
+  };
 }
 
 export default APIClient;
