@@ -9,6 +9,7 @@ import HomePage from "../pages/HomePage";
 import Dashboard from "../pages/Dashboard";
 import TeamsPage from "../pages/TeamsPage";
 import AppLayout from "../pages/AppLayout";
+import ProfilePage from "../pages/ProfilePage";
 
 const isLoggedIn = false;
 const router = createBrowserRouter([
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
   {
     path: "/signup-verification",
     element: <SignupVerificationSuccess />,
+  },
+  {
+    path: "/profile",
+    element: <ProfilePage />,
   },
 ]);
 export default router;
