@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import { useNavigate } from "react-router-dom";
 import success from "../assets/success.svg";
 import useSignUpStore from "../stores/store";
@@ -13,11 +14,13 @@ const SignupSuccess = () => {
     if (!signUpSuccess) {
       navigate("/");
     }
-  }, [signUpSuccess])
- 
+  }, [signUpSuccess]);
+
   return (
-        <div className="text-center text-[#393E46] mx-2 mt-[40px]">
-      <p className="mt-9 mb-9 font-bold text-3xl font-body">Thank you for Signing Up!</p>
+    <div className="text-center text-[#393E46] mx-2 mt-[40px]">
+      <p className="mt-9 mb-9 font-bold text-3xl font-body">
+        Thank you for Signing Up!
+      </p>
       <div className="flex justify-center items-center">
         <img src={success} alt="success" className="w-40 h-40" />
       </div>
@@ -28,8 +31,8 @@ const SignupSuccess = () => {
       </p>
       <button
         onClick={() => {
-          navigate("/auth/login")
-          setSignUpSuccess(false)
+          navigate("/auth/login");
+          setSignUpSuccess(false);
         }}
         className="btn w-[47%] bg-darkgrey mb-[3%] text-white border-none text-[17px] font-body hover:bg-black mt-[40px]"
       >

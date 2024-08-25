@@ -1,4 +1,4 @@
 export default interface Message {
-    img: string;
-    message: string;
-  }
+  img: string;
+  message: string;
+}

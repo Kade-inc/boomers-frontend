@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError, AxiosInstance } from "axios";
 import User from "../entities/User";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 import { UserVerificationModel } from "../entities/UserVerificationModel";
+import { jwtDecode } from "jwt-decode";
 
 class APIClient {
   endpoint: string;
@@ -25,37 +27,37 @@ class APIClient {
       const axiosError = error as AxiosError;
       toast.error(
         "Signup error:",
-        axiosError.response?.data ?? axiosError.message
+        axiosError.response?.data ?? axiosError.message,
       );
       throw axiosError;
     }
   };
 
-  verifyUser = async (data:UserVerificationModel) => {
+  verifyUser = async (data: UserVerificationModel) => {
     try {
       const res = await this.axiosInstance.post(this.endpoint, data);
-   return res.data;
+      return res.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(
-        "Verification error:", axiosError.response?.data ?? axiosError.message
+        "Verification error:",
+        axiosError.response?.data ?? axiosError.message,
       );
       throw axiosError;
     }
-   
-  } 
+  };
   signin = async (data: User): Promise<any> => {
     try {
       const response = await this.axiosInstance.post(this.endpoint, data);
       console.log("Login successful:", response.data);
-      Cookies.set("jwt", response.data.token, { expires: 7 });
+      Cookies.set("jwt", response.data.accessToken, { expires: 7 });
       toast.success("Login successful");
       return response.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(
         "Login error:",
-        axiosError.response?.data ?? axiosError.message
+        axiosError.response?.data ?? axiosError.message,
       );
       throw axiosError;
     }
@@ -64,15 +66,49 @@ class APIClient {
   forgotPassword = async (email: string) => {
     try {
       const response = await this.axiosInstance.post(this.endpoint, { email });
-      toast.success('Reset password link sent');
+      toast.success("Reset password link sent");
       return response.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(
-        "Forgot password error:", axiosError.response?.data ?? axiosError.message
+        "Forgot password error:",
+        axiosError.response?.data ?? axiosError.message,
       );
       throw axiosError;
     }
+  };
+
+  getUserProfile = async () => {
+    try {
+      const response = await this.axiosInstance.get(
+        `${this.endpoint}/${this.decodeToken().aud}/profile`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.getToken()}`,
+          },
+        },
+      );
+      console.log("RESPONSE: ", response.data);
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Could not load user profile:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  getToken = () => {
+    return Cookies.get("jwt");
+  };
+
+  decodeToken = () => {
+    const value: any = Cookies.get("jwt");
+    const decoded = jwtDecode(value);
+
+    return decoded;
   };
 }
 
