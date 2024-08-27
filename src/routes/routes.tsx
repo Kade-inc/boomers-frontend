@@ -10,8 +10,19 @@ import Dashboard from "../pages/Dashboard";
 import TeamsPage from "../pages/TeamsPage";
 import AppLayout from "../pages/AppLayout";
 import ProfilePage from "../pages/ProfilePage";
+import UseSignUpStore from "../stores/store";
+import React from "react";
 
-const isLoggedIn = false;
+// Check authentication
+const ProtectedRoute = ({ element }: { element: JSX.Element }) => {
+  const { isAuthenticated, checkAuth } = UseSignUpStore();
+  React.useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
+  return isAuthenticated ? element : <HomePage />;
+};
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -19,15 +30,15 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: isLoggedIn ? <Dashboard /> : <HomePage />,
+        element: <HomePage />,
       },
       {
         path: "/dashboard",
-        element: <Dashboard />,
+        element: <ProtectedRoute element={<Dashboard />} />,
       },
       {
         path: "/teams",
-        element: <TeamsPage />,
+        element: <ProtectedRoute element={<TeamsPage />} />,
       },
     ],
   },
@@ -47,7 +58,8 @@ const router = createBrowserRouter([
   },
   {
     path: "/profile",
-    element: <ProfilePage />,
+    element: <ProtectedRoute element={<ProfilePage />} />,
   },
 ]);
+
 export default router;
