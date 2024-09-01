@@ -10,8 +10,8 @@ function NavigationBar() {
   const pathname = currentRoute.pathname;
 
   return (
-    <div className="navbar bg-base-100 flex md:px-5 justify-between px-5">
-      <div className="flex p-0 w-[20%] md:w-[20%]">
+    <div className="navbar bg-base-100 flex justify-between px-5">
+      <div className="flex p-0 w-[20%]">
         <a className="btn btn-ghost text-xl font-heading p-0">LOGO</a>
       </div>
       <div className="md:hidden w-[10%]">
