@@ -10,24 +10,26 @@ import Dashboard from "../pages/Dashboard";
 import TeamsPage from "../pages/TeamsPage";
 import AppLayout from "../pages/AppLayout";
 import ProfilePage from "../pages/ProfilePage";
+import ProtectedRoute from "./ProtectedRoute";
 
-const isLoggedIn = false;
 const router = createBrowserRouter([
   {
     path: "/",
-    element: isLoggedIn ? <HomePage /> : <AppLayout />,
+    element: <ProtectedRoute element={<AppLayout />} fallback={<HomePage />} />,
     children: [
       {
         index: true,
-        element: <Dashboard />,
+        element: (
+          <ProtectedRoute element={<Dashboard />} fallback={<HomePage />} />
+        ),
       },
       {
-        path: "/dashboard",
-        element: <Dashboard />,
+        path: "dashboard",
+        element: <ProtectedRoute element={<Dashboard />} />,
       },
       {
-        path: "/teams",
-        element: <TeamsPage />,
+        path: "teams",
+        element: <ProtectedRoute element={<TeamsPage />} />,
       },
     ],
   },
@@ -47,7 +49,8 @@ const router = createBrowserRouter([
   },
   {
     path: "/profile",
-    element: <ProfilePage />,
+    element: <ProtectedRoute element={<ProfilePage />} />,
   },
 ]);
+
 export default router;

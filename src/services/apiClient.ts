@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 import { UserVerificationModel } from "../entities/UserVerificationModel";
 import { jwtDecode } from "jwt-decode";
+import useAuthStore from "../stores/useAuthStore";
 
 class APIClient {
   endpoint: string;
@@ -46,18 +47,23 @@ class APIClient {
       throw axiosError;
     }
   };
+
   signin = async (data: User): Promise<any> => {
+    const { login } = useAuthStore.getState();
+
     try {
       const response = await this.axiosInstance.post(this.endpoint, data);
-      console.log("Login successful:", response.data);
-      Cookies.set("jwt", response.data.accessToken, { expires: 7 });
+      const { accessToken } = response.data;
+
+      Cookies.set("jwt", accessToken, { expires: 7 });
+      login(accessToken);
+
       toast.success("Login successful");
       return response.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(
-        "Login error:",
-        axiosError.response?.data ?? axiosError.message,
+        "Login error: " + (axiosError.response?.data ?? axiosError.message),
       );
       throw axiosError;
     }
