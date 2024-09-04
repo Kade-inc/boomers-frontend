@@ -5,7 +5,7 @@ interface ProfileCardProps {
 const ProfileCard = ({ className }: ProfileCardProps) => {
   return (
     <div
-      className={`bg-yellow flex flex-col mx-auto p-[10px] w-[230px] h-[200px] rounded-[5px] items-center justify-center gap-3 shadow-md ${className}`}
+      className={`bg-yellow flex flex-col mx-auto p-[10px] w-[90%] rounded-[5px] items-center justify-center gap-3 shadow-md ${className}`}
     >
       <div className="rounded-full w-[100px] h-[100px]">
         <img
