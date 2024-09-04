@@ -1,7 +1,13 @@
-const ProfileCard = () => {
+interface ProfileCardProps {
+  className: string;
+}
+
+const ProfileCard = ({ className }: ProfileCardProps) => {
   return (
-    <div className="bg-yellow flex absolute flex-col mx-auto p-[10px] w-[293px] h-[245px] rounded-[5px] left-[1089px] top-[110px] items-center justify-center gap-3 shadow-md">
-      <div className="rounded-full w-[120px] h-[120px]">
+    <div
+      className={`bg-yellow flex flex-col mx-auto p-[10px] w-[230px] h-[200px] rounded-[5px] items-center justify-center gap-3 shadow-md ${className}`}
+    >
+      <div className="rounded-full w-[100px] h-[100px]">
         <img
           src="src\assets\Mask-group.png"
           alt="profile Picture"
