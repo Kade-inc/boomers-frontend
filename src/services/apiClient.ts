@@ -107,7 +107,11 @@ class APIClient {
   };
 
   getToken = () => {
-    return Cookies.get("jwt");
+    const token = Cookies.get("jwt");
+    if (!token) {
+      throw new Error("JWT token is missing");
+    }
+    return token;
   };
 
   decodeToken = () => {
