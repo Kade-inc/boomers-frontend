@@ -73,6 +73,7 @@ const EditProfile = () => {
               style={{ backgroundColor: "transparent" }}
             />
           </div>
+
           <div className="mb-[3%]">
             <label
               className="block text-base font-bold mb-[1%] font-body"
@@ -84,7 +85,7 @@ const EditProfile = () => {
               type="text"
               id="username"
               className="input w-full border border-gray-700 hover:border-gray-700 focus:outline-none bg-transparent rounded-md font-body placeholder-gray-600"
-              style={{ backgroundColor: "transparent" }}
+              style={{ backgroundColor: "transparent }}
             />
           </div>
           <div className="mb-[3%]">
