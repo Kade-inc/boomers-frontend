@@ -37,6 +37,7 @@ const TeamsPage = () => {
             <option disabled selected>
               Topics
             </option>
+
             <option>Game of Thrones</option>
             <option>Lost</option>
           </select>

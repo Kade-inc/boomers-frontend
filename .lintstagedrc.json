@@ -1,1 +1,1 @@
-{ "*.+(js|ts)": ["prettier --write", "eslint"] }
+{ "*.+(js|ts|jsx)": ["prettier --write", "eslint"] }
