@@ -7,9 +7,11 @@ const TeamsPage = () => {
 
       <div className="flex gap-2 flex-wrap items-center justify-between">
         <div className="flex gap-2 flex-wrap items-center">
-          <p>Filters:</p>
+          <p>
+            Filters: <span className="sm:hidden">(3)</span>
+          </p>
           <select
-            className="max-w-xs bg-transparent border border-1 w-[143px] p-1 text-[14px]"
+            className="max-w-xs bg-transparent border border-1 w-[143px] p-1 text-[14px] hidden sm:block"
             style={{ borderColor: "rgba(204, 205, 207, 1)" }}
           >
             <option disabled selected>
@@ -19,7 +21,7 @@ const TeamsPage = () => {
             <option>Lost</option>
           </select>
           <select
-            className="max-w-xs bg-transparent border p-1 border-1 w-[143px] text-[14px]"
+            className="max-w-xs bg-transparent border p-1 border-1 w-[143px] text-[14px] hidden sm:block"
             style={{ borderColor: "rgba(204, 205, 207, 1)" }}
           >
             <option disabled selected>
@@ -29,7 +31,7 @@ const TeamsPage = () => {
             <option>Lost</option>
           </select>
           <select
-            className="max-w-xs bg-transparent border p-1 border-1 w-[143px] text-[14px]"
+            className="max-w-xs bg-transparent border p-1 border-1 w-[143px] text-[14px] hidden sm:block"
             style={{ borderColor: "rgba(204, 205, 207, 1)" }}
           >
             <option disabled selected>
@@ -38,12 +40,14 @@ const TeamsPage = () => {
             <option>Game of Thrones</option>
             <option>Lost</option>
           </select>
-          <button className="w-[143px] text-[14px] p-1 text-white bg-red-600">
+          <button className="w-[98px] text-[14px] p-1 text-white bg-yellow sm:hidden sm:w-[143px]">
+            Show Fiters
+          </button>
+          <button className="w-[98px] text-[14px] p-1 text-white bg-red-600 sm:w-[143px]">
             Clear all
           </button>
         </div>
-
-        <label className="input input-bordered rounded-[50px] bg-transparent flex items-center gap-2 h-[29px] w-[200px]">
+        <label className="input input-bordered rounded-[50px] bg-transparent flex items-center gap-2 h-[29px] w-full sm:w-[200px]">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"

@@ -1,5 +1,4 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
-import React from "react";
 import { Link, useLocation } from "react-router-dom";
 // import { MagnifyingGlassIcon } from '@heroicons/react/24/solid'
 
