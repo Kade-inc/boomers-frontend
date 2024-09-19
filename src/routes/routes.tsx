@@ -10,34 +10,25 @@ import Dashboard from "../pages/Dashboard";
 import TeamsPage from "../pages/TeamsPage";
 import AppLayout from "../pages/AppLayout";
 import ProfilePage from "../pages/ProfilePage";
-import UseSignUpStore from "../stores/store";
-import React from "react";
-
-// Check authentication
-const ProtectedRoute = ({ element }: { element: JSX.Element }) => {
-  const { isAuthenticated, checkAuth } = UseSignUpStore();
-  React.useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
-
-  return isAuthenticated ? element : <HomePage />;
-};
+import ProtectedRoute from "./ProtectedRoute";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <AppLayout />,
+    element: <ProtectedRoute element={<AppLayout />} fallback={<HomePage />} />,
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: (
+          <ProtectedRoute element={<Dashboard />} fallback={<HomePage />} />
+        ),
       },
       {
-        path: "/dashboard",
+        path: "dashboard",
         element: <ProtectedRoute element={<Dashboard />} />,
       },
       {
-        path: "/teams",
+        path: "teams",
         element: <ProtectedRoute element={<TeamsPage />} />,
       },
     ],
