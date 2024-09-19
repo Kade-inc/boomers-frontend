@@ -14,8 +14,11 @@ const Dashboard = () => {
   const additionalTopics = profile.topics.length - 1;
   return (
     <>
-      <div>Welcome Home</div>
-      <button className="btn" onClick={() => navigate("/auth/login")}>
+      <div className="text-base-content bg-base-100">Welcome Home</div>
+      <button
+        className="btn btn-primary"
+        onClick={() => navigate("/auth/login")}
+      >
         Back
       </button>
       <AdviceCard />
