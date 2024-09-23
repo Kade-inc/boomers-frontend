@@ -11,6 +11,7 @@ import TeamsPage from "../pages/TeamsPage";
 import AppLayout from "../pages/AppLayout";
 import ProfilePage from "../pages/ProfilePage";
 import ProtectedRoute from "./ProtectedRoute";
+import TeamDetailsPage from "../pages/TeamDetailsPage";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: "teams",
         element: <ProtectedRoute element={<TeamsPage />} />,
+      },
+      {
+        path: "team",
+        element: <ProtectedRoute element={<TeamDetailsPage />} />,
       },
     ],
   },
