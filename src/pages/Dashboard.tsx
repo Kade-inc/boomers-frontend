@@ -1,7 +1,13 @@
 import AdviceCard from "../components/AdviceCard";
 import ProfileCard from "../components/ProfileCard";
+import TeamCard from "../components/TeamCard";
+import useTeams from "../hooks/useTeams";
 
 const Dashboard = () => {
+  const { data: teamsData } = useTeams("66f4b0302012ce4bc33dcc79");
+
+  console.log("TEAMS: ", teamsData?.data);
+
   return (
     <>
       <div className="h-screen w-full px-5 pt-10 lg:flex lg:justify-between font-body">
@@ -32,17 +38,82 @@ const Dashboard = () => {
                 />
               </svg>
             </div>
-            <div className="flex items-center flex-col text-darkgrey text-[16px] mt-10">
-              <p className="mb-6">You do not belong to any team currently.</p>
-              <div className="flex flex-row items-center justify-center">
-                <button className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white">
-                  Create Team
-                </button>
-                <button className="px-8 py-2.5 text-[14px] font-regular bg-yellow rounded-[4px] text-darkgrey">
-                  Join a Team
-                </button>
-              </div>
-            </div>
+            <div></div>
+            {teamsData?.data.length == 0 && (
+              <>
+                <div className="flex items-center flex-col text-darkgrey text-[16px] mt-10">
+                  <p className="mb-6">
+                    You do not belong to any team currently.
+                  </p>
+                  <div className="flex flex-row items-center justify-center gap-4">
+                    <button className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white">
+                      Create Team
+                    </button>
+                    <button className="px-8 py-2.5 text-[14px] font-regular bg-yellow rounded-[4px] text-darkgrey">
+                      Join a Team
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex items-center flex-col text-darkgrey text-[16px] mt-10">
+                  <p className="mb-6 font-semibold">
+                    Team recommendations based on your profile.
+                  </p>
+                  <div className="flex flex-col items-center hidden">
+                    <div className="flex flex-row justify-center gap-4">
+                      <TeamCard />
+                      <TeamCard />
+                    </div>
+
+                    <button className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-8">
+                      View more
+                    </button>
+                  </div>
+                  <div className="flex flex-col items-center justify-center">
+                    <p className="mb-6">No recommendations found.</p>
+                    <div className="flex flex-col items-center justify-center">
+                      <p className="mb-6">
+                        Edit your profile with your interests to get
+                        recommendations.
+                      </p>
+                      <button className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-2">
+                        Edit Profile
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+            {teamsData && teamsData?.data.length > 0 && (
+              <>
+                <div className="carousel carousel-center space-x-6 pt-4 max-w-md md:max-w-screen-sm lg:max-w-screen-lg xl:max-w-screen-xl">
+                  <div className="carousel-item">
+                    <TeamCard />
+                  </div>
+                  <div className="carousel-item">
+                    <TeamCard />
+                  </div>
+                  <div className="carousel-item">
+                    <TeamCard />
+                  </div>
+
+                  <div className="carousel-item">
+                    <TeamCard />
+                  </div>
+                  <div className="carousel-item">
+                    <TeamCard />
+                  </div>
+                  <div className="carousel-item">
+                    <TeamCard />
+                  </div>
+                  {/* {teamsData.data.map((team) =>
+                  <div className="carousel-item" key={team._id}>
+                  <TeamCard />
+                </div>
+                )} */}
+                </div>
+              </>
+            )}
           </div>
         </div>
         <div className="bg-white shadow-lg rounded h-100 lg:w-[300px] xl:w-1/5 xl:flex lg:flex lg:right-3 lg:top-15 hidden py-5 flex-col">
