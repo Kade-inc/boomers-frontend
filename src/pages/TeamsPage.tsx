@@ -81,6 +81,11 @@ const TeamsPage = () => {
         <TeamCard />
         <TeamCard />
       </div>
+      <div className="flex justify-end mt-12">
+        <button className="w-[98px] text-[14px] p-1 text-black bg-yellow sm:w-[143px]">
+          Add team
+        </button>
+      </div>
     </div>
   );
 };

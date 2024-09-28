@@ -1,4 +1,5 @@
 import lebron from "../assets/Mask group.svg";
+import ChallengesCard from "../components/ChallengesCard";
 import MemberCard from "../components/MemberCard";
 
 const TeamDetailsPage = () => {
@@ -11,8 +12,7 @@ const TeamDetailsPage = () => {
         <div className="card-body">
           <div className="flex justify-between w-full">
             <div>
-              <h2 className="font-medium mb-5">Paul and the Funky Bunch</h2>
-
+              <h2 className="font-medium mb-5">Caregiver app</h2>
               <p className="mb-3">Specialization</p>
               <p>Frontend. ReactJs</p>
             </div>
@@ -38,6 +38,12 @@ const TeamDetailsPage = () => {
       <div className="flex gap-2 mt-5">
         <MemberCard />
         <MemberCard />
+      </div>
+      <ChallengesCard />
+      <div className="flex justify-end mt-12">
+        <button className="w-[98px] text-[14px] p-1 text-white bg-red-600 sm:w-[143px]">
+          Leave Team
+        </button>
       </div>
     </div>
   );
