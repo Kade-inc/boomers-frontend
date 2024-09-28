@@ -12,7 +12,7 @@ const TeamDetailsPage = () => {
         <div className="card-body">
           <div className="flex justify-between w-full">
             <div>
-              <h2 className="font-medium mb-5">Caregiver app</h2>
+              <h2 className="font-medium mb-5">Paul and the Funky Bunch</h2>
               <p className="mb-3">Specialization</p>
               <p>Frontend. ReactJs</p>
             </div>
