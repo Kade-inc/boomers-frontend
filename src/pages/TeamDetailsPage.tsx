@@ -1,13 +1,20 @@
+import { useState } from "react";
 import lebron from "../assets/Mask group.svg";
 import ChallengesCard from "../components/ChallengesCard";
 import MemberCard from "../components/MemberCard";
 
 const TeamDetailsPage = () => {
+  const [activeTab, setActiveTab] = useState("members");
+
+  const handleTabClick = (tab: string) => {
+    setActiveTab(tab);
+  };
+
   return (
     <div className="h-screen text-darkgrey px-[20px]">
       <div
         className="card bg-gradient-to-b from-[#005E78] to-[#00989B] text-white w-full mt-[20px]
- h-[200px] rounded-[3px] font-body"
+        h-[200px] rounded-[3px] font-body"
       >
         <div className="card-body">
           <div className="flex justify-between w-full">
@@ -25,21 +32,42 @@ const TeamDetailsPage = () => {
         </div>
       </div>
       <div role="tablist" className="tabs tabs-bordered max-w-md ml-0 mt-4">
-        <a role="tab" className="tab">
+        <button
+          role="tab"
+          className={`tab ${activeTab === "members" ? "tab-active" : ""}`}
+          onClick={() => handleTabClick("members")}
+        >
           Members
-        </a>
-        <a role="tab" className="tab tab-active">
+        </button>
+        <button
+          role="tab"
+          className={`tab ${activeTab === "challenges" ? "tab-active" : ""}`}
+          onClick={() => handleTabClick("challenges")}
+        >
           Challenges
-        </a>
-        <a role="tab" className="tab">
+        </button>
+        <button
+          role="tab"
+          className={`tab ${activeTab === "requests" ? "tab-active" : ""}`}
+          onClick={() => handleTabClick("requests")}
+        >
           Member Requests
-        </a>
+        </button>
       </div>
-      <div className="flex gap-2 mt-5">
-        <MemberCard />
-        <MemberCard />
+      <div className="mt-5">
+        {activeTab === "members" && (
+          <div className="flex gap-2">
+            <MemberCard />
+            <MemberCard />
+          </div>
+        )}
+        {activeTab === "challenges" && <ChallengesCard />}
+        {activeTab === "requests" && (
+          <div className="flex gap-2">
+            <p>No member requests at this time.</p>
+          </div>
+        )}
       </div>
-      <ChallengesCard />
       <div className="flex justify-end mt-12">
         <button className="w-[98px] text-[14px] p-1 text-white bg-red-600 sm:w-[143px]">
           Leave Team
