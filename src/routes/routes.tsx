@@ -31,10 +31,12 @@ const router = createBrowserRouter([
       {
         path: "teams",
         element: <ProtectedRoute element={<TeamsPage />} />,
-      },
-      {
-        path: "team",
-        element: <ProtectedRoute element={<TeamDetailsPage />} />,
+        children: [
+          {
+            path: ":teamId",
+            element: <ProtectedRoute element={<TeamDetailsPage />} />,
+          },
+        ],
       },
     ],
   },

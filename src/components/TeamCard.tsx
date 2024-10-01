@@ -1,4 +1,12 @@
-const TeamCard = () => {
+import { useNavigate } from "react-router-dom";
+
+interface TeamCardProps {
+  team: {
+    id: number;
+  };
+}
+
+const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
   const profile = {
     domain: "Software Engineering",
     subdomain: "Full Stack",
@@ -6,11 +14,17 @@ const TeamCard = () => {
   };
 
   const additionalTopics = profile.topics.length - 1;
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate(`/teams/${team.id}`);
+  };
 
   return (
     <div
       className="card bg-gradient-to-b from-[#005E78] to-[#00989B] text-white w-[450px]
- h-[200px] rounded-[3px] font-body"
+ h-[200px] rounded-[3px] font-body cursor-pointer"
+      onClick={handleCardClick}
     >
       <div className="card-body">
         <div className="flex justify-between w-full items-center">
