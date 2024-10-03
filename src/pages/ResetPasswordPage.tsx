@@ -58,7 +58,7 @@ const ResetPassword = () => {
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full bg-white">
-      <h2 className="block font-heading text-[30px] leading-[31.86px] p-0 lg:p-6 lg:text-[50px] lg:leading-[53.1px]">
+      <h2 className="block font-heading text-[30px] leading-[31.86px] mt-48 md:mt-52 lg:mt-20 lg:text-[50px] lg:leading-[53.1px]">
         <Link to="/">LOGO</Link>
       </h2>
       <div className="w-full max-w-sm py-2 lg:py-6 p-5 lg:p-0">
