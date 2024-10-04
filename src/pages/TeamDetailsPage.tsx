@@ -34,21 +34,41 @@ const TeamDetailsPage = () => {
       <div role="tablist" className="tabs tabs-bordered max-w-md ml-0 mt-4">
         <button
           role="tab"
-          className={`tab ${activeTab === "members" ? "tab-active" : ""}`}
+          className={`tab border-b-2 ${
+            activeTab === "members" ? "border-b-4" : "border-transparent"
+          }`}
+          style={{
+            borderColor:
+              activeTab === "members" ? "rgba(248, 181, 0, 1)" : "transparent",
+          }}
           onClick={() => handleTabClick("members")}
         >
           Members
         </button>
         <button
           role="tab"
-          className={`tab ${activeTab === "challenges" ? "tab-active" : ""}`}
+          className={`tab border-b-2 ${
+            activeTab === "challenges" ? "border-b-4" : "border-transparent"
+          }`}
+          style={{
+            borderColor:
+              activeTab === "challenges"
+                ? "rgba(248, 181, 0, 1)"
+                : "transparent",
+          }}
           onClick={() => handleTabClick("challenges")}
         >
           Challenges
         </button>
         <button
           role="tab"
-          className={`tab ${activeTab === "requests" ? "tab-active" : ""}`}
+          className={`tab border-b-2 ${
+            activeTab === "requests" ? "border-b-4" : "border-transparent"
+          }`}
+          style={{
+            borderColor:
+              activeTab === "requests" ? "rgba(248, 181, 0, 1)" : "transparent",
+          }}
           onClick={() => handleTabClick("requests")}
         >
           Member Requests

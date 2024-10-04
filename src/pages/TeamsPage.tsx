@@ -80,9 +80,7 @@ const TeamsPage = () => {
           </div>
 
           <div className="mt-6 flex flex-wrap gap-3 m-auto">
-            <TeamCard team={{ id: 1 }} />
-            <TeamCard team={{ id: 2 }} />
-            <TeamCard team={{ id: 3 }} />
+            <TeamCard />
           </div>
           <div className="flex justify-end mt-12">
             <button className="w-[98px] text-[14px] p-1 text-black bg-yellow sm:w-[143px]">

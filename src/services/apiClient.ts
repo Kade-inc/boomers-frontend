@@ -116,6 +116,24 @@ class APIClient {
 
     return decoded;
   };
+
+  // Fetch Data
+  getTeams = async () => {
+    try {
+      const response = await this.axiosInstance.get("/api/teams", {
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`,
+        },
+      });
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching teams:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
 }
 
 export default APIClient;
