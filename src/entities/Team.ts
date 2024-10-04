@@ -1,3 +1,5 @@
+import TeamMember from "./TeamMember";
+
 export default interface Team {
   _id: string;
   owner_id: string;
@@ -8,4 +10,6 @@ export default interface Team {
   subdomainTopics: string[];
   createdAt: string;
   updatedAt: string;
+  __v: number;
+  members: TeamMember[];
 }

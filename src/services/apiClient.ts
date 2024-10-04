@@ -117,10 +117,28 @@ class APIClient {
     return decoded;
   };
 
-  // Fetch Data
+  // Fetch Teams
   getTeams = async () => {
     try {
       const response = await this.axiosInstance.get("/api/teams", {
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`,
+        },
+      });
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching teams:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
+  // Fetch Team members
+  getTeamDetails = async (teamId: string) => {
+    try {
+      const response = await this.axiosInstance.get(`/api/teams/${teamId}`, {
         headers: {
           Authorization: `Bearer ${this.getToken()}`,
         },
