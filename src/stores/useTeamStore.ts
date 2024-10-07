@@ -2,20 +2,24 @@ import { create } from "zustand";
 import APIClient from "../services/apiClient";
 import Team from "../entities/Team";
 import Challenge from "../entities/Challenge";
+import Request from "../entities/Request";
 
 interface TeamStore {
   teams: Team[];
   teamDetails: { [teamId: string]: Team | undefined };
   challenges: Challenge[];
+  requests: Request[];
   fetchTeams: () => Promise<void>;
   fetchTeamDetails: (teamId: string) => Promise<void>;
   fetchChallenges: (teamId: string) => Promise<void>;
+  fetchRequests: (teamId: string) => Promise<void>;
 }
 
 const useTeamStore = create<TeamStore>((set) => ({
   teams: [],
   teamDetails: {},
   challenges: [],
+  requests: [],
 
   fetchTeams: async () => {
     const apiClient = new APIClient("/api/teams");
@@ -61,6 +65,20 @@ const useTeamStore = create<TeamStore>((set) => ({
       }
     } catch (error) {
       console.error("Error fetching challenges: ", error);
+    }
+  },
+  fetchRequests: async (teamId: string) => {
+    const apiClient = new APIClient(`/api/team-member/requests/${teamId}`);
+    try {
+      const response = await apiClient.getRequests(teamId);
+      console.log("Challenges Response:", response);
+      if (response && response.data) {
+        set({ requests: response.data });
+      } else {
+        console.error("Unexpected response structure:", response);
+      }
+    } catch (error) {
+      console.error("Error fetching requests: ", error);
     }
   },
 }));

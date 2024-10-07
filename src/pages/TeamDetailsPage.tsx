@@ -10,15 +10,22 @@ import TeamMember from "../entities/TeamMember";
 const TeamDetailsPage = () => {
   const [activeTab, setActiveTab] = useState("members");
   const { teamId } = useParams<{ teamId: string }>();
-  const { teamDetails, fetchTeamDetails, challenges, fetchChallenges } =
-    useTeamStore();
+  const {
+    teamDetails,
+    fetchTeamDetails,
+    challenges,
+    fetchChallenges,
+    requests,
+    fetchRequests,
+  } = useTeamStore();
 
   useEffect(() => {
     if (teamId) {
       fetchTeamDetails(teamId);
       fetchChallenges(teamId);
+      fetchRequests(teamId);
     }
-  }, [teamId, fetchTeamDetails, fetchChallenges]);
+  }, [teamId, fetchTeamDetails, fetchChallenges, fetchRequests]);
 
   const teamData: Team | undefined = teamId ? teamDetails[teamId] : undefined;
 
@@ -82,7 +89,9 @@ const TeamDetailsPage = () => {
         )}
         {activeTab === "requests" && (
           <div className="flex gap-2">
-            <p>No member requests at this time.</p>
+            {requests.map((request) => (
+              <MemberCard key={request._id} request={request} />
+            ))}
           </div>
         )}
       </div>
