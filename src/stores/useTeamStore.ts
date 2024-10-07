@@ -10,7 +10,7 @@ interface TeamStore {
   challenges: Challenge[];
   requests: Request[];
   fetchTeams: () => Promise<void>;
-  fetchTeamData: (teamId: string) => Promise<void>; // Combined method
+  fetchTeamData: (teamId: string) => Promise<void>;
 }
 
 const useTeamStore = create<TeamStore>((set) => ({

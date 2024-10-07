@@ -29,9 +29,7 @@ const TeamDetailsPage = () => {
   return (
     <div className="h-screen text-darkgrey px-[20px]">
       {loading ? (
-        <div className="flex items-center justify-center h-full">
-          <p>Loading...</p>
-        </div>
+        <p>Loading...</p>
       ) : (
         <>
           <div className="card bg-gradient-to-b from-[#005E78] to-[#00989B] text-white w-full mt-[20px] h-[200px] rounded-[3px] font-body">
@@ -82,27 +80,16 @@ const TeamDetailsPage = () => {
             )}
             {activeTab === "challenges" && (
               <div>
-                {challenges.length > 0 ? (
-                  challenges.map((challenge) => (
-                    <ChallengesCard key={challenge._id} challenge={challenge} />
-                  ))
-                ) : (
-                  <p>No challenges available.</p>
-                )}
+                {challenges.map((challenge) => (
+                  <ChallengesCard key={challenge._id} challenge={challenge} />
+                ))}
               </div>
             )}
             {activeTab === "requests" && (
               <div className="flex gap-2">
-                {requests.length > 0 ? (
-                  requests.map((request) => (
-                    <MemberCard
-                      key={request._id}
-                      member={request.userProfile}
-                    />
-                  ))
-                ) : (
-                  <p>No member requests available.</p>
-                )}
+                {requests.map((request) => (
+                  <MemberCard key={request._id} member={request.userProfile} />
+                ))}
               </div>
             )}
           </div>
