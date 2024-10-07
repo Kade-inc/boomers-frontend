@@ -10,9 +10,7 @@ interface TeamStore {
   challenges: Challenge[];
   requests: Request[];
   fetchTeams: () => Promise<void>;
-  fetchTeamDetails: (teamId: string) => Promise<void>;
-  fetchChallenges: (teamId: string) => Promise<void>;
-  fetchRequests: (teamId: string) => Promise<void>;
+  fetchTeamData: (teamId: string) => Promise<void>; // Combined method
 }
 
 const useTeamStore = create<TeamStore>((set) => ({
@@ -35,55 +33,53 @@ const useTeamStore = create<TeamStore>((set) => ({
     }
   },
 
-  fetchTeamDetails: async (teamId: string) => {
+  fetchTeamData: async (teamId: string) => {
     const apiClient = new APIClient(`/api/teams/${teamId}`);
     try {
-      const response = await apiClient.getTeamDetails(teamId);
-      if (response && response.data) {
+      // Fetch team details
+      const teamDetailsResponse = await apiClient.getTeamDetails(teamId);
+      if (teamDetailsResponse && teamDetailsResponse.data) {
         set((state) => ({
           teamDetails: {
             ...state.teamDetails,
-            [teamId]: response.data as Team,
+            [teamId]: teamDetailsResponse.data as Team,
           },
         }));
       } else {
-        console.error("Unexpected response structure:", response);
+        console.error(
+          "Unexpected response structure for team details:",
+          teamDetailsResponse,
+        );
       }
-    } catch (error) {
-      console.error("Error fetching team members: ", error);
-    }
-  },
-  fetchChallenges: async (teamId: string) => {
-    const apiClient = new APIClient(`/api/teams/${teamId}/challenges`);
-    try {
-      const response = await apiClient.getChallenges(teamId);
-      console.log("Challenges Response:", response);
-      if (response && response.data) {
-        set({ challenges: response.data });
+
+      // Fetch challenges
+      const challengesResponse = await apiClient.getChallenges(teamId);
+      if (challengesResponse && challengesResponse.data) {
+        set({ challenges: challengesResponse.data });
       } else {
-        console.error("Unexpected response structure:", response);
+        console.error(
+          "Unexpected response structure for challenges:",
+          challengesResponse,
+        );
       }
-    } catch (error) {
-      console.error("Error fetching challenges: ", error);
-    }
-  },
-  fetchRequests: async (teamId: string) => {
-    const apiClient = new APIClient(`/api/team-member/requests/${teamId}`);
-    try {
-      const response = await apiClient.getRequests(teamId);
-      console.log("Challenges Response:", response);
-      if (response && response.data) {
-        set({ requests: response.data });
+
+      // Fetch requests
+      const requestsResponse = await apiClient.getRequests(teamId);
+      if (requestsResponse && requestsResponse.data) {
+        set({ requests: requestsResponse.data });
       } else {
-        console.error("Unexpected response structure:", response);
+        console.error(
+          "Unexpected response structure for requests:",
+          requestsResponse,
+        );
       }
     } catch (error) {
-      console.error("Error fetching requests: ", error);
+      console.error("Error fetching team data: ", error);
     }
   },
 }));
 
 export default useTeamStore;
 
-// http://localhost:5001/api/team-member/requests/66f4b50c2012ce4bc33dccc5
-//http://localhost:5001/api/teams/66f4b50c2012ce4bc33dccc5/challenges
+// http://localhost:5001/api/team-member/requests/66f539829a718cd0e571b68d
+//http://localhost:5001/api/teams/66f539829a718cd0e571b68d/challenges

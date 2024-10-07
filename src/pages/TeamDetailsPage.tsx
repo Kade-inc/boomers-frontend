@@ -12,20 +12,16 @@ const TeamDetailsPage = () => {
   const { teamId } = useParams<{ teamId: string }>();
   const {
     teamDetails,
-    fetchTeamDetails,
+    fetchTeamData, // Updated to use the combined fetch function
     challenges,
-    fetchChallenges,
     requests,
-    fetchRequests,
   } = useTeamStore();
 
   useEffect(() => {
     if (teamId) {
-      fetchTeamDetails(teamId);
-      fetchChallenges(teamId);
-      fetchRequests(teamId);
+      fetchTeamData(teamId); // Fetch all data at once
     }
-  }, [teamId, fetchTeamDetails, fetchChallenges, fetchRequests]);
+  }, [teamId, fetchTeamData]);
 
   const teamData: Team | undefined = teamId ? teamDetails[teamId] : undefined;
 
@@ -90,7 +86,7 @@ const TeamDetailsPage = () => {
         {activeTab === "requests" && (
           <div className="flex gap-2">
             {requests.map((request) => (
-              <MemberCard key={request._id} request={request} />
+              <MemberCard key={request._id} member={request.userProfile} /> // Assuming request has userProfile similar to TeamMember
             ))}
           </div>
         )}
