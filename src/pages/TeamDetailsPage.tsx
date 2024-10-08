@@ -43,8 +43,8 @@ const TeamDetailsPage = () => {
                     {teamData?.subdomainTopics.join(", ")}
                   </p>
                 </div>
-                <div className="text-center flex-col align-middle justify-center">
-                  <img className="mb-3" src={lebron} alt="img" />
+                <div className="text-center flex flex-col items-center justify-center">
+                  <img className="mb-3 mx-auto" src={lebron} alt="img" />
                   <p>{teamData?.members[0]?.username}</p>
                   <p className="text-center text-[12px]">Owner</p>
                 </div>
@@ -78,6 +78,16 @@ const TeamDetailsPage = () => {
                 ))}
               </div>
             )}
+            {/* Skip owner as member */}
+            {/* {activeTab === "members" && (
+              <div className="flex gap-2">
+                {teamData?.members
+                  .slice(1)
+                  .map((member: TeamMember) => (
+                    <MemberCard key={member._id} member={member} />
+                  ))}
+              </div>
+            )} */}
             {activeTab === "challenges" && (
               <div>
                 {challenges.map((challenge) => (
