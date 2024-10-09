@@ -45,6 +45,7 @@ const useTeamStore = create<TeamStore>((set) => ({
             [teamId]: teamDetailsResponse.data as Team,
           },
         }));
+        console.log(teamDetailsResponse);
       } else {
         console.error(
           "Unexpected response structure for team details:",

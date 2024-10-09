@@ -18,6 +18,7 @@ const TeamDetailsPage = () => {
       setLoading(true);
       fetchTeamData(teamId).finally(() => setLoading(false));
     }
+    console.log("string", teamId);
   }, [teamId, teamDetails, fetchTeamData]);
 
   const teamData: Team | undefined = teamId ? teamDetails[teamId] : undefined;
