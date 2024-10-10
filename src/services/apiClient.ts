@@ -84,6 +84,23 @@ class APIClient {
     }
   };
 
+  resetPassword = async (userId: string, password: string, token: string) => {
+    try {
+      const response = await this.axiosInstance.post(this.endpoint, {
+        userId,
+        password,
+        token,
+      });
+      toast.success("Password reset successfully");
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      const errorMessage = axiosError.response?.data ?? axiosError.message;
+      toast.error(`Reset Password Error: ${errorMessage}`);
+      throw axiosError;
+    }
+  };
+
   getUserProfile = async () => {
     try {
       const response = await this.axiosInstance.get(

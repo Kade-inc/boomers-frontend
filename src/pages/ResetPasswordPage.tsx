@@ -1,10 +1,10 @@
-import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Toaster } from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ResetPasswordSuccess from "../components/ResetPasswordSuccess";
+import useResetPassword from "../hooks/useResetPassword";
 
 const schema = z
   .object({
@@ -30,7 +30,8 @@ const schema = z
 type FormData = z.infer<typeof schema>;
 
 const ResetPassword = () => {
-  const [isSuccess, setIsSuccess] = useState(false);
+  const { mutate, isPending, isSuccess } = useResetPassword();
+  const [searchParams] = useSearchParams();
 
   const {
     register,
@@ -47,9 +48,19 @@ const ResetPassword = () => {
   const isFormValid =
     password && confirmpassword && password === confirmpassword;
 
-  const onSubmit = (data: FormData) => {
-    console.log("Password Reset Success", data);
-    setIsSuccess(true);
+  const onSubmit = async (data: FormData) => {
+    const token = searchParams.get("token");
+    const userId = searchParams.get("id");
+
+    if (token && userId) {
+      try {
+        mutate({ userId, password: data.password, token });
+      } catch (error) {
+        console.error("Error", error);
+      }
+    } else {
+      console.error("Token or User id Missing from URL");
+    }
   };
 
   if (isSuccess) {
@@ -135,7 +146,11 @@ const ResetPassword = () => {
             ${!isFormValid ? "opacity-50 cursor-not-allowed" : ""}`}
             disabled={!isFormValid}
           >
-            Reset
+            {isPending ? (
+              <span className="loading loading-dots loading-md gap-2"></span>
+            ) : (
+              "Reset"
+            )}
           </button>
         </form>
       </div>
