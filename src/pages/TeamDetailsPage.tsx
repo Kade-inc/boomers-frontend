@@ -1,52 +1,105 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import lebron from "../assets/Mask group.svg";
 import ChallengesCard from "../components/ChallengesCard";
 import MemberCard from "../components/MemberCard";
-import useTeamStore from "../stores/useTeamStore";
 import { useParams } from "react-router-dom";
-import Team from "../entities/Team";
 import TeamMember from "../entities/TeamMember";
+import useTeam from "../hooks/useTeam";
+import useChallenges from "../hooks/useChallenges";
+import useTeamMemberRequests from "../hooks/useTeamMemberRequests";
+import { Toaster } from "react-hot-toast";
 
 const TeamDetailsPage = () => {
   const [activeTab, setActiveTab] = useState("members");
   const { teamId } = useParams<{ teamId: string }>();
-  const { teamDetails, fetchTeamData, challenges, requests } = useTeamStore();
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (teamId && !teamDetails[teamId]) {
-      setLoading(true);
-      fetchTeamData(teamId).finally(() => setLoading(false));
-    }
-    console.log("string", teamId);
-  }, [teamId, teamDetails, fetchTeamData]);
-
-  const teamData: Team | undefined = teamId ? teamDetails[teamId] : undefined;
+  const { data: team, isPending: isTeamPending, error: teamError } = useTeam(teamId || '')
+  const { data: challenges, isPending: isChallengesPending, error: challengesError } = useChallenges(teamId || '')
+  const { data: requests, isPending: isTeamMemberRequestsPending, error:teamMemberRequestsError } = useTeamMemberRequests(teamId || '')
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
   };
 
+  if (isTeamPending || isChallengesPending || isTeamMemberRequestsPending) {
+    return <p>Loading...</p>;
+  }
+
   return (
-    <div className="h-screen text-darkgrey px-[20px]">
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
+    <div className="h-screen text-darkgrey px-[40px]">
         <>
-          <div className="card bg-gradient-to-b from-[#005E78] to-[#00989B] text-white w-full mt-[20px] h-[200px] rounded-[3px] font-body">
+        {teamError &&  <Toaster
+            position="bottom-center"
+            reverseOrder={true}
+            toastOptions={{
+              error: {
+                style: {
+                  background: "#D92D2D",
+                  color: "white",
+                },
+                iconTheme: {
+                  primary: "white",
+                  secondary: "#D92D2D",
+                },
+              },
+            }}
+          />
+        }
+        {challengesError && <Toaster
+            position="bottom-center"
+            reverseOrder={true}
+            toastOptions={{
+              error: {
+                style: {
+                  background: "#D92D2D",
+                  color: "white",
+                },
+                iconTheme: {
+                  primary: "white",
+                  secondary: "#D92D2D",
+                },
+              },
+            }}
+          /> }
+          {teamMemberRequestsError || requests?.length < 1 && <Toaster
+            position="bottom-center"
+            reverseOrder={true}
+            toastOptions={{
+              error: {
+                style: {
+                  background: "#D92D2D",
+                  color: "white",
+                },
+                iconTheme: {
+                  primary: "white",
+                  secondary: "#D92D2D",
+                },
+              },
+            }}
+          /> }
+          {team &&
+           <>
+          <div className="card bg-gradient-to-b from-[#005E78] to-[#00989B] text-white w-full mt-[20px] h-[200px] rounded-[3px] font-body"  style={{ background: team?.teamColor }}>
             <div className="card-body">
-              <div className="flex justify-between w-full">
+              <div className="flex justify-between w-full items-center">
                 <div>
-                  <h2 className="font-medium mb-5">{teamData?.name}</h2>
-                  <p className="mb-3">Specialization</p>
-                  <p>
-                    {teamData?.subdomain}.{" "}
-                    {teamData?.subdomainTopics.join(", ")}
-                  </p>
+                  <h2 className="font-bold text-[20px] mb-5">{team?.name}</h2>
+                  <p className="mb-3 text-[18px] font-medium">Specialization</p>
+                
+                    <div className="flex items-center mb-2 font-regular text-[14px]">
+                {team.domain}{" "}
+                <div className="bg-white rounded-full w-1 h-1 mx-1"></div>{" "}
+                {team.subdomain}{" "}
+                {team.subdomainTopics.map((topic) =>
+                    <>
+                    <div className="bg-white rounded-full w-1 h-1 mx-1"></div>{" "}
+                    <p>{topic}</p>
+                    </> )}
+              </div>
+             
                 </div>
                 <div className="text-center flex flex-col items-center justify-center">
                   <img className="mb-3 mx-auto" src={lebron} alt="img" />
-                  <p>{teamData?.members[0]?.username}</p>
+                  <p>{team?.members[0]?.username}</p>
                   <p className="text-center text-[12px]">Owner</p>
                 </div>
               </div>
@@ -58,7 +111,7 @@ const TeamDetailsPage = () => {
               <button
                 key={tab}
                 role="tab"
-                className={`tab border-b-2 ${activeTab === tab ? "border-b-4" : "border-transparent"}`}
+                className={`tab font-body border-b-2 ${activeTab === tab ? "border-b-4" : "border-transparent"}`}
                 style={{
                   borderColor:
                     activeTab === tab ? "rgba(248, 181, 0, 1)" : "transparent",
@@ -73,8 +126,8 @@ const TeamDetailsPage = () => {
 
           <div className="mt-5">
             {activeTab === "members" && (
-              <div className="flex gap-2">
-                {teamData?.members.map((member: TeamMember) => (
+              <div className="flex gap-6">
+                {team?.members.map((member: TeamMember) => (
                   <MemberCard key={member._id} member={member} />
                 ))}
               </div>
@@ -91,27 +144,35 @@ const TeamDetailsPage = () => {
             )} */}
             {activeTab === "challenges" && (
               <div>
-                {challenges.map((challenge) => (
+                {challenges && challenges.map((challenge) => (
                   <ChallengesCard key={challenge._id} challenge={challenge} />
                 ))}
+                {!challenges && <>
+                <p className="font-body">No Challenges to display</p>
+                </>}
               </div>
             )}
             {activeTab === "requests" && (
-              <div className="flex gap-2">
-                {requests.map((request) => (
+              <div className="flex gap-6">
+                {requests.length > 0 && requests.map((request) => (
                   <MemberCard key={request._id} member={request.userProfile} />
                 ))}
+                 {requests.length === 0 && <>
+                <p className="font-body">No Member Requests</p>
+                </>}
               </div>
             )}
           </div>
 
           <div className="flex justify-end mt-12">
-            <button className="w-[98px] text-[14px] p-1 text-white bg-red-600 sm:w-[143px]">
+            <button className="w-[98px] text-[14px] p-1 text-white bg-red-600 sm:w-[143px] font-body rounded">
               Leave Team
             </button>
           </div>
+          </>
+        }
         </>
-      )}
+      
     </div>
   );
 };

@@ -12,7 +12,7 @@ const TeamCard = ({ team }: TeamProps) => {
       <div
         key={team._id}
         className="card bg-gradient-to-b from-[#005E78] to-[#00989B] text-white h-[200px] rounded-[3px] font-body cursor-pointer"
-        style={{ background: team.teamColor }}
+        style={{ background: team?.teamColor }}
         onClick={() => {
           navigate(`/teams/${team._id}`);
         }}
