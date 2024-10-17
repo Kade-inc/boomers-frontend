@@ -9,7 +9,7 @@ const useChallenges = (teamId: string): UseQueryResult<Error, Challenge[]> => {
   return useQuery({
     queryKey: [`team-challenges-${teamId}`],
     queryFn: () => apiClient.getTeamChallenges(teamId),
-    staleTime: 1000 * 60 * 5,  // 5 minutes
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };
 

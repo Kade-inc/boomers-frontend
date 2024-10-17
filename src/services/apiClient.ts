@@ -139,11 +139,14 @@ class APIClient {
   // Fetch Team members
   getTeamDetails = async (teamId: string) => {
     try {
-      const response = await this.axiosInstance.get(`${this.endpoint}/${teamId}`, {
-        headers: {
-          Authorization: `Bearer ${this.getToken()}`,
+      const response = await this.axiosInstance.get(
+        `${this.endpoint}/${teamId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.getToken()}`,
+          },
         },
-      });
+      );
       const { data } = response.data;
       return data;
     } catch (error: unknown) {
@@ -166,7 +169,7 @@ class APIClient {
         },
       );
       const { data } = response.data;
-      return data
+      return data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(
@@ -187,11 +190,9 @@ class APIClient {
       );
       const { data } = response.data;
       if (data.length < 1) {
-        toast.error(
-          "No Member requests",
-        );
+        toast.error("No Member requests");
       }
-      return data
+      return data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(

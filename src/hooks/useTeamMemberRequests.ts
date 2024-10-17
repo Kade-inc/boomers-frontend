@@ -5,11 +5,13 @@ import TeamMember from "../entities/TeamMember";
 
 const apiClient = new APIClient("/api/team-member");
 
-const useTeamMemberRequests = (teamId: string): UseQueryResult<Error, TeamMember[]> => {
+const useTeamMemberRequests = (
+  teamId: string,
+): UseQueryResult<Error, TeamMember[]> => {
   return useQuery({
     queryKey: [`team-member-requests-${teamId}`],
     queryFn: () => apiClient.getTeamMemberRequests(teamId),
-    staleTime: 1000 * 60 * 5,  // 5 minutes
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };
 

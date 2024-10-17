@@ -9,7 +9,7 @@ const useTeams = (): UseQueryResult<Error, Team[]> => {
   return useQuery({
     queryKey: ["teams"],
     queryFn: () => apiClient.getTeams(),
-    staleTime: 1000 * 60 * 5,  // 5 minutes
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };
 

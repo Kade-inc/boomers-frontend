@@ -31,7 +31,6 @@ const router = createBrowserRouter([
       {
         path: "teams",
         element: <ProtectedRoute element={<TeamsPage />} />,
-      
       },
       {
         path: "teams/:teamId",
