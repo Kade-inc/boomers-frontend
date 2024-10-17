@@ -9,9 +9,9 @@ const TeamsPage = () => {
   const [subDomain, setSubDomain] = useState("");
   const [topics, setTopics] = useState("");
   const { teamId } = useParams();
-  const {data:teams, isPending, error} = useTeams()
+  const { data: teams, isPending, error } = useTeams();
 
-  console.log("DATA: ", teams)
+  console.log("DATA: ", teams);
 
   if (isPending) {
     return <div>Loading: </div>;
@@ -96,12 +96,9 @@ const TeamsPage = () => {
           </div>
 
           <div className="grid grid-cols-3 gap-12 mt-10 w-[80%]">
-         
             {teams.map((team: Team) => {
-              return <TeamCard key={team._id} team={team}/>
-            }
-            )}
-            
+              return <TeamCard key={team._id} team={team} />;
+            })}
           </div>
 
           {/* <div className="mt-6 flex flex-wrap gap-3 m-auto">

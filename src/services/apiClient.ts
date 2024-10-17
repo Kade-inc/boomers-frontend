@@ -120,15 +120,13 @@ class APIClient {
   // Fetch Teams
   getTeams = async () => {
     try {
-      const response = await this.axiosInstance.get(`${this.endpoint}`,
-        {
-          headers: {
-            Authorization: `Bearer ${this.getToken()}`,
-          },
+      const response = await this.axiosInstance.get(`${this.endpoint}`, {
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`,
         },
-      );
-      console.log("HERE: ", response.data)
-      const { data } = response.data
+      });
+      console.log("HERE: ", response.data);
+      const { data } = response.data;
       return data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
