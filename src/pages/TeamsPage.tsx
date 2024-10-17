@@ -1,12 +1,28 @@
 import TeamCard from "../components/TeamCard";
 import { useState } from "react";
 import { Outlet, useParams } from "react-router-dom";
+import useTeams from "../hooks/useTeams";
+import Team from "../entities/Team";
 
 const TeamsPage = () => {
   const [domain, setDomain] = useState("");
   const [subDomain, setSubDomain] = useState("");
   const [topics, setTopics] = useState("");
   const { teamId } = useParams();
+  const {data:teams, isPending, error} = useTeams()
+
+  console.log("DATA: ", teams)
+
+  if (isPending) {
+    return <div>Loading: </div>;
+  }
+  if (error) {
+    return <div>Error: </div>;
+  }
+
+  if (!Array.isArray(teams)) {
+    return <div>No teams found</div>;
+  }
 
   return (
     <div className="h-screen text-darkgrey px-[20px]">
@@ -79,9 +95,18 @@ const TeamsPage = () => {
             </label>
           </div>
 
-          <div className="mt-6 flex flex-wrap gap-3 m-auto">
-            <TeamCard />
+          <div className="grid grid-cols-3 gap-12 mt-10 w-[80%]">
+         
+            {teams.map((team: Team) => {
+              return <TeamCard key={team._id} team={team}/>
+            }
+            )}
+            
           </div>
+
+          {/* <div className="mt-6 flex flex-wrap gap-3 m-auto">
+            <TeamCard />
+          </div> */}
           <div className="flex justify-end mt-12">
             <button className="w-[98px] text-[14px] p-1 text-black bg-yellow sm:w-[143px]">
               Add team
