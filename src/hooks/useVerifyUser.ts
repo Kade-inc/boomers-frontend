@@ -12,6 +12,7 @@ const useVerifyUser = (): UseMutationResult<
   unknown
 > => {
   return useMutation({
+    mutationKey: ["verify-user"],
     mutationFn: (data: UserVerificationModel) => apiClient.verifyUser(data),
   });
 };

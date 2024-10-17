@@ -7,6 +7,7 @@ const apiClient = new APIClient("/api/users/register");
 
 const useSignup = (): UseMutationResult<any, Error, User, unknown> => {
   return useMutation({
+    mutationKey: ["sign-up"],
     mutationFn: (data: User) => apiClient.signup(data),
   });
 };
