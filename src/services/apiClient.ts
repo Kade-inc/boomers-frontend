@@ -120,12 +120,13 @@ class APIClient {
   // Fetch Teams
   getTeams = async () => {
     try {
-      const response = await this.axiosInstance.get("/api/teams", {
+      const response = await this.axiosInstance.get(`${this.endpoint}`, {
         headers: {
           Authorization: `Bearer ${this.getToken()}`,
         },
       });
-      return response.data;
+      const { data } = response.data;
+      return data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(
@@ -138,55 +139,64 @@ class APIClient {
   // Fetch Team members
   getTeamDetails = async (teamId: string) => {
     try {
-      const response = await this.axiosInstance.get(`/api/teams/${teamId}`, {
-        headers: {
-          Authorization: `Bearer ${this.getToken()}`,
+      const response = await this.axiosInstance.get(
+        `${this.endpoint}/${teamId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.getToken()}`,
+          },
         },
-      });
-      return response.data;
+      );
+      const { data } = response.data;
+      return data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(
-        "Error fetching teams:",
+        "Error fetching team details",
         axiosError.response?.data ?? axiosError.message,
       );
     }
   };
 
-  getChallenges = async (teamId: string) => {
+  getTeamChallenges = async (teamId: string) => {
     try {
       const response = await this.axiosInstance.get(
-        `/api/teams/${teamId}/challenges`,
+        `${this.endpoint}/${teamId}/challenges`,
         {
           headers: {
             Authorization: `Bearer ${this.getToken()}`,
           },
         },
       );
-      return response.data;
+      const { data } = response.data;
+      return data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(
-        "Error fetching teams:",
+        "Error fetching challenges:",
         axiosError.response?.data ?? axiosError.message,
       );
     }
   };
-  getRequests = async (teamId: string) => {
+  getTeamMemberRequests = async (teamId: string) => {
     try {
       const response = await this.axiosInstance.get(
-        `/api/team-member/requests/${teamId}`,
+        `${this.endpoint}/requests/${teamId}`,
         {
           headers: {
             Authorization: `Bearer ${this.getToken()}`,
           },
         },
       );
-      return response.data;
+      const { data } = response.data;
+      if (data.length < 1) {
+        toast.error("No Member requests");
+      }
+      return data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(
-        "Error fetching teams:",
+        "Error fetching member requests:",
         axiosError.response?.data ?? axiosError.message,
       );
     }

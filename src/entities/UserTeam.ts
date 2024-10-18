@@ -1,4 +1,4 @@
-export default interface Team {
+export default interface UserTeam {
   _id: string;
   owner_id: string;
   name: string;
@@ -10,4 +10,13 @@ export default interface Team {
   updatedAt: string;
   __v: number;
   teamColor?: string;
+  members: Member;
+}
+
+interface Member {
+  _id: string;
+  username: string;
+  email: string;
+  profile: string;
+  profile_picture: string | null;
 }
