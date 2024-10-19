@@ -2,11 +2,11 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import ms from "ms";
 import APIClient from "../services/apiClient";
-import UserTeamsResponse from "../entities/Team";
+import Team from "../entities/Team";
 
 const apiClient = new APIClient("/api/teams");
 
-const useTeams = (userId: string): UseQueryResult<UserTeamsResponse, Error> => {
+const useTeams = (userId: string): UseQueryResult<Team, Error> => {
   return useQuery({
     queryKey: ["userTeams", userId],
     queryFn: () => apiClient.getUserTeams(userId),

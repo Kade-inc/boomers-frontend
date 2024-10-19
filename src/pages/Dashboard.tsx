@@ -2,11 +2,17 @@ import AdviceCard from "../components/AdviceCard";
 import ProfileCard from "../components/ProfileCard";
 import TeamCard from "../components/TeamCard";
 import useTeams from "../hooks/useTeams";
+import useAuthStore from "../stores/useAuthStore";
 
 const Dashboard = () => {
-  const { data: teamsData } = useTeams("66f4b0302012ce4bc33dcc79");
+  const userId = useAuthStore((s) => s.userId);
+  const user = useAuthStore((s) => s.user);
+  const { data: teamsData } = useTeams(userId);
 
-  console.log("TEAMS: ", teamsData?.data);
+  console.log("USER ID: ", userId);
+
+  console.log("TEAMS: ", teamsData);
+  console.log("USER: ", user);
 
   return (
     <>
@@ -39,7 +45,7 @@ const Dashboard = () => {
               </svg>
             </div>
             <div></div>
-            {teamsData?.data.length == 0 && (
+            {teamsData?.length == 0 && (
               <>
                 <div className="flex items-center flex-col text-darkgrey text-[16px] mt-10">
                   <p className="mb-6">
@@ -84,39 +90,20 @@ const Dashboard = () => {
                 </div>
               </>
             )}
-            {teamsData && teamsData?.data.length > 0 && (
+            {teamsData && teamsData?.length > 0 && (
               <>
                 <div className="carousel carousel-center space-x-6 pt-4 max-w-md md:max-w-screen-sm lg:max-w-screen-lg xl:max-w-screen-xl">
-                  <div className="carousel-item">
-                    <TeamCard />
-                  </div>
-                  <div className="carousel-item">
-                    <TeamCard />
-                  </div>
-                  <div className="carousel-item">
-                    <TeamCard />
-                  </div>
-
-                  <div className="carousel-item">
-                    <TeamCard />
-                  </div>
-                  <div className="carousel-item">
-                    <TeamCard />
-                  </div>
-                  <div className="carousel-item">
-                    <TeamCard />
-                  </div>
-                  {/* {teamsData.data.map((team) =>
-                  <div className="carousel-item" key={team._id}>
-                  <TeamCard />
-                </div>
-                )} */}
+                  {teamsData.map((team) => (
+                    <div className="carousel-item" key={team._id}>
+                      <TeamCard />
+                    </div>
+                  ))}
                 </div>
               </>
             )}
           </div>
         </div>
-        <div className="bg-white shadow-lg rounded h-100 lg:w-[300px] xl:w-1/5 xl:flex lg:flex lg:right-3 lg:top-15 hidden py-5 flex-col">
+        <div className="bg-white shadow-lg rounded h-100 lg:w-[300px] xl:w-1/5 xl:flex lg:flex lg:right-3 lg:top-15 hidden py-5 flex-col z-50">
           <ProfileCard className="mb-5" />
           <AdviceCard className="" />
         </div>
