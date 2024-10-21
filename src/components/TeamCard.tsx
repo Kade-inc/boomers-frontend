@@ -3,16 +3,16 @@ import Team from "../entities/Team";
 
 interface TeamProps {
   team: Team;
+  styles: string;
 }
-const TeamCard = ({ team }: TeamProps) => {
-  console.log("TEAM: ", team)
+const TeamCard = ({ team, styles }: TeamProps) => {
   const navigate = useNavigate();
 
   return (
     <>
       <div
         key={team._id}
-        className="card bg-gradient-to-b from-[#005E78] to-[#00989B] text-white h-[200px] rounded-[3px] font-body cursor-pointer"
+        className={`card bg-gradient-to-b from-[#005E78] to-[#00989B] text-white h-[200px] rounded-[3px] font-body cursor-pointer ${styles}`}
         style={{ background: team?.teamColor }}
         onClick={() => {
           navigate(`/teams/${team._id}`);

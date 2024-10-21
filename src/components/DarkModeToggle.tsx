@@ -24,7 +24,7 @@ const ThemeToggle = () => {
   };
 
   useEffect(() => {
-    const handleSystemThemeChange = (e: any) => {
+    const handleSystemThemeChange = (e: MediaQueryListEvent) => {
       const newTheme = e.matches ? "dark" : "light";
       setTheme(newTheme);
     };

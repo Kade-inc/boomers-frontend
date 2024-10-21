@@ -1,18 +1,15 @@
 import AdviceCard from "../components/AdviceCard";
 import ProfileCard from "../components/ProfileCard";
 import TeamCard from "../components/TeamCard";
+import Team from "../entities/Team";
+import useTeamRecommendations from "../hooks/useTeamRecommendations";
 import useTeams from "../hooks/useTeams";
 import useAuthStore from "../stores/useAuthStore";
 
 const Dashboard = () => {
-  const userId = useAuthStore((s) => s.userId);
   const user = useAuthStore((s) => s.user);
-  const { data: teamsData } = useTeams(userId);
-
-  console.log("USER ID: ", userId);
-
-  console.log("TEAMS: ", teamsData);
-  console.log("USER: ", user);
+  const { data: teamsData } = useTeams(user.user_id);
+  const { data: teamRecommendations } = useTeamRecommendations();
 
   return (
     <>
@@ -74,18 +71,40 @@ const Dashboard = () => {
                       View more
                     </button>
                   </div>
-                  <div className="flex flex-col items-center justify-center">
-                    <p className="mb-6">No recommendations found.</p>
-                    <div className="flex flex-col items-center justify-center">
-                      <p className="mb-6">
-                        Edit your profile with your interests to get
-                        recommendations.
-                      </p>
-                      <button className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-2">
-                        Edit Profile
+                  {teamRecommendations?.length === 0 && (
+                    <>
+                      <div className="flex flex-col items-center justify-center">
+                        <p className="mb-6">No recommendations found.</p>
+                        <div className="flex flex-col items-center justify-center">
+                          <p className="mb-6">
+                            Edit your profile with your interests to get
+                            recommendations.
+                          </p>
+                          <button className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-2">
+                            Edit Profile
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  {teamRecommendations && teamRecommendations?.length > 0 && (
+                    <>
+                      <div className="carousel carousel-center space-x-6 pt-4 max-w-md md:max-w-screen-sm lg:max-w-screen-lg xl:max-w-screen-xl">
+                        {teamRecommendations
+                          ?.slice(0, 2)
+                          .map((recommendation: Team) => (
+                            <TeamCard
+                              key={recommendation._id}
+                              team={recommendation}
+                              styles={`w-[450px]`}
+                            />
+                          ))}
+                      </div>
+                      <button className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-8">
+                        View more
                       </button>
-                    </div>
-                  </div>
+                    </>
+                  )}
                 </div>
               </>
             )}
@@ -94,7 +113,11 @@ const Dashboard = () => {
                 <div className="carousel carousel-center space-x-6 pt-4 max-w-md md:max-w-screen-sm lg:max-w-screen-lg xl:max-w-screen-xl">
                   {teamsData.map((team) => (
                     <div className="carousel-item" key={team._id}>
-                      {/* <TeamCard /> */}
+                      <TeamCard
+                        key={team._id}
+                        team={team}
+                        styles={`w-[450px]`}
+                      />
                     </div>
                   ))}
                 </div>

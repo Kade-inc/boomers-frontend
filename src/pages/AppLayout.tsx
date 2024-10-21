@@ -2,14 +2,14 @@ import { Outlet } from "react-router-dom";
 import NavigationBar from "../components/NavigationBar";
 import useAuthStore from "../stores/useAuthStore";
 import { useEffect } from "react";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 function AppLayout() {
   const { isAuthenticated, logout } = useAuthStore();
 
   useEffect(() => {
     const checkToken = () => {
-      const token = Cookies.get('jwt');
+      const token = Cookies.get("jwt");
       if (!token && isAuthenticated) {
         // If no token in cookies and user is authenticated, log them out
         logout();
