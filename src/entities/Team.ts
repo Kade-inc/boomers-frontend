@@ -5,9 +5,13 @@ export default interface Team {
   teamUsername: string;
   domain: string;
   subdomain: string;
-  subdomainTopics: string[];
+  subDomainTopics: string[];
   createdAt: string;
   updatedAt: string;
-  __v: number;
+  _v: number;
   teamColor?: string;
+}
+export default interface UserTeamsResponse {
+  message: string;
+  data: Team[];
 }
