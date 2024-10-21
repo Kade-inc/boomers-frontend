@@ -103,9 +103,19 @@ class APIClient {
   };
 
   getUserProfile = async () => {
+    const { userId } = useAuthStore.getState();
+
+    //TODO: FIX THIS. It should follow the structure of all other methods
+    // The issue is occuring since we have to call the endpoint in the
+    // login method
+    let prefix = "api/users/login";
+    if (this.endpoint === "/api/users/login") {
+      prefix = "/api/users/";
+    }
+    console.log("new: ", prefix);
     try {
       const response = await this.axiosInstance.get(
-        `${this.endpoint}/${this.decodeToken().aud}/profile`,
+        `${prefix}/${userId}/profile`,
         {
           headers: {
             Authorization: `Bearer ${this.getToken()}`,
@@ -131,7 +141,7 @@ class APIClient {
     return Cookies.get("jwt");
   };
 
-  decodeToken = () => {
+  decodeToken = (): any => {
     const value: any = Cookies.get("jwt");
     const decoded = jwtDecode(value);
 
@@ -139,13 +149,16 @@ class APIClient {
   };
 
   // Fetch Teams
-  getTeams = async () => {
+  getTeams = async (userId?: string) => {
     try {
-      const response = await this.axiosInstance.get(`${this.endpoint}`, {
-        headers: {
-          Authorization: `Bearer ${this.getToken()}`,
+      const response = await this.axiosInstance.get(
+        `${this.endpoint}?userId=${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.getToken()}`,
+          },
         },
-      });
+      );
       const { data } = response.data;
       return data;
     } catch (error: unknown) {

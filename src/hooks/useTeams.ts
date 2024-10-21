@@ -5,10 +5,10 @@ import Team from "../entities/Team";
 
 const apiClient = new APIClient("/api/teams");
 
-const useTeams = (): UseQueryResult<Error, Team[]> => {
+const useTeams = (userId: string = ""): UseQueryResult<Error, Team[]> => {
   return useQuery({
-    queryKey: ["teams"],
-    queryFn: () => apiClient.getTeams(),
+    queryKey: ["teams", userId],
+    queryFn: () => apiClient.getTeams(userId),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };

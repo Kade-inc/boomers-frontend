@@ -5,11 +5,8 @@ import useTeams from "../hooks/useTeams";
 import useAuthStore from "../stores/useAuthStore";
 
 const Dashboard = () => {
-  const userId = useAuthStore((s) => s.userId);
   const user = useAuthStore((s) => s.user);
-  const { data: teamsData } = useTeams(userId);
-
-  console.log("USER ID: ", userId);
+  const { data: teamsData } = useTeams(user.user_id);
 
   console.log("TEAMS: ", teamsData);
   console.log("USER: ", user);
@@ -94,7 +91,7 @@ const Dashboard = () => {
                 <div className="carousel carousel-center space-x-6 pt-4 max-w-md md:max-w-screen-sm lg:max-w-screen-lg xl:max-w-screen-xl">
                   {teamsData.map((team) => (
                     <div className="carousel-item" key={team._id}>
-                      {/* <TeamCard /> */}
+                      <TeamCard team={team} styles={`w-[400px]`} />
                     </div>
                   ))}
                 </div>
