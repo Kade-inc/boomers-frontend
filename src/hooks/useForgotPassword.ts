@@ -11,6 +11,7 @@ const useForgotPassword = (): UseMutationResult<
   unknown
 > => {
   return useMutation({
+    mutationKey: ["forgot-password"],
     mutationFn: (email: string) => apiClient.forgotPassword(email),
   });
 };

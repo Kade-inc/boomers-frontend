@@ -1,27 +1,23 @@
-import { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 import useAuthStore from "../stores/useAuthStore";
-import HomePage from "../pages/HomePage";
-import { useNavigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
 interface ProtectedRouteProps {
-  element: ReactNode;
+  element?: ReactNode;
   fallback?: ReactNode;
 }
 
 const ProtectedRoute = ({
   element,
-  fallback = <HomePage />,
+  fallback = <Navigate to="/" replace />,
 }: ProtectedRouteProps) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/", { replace: true });
-    }
-  }, [isAuthenticated, navigate]);
+  if (!isAuthenticated) {
+    return fallback;
+  }
 
-  return isAuthenticated ? <>{element}</> : <>{fallback}</>;
+  return element ? <>{element}</> : <Outlet />;
 };
 
 export default ProtectedRoute;

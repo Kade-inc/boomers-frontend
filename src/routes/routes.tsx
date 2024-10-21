@@ -11,6 +11,7 @@ import TeamsPage from "../pages/TeamsPage";
 import AppLayout from "../pages/AppLayout";
 import ProfilePage from "../pages/ProfilePage";
 import ProtectedRoute from "./ProtectedRoute";
+import TeamDetailsPage from "../pages/TeamDetailsPage";
 import ResetPassword from "../pages/ResetPasswordPage";
 
 const router = createBrowserRouter([
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: "teams",
         element: <ProtectedRoute element={<TeamsPage />} />,
+      },
+      {
+        path: "teams/:teamId",
+        element: <ProtectedRoute element={<TeamDetailsPage />} />,
       },
     ],
   },
