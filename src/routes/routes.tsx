@@ -12,6 +12,7 @@ import AppLayout from "../pages/AppLayout";
 import ProfilePage from "../pages/ProfilePage";
 import ProtectedRoute from "./ProtectedRoute";
 import TeamDetailsPage from "../pages/TeamDetailsPage";
+import ResetPassword from "../pages/ResetPasswordPage";
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       { path: "forgot-password", element: <ForgotPassword /> },
       { path: "signup-success", element: <SignupSuccess /> },
     ],
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPassword />,
   },
   {
     path: "/signup-verification",

@@ -27,11 +27,12 @@
     "react-router-dom": "^6.23.1",
     "simple-zustand-devtools": "^1.1.0",
     "zod": "^3.23.8",
-    "zustand": "^4.5.2"
+    "zustand": "^4.5.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
     "@types/js-cookie": "^3.0.6",
+    "@types/jwt-decode": "^2.2.1",
     "@types/node": "^20.14.7",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
