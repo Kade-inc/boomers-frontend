@@ -5,6 +5,7 @@ interface TeamProps {
   team: Team;
 }
 const TeamCard = ({ team }: TeamProps) => {
+  console.log("TEAM: ", team)
   const navigate = useNavigate();
 
   return (

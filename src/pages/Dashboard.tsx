@@ -1,21 +1,112 @@
-import { useNavigate } from "react-router-dom";
 import AdviceCard from "../components/AdviceCard";
 import ProfileCard from "../components/ProfileCard";
-// import TeamCard from "../components/TeamCard";
+import TeamCard from "../components/TeamCard";
+import useTeams from "../hooks/useTeams";
+import useAuthStore from "../stores/useAuthStore";
 
 const Dashboard = () => {
-  const navigate = useNavigate()
+  const userId = useAuthStore((s) => s.userId);
+  const user = useAuthStore((s) => s.user);
+  const { data: teamsData } = useTeams(userId);
+
+  console.log("USER ID: ", userId);
+
+  console.log("TEAMS: ", teamsData);
+  console.log("USER: ", user);
+
   return (
     <>
-      <div className="text-base-content bg-base-100">Welcome Home</div>
-      <button
-        className="btn btn-primary"
-        onClick={() => navigate("/auth/login")}
-      >
-        Back
-      </button>
-      <AdviceCard />
-      <ProfileCard />
+      <div className="h-screen w-full px-5 pt-10 lg:flex lg:justify-between font-body">
+        <div className="min-h-80 xl:w-4/5 lg:w-full md:w-full">
+          <div>
+            <p className="font-body font-regular text-darkgrey text-[14px]">
+              Hi, username
+            </p>
+            <p className="font-body font-regular text-darkgrey text-[20px]">
+              Welcome Back!
+            </p>
+          </div>
+          <div className="mt-6">
+            <div className="flex flex-row">
+              <p className="font-body font-medium text-darkgrey text-[16px] mr-5">
+                Your Houses
+              </p>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="#F8B500"
+                className="size-6"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <div></div>
+            {teamsData?.length == 0 && (
+              <>
+                <div className="flex items-center flex-col text-darkgrey text-[16px] mt-10">
+                  <p className="mb-6">
+                    You do not belong to any team currently.
+                  </p>
+                  <div className="flex flex-row items-center justify-center gap-4">
+                    <button className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white">
+                      Create Team
+                    </button>
+                    <button className="px-8 py-2.5 text-[14px] font-regular bg-yellow rounded-[4px] text-darkgrey">
+                      Join a Team
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex items-center flex-col text-darkgrey text-[16px] mt-10">
+                  <p className="mb-6 font-semibold">
+                    Team recommendations based on your profile.
+                  </p>
+                  <div className="flex flex-col items-center hidden">
+                    <div className="flex flex-row justify-center gap-4">
+                      {/* <TeamCard /> */}
+                    </div>
+
+                    <button className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-8">
+                      View more
+                    </button>
+                  </div>
+                  <div className="flex flex-col items-center justify-center">
+                    <p className="mb-6">No recommendations found.</p>
+                    <div className="flex flex-col items-center justify-center">
+                      <p className="mb-6">
+                        Edit your profile with your interests to get
+                        recommendations.
+                      </p>
+                      <button className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-2">
+                        Edit Profile
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+            {teamsData && teamsData?.length > 0 && (
+              <>
+                <div className="carousel carousel-center space-x-6 pt-4 max-w-md md:max-w-screen-sm lg:max-w-screen-lg xl:max-w-screen-xl">
+                  {teamsData.map((team) => (
+                    <div className="carousel-item" key={team._id}>
+                      {/* <TeamCard /> */}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+        <div className="bg-white shadow-lg rounded h-100 lg:w-[300px] xl:w-1/5 xl:flex lg:flex lg:right-3 lg:top-15 hidden py-5 flex-col z-50">
+          <ProfileCard className="mb-5" />
+          <AdviceCard className="" />
+        </div>
+      </div>
     </>
   );
 };

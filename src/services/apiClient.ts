@@ -11,7 +11,7 @@ class APIClient {
   endpoint: string;
   axiosInstance: AxiosInstance;
 
-  constructor(endpoint: string) {
+  constructor(endpoint: string = "") {
     this.endpoint = endpoint;
     this.axiosInstance = axios.create({
       baseURL: "http://localhost:5001",
@@ -49,7 +49,7 @@ class APIClient {
   };
 
   signin = async (data: User): Promise<any> => {
-    const { login } = useAuthStore.getState();
+    const { login, setUserId } = useAuthStore.getState();
 
     try {
       const response = await this.axiosInstance.post(this.endpoint, data);
@@ -57,8 +57,9 @@ class APIClient {
 
       Cookies.set("jwt", accessToken, { expires: 7 });
       login(accessToken);
-
+      setUserId(this.decodeToken().aud);
       toast.success("Login successful");
+      this.getUserProfile();
       return response.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
@@ -111,7 +112,10 @@ class APIClient {
           },
         },
       );
-      console.log("RESPONSE: ", response.data);
+
+      const { profile } = response.data;
+      const { setUser } = useAuthStore.getState();
+      setUser(profile);
       return response.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
