@@ -57,7 +57,7 @@ const Dashboard = () => {
                     </button>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center flex-col text-darkgrey text-[16px] mt-10">
                   <p className="mb-6 font-semibold">
                     Team recommendations based on your profile.
@@ -73,38 +73,38 @@ const Dashboard = () => {
                   </div>
                   {teamRecommendations?.length === 0 && (
                     <>
-                    <div className="flex flex-col items-center justify-center">
-                    <p className="mb-6">No recommendations found.</p>
-                    <div className="flex flex-col items-center justify-center">
-                      <p className="mb-6">
-                        Edit your profile with your interests to get
-                        recommendations.
-                      </p>
-                      <button className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-2">
-                        Edit Profile
-                      </button>
-                    </div>
-                    </div>
+                      <div className="flex flex-col items-center justify-center">
+                        <p className="mb-6">No recommendations found.</p>
+                        <div className="flex flex-col items-center justify-center">
+                          <p className="mb-6">
+                            Edit your profile with your interests to get
+                            recommendations.
+                          </p>
+                          <button className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-2">
+                            Edit Profile
+                          </button>
+                        </div>
+                      </div>
                     </>
                   )}
-                  {
-                    teamRecommendations && teamRecommendations?.length > 0 && (
-                      <>
+                  {teamRecommendations && teamRecommendations?.length > 0 && (
+                    <>
                       <div className="carousel carousel-center space-x-6 pt-4 max-w-md md:max-w-screen-sm lg:max-w-screen-lg xl:max-w-screen-xl">
-                        {teamRecommendations?.slice(0, 2).map((recommendation: Team) => (
-                     
-                          <TeamCard key={recommendation._id} team={recommendation} styles={`w-[450px]`}/>
-                     
-                        ))}
-                        
+                        {teamRecommendations
+                          ?.slice(0, 2)
+                          .map((recommendation: Team) => (
+                            <TeamCard
+                              key={recommendation._id}
+                              team={recommendation}
+                              styles={`w-[450px]`}
+                            />
+                          ))}
                       </div>
                       <button className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-8">
-                      View more
-                    </button>
+                        View more
+                      </button>
                     </>
-                    )
-                  }
-                  
+                  )}
                 </div>
               </>
             )}
@@ -113,7 +113,11 @@ const Dashboard = () => {
                 <div className="carousel carousel-center space-x-6 pt-4 max-w-md md:max-w-screen-sm lg:max-w-screen-lg xl:max-w-screen-xl">
                   {teamsData.map((team) => (
                     <div className="carousel-item" key={team._id}>
-                      <TeamCard key={team._id} team={team} styles={`w-[450px]`} />
+                      <TeamCard
+                        key={team._id}
+                        team={team}
+                        styles={`w-[450px]`}
+                      />
                     </div>
                   ))}
                 </div>
