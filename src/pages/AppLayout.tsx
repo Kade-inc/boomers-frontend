@@ -1,32 +1,31 @@
 import { Outlet } from "react-router-dom";
 import NavigationBar from "../components/NavigationBar";
 import useAuthStore from "../stores/useAuthStore";
+import { useEffect } from "react";
+import Cookies from 'js-cookie';
 
 function AppLayout() {
-  const userId = useAuthStore((state) => state.userId);
-  // const { data: profile } = useUser()
-  // console.log("PROF: ", profile)
-  // useEffect(() => {
-  //   // Check if the token exists in the cookies
-  //   // const token = Cookies.get('jwt');
-  //   const apiClient = new APIClient();
-  //   const token = apiClient.getToken()
-  //   if (token) {
-  //     try {
-  //       const decodedToken = apiClient.decodeToken();
-  //       const userId = decodedToken.aud;  // Extract user ID
-  //       setUserId(userId);
-  //       console.log("NS")
+  const { isAuthenticated, logout } = useAuthStore();
 
-  //       // console.log("DATA: ", profile)
-  //       // apiClient.getUserProfile()
-  //     } catch (error) {
-  //       console.error('Failed to decode token', error);
-  //     }
-  //   }
-  // }, [setUserId]);
+  useEffect(() => {
+    const checkToken = () => {
+      const token = Cookies.get('jwt');
+      if (!token && isAuthenticated) {
+        // If no token in cookies and user is authenticated, log them out
+        logout();
+      }
+    };
 
-  console.log("DASH USER: ", userId);
+    // Run checkToken on component mount and whenever the component updates
+    checkToken();
+
+    // Optional: Add an interval to check the cookie every few seconds
+    const interval = setInterval(() => {
+      checkToken();
+    }, 5000); // 5 seconds
+
+    return () => clearInterval(interval); // Clean up the interval on unmount
+  }, [isAuthenticated, logout]);
 
   return (
     <>

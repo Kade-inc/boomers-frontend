@@ -35,7 +35,7 @@ const useAuthStore = create<AuthStore>(
       },
       logout: () => {
         Cookies.remove("jwt");
-        set({ isAuthenticated: false, user: {}, userId: "" }); // Clear everything on logout
+        set({ isAuthenticated: false, user: {}, userId: '' });
       },
       setUserId: (userId: string) => set(() => ({ userId })),
       setUser: (user: User) => set(() => ({ user })),

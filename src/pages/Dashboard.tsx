@@ -67,8 +67,7 @@ const Dashboard = () => {
                   </p>
                   <div className="flex flex-col items-center hidden">
                     <div className="flex flex-row justify-center gap-4">
-                      <TeamCard />
-                      <TeamCard />
+                      {/* <TeamCard /> */}
                     </div>
 
                     <button className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-8">
@@ -95,7 +94,7 @@ const Dashboard = () => {
                 <div className="carousel carousel-center space-x-6 pt-4 max-w-md md:max-w-screen-sm lg:max-w-screen-lg xl:max-w-screen-xl">
                   {teamsData.map((team) => (
                     <div className="carousel-item" key={team._id}>
-                      <TeamCard />
+                      {/* <TeamCard /> */}
                     </div>
                   ))}
                 </div>

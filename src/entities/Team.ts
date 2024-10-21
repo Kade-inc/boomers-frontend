@@ -9,6 +9,7 @@ export default interface Team {
   createdAt: string;
   updatedAt: string;
   _v: number;
+  teamColor?: string;
 }
 export default interface UserTeamsResponse {
   message: string;
