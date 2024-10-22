@@ -62,15 +62,6 @@ const Dashboard = () => {
                   <p className="mb-6 font-semibold">
                     Team recommendations based on your profile.
                   </p>
-                  <div className="flex flex-col items-center hidden">
-                    <div className="flex flex-row justify-center gap-4">
-                      {/* <TeamCard /> */}
-                    </div>
-
-                    <button className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-8">
-                      View more
-                    </button>
-                  </div>
                   {teamRecommendations?.length === 0 && (
                     <>
                       <div className="flex flex-col items-center justify-center">
@@ -117,6 +108,7 @@ const Dashboard = () => {
                         key={team._id}
                         team={team}
                         styles={`w-[450px]`}
+                        section="dashboard-section"
                       />
                     </div>
                   ))}
