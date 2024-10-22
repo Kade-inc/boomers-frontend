@@ -1,7 +1,10 @@
 import AdviceCard from "../components/AdviceCard";
+import ChallengesCard from "../components/ChallengesCard";
 import ProfileCard from "../components/ProfileCard";
 import TeamCard from "../components/TeamCard";
+import Challenge from "../entities/Challenge";
 import Team from "../entities/Team";
+import useChallenges from "../hooks/useChallenges";
 import useTeamRecommendations from "../hooks/useTeamRecommendations";
 import useTeams from "../hooks/useTeams";
 import useAuthStore from "../stores/useAuthStore";
@@ -10,6 +13,7 @@ const Dashboard = () => {
   const user = useAuthStore((s) => s.user);
   const { data: teamsData } = useTeams(user.user_id);
   const { data: teamRecommendations } = useTeamRecommendations();
+  const { data: challenges } = useChallenges(user.user_id || "");
 
   return (
     <>
@@ -25,7 +29,7 @@ const Dashboard = () => {
           </div>
           <div className="mt-6">
             <div className="flex flex-row">
-              <p className="font-body font-medium text-darkgrey text-[16px] mr-5">
+              <p className="font-body font-semibold text-darkgrey text-[16px] mr-5">
                 Your Houses
               </p>
               <svg
@@ -41,7 +45,6 @@ const Dashboard = () => {
                 />
               </svg>
             </div>
-            <div></div>
             {teamsData?.length == 0 && (
               <>
                 <div className="flex items-center flex-col text-darkgrey text-[16px] mt-10">
@@ -62,15 +65,6 @@ const Dashboard = () => {
                   <p className="mb-6 font-semibold">
                     Team recommendations based on your profile.
                   </p>
-                  <div className="flex flex-col items-center hidden">
-                    <div className="flex flex-row justify-center gap-4">
-                      {/* <TeamCard /> */}
-                    </div>
-
-                    <button className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-8">
-                      View more
-                    </button>
-                  </div>
                   {teamRecommendations?.length === 0 && (
                     <>
                       <div className="flex flex-col items-center justify-center">
@@ -117,6 +111,50 @@ const Dashboard = () => {
                         key={team._id}
                         team={team}
                         styles={`w-[450px]`}
+                        section="dashboard-section"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+          <div className="mt-12">
+            <div className="flex flex-row">
+              <p className="font-body font-semibold text-darkgrey text-[16px] mr-5">
+                Challenges
+              </p>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="#F8B500"
+                className="size-6"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            {challenges?.length == 0 && (
+              <div className="flex items-center flex-col text-darkgrey text-[16px] mt-10">
+                <p className="mb-6">
+                  You&apos;re all caught up! No challenges to display.
+                </p>
+              </div>
+            )}
+            {challenges && challenges?.length > 0 && (
+              <>
+                <div className="carousel carousel-center space-x-6 pt-4 max-w-md md:max-w-screen-sm lg:max-w-screen-lg xl:max-w-screen-xl">
+                  {challenges.map((challenge: Challenge) => (
+                    <div className="carousel-item" key={challenge._id}>
+                      <ChallengesCard
+                        key={challenge._id}
+                        challenge={challenge}
+                        teamsInformation={teamsData}
+                        styles={`w-[450px]`}
+                        section="dashboard-section"
                       />
                     </div>
                   ))}

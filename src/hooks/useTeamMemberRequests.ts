@@ -9,7 +9,7 @@ const useTeamMemberRequests = (
   teamId: string,
 ): UseQueryResult<Error, TeamMember[]> => {
   return useQuery({
-    queryKey: [`team-member-requests-${teamId}`],
+    queryKey: ["team-member-requests", teamId],
     queryFn: () => apiClient.getTeamMemberRequests(teamId),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });

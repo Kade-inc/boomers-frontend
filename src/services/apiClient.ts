@@ -212,6 +212,28 @@ class APIClient {
       );
     }
   };
+
+  getAllChallenges = async (userId: string) => {
+    try {
+      const response = await this.axiosInstance.get(
+        `${this.endpoint}?userId=${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.getToken()}`,
+          },
+        },
+      );
+      const { data } = response.data;
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching challenges:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
   getTeamMemberRequests = async (teamId: string) => {
     try {
       const response = await this.axiosInstance.get(

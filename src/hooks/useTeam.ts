@@ -7,7 +7,7 @@ const apiClient = new APIClient("/api/teams");
 
 const useTeam = (teamId: string): UseQueryResult<Error, UserTeam> => {
   return useQuery({
-    queryKey: [`team-${teamId}`],
+    queryKey: ["team", teamId],
     queryFn: () => apiClient.getTeamDetails(teamId),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });

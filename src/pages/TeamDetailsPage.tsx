@@ -5,7 +5,7 @@ import MemberCard from "../components/MemberCard";
 import { useParams } from "react-router-dom";
 import TeamMember from "../entities/TeamMember";
 import useTeam from "../hooks/useTeam";
-import useChallenges from "../hooks/useChallenges";
+import useTeamChallenges from "../hooks/useTeamChallenges";
 import useTeamMemberRequests from "../hooks/useTeamMemberRequests";
 import { Toaster } from "react-hot-toast";
 
@@ -21,7 +21,7 @@ const TeamDetailsPage = () => {
     data: challenges,
     isPending: isChallengesPending,
     error: challengesError,
-  } = useChallenges(teamId || "");
+  } = useTeamChallenges(teamId || "");
   const {
     data: requests,
     isPending: isTeamMemberRequestsPending,
