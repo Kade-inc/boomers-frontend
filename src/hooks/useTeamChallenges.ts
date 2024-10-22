@@ -3,14 +3,16 @@ import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import APIClient from "../services/apiClient";
 import Challenge from "../entities/Challenge";
 
-const apiClient = new APIClient("/api/challenges");
+const apiClient = new APIClient("/api/teams");
 
-const useChallenges = (userId: string): UseQueryResult<Error, Challenge[]> => {
+const useTeamChallenges = (
+  teamId: string,
+): UseQueryResult<Error, Challenge[]> => {
   return useQuery({
-    queryKey: ["challenges", userId],
-    queryFn: () => apiClient.getAllChallenges(userId),
+    queryKey: ["team-challenges", teamId],
+    queryFn: () => apiClient.getTeamChallenges(teamId),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };
 
-export default useChallenges;
+export default useTeamChallenges;
