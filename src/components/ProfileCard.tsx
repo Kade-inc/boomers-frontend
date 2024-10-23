@@ -8,7 +8,7 @@ interface ProfileCardProps {
 const ProfileCard = ({ user, className }: ProfileCardProps) => {
   return (
     <div
-      className={`bg-yellow flex flex-col mx-auto p-[30px] w-[90%] rounded-[5px] items-center justify-center gap-3 shadow-md ${className}`}
+      className={`bg-yellow flex flex-col mx-auto p-[30px] w-[90%] rounded-[5px] items-center justify-center gap-3 hover:shadow-lg hover:cursor-pointer ${className}`}
     >
       <div className="rounded-full w-[130px] h-[130px]">
         <img
