@@ -108,7 +108,7 @@ class APIClient {
     //TODO: FIX THIS. It should follow the structure of all other methods
     // The issue is occuring since we have to call the endpoint in the
     // login method
-    let prefix = "api/users";
+    const prefix = "api/users";
     
     try {
       const response = await this.axiosInstance.get(
