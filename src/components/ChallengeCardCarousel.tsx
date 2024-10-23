@@ -18,9 +18,9 @@ function ChallengeCardCarousel({ slides, teamsData }: CarouselProps) {
 
   const settings = {
     dots: true,
-    infinite: true,
+    infinite: false,
     speed: 500,
-    slidesToShow: 1,
+    slidesToShow: 3,
     slidesToScroll: 1,
     afterChange: (index: number) => setCurrentSlide(index),
     customPaging: (i: number) => (
@@ -31,18 +31,44 @@ function ChallengeCardCarousel({ slides, teamsData }: CarouselProps) {
       />
     ),
     dotsClass: "slick-dots flex justify-center mt-4",
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          infinite: false,
+          dots: true,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          initialSlide: 2,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
   };
   return (
-    <div className="max-w-lg mx-auto">
+    <div className="max-w-lg md:max-w-full mx-auto">
       <Slider {...settings}>
         {slides.map((slide: Challenge) => (
           <div key={slide._id}>
-            <div className="h-64 flex items-center justify-center text-white">
+            <div className="h-64 flex items-center text-white">
               <ChallengesCard
                 key={slide._id}
                 challenge={slide}
                 teamsInformation={teamsData}
-                styles={`w-full`}
+                styles={`w-full md:w-[400px]`}
                 section="dashboard-section"
               />
             </div>

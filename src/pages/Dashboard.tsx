@@ -1,21 +1,21 @@
 import AdviceCard from "../components/AdviceCard";
-import CardCarousel from "../components/CardCarousel";
 import ChallengeCardCarousel from "../components/ChallengeCardCarousel";
 import ProfileCard from "../components/ProfileCard";
 import TeamCard from "../components/TeamCard";
 import Team from "../entities/Team";
 import useChallenges from "../hooks/useChallenges";
-import useProfile from "../hooks/useProfile";
+// import useProfile from "../hooks/useProfile";
 import useTeamRecommendations from "../hooks/useTeamRecommendations";
 import useTeams from "../hooks/useTeams";
 import useAuthStore from "../stores/useAuthStore";
+import TeamCardCarousel from "../components/TeamCardCarousel";
 
 const Dashboard = () => {
   const user = useAuthStore((s) => s.user);
   const { data: teamsData } = useTeams(user.user_id);
   const { data: teamRecommendations } = useTeamRecommendations();
   const { data: challenges } = useChallenges(user.user_id || "");
-  const { data: userProfile } = useProfile()
+  // const { data: userProfile } = useProfile()
 
   return (
     <>
@@ -106,7 +106,7 @@ const Dashboard = () => {
             )}
             {teamsData && teamsData?.length > 0 && (
               <>
-                <CardCarousel slides={teamsData} />
+                <TeamCardCarousel slides={teamsData} />
               </>
             )}
           </div>
