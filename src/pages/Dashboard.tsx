@@ -19,7 +19,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className="h-screen w-full px-10 pt-10 lg:flex lg:justify-between font-body">
+      <div className="h-screen w-full px-5 md:px-10 pt-10 lg:flex lg:justify-between font-body">
         <div className="min-h-80 xl:w-4/5 lg:w-full md:w-full">
           <div>
             <p className="font-body font-regular text-darkgrey text-[14px]">
