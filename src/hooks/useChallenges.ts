@@ -5,7 +5,7 @@ import Challenge from "../entities/Challenge";
 
 const apiClient = new APIClient("/api/challenges");
 
-const useChallenges = (userId: string): UseQueryResult<Error, Challenge[]> => {
+const useChallenges = (userId: string): UseQueryResult<any, Challenge[]> => {
   return useQuery({
     queryKey: ["challenges", userId],
     queryFn: () => apiClient.getAllChallenges(userId),

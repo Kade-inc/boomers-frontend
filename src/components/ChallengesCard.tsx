@@ -5,7 +5,7 @@ import Team from "../entities/Team";
 import { useEffect, useState } from "react";
 
 type ExtendedChallengeInterface = Challenge & {
-  teamName: string;
+  teamName?: string;
 };
 interface ChallengesCardProps {
   challenge: ExtendedChallengeInterface;

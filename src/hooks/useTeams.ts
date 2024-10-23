@@ -5,7 +5,7 @@ import Team from "../entities/Team";
 
 const apiClient = new APIClient("/api/teams");
 
-const useTeams = (userId: string = ""): UseQueryResult<Error, Team[]> => {
+const useTeams = (userId: string = ""): UseQueryResult<any, Team[]> => {
   return useQuery({
     queryKey: ["teams", userId],
     queryFn: () => apiClient.getTeams(userId),

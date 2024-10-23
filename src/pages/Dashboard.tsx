@@ -107,7 +107,7 @@ const Dashboard = () => {
             {teamsData && teamsData?.length > 0 && (
               <>
                 <div className="carousel carousel-center space-x-6 pt-4 max-w-md md:max-w-screen-sm lg:max-w-screen-lg xl:max-w-screen-xl">
-                  {teamsData.map((team) => (
+                  {teamsData.map((team: Team) => (
                     <div className="carousel-item" key={team._id}>
                       <TeamCard
                         key={team._id}
