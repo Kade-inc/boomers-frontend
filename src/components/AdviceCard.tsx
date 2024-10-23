@@ -35,7 +35,13 @@ const AdviceCard = ({ className }: AdviceCardProps) => {
             {advice}
           </div>
           <div className="flex justify-center bg-yellow rounded-[50px] text-center px-4 py-1 text-darkgrey text-[12px] font-medium font-body hover:underline">
-            <a href="https://api.adviceslip.com/" target="_blank" rel="noopener noreferrer">With ❤️ From Advice Slip Json API</a>
+            <a
+              href="https://api.adviceslip.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              With ❤️ From Advice Slip Json API
+            </a>
           </div>
         </>
       )}

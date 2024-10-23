@@ -1,8 +1,8 @@
 import AdviceCard from "../components/AdviceCard";
-import ChallengesCard from "../components/ChallengesCard";
+import CardCarousel from "../components/CardCarousel";
+import ChallengeCardCarousel from "../components/ChallengeCardCarousel";
 import ProfileCard from "../components/ProfileCard";
 import TeamCard from "../components/TeamCard";
-import Challenge from "../entities/Challenge";
 import Team from "../entities/Team";
 import useChallenges from "../hooks/useChallenges";
 import useProfile from "../hooks/useProfile";
@@ -106,18 +106,7 @@ const Dashboard = () => {
             )}
             {teamsData && teamsData?.length > 0 && (
               <>
-                <div className="carousel carousel-center space-x-6 pt-4 max-w-md md:max-w-screen-sm lg:max-w-screen-lg xl:max-w-screen-xl">
-                  {teamsData.map((team: Team) => (
-                    <div className="carousel-item" key={team._id}>
-                      <TeamCard
-                        key={team._id}
-                        team={team}
-                        styles={`w-[450px]`}
-                        section="dashboard-section"
-                      />
-                    </div>
-                  ))}
-                </div>
+                <CardCarousel slides={teamsData} />
               </>
             )}
           </div>
@@ -148,19 +137,10 @@ const Dashboard = () => {
             )}
             {challenges && challenges?.length > 0 && (
               <>
-                <div className="carousel carousel-center space-x-6 pt-4 max-w-md md:max-w-screen-sm lg:max-w-screen-lg xl:max-w-screen-xl">
-                  {challenges.map((challenge: Challenge) => (
-                    <div className="carousel-item" key={challenge._id}>
-                      <ChallengesCard
-                        key={challenge._id}
-                        challenge={challenge}
-                        teamsInformation={teamsData}
-                        styles={`w-[450px]`}
-                        section="dashboard-section"
-                      />
-                    </div>
-                  ))}
-                </div>
+                <ChallengeCardCarousel
+                  slides={challenges}
+                  teamsData={teamsData}
+                />
               </>
             )}
           </div>

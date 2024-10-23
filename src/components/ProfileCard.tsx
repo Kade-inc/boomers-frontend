@@ -19,10 +19,18 @@ const ProfileCard = ({ user, className }: ProfileCardProps) => {
       </div>
       {user && (
         <>
-        <div className="w-[115px] h-[20px] text-darkgrey font-body font-[600] text-[16px] leading-[19.5px] text-center">
-          <h1>{user.firstName && user.lastName ? (<>{user.firstName}{" "}{user.lastName}</>) : user.username}</h1>
-        </div>
-      </>
+          <div className="w-[115px] h-[20px] text-darkgrey font-body font-[600] text-[16px] leading-[19.5px] text-center">
+            <h1>
+              {user.firstName && user.lastName ? (
+                <>
+                  {user.firstName} {user.lastName}
+                </>
+              ) : (
+                user.username
+              )}
+            </h1>
+          </div>
+        </>
       )}
       <button className="bg-darkgrey px-10 h-[35px] rounded-[3px] text-white font-body font-[500] text-[14px] leading-[14.63px] text-center">
         Edit Profile

@@ -109,7 +109,7 @@ class APIClient {
     // The issue is occuring since we have to call the endpoint in the
     // login method
     const prefix = "api/users";
-    
+
     try {
       const response = await this.axiosInstance.get(
         `${prefix}/${userId}/profile`,
