@@ -5,7 +5,7 @@ import Team from "../entities/Team";
 
 const apiClient = new APIClient("/api/teams/recommendations");
 
-const useTeamRecommendations = (): UseQueryResult<Error, Team[]> => {
+const useTeamRecommendations = (): UseQueryResult<any, Team[]> => {
   return useQuery({
     queryKey: ["team-recommendations"],
     queryFn: () => apiClient.getTeamRecommendations(),
