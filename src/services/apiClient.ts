@@ -108,11 +108,8 @@ class APIClient {
     //TODO: FIX THIS. It should follow the structure of all other methods
     // The issue is occuring since we have to call the endpoint in the
     // login method
-    let prefix = "api/users/login";
-    if (this.endpoint === "/api/users/login") {
-      prefix = "/api/users/";
-    }
-    console.log("new: ", prefix);
+    let prefix = "api/users";
+    
     try {
       const response = await this.axiosInstance.get(
         `${prefix}/${userId}/profile`,
@@ -126,7 +123,7 @@ class APIClient {
       const { profile } = response.data;
       const { setUser } = useAuthStore.getState();
       setUser(profile);
-      return response.data;
+      return profile;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(
