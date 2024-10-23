@@ -3,14 +3,14 @@ import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import APIClient from "../services/apiClient";
 import Team from "../entities/Team";
 
-const apiClient = new APIClient("/api/teams");
+const apiClient = new APIClient("/api/users");
 
-const useTeams = (userId: string = ""): UseQueryResult<any, Team[]> => {
+const useProfile = (): UseQueryResult<Error, Team[]> => {
   return useQuery({
-    queryKey: ["teams", userId],
-    queryFn: () => apiClient.getTeams(userId),
+    queryKey: ["profile"],
+    queryFn: () => apiClient.getUserProfile(),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };
 
-export default useTeams;
+export default useProfile;

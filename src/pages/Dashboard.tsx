@@ -1,23 +1,25 @@
 import AdviceCard from "../components/AdviceCard";
-import ChallengesCard from "../components/ChallengesCard";
+import ChallengeCardCarousel from "../components/ChallengeCardCarousel";
 import ProfileCard from "../components/ProfileCard";
 import TeamCard from "../components/TeamCard";
-import Challenge from "../entities/Challenge";
 import Team from "../entities/Team";
 import useChallenges from "../hooks/useChallenges";
+// import useProfile from "../hooks/useProfile";
 import useTeamRecommendations from "../hooks/useTeamRecommendations";
 import useTeams from "../hooks/useTeams";
 import useAuthStore from "../stores/useAuthStore";
+import TeamCardCarousel from "../components/TeamCardCarousel";
 
 const Dashboard = () => {
   const user = useAuthStore((s) => s.user);
   const { data: teamsData } = useTeams(user.user_id);
   const { data: teamRecommendations } = useTeamRecommendations();
   const { data: challenges } = useChallenges(user.user_id || "");
+  // const { data: userProfile } = useProfile()
 
   return (
     <>
-      <div className="h-screen w-full px-10 pt-10 lg:flex lg:justify-between font-body">
+      <div className="h-screen w-full px-5 md:px-10 pt-10 lg:flex lg:justify-between font-body">
         <div className="min-h-80 xl:w-4/5 lg:w-full md:w-full">
           <div>
             <p className="font-body font-regular text-darkgrey text-[14px]">
@@ -104,18 +106,7 @@ const Dashboard = () => {
             )}
             {teamsData && teamsData?.length > 0 && (
               <>
-                <div className="carousel carousel-center space-x-6 pt-4 max-w-md md:max-w-screen-sm lg:max-w-screen-lg xl:max-w-screen-xl">
-                  {teamsData.map((team) => (
-                    <div className="carousel-item" key={team._id}>
-                      <TeamCard
-                        key={team._id}
-                        team={team}
-                        styles={`w-[450px]`}
-                        section="dashboard-section"
-                      />
-                    </div>
-                  ))}
-                </div>
+                <TeamCardCarousel slides={teamsData} />
               </>
             )}
           </div>
@@ -146,25 +137,16 @@ const Dashboard = () => {
             )}
             {challenges && challenges?.length > 0 && (
               <>
-                <div className="carousel carousel-center space-x-6 pt-4 max-w-md md:max-w-screen-sm lg:max-w-screen-lg xl:max-w-screen-xl">
-                  {challenges.map((challenge: Challenge) => (
-                    <div className="carousel-item" key={challenge._id}>
-                      <ChallengesCard
-                        key={challenge._id}
-                        challenge={challenge}
-                        teamsInformation={teamsData}
-                        styles={`w-[450px]`}
-                        section="dashboard-section"
-                      />
-                    </div>
-                  ))}
-                </div>
+                <ChallengeCardCarousel
+                  slides={challenges}
+                  teamsData={teamsData}
+                />
               </>
             )}
           </div>
         </div>
         <div className="bg-white shadow-lg rounded h-5/6 lg:w-[300px] xl:w-1/5 xl:flex lg:flex lg:right-3 lg:top-15 hidden py-5 flex-col z-50">
-          <ProfileCard className="mb-5" />
+          <ProfileCard user={user} className="mb-5" />
           <AdviceCard className="" />
         </div>
       </div>
