@@ -17,7 +17,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className="h-screen w-full px-5 pt-10 lg:flex lg:justify-between font-body">
+      <div className="h-screen w-full px-10 pt-10 lg:flex lg:justify-between font-body">
         <div className="min-h-80 xl:w-4/5 lg:w-full md:w-full">
           <div>
             <p className="font-body font-regular text-darkgrey text-[14px]">
@@ -163,7 +163,7 @@ const Dashboard = () => {
             )}
           </div>
         </div>
-        <div className="bg-white shadow-lg rounded h-100 lg:w-[300px] xl:w-1/5 xl:flex lg:flex lg:right-3 lg:top-15 hidden py-5 flex-col z-50">
+        <div className="bg-white shadow-lg rounded h-5/6 lg:w-[300px] xl:w-1/5 xl:flex lg:flex lg:right-3 lg:top-15 hidden py-5 flex-col z-50">
           <ProfileCard className="mb-5" />
           <AdviceCard className="" />
         </div>

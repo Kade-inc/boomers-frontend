@@ -25,7 +25,7 @@ const TeamsPage = () => {
   }
 
   return (
-    <div className="h-screen text-darkgrey px-[20px]">
+    <div className="h-screen text-darkgrey px-10">
       {!teamId ? (
         <>
           <p className="font-normal text-[20px] mt-3 mb-3">Text</p>
