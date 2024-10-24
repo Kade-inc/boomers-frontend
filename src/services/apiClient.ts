@@ -310,11 +310,15 @@ class APIClient {
 
   logout = async () => {
     try {
-      const response = await this.axiosInstance.post(`${this.endpoint}`, {
-        headers: {
-          Authorization: `Bearer ${this.getToken()}`,
+      const response = await this.axiosInstance.post(
+        `${this.endpoint}`,
+        { token: Cookies.get("token") },
+        {
+          headers: {
+            Authorization: `Bearer ${this.getToken()}`,
+          },
         },
-      });
+      );
       const { data } = response.data;
       return data;
     } catch (error: unknown) {

@@ -7,12 +7,13 @@ import useAuthStore from "../stores/useAuthStore";
 
 function NavigationBar() {
   const currentRoute = useLocation();
-  const logoutMutation = useLogout();
+  const mutation = useLogout();
   const logout = useAuthStore.getState().logout;
   const pathname = currentRoute.pathname;
   const navigate = useNavigate();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await mutation.mutateAsync();
     logout();
     navigate("/");
   };
@@ -244,7 +245,7 @@ function NavigationBar() {
                   />
                 </svg>
                 <p className="font-body ml-2" onClick={handleLogout}>
-                  {logoutMutation.isPending ? "Logging out..." : "Log out"}
+                  {mutation.isPending ? "Logging out..." : "Log out"}
                 </p>
               </div>
             </li>
