@@ -9,7 +9,7 @@ function AppLayout() {
 
   useEffect(() => {
     const checkToken = () => {
-      const token = Cookies.get("jwt");
+      const token = Cookies.get("token");
       if (!token && isAuthenticated) {
         // If no token in cookies and user is authenticated, log them out
         logout();

@@ -22,19 +22,21 @@ type MyPersist = (
 const useAuthStore = create<AuthStore>(
   (persist as MyPersist)(
     (set) => ({
-      isAuthenticated: !!Cookies.get("jwt"), // Initialize from cookie
+      isAuthenticated: !!Cookies.get("token"), // Initialize from cookie
       user: {},
       userId: "",
       login: (token: string) => {
-        Cookies.set("jwt", token, {
-          expires: 7,
+        Cookies.set("token", token, {
+          expires: 365 * 24 * 60 * 60 * 1000,
+          httpOnly: true, // The cookie is only accessible by the web server
           secure: true,
-          sameSite: "Strict",
+          sameSite: "None",
         });
+
         set({ isAuthenticated: true });
       },
       logout: () => {
-        Cookies.remove("jwt");
+        Cookies.remove("token");
         set({ isAuthenticated: false, user: {}, userId: "" });
       },
       setUserId: (userId: string) => set(() => ({ userId })),

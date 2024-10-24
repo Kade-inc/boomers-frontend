@@ -55,7 +55,7 @@ class APIClient {
       const response = await this.axiosInstance.post(this.endpoint, data);
       const { accessToken } = response.data;
 
-      Cookies.set("jwt", accessToken, { expires: 7 });
+      Cookies.set("token", accessToken, { expires: 365 * 24 * 60 * 60 * 1000 });
       login(accessToken);
       setUserId(this.decodeToken().aud);
       toast.success("Login successful");
@@ -135,11 +135,11 @@ class APIClient {
   };
 
   getToken = () => {
-    return Cookies.get("jwt");
+    return Cookies.get("token");
   };
 
   decodeToken = (): any => {
-    const value: any = Cookies.get("jwt");
+    const value: any = Cookies.get("token");
     const decoded = jwtDecode(value);
 
     return decoded;
@@ -286,6 +286,24 @@ class APIClient {
       const axiosError = error as AxiosError;
       toast.error(
         "Error fetching Advice",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
+  logout = async () => {
+    try {
+      const response = await this.axiosInstance.post(`${this.endpoint}`, {
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`,
+        },
+      });
+      const { data } = response.data;
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error Logging out",
         axiosError.response?.data ?? axiosError.message,
       );
     }
