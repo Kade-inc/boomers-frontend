@@ -16,6 +16,23 @@ class APIClient {
     this.axiosInstance = axios.create({
       baseURL: "http://localhost:5001",
     });
+
+    // Add the response interceptor to handle 401 errors
+    this.axiosInstance.interceptors.response.use(
+      (response) => response, // If the response is successful, return it
+      (error) => {
+        const axiosError = error as AxiosError;
+        if (axiosError.response?.status === 401) {
+          const logout = useAuthStore.getState().logout;
+          logout();
+          toast.error(
+            "Session expired. You have been logged out.",
+            axiosError.response?.data ?? axiosError.message,
+          );
+        }
+        return Promise.reject(error); // Forward the error
+      },
+    );
   }
 
   signup = async (data: User): Promise<any> => {

@@ -1,16 +1,20 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import ThemeToggle from "./DarkModeToggle";
 import useLogout from "../hooks/useLogout";
+import useAuthStore from "../stores/useAuthStore";
 // import { MagnifyingGlassIcon } from '@heroicons/react/24/solid'
 
 function NavigationBar() {
   const currentRoute = useLocation();
   const logoutMutation = useLogout();
+  const logout = useAuthStore.getState().logout;
   const pathname = currentRoute.pathname;
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    logoutMutation.mutate(); // This triggers the logout mutation
+    logout();
+    navigate("/");
   };
 
   return (

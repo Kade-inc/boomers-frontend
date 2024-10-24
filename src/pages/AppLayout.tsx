@@ -1,31 +1,30 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import NavigationBar from "../components/NavigationBar";
 import useAuthStore from "../stores/useAuthStore";
 import { useEffect } from "react";
 import Cookies from "js-cookie";
 
 function AppLayout() {
-  const { isAuthenticated, logout } = useAuthStore();
-
+  const { isAuthenticated, logout, checkAuth } = useAuthStore();
+  const navigate = useNavigate();
   useEffect(() => {
+    checkAuth();
     const checkToken = () => {
       const token = Cookies.get("token");
       if (!token && isAuthenticated) {
-        // If no token in cookies and user is authenticated, log them out
         logout();
+        navigate("/");
       }
     };
 
-    // Run checkToken on component mount and whenever the component updates
     checkToken();
 
-    // Optional: Add an interval to check the cookie every few seconds
     const interval = setInterval(() => {
       checkToken();
     }, 5000); // 5 seconds
 
     return () => clearInterval(interval); // Clean up the interval on unmount
-  }, [isAuthenticated, logout]);
+  }, [isAuthenticated, logout, checkAuth]);
 
   return (
     <>

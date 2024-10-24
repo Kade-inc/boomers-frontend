@@ -36,6 +36,10 @@ const TeamDetailsPage = () => {
     return <p>Loading...</p>;
   }
 
+  if (teamError) {
+    return <p>Error loading page.</p>;
+  }
+
   return (
     <div className="h-screen text-darkgrey px-[40px]">
       <>
