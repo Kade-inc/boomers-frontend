@@ -23,13 +23,8 @@ const LoginForm = () => {
   });
 
   const onSubmit = async (data: FormData) => {
-    console.log(data);
-    try {
-      await mutation.mutateAsync(data);
-      navigate("/");
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    await mutation.mutateAsync(data);
+    navigate("/");
   };
   return (
     <div className="text-[#393E46]">

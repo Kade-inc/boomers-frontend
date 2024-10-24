@@ -229,7 +229,10 @@ function NavigationBar() {
               </Link>
             </li>
             <li>
-              <div className="flex items-center py-4 hover:bg-yellow">
+              <div
+                className="flex items-center py-4 hover:bg-yellow"
+                onClick={handleLogout}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -244,7 +247,7 @@ function NavigationBar() {
                     d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
                   />
                 </svg>
-                <p className="font-body ml-2" onClick={handleLogout}>
+                <p className="font-body ml-2">
                   {mutation.isPending ? "Logging out..." : "Log out"}
                 </p>
               </div>

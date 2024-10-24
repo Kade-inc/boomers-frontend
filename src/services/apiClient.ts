@@ -7,6 +7,10 @@ import { UserVerificationModel } from "../entities/UserVerificationModel";
 import { jwtDecode } from "jwt-decode";
 import useAuthStore from "../stores/useAuthStore";
 
+interface ErrorResponse {
+  message: string;
+}
+
 class APIClient {
   endpoint: string;
   axiosInstance: AxiosInstance;
@@ -38,7 +42,6 @@ class APIClient {
   signup = async (data: User): Promise<any> => {
     try {
       const response = await this.axiosInstance.post(this.endpoint, data);
-      console.log("Verification code:", response.data);
       toast.success("Signup successful");
       return response.data;
     } catch (error: unknown) {
@@ -78,10 +81,11 @@ class APIClient {
       toast.success("Login successful");
       this.getUserProfile();
       return response.data;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const axiosError = error as AxiosError;
       toast.error(
-        "Login error: " + (axiosError.response?.data ?? axiosError.message),
+        (axiosError.response?.data as ErrorResponse)?.message ??
+          axiosError.message,
       );
       throw axiosError;
     }
