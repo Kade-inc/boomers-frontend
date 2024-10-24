@@ -8,6 +8,8 @@ import useTeam from "../hooks/useTeam";
 import useTeamChallenges from "../hooks/useTeamChallenges";
 import useTeamMemberRequests from "../hooks/useTeamMemberRequests";
 import { Toaster } from "react-hot-toast";
+import Challenge from "../entities/Challenge";
+import Request from "../entities/Request";
 
 const TeamDetailsPage = () => {
   const [activeTab, setActiveTab] = useState("members");
@@ -116,7 +118,7 @@ const TeamDetailsPage = () => {
                       {team.domain}{" "}
                       <div className="bg-white rounded-full w-1 h-1 mx-1"></div>{" "}
                       {team.subdomain}{" "}
-                      {team.subdomainTopics.map((topic) => (
+                      {team.subdomainTopics.map((topic: string) => (
                         <>
                           <div className="bg-white rounded-full w-1 h-1 mx-1"></div>{" "}
                           <p>{topic}</p>
@@ -177,7 +179,7 @@ const TeamDetailsPage = () => {
               {activeTab === "challenges" && (
                 <div>
                   {challenges &&
-                    challenges.map((challenge) => (
+                    challenges.map((challenge: Challenge) => (
                       <ChallengesCard
                         key={challenge._id}
                         challenge={challenge}
@@ -193,7 +195,7 @@ const TeamDetailsPage = () => {
               {activeTab === "requests" && (
                 <div className="flex gap-6">
                   {requests.length > 0 &&
-                    requests.map((request) => (
+                    requests.map((request: Request) => (
                       <MemberCard
                         key={request._id}
                         member={request.userProfile}

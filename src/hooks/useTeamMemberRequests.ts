@@ -7,7 +7,7 @@ const apiClient = new APIClient("/api/team-member");
 
 const useTeamMemberRequests = (
   teamId: string,
-): UseQueryResult<Error, TeamMember[]> => {
+): UseQueryResult<any, TeamMember[]> => {
   return useQuery({
     queryKey: ["team-member-requests", teamId],
     queryFn: () => apiClient.getTeamMemberRequests(teamId),
