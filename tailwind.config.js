@@ -30,12 +30,13 @@ export default {
       {
         light: {
           ...require("daisyui/src/theming/themes")["[data-theme=light]"],
-          "base-100": "#ffffff",
-          "base-content": "#000000",
+          "base-100": "#F7F7F7",
+          "base-200": "#FFFFFF",
+          "base-content": "#393E46",
         },
         dark: {
           ...require("daisyui/src/theming/themes")["[data-theme=dark]"],
-          "base-100": "#000000",
+          "base-100": "#141414",
           "base-content": "#ffffff",
         },
       },
