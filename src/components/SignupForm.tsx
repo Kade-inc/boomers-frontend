@@ -45,13 +45,9 @@ const SignupForm = () => {
 
   const onSubmit = async (data: FormData) => {
     const { confirmpassword, ...userData } = data; // eslint-disable-line @typescript-eslint/no-unused-vars
-    try {
-      await mutation.mutateAsync(userData);
-      setSignUpSuccess(true);
-      navigate("/auth/signup-success");
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    await mutation.mutateAsync(userData);
+    setSignUpSuccess(true);
+    navigate("/auth/signup-success");
   };
 
   return (

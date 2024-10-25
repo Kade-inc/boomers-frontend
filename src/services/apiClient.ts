@@ -7,6 +7,10 @@ import { UserVerificationModel } from "../entities/UserVerificationModel";
 import { jwtDecode } from "jwt-decode";
 import useAuthStore from "../stores/useAuthStore";
 
+interface ErrorResponse {
+  message: string;
+}
+
 class APIClient {
   endpoint: string;
   axiosInstance: AxiosInstance;
@@ -16,12 +20,28 @@ class APIClient {
     this.axiosInstance = axios.create({
       baseURL: "http://localhost:5001",
     });
+
+    // Add the response interceptor to handle 401 errors
+    this.axiosInstance.interceptors.response.use(
+      (response) => response, // If the response is successful, return it
+      (error) => {
+        const axiosError = error as AxiosError;
+        if (axiosError.response?.status === 401) {
+          const logout = useAuthStore.getState().logout;
+          logout();
+          toast.error(
+            "Session expired. You have been logged out.",
+            axiosError.response?.data ?? axiosError.message,
+          );
+        }
+        return Promise.reject(error); // Forward the error
+      },
+    );
   }
 
   signup = async (data: User): Promise<any> => {
     try {
       const response = await this.axiosInstance.post(this.endpoint, data);
-      console.log("Verification code:", response.data);
       toast.success("Signup successful");
       return response.data;
     } catch (error: unknown) {
@@ -55,16 +75,17 @@ class APIClient {
       const response = await this.axiosInstance.post(this.endpoint, data);
       const { accessToken } = response.data;
 
-      Cookies.set("jwt", accessToken, { expires: 7 });
+      Cookies.set("token", accessToken, { expires: 365 * 24 * 60 * 60 * 1000 });
       login(accessToken);
       setUserId(this.decodeToken().aud);
       toast.success("Login successful");
       this.getUserProfile();
       return response.data;
-    } catch (error: unknown) {
+    } catch (error: any) {
       const axiosError = error as AxiosError;
       toast.error(
-        "Login error: " + (axiosError.response?.data ?? axiosError.message),
+        (axiosError.response?.data as ErrorResponse)?.message ??
+          axiosError.message,
       );
       throw axiosError;
     }
@@ -135,11 +156,11 @@ class APIClient {
   };
 
   getToken = () => {
-    return Cookies.get("jwt");
+    return Cookies.get("token");
   };
 
   decodeToken = (): any => {
-    const value: any = Cookies.get("jwt");
+    const value: any = Cookies.get("token");
     const decoded = jwtDecode(value);
 
     return decoded;
@@ -286,6 +307,28 @@ class APIClient {
       const axiosError = error as AxiosError;
       toast.error(
         "Error fetching Advice",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
+  logout = async () => {
+    try {
+      const response = await this.axiosInstance.post(
+        `${this.endpoint}`,
+        { token: Cookies.get("token") },
+        {
+          headers: {
+            Authorization: `Bearer ${this.getToken()}`,
+          },
+        },
+      );
+      const { data } = response.data;
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error Logging out",
         axiosError.response?.data ?? axiosError.message,
       );
     }

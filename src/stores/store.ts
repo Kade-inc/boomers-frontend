@@ -7,7 +7,6 @@ import { jwtDecode } from "jwt-decode";
 interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
-  login: (token: string) => void;
   logout: () => void;
   checkAuth: () => void;
 }
@@ -26,11 +25,6 @@ const useSignUpStore = create<SignUpStore>()(
 
       setSignUpSuccess: (signUpSuccess: boolean) =>
         set(() => ({ signUpSuccess })),
-
-      login: (token: string) => {
-        Cookies.set("token", token);
-        set({ token, isAuthenticated: true });
-      },
 
       logout: () => {
         Cookies.remove("token");

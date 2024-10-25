@@ -53,13 +53,7 @@ const ResetPassword = () => {
     const userId = searchParams.get("id");
 
     if (token && userId) {
-      try {
-        mutate({ userId, password: data.password, token });
-      } catch (error) {
-        console.error("Error", error);
-      }
-    } else {
-      console.error("Token or User id Missing from URL");
+      await mutate({ userId, password: data.password, token });
     }
   };
 
