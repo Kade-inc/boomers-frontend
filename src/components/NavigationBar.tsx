@@ -153,11 +153,11 @@ function NavigationBar() {
             tabIndex={0}
             className="menu menu-sm dropdown-content bg-base-100 z-[1] mt-3 w-52 p-2 shadow"
           >
-            <li>
+            <li className="lg:hidden">
               <Link
                 className={
                   pathname === "/" || pathname === "/dashboard"
-                    ? "bg-yellow font-semibold py-4 my-1"
+                    ? "bg-yellow font-semibold py-4 my-1 text-darkgrey"
                     : "py-4 my-1 hover:bg-yellow"
                 }
                 to="/"
@@ -178,11 +178,11 @@ function NavigationBar() {
                 </div>
               </Link>
             </li>
-            <li>
+            <li className="lg:hidden">
               <Link
                 className={
                   pathname === "/messages"
-                    ? "bg-yellow font-semibold py-4 my-1"
+                    ? "bg-yellow font-semibold py-4 my-1 text-darkgrey"
                     : "py-4 my-1 hover:bg-yellow"
                 }
                 to="/messages"
@@ -201,11 +201,11 @@ function NavigationBar() {
                 </div>
               </Link>
             </li>
-            <li>
+            <li className="lg:hidden">
               <Link
                 className={
                   pathname === "/teams"
-                    ? "bg-yellow font-semibold py-4 my-1"
+                    ? "bg-yellow font-semibold py-4 my-1 text-darkgrey"
                     : "py-4 my-1 hover:bg-yellow"
                 }
                 to="/teams"
@@ -225,6 +225,35 @@ function NavigationBar() {
                     <path d="M5.082 14.254a8.287 8.287 0 0 0-1.308 5.135 9.687 9.687 0 0 1-1.764-.44l-.115-.04a.563.563 0 0 1-.373-.487l-.01-.121a3.75 3.75 0 0 1 3.57-4.047ZM20.226 19.389a8.287 8.287 0 0 0-1.308-5.135 3.75 3.75 0 0 1 3.57 4.047l-.01.121a.563.563 0 0 1-.373.486l-.115.04c-.567.2-1.156.349-1.764.441Z" />
                   </svg>
                   <p className="text-sm font-body font-normal  ml-4">Teams</p>
+                </div>
+              </Link>
+            </li>
+            <li>
+              <Link
+                className={
+                  pathname === "/profile"
+                    ? "bg-yellow font-semibold py-4 my-1 text-darkgrey"
+                    : "py-4 my-1 hover:bg-yellow"
+                }
+                to="/profile"
+              >
+                <div className="flex items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                    />
+                  </svg>
+
+                  <p className="text-sm font-body font-normal  ml-4">Profile</p>
                 </div>
               </Link>
             </li>
