@@ -7,7 +7,7 @@ const apiClient = new APIClient("/api/teams");
 
 const useTeamChallenges = (
   teamId: string,
-): UseQueryResult<Error, Challenge[]> => {
+): UseQueryResult<any, Challenge[]> => {
   return useQuery({
     queryKey: ["team-challenges", teamId],
     queryFn: () => apiClient.getTeamChallenges(teamId),

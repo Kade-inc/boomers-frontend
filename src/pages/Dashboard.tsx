@@ -19,19 +19,17 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className="h-screen w-full px-5 md:px-10 pt-10 lg:flex lg:justify-between font-body">
+      <div className="h-screen w-full px-5 md:px-10 pt-10 lg:flex lg:justify-between font-body bg-base-100 text-base-content">
         <div className="min-h-80 xl:w-4/5 lg:w-full md:w-full">
           <div>
-            <p className="font-body font-regular text-darkgrey text-[14px]">
-              Hi, username
+            <p className="font-body text-[16px]">
+              Hi, {user.firstName ? <>{user.firstName}</> : user.username}
             </p>
-            <p className="font-body font-regular text-darkgrey text-[20px]">
-              Welcome Back!
-            </p>
+            <p className="font-body font-medium text-[20px]">Welcome Back!</p>
           </div>
           <div className="mt-6">
             <div className="flex flex-row">
-              <p className="font-body font-semibold text-darkgrey text-[16px] mr-5">
+              <p className="font-body font-semibold text-[16px] mr-5">
                 Your Houses
               </p>
               <svg
@@ -49,7 +47,7 @@ const Dashboard = () => {
             </div>
             {teamsData?.length == 0 && (
               <>
-                <div className="flex items-center flex-col text-darkgrey text-[16px] mt-10">
+                <div className="flex items-center flex-col text-[16px] mt-10">
                   <p className="mb-6">
                     You do not belong to any team currently.
                   </p>
@@ -63,7 +61,7 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center flex-col text-darkgrey text-[16px] mt-10">
+                <div className="flex items-center flex-col text-[16px] mt-10">
                   <p className="mb-6 font-semibold">
                     Team recommendations based on your profile.
                   </p>
@@ -112,7 +110,7 @@ const Dashboard = () => {
           </div>
           <div className="mt-12">
             <div className="flex flex-row">
-              <p className="font-body font-semibold text-darkgrey text-[16px] mr-5">
+              <p className="font-body font-semibold text-[16px] mr-5">
                 Challenges
               </p>
               <svg
@@ -129,7 +127,7 @@ const Dashboard = () => {
               </svg>
             </div>
             {challenges?.length == 0 && (
-              <div className="flex items-center flex-col text-darkgrey text-[16px] mt-10">
+              <div className="flex items-center flex-col text-[16px] mt-10">
                 <p className="mb-6">
                   You&apos;re all caught up! No challenges to display.
                 </p>
@@ -145,7 +143,9 @@ const Dashboard = () => {
             )}
           </div>
         </div>
-        <div className="bg-white shadow-lg rounded h-5/6 lg:w-[300px] xl:w-1/5 xl:flex lg:flex lg:right-3 lg:top-15 hidden py-5 flex-col z-50">
+        <div
+          className={`shadow-slate-300 rounded h-5/6 lg:w-[300px] xl:w-1/5 xl:flex lg:flex lg:right-3 lg:top-15 hidden py-5 flex-col bg-base-200 shadow-sm`}
+        >
           <ProfileCard user={user} className="mb-5" />
           <AdviceCard className="" />
         </div>

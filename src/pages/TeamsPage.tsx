@@ -11,8 +11,6 @@ const TeamsPage = () => {
   const { teamId } = useParams();
   const { data: teams, isPending, error } = useTeams();
 
-  console.log("DATA: ", teams);
-
   if (isPending) {
     return <div>Loading: </div>;
   }

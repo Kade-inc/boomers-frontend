@@ -1,16 +1,25 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import ThemeToggle from "./DarkModeToggle";
+import useLogout from "../hooks/useLogout";
+import useAuthStore from "../stores/useAuthStore";
 // import { MagnifyingGlassIcon } from '@heroicons/react/24/solid'
 
 function NavigationBar() {
   const currentRoute = useLocation();
-  console.log("CURRENT: ", currentRoute);
-
+  const mutation = useLogout();
+  const logout = useAuthStore.getState().logout;
   const pathname = currentRoute.pathname;
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await mutation.mutateAsync();
+    logout();
+    navigate("/");
+  };
 
   return (
-    <div className="navbar bg-base-100 flex md:px-10 justify-between px-5">
+    <div className="navbar bg-base-100 flex md:px-10 justify-between px-5 md:pt-4">
       <div className="flex p-0 w-[20%] md:w-[20%]">
         <a className="btn btn-ghost text-xl font-heading p-0 text-base-content">
           LOGO
@@ -24,7 +33,7 @@ function NavigationBar() {
         <input
           type="text"
           placeholder="Search team/users"
-          className="input md:w-auto rounded-full pl-10 text-[12px] md:text-base font-body bg-grey"
+          className="input md:w-auto rounded-full pl-10 text-[12px] md:text-base font-body bg-grey input-bordered"
         />
       </div>
 
@@ -39,9 +48,7 @@ function NavigationBar() {
             }
           >
             <div
-              className={
-                "flex items-center text-[16px] font-body font-normal text-base-content"
-              }
+              className={`flex items-center text-[16px] font-body font-normal ${pathname === "/" || pathname === "/dashboard" ? "text-darkgrey" : ""}`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -52,7 +59,7 @@ function NavigationBar() {
                 <path d="M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06l8.69-8.689Z" />
                 <path d="m12 5.432 8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198a2.29 2.29 0 0 0 .091-.086L12 5.432Z" />
               </svg>
-              <span className="ml-[10px]">Dashboard</span>
+              <span className={"ml-[10px]"}>Dashboard</span>
             </div>
           </Link>
           <Link
@@ -64,7 +71,7 @@ function NavigationBar() {
             to="/messages"
           >
             <div
-              className={"flex items-center text-[16px] font-body font-normal"}
+              className={`flex items-center text-[16px] font-body font-normal ${pathname === "/messages" ? "text-darkgrey" : ""}`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -75,7 +82,7 @@ function NavigationBar() {
                 <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
                 <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
               </svg>
-              <span className="ml-[10px]">Messages</span>
+              <span className={"ml-[10px]"}>Messages</span>
             </div>
           </Link>
 
@@ -87,7 +94,9 @@ function NavigationBar() {
             }
             to="/teams"
           >
-            <div className="flex items-center text-[16px] font-body font-normal">
+            <div
+              className={`flex items-center text-[16px] font-body font-normal ${pathname === "/teams" ? "text-darkgrey" : ""}`}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -101,7 +110,7 @@ function NavigationBar() {
                 />
                 <path d="M5.082 14.254a8.287 8.287 0 0 0-1.308 5.135 9.687 9.687 0 0 1-1.764-.44l-.115-.04a.563.563 0 0 1-.373-.487l-.01-.121a3.75 3.75 0 0 1 3.57-4.047ZM20.226 19.389a8.287 8.287 0 0 0-1.308-5.135 3.75 3.75 0 0 1 3.57 4.047l-.01.121a.563.563 0 0 1-.373.486l-.115.04c-.567.2-1.156.349-1.764.441Z" />
               </svg>
-              <span className="ml-[10px]">Teams</span>
+              <span className={"ml-[10px]"}>Teams</span>
             </div>
           </Link>
         </div>
@@ -144,71 +153,133 @@ function NavigationBar() {
             tabIndex={0}
             className="menu menu-sm dropdown-content bg-base-100 z-[1] mt-3 w-52 p-2 shadow"
           >
-            <li>
-              <div className="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="size-5"
-                >
-                  <path d="M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06l8.69-8.689Z" />
-                  <path d="m12 5.432 8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198a2.29 2.29 0 0 0 .091-.086L12 5.432Z" />
-                </svg>
-                <Link
-                  className="btn btn-ghost text-sm font-body font-normal"
-                  to="/"
-                >
-                  Dashboard
-                </Link>
-              </div>
+            <li className="lg:hidden">
+              <Link
+                className={
+                  pathname === "/" || pathname === "/dashboard"
+                    ? "bg-yellow font-semibold py-4 my-1 text-darkgrey"
+                    : "py-4 my-1 hover:bg-yellow"
+                }
+                to="/"
+              >
+                <div className="flex items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="size-5"
+                  >
+                    <path d="M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06l8.69-8.689Z" />
+                    <path d="m12 5.432 8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198a2.29 2.29 0 0 0 .091-.086L12 5.432Z" />
+                  </svg>
+                  <p className="text-sm font-body font-normal ml-5">
+                    Dashboard
+                  </p>
+                </div>
+              </Link>
+            </li>
+            <li className="lg:hidden">
+              <Link
+                className={
+                  pathname === "/messages"
+                    ? "bg-yellow font-semibold py-4 my-1 text-darkgrey"
+                    : "py-4 my-1 hover:bg-yellow"
+                }
+                to="/messages"
+              >
+                <div className="flex items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="size-6"
+                  >
+                    <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
+                    <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
+                  </svg>
+                  <p className="text-sm font-body font-normal ml-4">Messages</p>
+                </div>
+              </Link>
+            </li>
+            <li className="lg:hidden">
+              <Link
+                className={
+                  pathname === "/teams"
+                    ? "bg-yellow font-semibold py-4 my-1 text-darkgrey"
+                    : "py-4 my-1 hover:bg-yellow"
+                }
+                to="/teams"
+              >
+                <div className="flex items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="size-6"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M8.25 6.75a3.75 3.75 0 1 1 7.5 0 3.75 3.75 0 0 1-7.5 0ZM15.75 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM2.25 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM6.31 15.117A6.745 6.745 0 0 1 12 12a6.745 6.745 0 0 1 6.709 7.498.75.75 0 0 1-.372.568A12.696 12.696 0 0 1 12 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 0 1-.372-.568 6.787 6.787 0 0 1 1.019-4.38Z"
+                      clipRule="evenodd"
+                    />
+                    <path d="M5.082 14.254a8.287 8.287 0 0 0-1.308 5.135 9.687 9.687 0 0 1-1.764-.44l-.115-.04a.563.563 0 0 1-.373-.487l-.01-.121a3.75 3.75 0 0 1 3.57-4.047ZM20.226 19.389a8.287 8.287 0 0 0-1.308-5.135 3.75 3.75 0 0 1 3.57 4.047l-.01.121a.563.563 0 0 1-.373.486l-.115.04c-.567.2-1.156.349-1.764.441Z" />
+                  </svg>
+                  <p className="text-sm font-body font-normal  ml-4">Teams</p>
+                </div>
+              </Link>
             </li>
             <li>
-              <div className="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="size-6"
-                >
-                  <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
-                  <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
-                </svg>
+              <Link
+                className={
+                  pathname === "/profile"
+                    ? "bg-yellow font-semibold py-4 my-1 text-darkgrey"
+                    : "py-4 my-1 hover:bg-yellow"
+                }
+                to="/profile"
+              >
+                <div className="flex items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                    />
+                  </svg>
 
-                <Link
-                  className="btn btn-ghost text-sm font-body font-normal"
-                  to="/"
-                >
-                  Messages
-                </Link>
-              </div>
+                  <p className="text-sm font-body font-normal  ml-4">Profile</p>
+                </div>
+              </Link>
             </li>
             <li>
-              <div className="flex items-center">
+              <div
+                className="flex items-center py-4 hover:bg-yellow"
+                onClick={handleLogout}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
                   viewBox="0 0 24 24"
-                  fill="currentColor"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
                   className="size-6"
                 >
                   <path
-                    fillRule="evenodd"
-                    d="M8.25 6.75a3.75 3.75 0 1 1 7.5 0 3.75 3.75 0 0 1-7.5 0ZM15.75 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM2.25 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM6.31 15.117A6.745 6.745 0 0 1 12 12a6.745 6.745 0 0 1 6.709 7.498.75.75 0 0 1-.372.568A12.696 12.696 0 0 1 12 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 0 1-.372-.568 6.787 6.787 0 0 1 1.019-4.38Z"
-                    clipRule="evenodd"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
                   />
-                  <path d="M5.082 14.254a8.287 8.287 0 0 0-1.308 5.135 9.687 9.687 0 0 1-1.764-.44l-.115-.04a.563.563 0 0 1-.373-.487l-.01-.121a3.75 3.75 0 0 1 3.57-4.047ZM20.226 19.389a8.287 8.287 0 0 0-1.308-5.135 3.75 3.75 0 0 1 3.57 4.047l-.01.121a.563.563 0 0 1-.373.486l-.115.04c-.567.2-1.156.349-1.764.441Z" />
                 </svg>
-
-                <Link
-                  className="btn btn-ghost text-sm font-body font-normal"
-                  to="/teams"
-                >
-                  Teams
-                </Link>
+                <p className="font-body ml-2">
+                  {mutation.isPending ? "Logging out..." : "Log out"}
+                </p>
               </div>
-            </li>
-            <li>
-              <a>Logout</a>
             </li>
           </ul>
         </div>

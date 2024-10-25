@@ -5,7 +5,7 @@ import ellipse from "../assets/Ellipse 81.svg";
 
 const ProfilePage = () => {
   return (
-    <div className="flex justify-center min-h-screen w-full bg-slate-50 pb-8">
+    <div className="flex justify-center min-h-screen w-full bg-slate-50 pb-8 mt-10">
       <div className=" flex flex-col w-[90%] max-w-4xl mx-auto">
         <div className="bg-white relative pb-2 shadow-custom rounded-[5px] pb-4">
           <div className="bg-custom-gradient w-full h-[70px] md:h-[157px]"></div>

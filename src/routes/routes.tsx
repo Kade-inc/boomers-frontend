@@ -37,6 +37,10 @@ const router = createBrowserRouter([
         path: "teams/:teamId",
         element: <ProtectedRoute element={<TeamDetailsPage />} />,
       },
+      {
+        path: "/profile",
+        element: <ProtectedRoute element={<ProfilePage />} />,
+      },
     ],
   },
   {
@@ -56,10 +60,6 @@ const router = createBrowserRouter([
   {
     path: "/signup-verification",
     element: <SignupVerificationSuccess />,
-  },
-  {
-    path: "/profile",
-    element: <ProtectedRoute element={<ProfilePage />} />,
   },
 ]);
 
