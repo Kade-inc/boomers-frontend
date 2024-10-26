@@ -9,13 +9,54 @@ import useTeamRecommendations from "../hooks/useTeamRecommendations";
 import useTeams from "../hooks/useTeams";
 import useAuthStore from "../stores/useAuthStore";
 import TeamCardCarousel from "../components/TeamCardCarousel";
+import { useEffect, useState } from "react";
+import Challenge from "../entities/Challenge";
 
 const Dashboard = () => {
   const user = useAuthStore((s) => s.user);
   const { data: teamsData } = useTeams(user.user_id);
   const { data: teamRecommendations } = useTeamRecommendations();
-  const { data: challenges } = useChallenges(user.user_id || "");
-  // const { data: userProfile } = useProfile()
+  const { data: challengesData } = useChallenges(user.user_id || "");
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [challenges, setChallenges] = useState<Challenge[]>([]);
+  const [teamsFilter, setTeamsFilter] = useState("AllTeams");
+  const [challengesFilter, setChallengesFilter] = useState("AllChallenges");
+
+  useEffect(() => {
+    if (teamsData) {
+      setTeams(teamsData);
+    }
+  }, [teamsData]);
+
+  useEffect(() => {
+    if (challengesData) {
+      setChallenges(challengesData);
+    }
+  }, [challengesData]);
+
+  const filteredTeams = teams.filter((team) => {
+    if (teamsFilter === "AllTeams") return true;
+    if (teamsFilter === "Owner") return team.owner_id === user.user_id;
+    if (teamsFilter === "Member") return team.owner_id !== user.user_id;
+    return true;
+  });
+
+  const filteredChallenges = challenges.filter((challenge) => {
+    if (challengesFilter === "AllChallenges") return true;
+    if (challengesFilter === "Owner")
+      return challenge.owner_id === user.user_id;
+    if (challengesFilter === "Member")
+      return challenge.owner_id !== user.user_id;
+    return true;
+  });
+
+  const handleTeamsFilter = (filter: string) => {
+    setTeamsFilter(filter);
+  };
+
+  const handleChallengesFilter = (filter: string) => {
+    setChallengesFilter(filter);
+  };
 
   return (
     <>
@@ -28,22 +69,62 @@ const Dashboard = () => {
             <p className="font-body font-medium text-[20px]">Welcome Back!</p>
           </div>
           <div className="mt-6">
-            <div className="flex flex-row">
-              <p className="font-body font-semibold text-[16px] mr-5">
-                Your Houses
-              </p>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="#F8B500"
-                className="size-6"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                  clipRule="evenodd"
-                />
-              </svg>
+            <div className="flex flex-col md:flex-row items-start md:items-center">
+              <div className="flex flex-row mb-5 md:mb-0">
+                <p className="font-body font-semibold text-[16px] mr-5">
+                  Your Houses
+                </p>
+                <div
+                  className="tooltip tooltip-top tooltip-warning"
+                  data-tip="Add team"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="#393E46"
+                    className="size-6 cursor-pointer"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div className="flex flex-row justify-between content-center items-center text-[13px] md:text-[14px] font-medium">
+                <p className="md:ml-10 ">Filter:</p>
+                <div
+                  className={`ml-3 md:ml-5 py-1 px-6 rounded-md  cursor-pointer ${
+                    teamsFilter === "AllTeams"
+                      ? "bg-yellow font-medium text-darkgrey"
+                      : "border border-base-content"
+                  }`}
+                  onClick={() => handleTeamsFilter("AllTeams")}
+                >
+                  All
+                </div>
+                <div
+                  className={`ml-3 md:ml-5  py-1 px-6 rounded-md cursor-pointer ${
+                    teamsFilter === "Member"
+                      ? "bg-yellow font-medium text-darkgrey"
+                      : "border border-base-content"
+                  }`}
+                  onClick={() => handleTeamsFilter("Member")}
+                >
+                  Member
+                </div>
+                <div
+                  className={`ml-3 md:ml-5  py-1 px-6 rounded-md cursor-pointer ${
+                    teamsFilter === "Owner"
+                      ? "bg-yellow font-medium text-darkgrey"
+                      : "border border-base-content"
+                  }`}
+                  onClick={() => handleTeamsFilter("Owner")}
+                >
+                  Owner
+                </div>
+              </div>
             </div>
             {teamsData?.length == 0 && (
               <>
@@ -102,41 +183,81 @@ const Dashboard = () => {
                 </div>
               </>
             )}
-            {teamsData && teamsData?.length > 0 && (
+            {filteredTeams && filteredTeams?.length > 0 && (
               <>
-                <TeamCardCarousel slides={teamsData} />
+                <TeamCardCarousel slides={filteredTeams} />
               </>
             )}
           </div>
           <div className="mt-12">
-            <div className="flex flex-row">
-              <p className="font-body font-semibold text-[16px] mr-5">
-                Challenges
-              </p>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="#F8B500"
-                className="size-6"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                  clipRule="evenodd"
-                />
-              </svg>
+            <div className="flex flex-col md:flex-row items-start md:items-center">
+              <div className="flex flex-row mb-5 md:mb-0">
+                <p className="font-body font-semibold text-[16px] mr-5">
+                  Challenges
+                </p>
+                <div
+                  className="tooltip tooltip-top tooltip-warning"
+                  data-tip="Add Challenge"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="#393E46"
+                    className="size-6 cursor-pointer"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div className="flex flex-row justify-between content-center items-center text-[13px] md:text-[14px] font-medium">
+                <p className="md:ml-10">Filter:</p>
+                <div
+                  className={`ml-3 md:ml-5 py-1 px-6 rounded-md  cursor-pointer ${
+                    challengesFilter === "AllChallenges"
+                      ? "bg-yellow font-medium text-darkgrey"
+                      : "border border-base-content"
+                  }`}
+                  onClick={() => handleChallengesFilter("AllChallenges")}
+                >
+                  All
+                </div>
+                <div
+                  className={`ml-3 md:ml-5 py-1 px-6 rounded-md cursor-pointer ${
+                    challengesFilter === "Member"
+                      ? "bg-yellow font-medium text-darkgrey"
+                      : "border border-base-content"
+                  }`}
+                  onClick={() => handleChallengesFilter("Member")}
+                >
+                  Member
+                </div>
+                <div
+                  className={`ml-3 md:ml-5 py-1 px-6 rounded-md cursor-pointer ${
+                    challengesFilter === "Owner"
+                      ? "bg-yellow font-medium text-darkgrey"
+                      : "border border-base-content"
+                  }`}
+                  onClick={() => handleChallengesFilter("Owner")}
+                >
+                  Owner
+                </div>
+              </div>
             </div>
-            {challenges?.length == 0 && (
+            {filteredChallenges?.length == 0 && (
               <div className="flex items-center flex-col text-[16px] mt-10">
                 <p className="mb-6">
                   You&apos;re all caught up! No challenges to display.
                 </p>
               </div>
             )}
-            {challenges && challenges?.length > 0 && (
+            {filteredChallenges && filteredChallenges?.length > 0 && (
               <>
                 <ChallengeCardCarousel
-                  slides={challenges}
+                  slides={filteredChallenges}
                   teamsData={teamsData}
                 />
               </>
