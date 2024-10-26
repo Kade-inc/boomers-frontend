@@ -17,6 +17,7 @@ interface ChallengesCardProps {
 const ChallengesCard: React.FC<ChallengesCardProps> = ({
   challenge,
   teamsInformation,
+  styles,
 }: ChallengesCardProps) => {
   const { challenge_name, owner_id, difficulty, due_date } = challenge;
   const { user } = useAuthStore.getState();
@@ -49,7 +50,9 @@ const ChallengesCard: React.FC<ChallengesCardProps> = ({
   const daysLeft = calculateDaysLeft(due_date);
 
   return (
-    <div className="card bg-gradient-to-b from-[#313232] to-[#444c4c] text-white w-[400px] h-[200px] rounded-[3px] font-body">
+    <div
+      className={`card bg-gradient-to-b from-[#313232] to-[#444c4c] text-white rounded-[3px] font-body ${styles}`}
+    >
       <div className="card-body flex flex-col justify-between h-full py-5">
         <div className="flex justify-between w-full items-center">
           <h2 className="font-medium">{challenge_name}</h2>
