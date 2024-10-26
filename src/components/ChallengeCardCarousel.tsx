@@ -68,7 +68,7 @@ function ChallengeCardCarousel({ slides, teamsData }: CarouselProps) {
                 key={slide._id}
                 challenge={slide}
                 teamsInformation={teamsData}
-                styles={`w-full md:w-[400px]`}
+                styles={`w-full md:w-[350px] h-[180px]`}
                 section="dashboard-section"
               />
             </div>
