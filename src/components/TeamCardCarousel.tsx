@@ -2,12 +2,14 @@ import { useState } from "react";
 import Slider from "react-slick";
 import Team from "../entities/Team";
 import TeamCard from "./TeamCard";
+import { useNavigate } from "react-router-dom";
 
 interface CarouselProps {
   slides: Team[];
 }
 
 function TeamCardCarousel({ slides }: CarouselProps) {
+  const navigate = useNavigate();
   if (!slides || slides.length === 0) {
     return <div>No slides available</div>; // Handle the case when there is no data
   }
@@ -67,6 +69,9 @@ function TeamCardCarousel({ slides }: CarouselProps) {
                 team={slide}
                 styles={`w-full md:w-[400px]`}
                 section="dashboard-section"
+                onClick={() => {
+                  navigate(`/teams/${slide._id}`);
+                }}
               />
             </div>
           </div>
