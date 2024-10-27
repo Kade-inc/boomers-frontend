@@ -4,7 +4,6 @@ import ProfileCard from "../components/ProfileCard";
 import TeamCard from "../components/TeamCard";
 import Team from "../entities/Team";
 import useChallenges from "../hooks/useChallenges";
-// import useProfile from "../hooks/useProfile";
 import useTeamRecommendations from "../hooks/useTeamRecommendations";
 import useTeams from "../hooks/useTeams";
 import useAuthStore from "../stores/useAuthStore";
@@ -200,14 +199,14 @@ const Dashboard = () => {
                   )}
                   {teamRecommendations && teamRecommendations?.length > 0 && (
                     <>
-                      <div className="carousel carousel-center space-x-6 pt-4 max-w-md md:max-w-screen-sm lg:max-w-screen-lg xl:max-w-screen-xl">
+                      <div className="flex flex-col md:flex-row justify-center items-center w-full">
                         {teamRecommendations
                           ?.slice(0, 2)
                           .map((recommendation: Team) => (
                             <TeamCard
                               key={recommendation._id}
                               team={recommendation}
-                              styles={`w-[450px]`}
+                              styles={`w-full md:w-[400px] h-[130px] md:h-[200px] mb-3 md:mb-0 md:ml-6`}
                               onClick={() => openModal(recommendation)}
                             />
                           ))}
@@ -312,7 +311,7 @@ const Dashboard = () => {
           </div>
         </div>
         <div
-          className={`shadow-slate-300 rounded h-5/6 lg:w-[300px] xl:w-1/5 xl:flex lg:flex lg:right-3 lg:top-15 hidden py-5 flex-col bg-base-200 shadow-sm`}
+          className={`shadow-slate-300 rounded h-5/6 xl:w-[300px] xl:w-1/5 xl:flex xl:flex xl:right-3 xl:top-15 hidden py-5 flex-col bg-base-200 shadow-sm`}
         >
           <ProfileCard user={user} className="mb-5" />
           <AdviceCard className="" />

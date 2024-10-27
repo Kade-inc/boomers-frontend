@@ -1,16 +1,19 @@
-import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ThemeToggle from "./DarkModeToggle";
 import useLogout from "../hooks/useLogout";
 import useAuthStore from "../stores/useAuthStore";
-// import { MagnifyingGlassIcon } from '@heroicons/react/24/solid'
+import {
+  MagnifyingGlassCircleIcon,
+  MagnifyingGlassIcon,
+  UserCircleIcon,
+} from "@heroicons/react/24/solid";
 
 function NavigationBar() {
   const currentRoute = useLocation();
   const mutation = useLogout();
-  const logout = useAuthStore.getState().logout;
   const pathname = currentRoute.pathname;
   const navigate = useNavigate();
+  const { user, logout } = useAuthStore();
 
   const handleLogout = async () => {
     await mutation.mutateAsync();
@@ -28,10 +31,10 @@ function NavigationBar() {
           LOGO
         </Link>
       </div>
-      <div className="md:hidden w-[10%]">
-        <MagnifyingGlassIcon className="inset-y-0 left-0 flex items-center pl-2 w-8 h-8 top-2.5" />
+      <div className="xl:hidden w-[10%]">
+        <MagnifyingGlassCircleIcon className="inset-y-0 left-0 flex items-center pl-2 w-12 h-12 top-2.5 text-base-content" />
       </div>
-      <div className="lg:w-[20%] justify-start items-center relative hidden md:flex">
+      <div className="lg:w-[20%] justify-start items-center relative hidden xl:flex">
         <MagnifyingGlassIcon className="absolute inset-y-0 left-0 flex items-center pl-2 w-8 h-8 top-2.5 fill-gray-400" />
         <input
           type="text"
@@ -145,11 +148,16 @@ function NavigationBar() {
             role="button"
             className="btn btn-ghost btn-circle avatar"
           >
-            <div className="w-10 rounded-full">
-              <img
-                alt="Tailwind CSS Navbar component"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-              />
+            <div className="w-10 h-10 rounded-full overflow-hidden">
+              {user?.profile_picture ? (
+                <img
+                  src={user.profile_picture}
+                  alt="Profile picture"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <UserCircleIcon className="w-full h-full text-darkgrey" />
+              )}
             </div>
           </div>
           <ul

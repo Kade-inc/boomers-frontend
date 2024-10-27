@@ -10,6 +10,7 @@ const useTeamRecommendations = (): UseQueryResult<any, Team[]> => {
     queryKey: ["team-recommendations"],
     queryFn: () => apiClient.getTeamRecommendations(),
     staleTime: 1000 * 60 * 5, // 5 minutes
+    refetchOnMount: "always",
   });
 };
 

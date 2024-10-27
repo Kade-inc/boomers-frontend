@@ -102,14 +102,11 @@ const TeamsPage = () => {
                   team={team}
                   section="allTeams-section"
                   onClick={() => navigate(`/teams/${team._id}`)}
+                  styles={"h-[200px]"}
                 />
               );
             })}
           </div>
-
-          {/* <div className="mt-6 flex flex-wrap gap-3 m-auto">
-            <TeamCard />
-          </div> */}
           <div className="flex justify-end mt-12">
             <button className="w-[98px] text-[14px] p-1 text-black bg-yellow sm:w-[143px]">
               Add team
