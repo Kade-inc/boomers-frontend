@@ -1,9 +1,12 @@
-import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ThemeToggle from "./DarkModeToggle";
 import useLogout from "../hooks/useLogout";
 import useAuthStore from "../stores/useAuthStore";
-import { UserCircleIcon } from "@heroicons/react/24/solid";
+import {
+  MagnifyingGlassCircleIcon,
+  MagnifyingGlassIcon,
+  UserCircleIcon,
+} from "@heroicons/react/24/solid";
 
 function NavigationBar() {
   const currentRoute = useLocation();
@@ -28,10 +31,10 @@ function NavigationBar() {
           LOGO
         </Link>
       </div>
-      <div className="md:hidden w-[10%]">
-        <MagnifyingGlassIcon className="inset-y-0 left-0 flex items-center pl-2 w-8 h-8 top-2.5" />
+      <div className="xl:hidden w-[10%]">
+        <MagnifyingGlassCircleIcon className="inset-y-0 left-0 flex items-center pl-2 w-12 h-12 top-2.5 text-base-content" />
       </div>
-      <div className="lg:w-[20%] justify-start items-center relative hidden md:flex">
+      <div className="lg:w-[20%] justify-start items-center relative hidden xl:flex">
         <MagnifyingGlassIcon className="absolute inset-y-0 left-0 flex items-center pl-2 w-8 h-8 top-2.5 fill-gray-400" />
         <input
           type="text"
