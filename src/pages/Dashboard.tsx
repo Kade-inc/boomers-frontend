@@ -200,14 +200,14 @@ const Dashboard = () => {
                   )}
                   {teamRecommendations && teamRecommendations?.length > 0 && (
                     <>
-                      <div className="flex flex-col md:flex-row justify-between w-full md:w-[80%]">
+                      <div className="flex flex-col md:flex-row justify-center items-center w-full">
                         {teamRecommendations
                           ?.slice(0, 2)
                           .map((recommendation: Team) => (
                             <TeamCard
                               key={recommendation._id}
                               team={recommendation}
-                              styles={`w-full md:w-[400px] h-[130px] md:h-[200px] mb-3 md:mb-0`}
+                              styles={`w-full md:w-[400px] h-[130px] md:h-[200px] mb-3 md:mb-0 md:ml-6`}
                               onClick={() => openModal(recommendation)}
                             />
                           ))}

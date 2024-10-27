@@ -21,9 +21,25 @@ class APIClient {
       baseURL: "http://localhost:5001",
     });
 
+    // Add the request interceptor to conditionally include the Bearer token
+    this.axiosInstance.interceptors.request.use(
+      (config) => {
+        // Only add the Authorization header if requiresAuth is set to true
+        const requiresAuth = config.headers?.requiresAuth;
+        if (requiresAuth) {
+          const token = this.getToken();
+          if (token) config.headers.Authorization = `Bearer ${token}`;
+        }
+        // Remove requiresAuth from headers to avoid sending it in the request
+        delete config.headers.requiresAuth;
+        return config;
+      },
+      (error) => Promise.reject(error),
+    );
+
     // Add the response interceptor to handle 401 errors
     this.axiosInstance.interceptors.response.use(
-      (response) => response, // If the response is successful, return it
+      (response) => response,
       (error) => {
         const axiosError = error as AxiosError;
         if (axiosError.response?.status === 401) {
@@ -35,7 +51,7 @@ class APIClient {
             axiosError.response?.data ?? axiosError.message,
           );
         }
-        return Promise.reject(error); // Forward the error
+        return Promise.reject(error);
       },
     );
   }
@@ -124,7 +140,7 @@ class APIClient {
     }
   };
 
-  getUserProfile = async () => {
+  getUserProfile = async (requiresAuth = true) => {
     const { userId } = useAuthStore.getState();
 
     //TODO: FIX THIS. It should follow the structure of all other methods
@@ -137,7 +153,7 @@ class APIClient {
         `${prefix}/${userId}/profile`,
         {
           headers: {
-            Authorization: `Bearer ${this.getToken()}`,
+            requiresAuth,
           },
         },
       );
@@ -168,13 +184,13 @@ class APIClient {
   };
 
   // Fetch Teams
-  getTeams = async (userId?: string) => {
+  getTeams = async (userId?: string, requiresAuth = true) => {
     try {
       const response = await this.axiosInstance.get(
         `${this.endpoint}?userId=${userId}`,
         {
           headers: {
-            Authorization: `Bearer ${this.getToken()}`,
+            requiresAuth,
           },
         },
       );
@@ -190,13 +206,13 @@ class APIClient {
   };
 
   // Fetch Team members
-  getTeamDetails = async (teamId: string) => {
+  getTeamDetails = async (teamId: string, requiresAuth = true) => {
     try {
       const response = await this.axiosInstance.get(
         `${this.endpoint}/${teamId}`,
         {
           headers: {
-            Authorization: `Bearer ${this.getToken()}`,
+            requiresAuth,
           },
         },
       );
@@ -211,13 +227,13 @@ class APIClient {
     }
   };
 
-  getTeamChallenges = async (teamId: string) => {
+  getTeamChallenges = async (teamId: string, requiresAuth = true) => {
     try {
       const response = await this.axiosInstance.get(
         `${this.endpoint}/${teamId}/challenges`,
         {
           headers: {
-            Authorization: `Bearer ${this.getToken()}`,
+            requiresAuth,
           },
         },
       );
@@ -232,13 +248,13 @@ class APIClient {
     }
   };
 
-  getAllChallenges = async (userId: string) => {
+  getAllChallenges = async (userId: string, requiresAuth = true) => {
     try {
       const response = await this.axiosInstance.get(
         `${this.endpoint}?userId=${userId}`,
         {
           headers: {
-            Authorization: `Bearer ${this.getToken()}`,
+            requiresAuth,
           },
         },
       );
@@ -253,13 +269,13 @@ class APIClient {
     }
   };
 
-  getTeamMemberRequests = async (teamId: string) => {
+  getTeamMemberRequests = async (teamId: string, requiresAuth = true) => {
     try {
       const response = await this.axiosInstance.get(
         `${this.endpoint}/requests/${teamId}`,
         {
           headers: {
-            Authorization: `Bearer ${this.getToken()}`,
+            requiresAuth,
           },
         },
       );
@@ -277,11 +293,11 @@ class APIClient {
     }
   };
 
-  getTeamRecommendations = async () => {
+  getTeamRecommendations = async (requiresAuth = true) => {
     try {
       const response = await this.axiosInstance.get(`${this.endpoint}`, {
         headers: {
-          Authorization: `Bearer ${this.getToken()}`,
+          requiresAuth,
         },
       });
       const { data } = response.data;
@@ -295,11 +311,11 @@ class APIClient {
     }
   };
 
-  getAdvice = async () => {
+  getAdvice = async (requiresAuth = true) => {
     try {
       const response = await this.axiosInstance.get(`${this.endpoint}`, {
         headers: {
-          Authorization: `Bearer ${this.getToken()}`,
+          requiresAuth,
         },
       });
       const { data } = response.data;
@@ -315,15 +331,9 @@ class APIClient {
 
   logout = async () => {
     try {
-      const response = await this.axiosInstance.post(
-        `${this.endpoint}`,
-        { token: Cookies.get("token") },
-        {
-          headers: {
-            Authorization: `Bearer ${this.getToken()}`,
-          },
-        },
-      );
+      const response = await this.axiosInstance.post(`${this.endpoint}`, {
+        token: Cookies.get("token"),
+      });
       const { data } = response.data;
       return data;
     } catch (error: unknown) {
