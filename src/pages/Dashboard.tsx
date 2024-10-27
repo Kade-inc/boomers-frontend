@@ -17,9 +17,12 @@ import RecommendationsModal from "../components/RecommendationsModal";
 
 const Dashboard = () => {
   const user = useAuthStore((s) => s.user);
-  const { data: teamsData } = useTeams(user.user_id);
-  const { data: teamRecommendations } = useTeamRecommendations();
-  const { data: challengesData } = useChallenges(user.user_id || "");
+  const { data: teamsData, isPending: teamsLoading } = useTeams(user.user_id);
+  const { data: teamRecommendations, isPending: recommendationsLoading } =
+    useTeamRecommendations();
+  const { data: challengesData, isPending: challengesLoading } = useChallenges(
+    user.user_id || "",
+  );
   const [teams, setTeams] = useState<Team[]>([]);
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [teamsFilter, setTeamsFilter] = useState("AllTeams");
@@ -84,6 +87,13 @@ const Dashboard = () => {
   };
   const closeModal = () => setIsModalOpen(false);
 
+  if (teamsLoading || recommendationsLoading || challengesLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <span className="loading loading-dots loading-lg"></span>
+      </div>
+    );
+  }
   return (
     <>
       <div className="h-screen w-full px-5 md:px-10 pt-10 lg:flex lg:justify-between font-body bg-base-100 text-base-content">

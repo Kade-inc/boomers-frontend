@@ -21,9 +21,12 @@ function NavigationBar() {
   return (
     <div className="navbar bg-base-100 flex md:px-10 justify-between px-5 md:pt-4">
       <div className="flex p-0 w-[20%] md:w-[20%]">
-        <a className="btn btn-ghost text-xl font-heading p-0 text-base-content">
+        <Link
+          to="/"
+          className="btn btn-ghost text-xl font-heading p-0 text-base-content"
+        >
           LOGO
-        </a>
+        </Link>
       </div>
       <div className="md:hidden w-[10%]">
         <MagnifyingGlassIcon className="inset-y-0 left-0 flex items-center pl-2 w-8 h-8 top-2.5" />

@@ -53,11 +53,18 @@ const TeamCard = ({ team, styles, section, onClick }: TeamProps) => {
                     {team.subdomain}
                     <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
                     {team?.subdomainTopics && (
-                      <>
+                      <div
+                        className={`${team.subdomainTopics.length > 0 ? "tooltip tooltip-top tooltip-warning" : ""}`}
+                        data-tip={
+                          team.subdomainTopics.length > 0
+                            ? team.subdomainTopics.map((topic: string) => topic)
+                            : ""
+                        }
+                      >
                         {team.subdomainTopics[0]}
                         {team.subdomainTopics.length - 1 > 0 &&
                           ` +${team.subdomainTopics.length - 1}`}
-                      </>
+                      </div>
                     )}
                   </div>
                   <div>Active</div>
