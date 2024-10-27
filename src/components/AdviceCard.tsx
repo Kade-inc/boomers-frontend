@@ -5,7 +5,17 @@ interface AdviceCardProps {
 }
 
 const AdviceCard = ({ className }: AdviceCardProps) => {
-  const { data: advice, error } = useAdvice();
+  const { data: advice, isPending, error } = useAdvice();
+
+  if (isPending) {
+    return (
+      <div
+        className={`container mx-auto gap-5 w-[90%] py-6 flex flex-col items-center justify-center bg-darkgrey rounded-[5px] mt-5 ${className}`}
+      >
+        <span className="loading loading-dots loading-lg bg-white"></span>
+      </div>
+    );
+  }
 
   if (error) {
     return (
