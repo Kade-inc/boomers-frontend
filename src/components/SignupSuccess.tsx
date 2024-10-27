@@ -12,9 +12,13 @@ const SignupSuccess = () => {
 
   useEffect(() => {
     if (!signUpSuccess) {
-      navigate("/");
+      navigate("/auth");
     }
   }, [signUpSuccess]);
+
+  if (!signUpSuccess) {
+    return <></>;
+  }
 
   return (
     <div className="text-center text-[#393E46] mx-2 mt-[40px]">
