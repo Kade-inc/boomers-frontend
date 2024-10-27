@@ -13,6 +13,7 @@ import ProfilePage from "../pages/ProfilePage";
 import ProtectedRoute from "./ProtectedRoute";
 import TeamDetailsPage from "../pages/TeamDetailsPage";
 import ResetPassword from "../pages/ResetPasswordPage";
+import RecommendationsPage from "../pages/RecommendationsPage";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: "/profile",
         element: <ProtectedRoute element={<ProfilePage />} />,
+      },
+      {
+        path: "/recommendations",
+        element: <ProtectedRoute element={<RecommendationsPage />} />,
       },
     ],
   },
