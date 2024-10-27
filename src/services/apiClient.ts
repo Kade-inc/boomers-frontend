@@ -29,6 +29,7 @@ class APIClient {
         if (axiosError.response?.status === 401) {
           const logout = useAuthStore.getState().logout;
           logout();
+
           toast.error(
             "Session expired. You have been logged out.",
             axiosError.response?.data ?? axiosError.message,

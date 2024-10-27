@@ -41,6 +41,7 @@ const useAuthStore = create<AuthStore>(
       },
       logout: () => {
         Cookies.remove("token");
+        Cookies.remove("refreshToken");
         set({ isAuthenticated: false, user: {}, userId: "", token: null });
       },
       setUserId: (userId: string) => set(() => ({ userId })),
@@ -54,6 +55,7 @@ const useAuthStore = create<AuthStore>(
           if (decodedToken.exp && decodedToken.exp < currentTime) {
             set({ token: null, isAuthenticated: false, user: {}, userId: "" });
             Cookies.remove("token");
+            Cookies.remove("refreshToken");
           }
         } else {
           set({ token: null, isAuthenticated: false });
