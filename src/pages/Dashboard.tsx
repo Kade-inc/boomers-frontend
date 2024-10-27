@@ -200,14 +200,14 @@ const Dashboard = () => {
                   )}
                   {teamRecommendations && teamRecommendations?.length > 0 && (
                     <>
-                      <div className="carousel carousel-center space-x-6 pt-4 max-w-md md:max-w-screen-sm lg:max-w-screen-lg xl:max-w-screen-xl">
+                      <div className="flex flex-col md:flex-row justify-between w-full md:w-[80%]">
                         {teamRecommendations
                           ?.slice(0, 2)
                           .map((recommendation: Team) => (
                             <TeamCard
                               key={recommendation._id}
                               team={recommendation}
-                              styles={`w-[450px]`}
+                              styles={`w-full md:w-[400px] h-[130px] md:h-[200px] mb-3 md:mb-0`}
                               onClick={() => openModal(recommendation)}
                             />
                           ))}
