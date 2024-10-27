@@ -3,14 +3,14 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import ThemeToggle from "./DarkModeToggle";
 import useLogout from "../hooks/useLogout";
 import useAuthStore from "../stores/useAuthStore";
-// import { MagnifyingGlassIcon } from '@heroicons/react/24/solid'
+import { UserCircleIcon } from "@heroicons/react/24/solid";
 
 function NavigationBar() {
   const currentRoute = useLocation();
   const mutation = useLogout();
-  const logout = useAuthStore.getState().logout;
   const pathname = currentRoute.pathname;
   const navigate = useNavigate();
+  const { user, logout } = useAuthStore();
 
   const handleLogout = async () => {
     await mutation.mutateAsync();
@@ -145,11 +145,16 @@ function NavigationBar() {
             role="button"
             className="btn btn-ghost btn-circle avatar"
           >
-            <div className="w-10 rounded-full">
-              <img
-                alt="Tailwind CSS Navbar component"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-              />
+            <div className="w-10 h-10 rounded-full overflow-hidden">
+              {user?.profile_picture ? (
+                <img
+                  src={user.profile_picture}
+                  alt="Profile picture"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <UserCircleIcon className="w-full h-full text-darkgrey" />
+              )}
             </div>
           </div>
           <ul

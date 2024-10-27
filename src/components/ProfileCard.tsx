@@ -1,3 +1,4 @@
+import { UserCircleIcon } from "@heroicons/react/24/solid";
 import User from "../entities/User";
 
 interface ProfileCardProps {
@@ -10,12 +11,16 @@ const ProfileCard = ({ user, className }: ProfileCardProps) => {
     <div
       className={`bg-yellow flex flex-col mx-auto p-[30px] w-[90%] rounded-[5px] items-center justify-center gap-3 hover:shadow-lg hover:cursor-pointer ${className}`}
     >
-      <div className="rounded-full w-[130px] h-[130px]">
-        <img
-          src="src\assets\Mask-group.png"
-          alt="profile Picture"
-          className="w-full rounded-full object-cover"
-        />
+      <div className="rounded-full w-32 h-32 overflow-hidden ">
+        {user?.profile_picture ? (
+          <img
+            src={user.profile_picture}
+            alt="profile Picture"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <UserCircleIcon className="w-full h-full text-darkgrey" />
+        )}
       </div>
       {user && (
         <>

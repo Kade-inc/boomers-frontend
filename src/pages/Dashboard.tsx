@@ -4,7 +4,6 @@ import ProfileCard from "../components/ProfileCard";
 import TeamCard from "../components/TeamCard";
 import Team from "../entities/Team";
 import useChallenges from "../hooks/useChallenges";
-// import useProfile from "../hooks/useProfile";
 import useTeamRecommendations from "../hooks/useTeamRecommendations";
 import useTeams from "../hooks/useTeams";
 import useAuthStore from "../stores/useAuthStore";
