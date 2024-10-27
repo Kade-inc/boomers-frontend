@@ -1,6 +1,6 @@
 import TeamCard from "../components/TeamCard";
 import { useState } from "react";
-import { Outlet, useParams } from "react-router-dom";
+import { Outlet, useNavigate, useParams } from "react-router-dom";
 import useTeams from "../hooks/useTeams";
 import Team from "../entities/Team";
 
@@ -10,6 +10,7 @@ const TeamsPage = () => {
   const [topics, setTopics] = useState("");
   const { teamId } = useParams();
   const { data: teams, isPending, error } = useTeams();
+  const navigate = useNavigate();
 
   if (isPending) {
     return <div>Loading: </div>;
@@ -100,6 +101,7 @@ const TeamsPage = () => {
                   key={team._id}
                   team={team}
                   section="allTeams-section"
+                  onClick={() => navigate(`/teams/${team._id}`)}
                 />
               );
             })}

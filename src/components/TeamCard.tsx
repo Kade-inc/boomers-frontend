@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import Team from "../entities/Team";
 import useAuthStore from "../stores/useAuthStore";
 
@@ -10,9 +9,9 @@ interface TeamProps {
   team: ExtendedTeamInterface;
   styles?: string;
   section?: string;
+  onClick: () => void;
 }
-const TeamCard = ({ team, styles, section }: TeamProps) => {
-  const navigate = useNavigate();
+const TeamCard = ({ team, styles, section, onClick }: TeamProps) => {
   const { user } = useAuthStore.getState();
 
   return (
@@ -21,9 +20,7 @@ const TeamCard = ({ team, styles, section }: TeamProps) => {
         key={team._id}
         className={`card bg-gradient-to-b from-[#005E78] to-[#00989B] text-white h-[200px] rounded-[3px] font-body cursor-pointer ${styles}`}
         style={{ background: team?.teamColor }}
-        onClick={() => {
-          navigate(`/teams/${team._id}`);
-        }}
+        onClick={onClick}
       >
         <div className="card-body py-4 justify-between">
           <div className="flex justify-between w-full items-center">
