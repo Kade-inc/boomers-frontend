@@ -5,7 +5,7 @@ import { z } from "zod";
 import useSignup from "../hooks/useSignup";
 import { Toaster } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-import useSignUpStore from "../stores/store";
+import useSignUpStore from "../stores/signUpStore";
 import { useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 

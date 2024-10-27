@@ -18,7 +18,7 @@ const TeamCard = ({ team, styles, section, onClick }: TeamProps) => {
     <>
       <div
         key={team._id}
-        className={`card bg-gradient-to-b from-[#005E78] to-[#00989B] text-white h-[200px] rounded-[3px] font-body cursor-pointer ${styles}`}
+        className={`card bg-gradient-to-b from-[#005E78] to-[#00989B] text-white rounded-[3px] font-body cursor-pointer ${styles}`}
         style={{ background: team?.teamColor }}
         onClick={onClick}
       >
