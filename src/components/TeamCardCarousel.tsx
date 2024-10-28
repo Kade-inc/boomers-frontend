@@ -35,8 +35,8 @@ function TeamCardCarousel({ slides }: CarouselProps) {
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
+          slidesToShow: 1,
+          slidesToScroll: 1,
           infinite: false,
           dots: true,
         },
@@ -44,9 +44,8 @@ function TeamCardCarousel({ slides }: CarouselProps) {
       {
         breakpoint: 600,
         settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
-          initialSlide: 2,
+          slidesToShow: 1,
+          slidesToScroll: 1,
         },
       },
       {
@@ -63,7 +62,7 @@ function TeamCardCarousel({ slides }: CarouselProps) {
       <Slider {...settings}>
         {slides.map((slide: Team) => (
           <div key={slide._id}>
-            <div className="h-64 w-full flex items-center text-white">
+            <div className="h-64 flex items-center text-white">
               <TeamCard
                 key={slide._id}
                 team={slide}

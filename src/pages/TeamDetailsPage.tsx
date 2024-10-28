@@ -183,6 +183,7 @@ const TeamDetailsPage = () => {
                       <ChallengesCard
                         key={challenge._id}
                         challenge={challenge}
+                        styles={"w-[300px]"}
                       />
                     ))}
                   {!challenges && (

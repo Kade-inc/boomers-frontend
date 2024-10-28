@@ -63,7 +63,7 @@ function ChallengeCardCarousel({ slides, teamsData }: CarouselProps) {
       <Slider {...settings}>
         {slides.map((slide: Challenge) => (
           <div key={slide._id}>
-            <div className="h-64 flex items-center text-white">
+            <div className="h-64 flex items-center text-white md:w-[350px]">
               <ChallengesCard
                 key={slide._id}
                 challenge={slide}
