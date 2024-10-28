@@ -168,10 +168,10 @@ const Dashboard = () => {
                     You do not belong to any team currently.
                   </p>
                   <div className="flex flex-row items-center justify-center gap-4">
-                    <button className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white">
+                    <button className="px-8 py-2.5 text-[14px] font-medium bg-[#000] rounded-[4px] text-white">
                       Create Team
                     </button>
-                    <button className="px-8 py-2.5 text-[14px] font-regular bg-yellow rounded-[4px] text-darkgrey">
+                    <button className="px-8 py-2.5 text-[14px] font-medium bg-yellow rounded-[4px] text-darkgrey">
                       Join a Team
                     </button>
                   </div>
