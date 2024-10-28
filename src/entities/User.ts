@@ -10,11 +10,17 @@ export default interface User {
   createdAt?: string;
   firstName?: string;
   gender?: string;
-  interests?: string[];
+  interests?: Interest | null;
   lastName?: string;
   profile_picture?: string;
   updatedAt?: string;
   user_id?: string;
   _v?: string;
   _id?: string;
+}
+
+interface Interest {
+  domain: string;
+  subdomain: string;
+  subdomainTopics: string[];
 }
