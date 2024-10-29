@@ -108,7 +108,10 @@ const TeamsPage = () => {
             })}
           </div>
           <div className="flex justify-end mt-12">
-            <button className="w-[98px] text-[14px] p-1 text-black bg-yellow sm:w-[143px]">
+            <button
+              className="w-[98px] text-[14px] p-1 text-black bg-yellow sm:w-[143px]"
+              onClick={() => navigate("/create-team")}
+            >
               Add team
             </button>
           </div>

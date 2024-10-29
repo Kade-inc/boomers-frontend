@@ -15,6 +15,7 @@ import TeamDetailsPage from "../pages/TeamDetailsPage";
 import ResetPassword from "../pages/ResetPasswordPage";
 import RecommendationsPage from "../pages/RecommendationsPage";
 import ErrorPage from "../pages/ErrorPage";
+import CreateTeam from "../pages/CreateTeam";
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: "/recommendations",
         element: <ProtectedRoute element={<RecommendationsPage />} />,
+      },
+      {
+        path: "/create-team",
+        element: <ProtectedRoute element={<CreateTeam />} />,
       },
     ],
   },
