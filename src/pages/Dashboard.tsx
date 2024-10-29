@@ -88,7 +88,7 @@ const Dashboard = () => {
 
   if (teamsLoading || recommendationsLoading || challengesLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center h-screen bg-base-100">
         <span className="loading loading-dots loading-lg"></span>
       </div>
     );

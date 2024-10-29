@@ -26,7 +26,7 @@ function AppLayout() {
   return (
     <>
       <NavigationBar />
-      <div>
+      <div className="pt-[60px]">
         <Outlet />
       </div>
     </>
