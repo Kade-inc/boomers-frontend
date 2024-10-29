@@ -9,7 +9,7 @@ interface TeamProps {
   team: ExtendedTeamInterface;
   styles?: string;
   section?: string;
-  onClick: () => void;
+  onClick?: () => void;
 }
 const TeamCard = ({ team, styles, section, onClick }: TeamProps) => {
   const { user } = useAuthStore.getState();

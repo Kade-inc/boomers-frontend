@@ -113,6 +113,7 @@ const Dashboard = () => {
                   <div
                     className="tooltip tooltip-top tooltip-warning"
                     data-tip="Add team"
+                    onClick={() => navigate("/create-team")}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
