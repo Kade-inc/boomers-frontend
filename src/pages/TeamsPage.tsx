@@ -10,6 +10,7 @@ const TeamsPage = () => {
     subDomain: "",
     topics: "",
   });
+  const [searchName, setSearchName] = useState("");
 
   const [filteredTeams, setFilteredTeams] = useState<Team[]>([]);
 
@@ -35,17 +36,19 @@ const TeamsPage = () => {
         const matchesTopics =
           !filters.topics ||
           (team.subdomainTopics &&
-            (Array.isArray(filters.topics)
-              ? filters.topics.some((topic) =>
-                  team.subdomainTopics.includes(topic),
-                )
-              : team.subdomainTopics.includes(filters.topics)));
+            team.subdomainTopics.includes(filters.topics));
 
-        return matchesDomain && matchesSubDomain && matchesTopics;
+        const matchesName = team.name
+          .toLowerCase()
+          .includes(searchName.toLowerCase());
+
+        return (
+          matchesDomain && matchesSubDomain && matchesTopics && matchesName
+        );
       });
       setFilteredTeams(filtered);
     }
-  }, [teams, filters, isPending, error]);
+  }, [teams, filters, isPending, searchName, error]);
 
   if (isPending) {
     return <div>Loading: </div>;
@@ -142,7 +145,14 @@ const TeamsPage = () => {
                   clipRule="evenodd"
                 />
               </svg>
-              <input type="text" className="" placeholder="Search" />
+              <input
+                type="text"
+                className=""
+                placeholder="Search"
+                onChange={(e) => {
+                  setSearchName(e.target.value);
+                }}
+              />
             </label>
           </div>
 
