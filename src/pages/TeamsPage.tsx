@@ -9,11 +9,11 @@ const TeamsPage = () => {
   const [subDomain, setSubDomain] = useState("");
   const [topics, setTopics] = useState("");
 
-  const [filters, setFilters] = useState({
-    domain: "",
-    subDomain: "",
-    topics: "",
-  });
+  // const [filters, setFilters] = useState({
+  //   domain: "",
+  //   subDomain: "",
+  //   topics: "",
+  // });
 
   const { teamId } = useParams();
   const { data: teams, isPending, error } = useTeams();
