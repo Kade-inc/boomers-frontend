@@ -24,8 +24,8 @@ const ProfilePage = () => {
   if (error) return <div>Error: {error.message} </div>;
 
   return (
-    <div className="flex justify-center min-h-screen w-full bg-[#F7F7F7] pb-8">
-      <div className=" flex flex-col w-[90%] max-w-4xl mx-auto">
+    <div className="flex justify-center min-h-screen w-full bg-base-100 pb-8">
+      <div className=" flex flex-col w-[90%] max-w-4xl mx-aut mt-10">
         <div className="bg-white relative shadow-custom rounded-[5px] pb-4 mt-4">
           <div className="bg-custom-gradient w-full h-[70px] md:h-[157px]"></div>
           <div className="px-4 md:px-10">
@@ -35,14 +35,14 @@ const ProfilePage = () => {
             <div className="flex justify-between mt-16 md:mt-12">
               <div>
                 <h1 className="font-body font-bold text-base md:text-lg text-darkgrey">
-                  {data?.profile.firstName}
+                  {data?.profile?.firstName}
                 </h1>
                 <p className="flex items-center font-body font-normal text-[13px] md:text-base text-darkgrey">
                   {/* <img src={location} className="w-[11px] h-[11px] mr-2" /> */}
                 </p>
 
                 <div className="flex flex-col md:flex-row items-start md:items-center font-body font-normal text-[13px] md:text-base text-darkgrey">
-                  @{data!.profile.username}
+                  @{data!.profile?.username}
                   {/* <img src={ellipse} className="mx-2 hidden md:block" /> */}
                   <p className="font-semibold font-body text-[13px] md:text-base text-darkgrey text-nowrap">
                     {/* Software Engineer at Apple */}

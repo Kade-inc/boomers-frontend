@@ -73,6 +73,7 @@ const EditProfile = () => {
               style={{ backgroundColor: "transparent" }}
             />
           </div>
+
           <div className="mb-[3%]">
             <label
               className="block text-base font-bold mb-[1%] font-body"

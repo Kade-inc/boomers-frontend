@@ -6,6 +6,8 @@ import { z } from "zod";
 import { Toaster } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import useSignin from "../hooks/useSignin";
+import { useState } from "react";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 
 const schema = z.object({
   accountId: z.string().min(1),
@@ -23,14 +25,16 @@ const LoginForm = () => {
   });
 
   const onSubmit = async (data: FormData) => {
-    console.log(data);
-    try {
-      await mutation.mutateAsync(data);
-      navigate("/");
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    await mutation.mutateAsync(data);
+    navigate("/");
   };
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="text-[#393E46]">
       <form
@@ -83,15 +87,29 @@ const LoginForm = () => {
           >
             Password
           </label>
-          <input
-            type="password"
-            autoComplete="on"
-            id="password"
-            {...register("password")}
-            placeholder="Enter password"
-            className="input w-full border border-gray-700 bg-transparent rounded-md font-body placeholder-gray-600 hover:border-gray-700 focus:outline-none"
-            style={{ backgroundColor: "transparent" }}
-          />
+
+          <div className="flex justify-end items-center relative">
+            {showPassword ? (
+              <EyeSlashIcon
+                className="absolute inset-y-0 right-3 flex items-center pl-2 w-8 h-8 top-2.5 cursor-pointer"
+                onClick={togglePasswordVisibility}
+              />
+            ) : (
+              <EyeIcon
+                className="absolute inset-y-0 right-3 flex items-center pl-2 w-8 h-8 top-2.5 cursor-pointer"
+                onClick={togglePasswordVisibility}
+              />
+            )}
+            <input
+              type={showPassword ? "text" : "password"}
+              autoComplete="on"
+              id="password"
+              {...register("password")}
+              placeholder="Enter password"
+              className="input w-full border border-gray-700 bg-transparent rounded-md font-body placeholder-gray-600 hover:border-gray-700 focus:outline-none"
+              style={{ backgroundColor: "transparent" }}
+            />
+          </div>
         </div>
 
         <button
