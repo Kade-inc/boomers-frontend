@@ -4,15 +4,25 @@ import groupcard from "../assets/Group 248.svg";
 import useGetUserProfile from "../hooks/useGetUserProfile";
 import { useState } from "react";
 import EditProfileModal from "../components/EditProfileModal";
+import useAuthStore from "../stores/useAuthStore";
+import useTeams from "../hooks/useTeams";
+import TeamCardCarousel from "../components/TeamCardCarousel";
 
 const ProfilePage = () => {
   const { data, error, isLoading } = useGetUserProfile();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { user } = useAuthStore() 
+
+  const { data:teams, isPending } = useTeams(user.user_id)
+  console.log("TEAMS: ", teams)
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
+
+
+  console.log("USER: ", user)
   if (isLoading) {
     return (
       <div className="flex  items-center justify-center h-screen">
@@ -35,7 +45,7 @@ const ProfilePage = () => {
             <div className="flex justify-between mt-16 md:mt-12">
               <div>
                 <h1 className="font-body font-bold text-base md:text-lg text-darkgrey">
-                  {data?.profile?.firstName}
+                  {user.firstName} {user.lastName}
                 </h1>
                 <p className="flex items-center font-body font-normal text-[13px] md:text-base text-darkgrey">
                   {/* <img src={location} className="w-[11px] h-[11px] mr-2" /> */}
@@ -97,10 +107,7 @@ const ProfilePage = () => {
             <h1 className="font-body font-semibold text-base md:text-lg text-darkgrey">
               Your Houses
             </h1>
-            <img
-              src={groupcard}
-              className="mt-6 w-[95%] md:w-[40%] h-auto object-contain"
-            ></img>
+            <TeamCardCarousel slides={teams}/>
           </div>
         </div>
       </div>
