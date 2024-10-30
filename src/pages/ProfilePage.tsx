@@ -1,12 +1,10 @@
 import maskgroup from "../assets/Mask group.svg";
-import groupcard from "../assets/Group 248.svg";
 
 import useGetUserProfile from "../hooks/useGetUserProfile";
 import { useState } from "react";
 import EditProfileModal from "../components/EditProfileModal";
 import useAuthStore from "../stores/useAuthStore";
 import useTeams from "../hooks/useTeams";
-import TeamCardCarousel from "../components/TeamCardCarousel";
 
 const ProfilePage = () => {
   const { data, error, isLoading } = useGetUserProfile();
@@ -107,7 +105,6 @@ const ProfilePage = () => {
             <h1 className="font-body font-semibold text-base md:text-lg text-darkgrey">
               Your Houses
             </h1>
-            <TeamCardCarousel slides={teams}/>
           </div>
         </div>
       </div>
