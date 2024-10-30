@@ -8,6 +8,13 @@ const TeamsPage = () => {
   const [domain, setDomain] = useState("");
   const [subDomain, setSubDomain] = useState("");
   const [topics, setTopics] = useState("");
+
+  const [filters, setFilters] = useState({
+    domain: "",
+    subDomain: "",
+    topics: "",
+  });
+
   const { teamId } = useParams();
   const { data: teams, isPending, error } = useTeams();
   const navigate = useNavigate();
@@ -24,10 +31,10 @@ const TeamsPage = () => {
   }
 
   return (
-    <div className="h-screen text-darkgrey px-10">
+    <div className="h-screen text-base-content bg-base-100 px-10">
       {!teamId ? (
         <>
-          <p className="font-normal text-[20px] mt-3 mb-3">Text</p>
+          <p className="text-[20px] pt-3 mb-3 font-bold ">Teams</p>
 
           <div className="flex gap-2 flex-wrap items-center justify-between">
             <div className="flex gap-2 flex-wrap items-center">
@@ -38,42 +45,61 @@ const TeamsPage = () => {
                 className="max-w-xs bg-transparent border border-1 w-[143px] p-1 text-[14px] hidden sm:block"
                 style={{ borderColor: "rgba(204, 205, 207, 1)" }}
                 value={domain}
-                onChange={(e) => setDomain(e.target.value)}
+                onChange={(e) => {
+                  setDomain(e.target.value);
+                }}
               >
                 <option value="" disabled>
                   Domain
                 </option>
-                <option value="got">Game of Thrones</option>
-                <option value="lost">Lost</option>
+                <option value="Software Engineering">
+                  Software Engineering
+                </option>
               </select>
               <select
                 className="max-w-xs bg-transparent border p-1 border-1 w-[143px] text-[14px] hidden sm:block"
                 style={{ borderColor: "rgba(204, 205, 207, 1)" }}
                 value={subDomain}
-                onChange={(e) => setSubDomain(e.target.value)}
+                onChange={(e) => {
+                  setSubDomain(e.target.value);
+                }}
               >
                 <option value="" disabled>
                   Sub domain
                 </option>
-                <option value="got">Game of Thrones</option>
-                <option value="lost">Lost</option>
+                <option value="Frontend">Frontend</option>
+                <option value="Backend">Backend</option>
+                <option value="Full Stack">Full Stack</option>
               </select>
               <select
                 className="max-w-xs bg-transparent border p-1 border-1 w-[143px] text-[14px] hidden sm:block"
                 style={{ borderColor: "rgba(204, 205, 207, 1)" }}
                 value={topics}
-                onChange={(e) => setTopics(e.target.value)}
+                onChange={(e) => {
+                  setTopics(e.target.value);
+                }}
               >
                 <option value="" disabled>
                   Topics
                 </option>
-                <option value="got">Game of Thrones</option>
-                <option value="lost">Lost</option>
+                <option value="React JS">React JS</option>
+                <option value="Django">Django</option>
+                <option value="Flask">Flask</option>
+                <option value="AngularJS">AngularJS</option>
+                <option value="Next.Js">Next.Js</option>
+                <option value="Node.Js">Node.Js</option>
               </select>
               <button className="w-[98px] text-[14px] p-1 text-white bg-yellow sm:hidden sm:w-[143px]">
                 Show Filters
               </button>
-              <button className="w-[98px] text-[14px] p-1 text-white bg-red-600 sm:w-[143px]">
+              <button
+                className="w-[98px] text-[14px] p-1 text-white bg-red-600 sm:w-[143px]"
+                onClick={() => {
+                  setDomain("");
+                  setSubDomain("");
+                  setTopics("");
+                }}
+              >
                 Clear all
               </button>
             </div>

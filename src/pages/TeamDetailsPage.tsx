@@ -35,7 +35,11 @@ const TeamDetailsPage = () => {
   };
 
   if (isTeamPending || isChallengesPending || isTeamMemberRequestsPending) {
-    return <p>Loading...</p>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <span className="loading loading-dots loading-lg text-base-content"></span>
+      </div>
+    );
   }
 
   if (teamError) {
@@ -43,7 +47,7 @@ const TeamDetailsPage = () => {
   }
 
   return (
-    <div className="h-screen text-darkgrey px-[40px]">
+    <div className="h-screen bg-base-100 py-10 px-[40px]">
       <>
         {teamError && (
           <Toaster
@@ -103,7 +107,7 @@ const TeamDetailsPage = () => {
         {team && (
           <>
             <div
-              className="card bg-gradient-to-b from-[#005E78] to-[#00989B] text-white w-full mt-[20px] h-[200px] rounded-[3px] font-body"
+              className="card bg-gradient-to-b from-[#005E78] to-[#00989B] text-white p-0 w-full h-[200px] rounded-[3px] font-body"
               style={{ background: team?.teamColor }}
             >
               <div className="card-body">
