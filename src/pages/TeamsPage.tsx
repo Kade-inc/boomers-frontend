@@ -1,23 +1,51 @@
 import TeamCard from "../components/TeamCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import useTeams from "../hooks/useTeams";
 import Team from "../entities/Team";
 
 const TeamsPage = () => {
-  const [domain, setDomain] = useState("");
-  const [subDomain, setSubDomain] = useState("");
-  const [topics, setTopics] = useState("");
+  const [filters, setFilters] = useState({
+    domain: "",
+    subDomain: "",
+    topics: "",
+  });
 
-  // const [filters, setFilters] = useState({
-  //   domain: "",
-  //   subDomain: "",
-  //   topics: "",
-  // });
+  const [filteredTeams, setFilteredTeams] = useState<Team[]>([]);
 
   const { teamId } = useParams();
   const { data: teams, isPending, error } = useTeams();
   const navigate = useNavigate();
+
+  // Filter teams
+
+  useEffect(() => {
+    if (teams && !isPending && !error) {
+      const filtered = teams.filter((team: Team) => {
+        const matchesDomain =
+          !filters.domain ||
+          team.domain.toLowerCase().includes(filters.domain.toLowerCase());
+
+        const matchesSubDomain =
+          !filters.subDomain ||
+          team.subdomain
+            .toLowerCase()
+            .includes(filters.subDomain.toLowerCase());
+
+        const matchesTopics =
+          !filters.topics ||
+          (team.subdomainTopics &&
+            (Array.isArray(filters.topics)
+              ? filters.topics.some((topic) =>
+                  team.subdomainTopics.includes(topic),
+                )
+              : team.subdomainTopics.includes(filters.topics)));
+
+        return matchesDomain && matchesSubDomain && matchesTopics;
+      });
+      setFilteredTeams(filtered);
+    }
+  }, [teams, filters, isPending, error]);
 
   if (isPending) {
     return <div>Loading: </div>;
@@ -44,10 +72,10 @@ const TeamsPage = () => {
               <select
                 className="max-w-xs bg-transparent border border-1 w-[143px] p-1 text-[14px] hidden sm:block"
                 style={{ borderColor: "rgba(204, 205, 207, 1)" }}
-                value={domain}
-                onChange={(e) => {
-                  setDomain(e.target.value);
-                }}
+                value={filters.domain}
+                onChange={(e) =>
+                  setFilters({ ...filters, domain: e.target.value })
+                }
               >
                 <option value="" disabled>
                   Domain
@@ -59,10 +87,10 @@ const TeamsPage = () => {
               <select
                 className="max-w-xs bg-transparent border p-1 border-1 w-[143px] text-[14px] hidden sm:block"
                 style={{ borderColor: "rgba(204, 205, 207, 1)" }}
-                value={subDomain}
-                onChange={(e) => {
-                  setSubDomain(e.target.value);
-                }}
+                value={filters.subDomain}
+                onChange={(e) =>
+                  setFilters({ ...filters, subDomain: e.target.value })
+                }
               >
                 <option value="" disabled>
                   Sub domain
@@ -74,10 +102,10 @@ const TeamsPage = () => {
               <select
                 className="max-w-xs bg-transparent border p-1 border-1 w-[143px] text-[14px] hidden sm:block"
                 style={{ borderColor: "rgba(204, 205, 207, 1)" }}
-                value={topics}
-                onChange={(e) => {
-                  setTopics(e.target.value);
-                }}
+                value={filters.topics}
+                onChange={(e) =>
+                  setFilters({ ...filters, topics: e.target.value })
+                }
               >
                 <option value="" disabled>
                   Topics
@@ -94,11 +122,9 @@ const TeamsPage = () => {
               </button>
               <button
                 className="w-[98px] text-[14px] p-1 text-white bg-red-600 sm:w-[143px]"
-                onClick={() => {
-                  setDomain("");
-                  setSubDomain("");
-                  setTopics("");
-                }}
+                onClick={() =>
+                  setFilters({ domain: "", subDomain: "", topics: "" })
+                }
               >
                 Clear all
               </button>
@@ -121,7 +147,7 @@ const TeamsPage = () => {
           </div>
 
           <div className="grid grid-cols-3 gap-12 mt-10 w-[80%]">
-            {teams.map((team: Team) => {
+            {filteredTeams.map((team: Team) => {
               return (
                 <TeamCard
                   key={team._id}
