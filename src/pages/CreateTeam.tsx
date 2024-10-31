@@ -1,9 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import TeamCard from "../components/TeamCard";
 import Team from "../entities/Team";
 import { useForm } from "react-hook-form";
+import useDomains from "../hooks/useDomains";
+import Domain from "../entities/Domain";
+import useSubDomains from "../hooks/useSubDomains";
+import SubDomain from "../entities/SubDomain";
+import useDomainTopics from "../hooks/useDomainTopics";
+import DomainTopic from "../entities/DomainTopic";
 
 const schema = z.object({
   name: z.string(),
@@ -17,7 +23,67 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 function CreateTeam() {
-  const [team, setTeam] = useState<Team | unknown>({});
+  const [team, setTeam] = useState<Team>({
+    name: "",
+    teamUsername: "",
+    domain: "",
+    subdomain: "",
+    subdomainTopics: [],
+    teamColor: "",
+    owner_id: "",
+  });
+
+  const { data: domains, isPending: domainsPending } = useDomains();
+  const [selectedDomainId, setSelectedDomainId] = useState<string | null>(null);
+  const { data: subdomains, isPending: subdomainsPending } =
+    useSubDomains(selectedDomainId);
+  const [domainOptions, setDomainOptions] = useState<Domain[]>([]);
+  const [subdomainOptions, setSubdomainOptions] = useState<SubDomain[]>([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { data: fetchedDomainTopics, isPending: domainTopicsPending } =
+    useDomainTopics();
+  const [subdomainTopics, setDomainTopics] = useState<DomainTopic[]>([]);
+  const [teamColors] = useState({
+    "teal-gradient": "linear-gradient(0deg, #00989B, #005E78)",
+    "kinda-orange-gradient": "linear-gradient(0deg, #D9436D, #F26A4B)",
+    "greyish-gradient": "linear-gradient(0deg, #495D6D, #313752)",
+    "greenish-gradient": "linear-gradient(0deg, #589FD6, #43CCBA)",
+    "dreamy-gradient": "linear-gradient(180deg, #7b4dbb, #d97b98, #f3aa75)",
+  });
+
+  const [selectedColor, setSelectedColor] = useState<string | null>(
+    "linear-gradient(0deg, #00989B, #005E78)",
+  );
+
+  const handleColorSelect = (colorName: string) => {
+    setSelectedColor(colorName);
+    setTeam((prevTeam) => ({
+      ...prevTeam,
+      teamColor: colorName,
+    }));
+  };
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
+  useEffect(() => {
+    if (domains && domains.length > 0) {
+      setDomainOptions(domains);
+    }
+  }, [domains]);
+
+  useEffect(() => {
+    if (subdomains && subdomains.length > 0) {
+      setSubdomainOptions(subdomains);
+    }
+  }, [subdomains]);
+
+  useEffect(() => {
+    if (fetchedDomainTopics) {
+      setDomainTopics(fetchedDomainTopics);
+    }
+  }, [fetchedDomainTopics]);
 
   const {
     register,
@@ -25,11 +91,57 @@ function CreateTeam() {
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
+  const handleTopicChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+
+    setTeam((prevTeam) => {
+      const isAlreadySelected = (prevTeam.subdomainTopics || []).includes(
+        value,
+      );
+
+      const updatedTopics = isAlreadySelected
+        ? (prevTeam.subdomainTopics || []).filter((topic) => topic !== value)
+        : [...(prevTeam.subdomainTopics || []), value];
+
+      return { ...prevTeam, subdomainTopics: updatedTopics };
+    });
+  };
+
+  const handleInputChange =
+    (field: keyof Team) =>
+    (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      const value = event.target.value;
+
+      if (field === "domain") {
+        setSelectedDomainId(value);
+        const selectedDomain = domainOptions.find(
+          (domain) => domain._id === value,
+        );
+        setTeam((prevTeam) => ({
+          ...prevTeam,
+          domain: selectedDomain ? selectedDomain.name : "",
+          subdomain: "",
+        }));
+      } else {
+        setTeam((prevTeam) => ({
+          ...prevTeam,
+          [field]: value,
+        }));
+      }
+    };
+
   const onSubmit = async (data: FormData) => {
-    setTeam(data);
+    // setTeam(data);
     console.log(data);
   };
 
+  if (domainsPending || domainTopicsPending) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-base-100">
+        <span className="loading loading-dots loading-lg"></span>
+      </div>
+    );
+  }
   return (
     <>
       <div className="h-screen w-full px-5 md:px-10 pt-10 lg:flex lg:justify-between font-body bg-base-100 text-base-content">
@@ -72,6 +184,7 @@ function CreateTeam() {
                   className="input w-full border border-base-content focus:outline-none bg-transparent rounded-md placeholder-gray-300 mt-[5px]"
                   style={{ backgroundColor: "transparent" }}
                   {...register("name")}
+                  onChange={handleInputChange("name")}
                   id="name"
                 />
                 {errors.name && (
@@ -92,10 +205,11 @@ function CreateTeam() {
                 </label>
                 <input
                   type="text"
-                  placeholder="Team Username"
+                  placeholder="Team Nick name"
                   className="input w-full border border-base-content focus:outline-none bg-transparent rounded-md placeholder-gray-300 mt-[5px]"
                   style={{ backgroundColor: "transparent" }}
                   {...register("username")}
+                  onChange={handleInputChange("teamUsername")}
                   id="username"
                 />
                 {errors.username && (
@@ -117,15 +231,18 @@ function CreateTeam() {
                 <select
                   className="select w-full border border-base-content focus:outline-none rounded-md placeholder-gray-100 mt-[5px] bg-transparent"
                   {...register("domain")}
+                  onChange={handleInputChange("domain")}
+                  value={team.domain} // Controlled value
                   id="domain"
                 >
-                  <option value="" disabled selected>
+                  <option value="" disabled>
                     Domain
                   </option>
-                  <option value="domain1">Domain 1</option>
-                  <option value="domain2">Domain 2</option>
-                  <option value="domain3">Domain 3</option>
-                  {/* Add more options as needed */}
+                  {domainOptions.map((domain) => (
+                    <option key={domain._id} value={domain._id}>
+                      {domain.name}
+                    </option>
+                  ))}
                 </select>
                 {errors.domain && (
                   <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
@@ -138,20 +255,27 @@ function CreateTeam() {
                   className="block text-base-content mb-[1%] text-[18px]"
                   htmlFor="subdomain"
                 >
-                  Sub Domain
+                  Sub Domain{" "}
+                  <span className="text-error text-[13px] ml-[5px]">
+                    required*
+                  </span>
                 </label>
                 <select
                   className="select w-full border border-base-content focus:outline-none rounded-md placeholder-gray-300 mt-[5px] bg-transparent"
                   {...register("subdomain")}
+                  onChange={handleInputChange("subdomain")}
+                  value={team.subdomain} // Controlled value
                   id="subdomain"
+                  disabled={!selectedDomainId && subdomainsPending}
                 >
-                  <option value="" disabled selected className="text-base-100">
+                  <option value="" disabled>
                     Sub Domain
                   </option>
-                  <option value="domain1">Domain 1</option>
-                  <option value="domain2">Domain 2</option>
-                  <option value="domain3">Domain 3</option>
-                  {/* Add more options as needed */}
+                  {subdomainOptions.map((subdomain) => (
+                    <option key={subdomain._id} value={subdomain.name}>
+                      {subdomain.name}
+                    </option>
+                  ))}
                 </select>
                 {errors.subdomain && (
                   <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
@@ -159,26 +283,44 @@ function CreateTeam() {
                   </p>
                 )}
               </div>
-              <div className="mb-6">
+
+              <div className="mb-6 relative">
                 <label
                   className="block text-base-content mb-[1%] text-[18px]"
-                  htmlFor="topic"
+                  htmlFor="topics"
                 >
                   Topics
                 </label>
-                <select
-                  className="select w-full border border-base-content focus:outline-none rounded-md placeholder-gray-300 mt-[5px] bg-transparent"
-                  {...register("topic")}
-                  id="topic"
+                <button
+                  type="button"
+                  onClick={toggleDropdown}
+                  className="select w-full border border-base-content focus:outline-none rounded-md placeholder-gray-300 mt-[5px] bg-transparent text-left p-2"
                 >
-                  <option value="" disabled selected className="text-base-100">
-                    Topics
-                  </option>
-                  <option value="domain1">Domain 1</option>
-                  <option value="domain2">Domain 2</option>
-                  <option value="domain3">Domain 3</option>
-                  {/* Add more options as needed */}
-                </select>
+                  {team.subdomainTopics && team.subdomainTopics.length > 0
+                    ? `Selected Topics: ${team.subdomainTopics.join(", ")}`
+                    : "Select Topics"}
+                </button>
+                {dropdownOpen && (
+                  <div className="absolute z-10 w-full bg-base-100 border border-base-content mt-2 rounded-md shadow-lg p-3 max-h-60 overflow-y-auto">
+                    {subdomainTopics?.map((topic) => (
+                      <label
+                        key={topic._id}
+                        className="flex items-center space-x-2 mt-2"
+                      >
+                        <input
+                          type="checkbox"
+                          value={topic.name}
+                          onChange={handleTopicChange}
+                          checked={(team.subdomainTopics || []).includes(
+                            topic.name,
+                          )}
+                          className="checkbox"
+                        />
+                        <span>{topic.name}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
                 {errors.topic && (
                   <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
                     {errors.topic?.message}
@@ -193,15 +335,23 @@ function CreateTeam() {
                 >
                   Team Color
                 </label>
-                <div className="flex flex-row items-center 2xl:w-[60%]">
-                  <div className="bg-transparent border-4 border-base-content w-[65px] h-[65px] rounded-full flex items-center justify-center">
-                    <div className="bg-dreamy-gradient w-[45px] h-[45px] rounded-full"></div>
-                  </div>
-
-                  <div className="bg-teal-gradient w-[45px] h-[45px] rounded-full ml-3"></div>
-                  <div className="bg-greyish-gradient w-[45px] h-[45px] rounded-full ml-3"></div>
-                  <div className="bg-kinda-orange-gradient w-[45px] h-[45px] rounded-full ml-3"></div>
-                  <div className="bg-greenish-gradient w-[45px] h-[45px] rounded-full ml-3"></div>
+                <div className="flex flex-row items-center 2xl:w-[70%]">
+                  {Object.entries(teamColors).map(([name, gradient]) => (
+                    <div
+                      key={name}
+                      onClick={() => handleColorSelect(gradient)}
+                      className={`ml-3 cursor-pointer flex items-center justify-center ${
+                        selectedColor === gradient
+                          ? "border-4 w-[60px] h-[60px] rounded-full border-base-content"
+                          : ""
+                      }`}
+                    >
+                      <div
+                        style={{ background: gradient }}
+                        className="w-[45px] h-[45px] rounded-full"
+                      ></div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
