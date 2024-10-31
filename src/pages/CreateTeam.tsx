@@ -340,7 +340,7 @@ function CreateTeam() {
                     <div
                       key={name}
                       onClick={() => handleColorSelect(gradient)}
-                      className={`ml-3 cursor-pointer flex items-center justify-center ${
+                      className={`ml-1 xl:ml-3 cursor-pointer flex items-center justify-center ${
                         selectedColor === gradient
                           ? "border-4 w-[60px] h-[60px] rounded-full border-base-content"
                           : ""
