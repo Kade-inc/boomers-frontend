@@ -6,6 +6,7 @@ import Cookies from "js-cookie";
 import { UserVerificationModel } from "../entities/UserVerificationModel";
 import { jwtDecode } from "jwt-decode";
 import useAuthStore from "../stores/useAuthStore";
+import Team from "../entities/Team";
 
 interface ErrorResponse {
   message: string;
@@ -383,6 +384,26 @@ class APIClient {
         "Error fetching Sub domains",
         axiosError.response?.data ?? axiosError.message,
       );
+    }
+  };
+
+  createTeam = async (data: Team, requiresAuth = true): Promise<any> => {
+    try {
+      const response = await this.axiosInstance.post(this.endpoint, data, {
+        headers: {
+          requiresAuth,
+        },
+      });
+
+      const responseData = response.data;
+      return responseData;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Team Creation error:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
     }
   };
 

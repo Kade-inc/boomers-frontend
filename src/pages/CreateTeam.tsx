@@ -12,12 +12,12 @@ import useDomainTopics from "../hooks/useDomainTopics";
 import DomainTopic from "../entities/DomainTopic";
 
 const schema = z.object({
-  name: z.string(),
-  username: z.string(),
-  domain: z.string(),
-  subdomain: z.string(),
-  topic: z.string(),
-  teamColor: z.string(),
+  name: z.string().default(""),
+  username: z.string().default(""),
+  domain: z.string().default(""),
+  subdomain: z.string().default(""),
+  topic: z.array(z.string()).default([]),
+  teamColor: z.string().default(""),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -89,7 +89,17 @@ function CreateTeam() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({ resolver: zodResolver(schema) });
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      name: "",
+      username: "",
+      domain: "",
+      subdomain: "",
+      topic: [], // Initialize `topic` as an empty array
+      teamColor: "",
+    },
+  });
 
   const handleTopicChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -113,10 +123,10 @@ function CreateTeam() {
       const value = event.target.value;
 
       if (field === "domain") {
-        setSelectedDomainId(value);
         const selectedDomain = domainOptions.find(
-          (domain) => domain._id === value,
+          (domain) => domain.name === value,
         );
+        setSelectedDomainId(selectedDomain ? selectedDomain._id : "");
         setTeam((prevTeam) => ({
           ...prevTeam,
           domain: selectedDomain ? selectedDomain.name : "",
@@ -196,7 +206,7 @@ function CreateTeam() {
               <div className="mb-6">
                 <label
                   className="block text-base-content mb-[1%] text-[18px]"
-                  htmlFor="name"
+                  htmlFor="username"
                 >
                   Team Username{" "}
                   <span className="text-error text-[13px] ml-[5px]">
@@ -239,7 +249,7 @@ function CreateTeam() {
                     Domain
                   </option>
                   {domainOptions.map((domain) => (
-                    <option key={domain._id} value={domain._id}>
+                    <option key={domain._id} value={domain.name}>
                       {domain.name}
                     </option>
                   ))}
