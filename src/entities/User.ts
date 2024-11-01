@@ -17,6 +17,8 @@ export default interface User {
   user_id?: string;
   _v?: string;
   _id?: string;
+  job?: string;
+  location?: string;
 }
 
 interface Interest {
