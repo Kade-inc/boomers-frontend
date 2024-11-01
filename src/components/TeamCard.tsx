@@ -49,28 +49,28 @@ const TeamCard = ({ team, styles, section, onClick }: TeamProps) => {
                 <>
                   <div className="flex items-center mb-2 font-medium">
                     {team.domain}
-                    {team.subdomain && (
+                    {team.subDomain && (
                       <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
                     )}
 
-                    {team.subdomain}
-                    {team.subdomainTopics &&
-                      team.subdomainTopics.length > 0 && (
+                    {team.subDomain}
+                    {team.subDomainTopics &&
+                      team.subDomainTopics.length > 0 && (
                         <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
                       )}
 
-                    {team?.subdomainTopics && (
+                    {team?.subDomainTopics && (
                       <div
-                        className={`${team.subdomainTopics.length > 1 ? "tooltip tooltip-top tooltip-warning" : ""}`}
+                        className={`${team.subDomainTopics.length > 1 ? "tooltip tooltip-top tooltip-warning" : ""}`}
                         data-tip={
-                          team.subdomainTopics.length > 0
-                            ? team.subdomainTopics.map((topic: string) => topic)
+                          team.subDomainTopics.length > 0
+                            ? team.subDomainTopics.map((topic: string) => topic)
                             : ""
                         }
                       >
-                        {team.subdomainTopics[0]}
-                        {team.subdomainTopics.length - 1 > 0 &&
-                          ` +${team.subdomainTopics.length - 1}`}
+                        {team.subDomainTopics[0]}
+                        {team.subDomainTopics.length - 1 > 0 &&
+                          ` +${team.subDomainTopics.length - 1}`}
                       </div>
                     )}
                   </div>
