@@ -135,8 +135,6 @@ class APIClient {
       return response.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
-      const errorMessage = axiosError.response?.data ?? axiosError.message;
-      toast.error(`Reset Password Error: ${errorMessage}`);
       throw axiosError;
     }
   };

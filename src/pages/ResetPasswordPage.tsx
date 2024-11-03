@@ -1,10 +1,14 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Toaster } from "react-hot-toast";
+import { Toaster, toast } from "react-hot-toast";
+import axios, { AxiosError } from "axios";
 import { Link, useSearchParams } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ResetPasswordSuccess from "../components/ResetPasswordSuccess";
 import useResetPassword from "../hooks/useResetPassword";
+import { useState } from "react";
+import { EyeSlashIcon } from "@heroicons/react/24/outline";
+import { EyeIcon } from "@heroicons/react/24/outline";
 
 const schema = z
   .object({
@@ -48,12 +52,41 @@ const ResetPassword = () => {
   const isFormValid =
     password && confirmpassword && password === confirmpassword;
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
   const onSubmit = async (data: FormData) => {
     const token = searchParams.get("token");
     const userId = searchParams.get("id");
 
     if (token && userId) {
-      await mutate({ userId, password: data.password, token });
+      mutate(
+        { userId, password: data.password, token },
+        {
+          onError: (error: Error) => {
+            const isAxiosError = (
+              error: Error,
+            ): error is AxiosError<{ message: string }> =>
+              axios.isAxiosError(error);
+
+            let errorMessage =
+              "An unexpected error occurred. Please try again.";
+
+            if (isAxiosError(error) && error.response?.data?.message) {
+              errorMessage = error.response.data.message;
+            }
+
+            toast.error(`${errorMessage}`);
+          },
+        },
+      );
     }
   };
 
@@ -62,7 +95,7 @@ const ResetPassword = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full bg-white">
+    <div className="flex flex-col items-center w-full h-screen bg-white">
       <h2 className="block font-heading text-[30px] leading-[31.86px] mt-48 md:mt-52 lg:mt-20 lg:text-[50px] lg:leading-[53.1px]">
         <Link to="/">LOGO</Link>
       </h2>
@@ -97,15 +130,28 @@ const ResetPassword = () => {
             >
               New Password
             </label>
-            <input
-              type="password"
-              autoComplete="on"
-              id="password"
-              {...register("password")}
-              placeholder="Enter password"
-              className="input w-full border border-darkgrey bg-transparent rounded-md font-body placeholder-lightgrey text-[12px] hover:border-gray-700 focus:outline-none lg:text-[15px]"
-              style={{ backgroundColor: "transparent" }}
-            />
+            <div className="flex justify-end items-center relative">
+              {showPassword ? (
+                <EyeSlashIcon
+                  className="absolute inset-y-0 right-3 flex items-center pl-2 w-8 h-8 top-2.5 cursor-pointer"
+                  onClick={togglePasswordVisibility}
+                />
+              ) : (
+                <EyeIcon
+                  className="absolute inset-y-0 right-3 flex items-center pl-2 w-8 h-8 top-2.5 cursor-pointer"
+                  onClick={togglePasswordVisibility}
+                />
+              )}
+              <input
+                type={showPassword ? "text" : "password"}
+                autoComplete="on"
+                id="password"
+                {...register("password")}
+                placeholder="Enter password"
+                className="input w-full border border-darkgrey bg-transparent rounded-md font-body placeholder-lightgrey text-[12px] hover:border-gray-700 focus:outline-none lg:text-[15px]"
+                style={{ backgroundColor: "transparent" }}
+              />
+            </div>
             {errors.password && (
               <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
                 {errors.password?.message}
@@ -120,23 +166,36 @@ const ResetPassword = () => {
             >
               Confirm Password
             </label>
-            <input
-              type="password"
-              autoComplete="on"
-              id="confirmpassword"
-              placeholder="Confirm password"
-              {...register("confirmpassword")}
-              className="input w-full border border-darkgrey bg-transparent rounded-md font-body placeholder-lightgrey text-[12px] hover:border-gray-700 focus:outline-none lg:text-[15px]"
-            />
-            {errors.confirmpassword && (
+            <div className="flex justify-end items-center relative">
+              {showConfirmPassword ? (
+                <EyeSlashIcon
+                  className="absolute inset-y-0 right-3 flex items-center pl-2 w-8 h-8 top-2.5 cursor-pointer"
+                  onClick={toggleConfirmPasswordVisibility}
+                />
+              ) : (
+                <EyeIcon
+                  className="absolute inset-y-0 right-3 flex items-center pl-2 w-8 h-8 top-2.5 cursor-pointer"
+                  onClick={toggleConfirmPasswordVisibility}
+                />
+              )}
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                autoComplete="on"
+                id="confirmpassword"
+                placeholder="Confirm password"
+                {...register("confirmpassword")}
+                className="input w-full border border-darkgrey bg-transparent rounded-md font-body placeholder-lightgrey text-[12px] hover:border-gray-700 focus:outline-none lg:text-[15px]"
+              />
+            </div>
+            {confirmpassword && password !== confirmpassword && (
               <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
-                {errors.confirmpassword?.message}
+                Passwords do not match
               </p>
             )}
           </div>
           <button
             type="submit"
-            className={`w-full rounded-md lg:mt-6 py-3 text-[14px] leading-[17.07px] font-medium text-darkgrey bg-yellow transition-opacity duration-200 lg:text-[20px] lg:leading-[24.38px]
+            className={`w-full rounded-md lg:mt-6 py-3 text-[14px] font-body text-darkgrey bg-yellow transition-opacity duration-200 lg:text-[20px]
             ${!isFormValid ? "opacity-50 cursor-not-allowed" : ""}`}
             disabled={!isFormValid}
           >
