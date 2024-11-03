@@ -397,10 +397,6 @@ class APIClient {
       return responseData;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
-      toast.error(
-        "Team Creation error:",
-        axiosError.response?.data ?? axiosError.message,
-      );
       throw axiosError;
     }
   };
