@@ -72,9 +72,7 @@ const SignupForm = () => {
         <h2 className="block md:hidden font-heading text-[30px]">
           <Link to="/">LOGO</Link>
         </h2>
-        <p className="font-extrabold text-[50px] leading-[53px] font-heading">
-          SIGN UP
-        </p>
+        <p className="font-extrabold text-[50px] font-heading">SIGN UP</p>
         <p className="py-[2.6%] text-[18px] font-semibold font-body">
           Create an account to begin your journey.
         </p>

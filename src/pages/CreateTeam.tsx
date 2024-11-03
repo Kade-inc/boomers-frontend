@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import TeamCard from "../components/TeamCard";
 import Team from "../entities/Team";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import useDomains from "../hooks/useDomains";
 import Domain from "../entities/Domain";
 import useSubDomains from "../hooks/useSubDomains";
@@ -14,9 +14,25 @@ import useCreateTeam from "../hooks/useCreateTeam";
 import { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
+interface FormInputs {
+  name: string;
+  username: string;
+  domain: string;
+  subDomain: string;
+  topic: string[];
+}
+
 const schema = z.object({
-  name: z.string().min(3).max(30),
-  username: z.string().min(3).max(30),
+  name: z
+    .string()
+    .trim()
+    .min(3, "Name should have a minimum of 3 characters")
+    .max(30, "Name can be a max of 30 characters"),
+  username: z
+    .string()
+    .trim()
+    .min(3, "Nick name should have a minimum of 3 characters")
+    .max(30, "Nick name can be a max of 30 characters"),
   domain: z.string().nonempty("Please select a domain"),
   subDomain: z.string().nonempty("Please select a Sub Domain"),
   topic: z
@@ -24,8 +40,6 @@ const schema = z.object({
     .min(1, "Please select at least one topic")
     .default([]),
 });
-
-type FormData = z.infer<typeof schema>;
 
 function CreateTeam() {
   const [team, setTeam] = useState<Team>({
@@ -62,6 +76,23 @@ function CreateTeam() {
   const [isTeamSuccess, setIsTeamSuccess] = useState<boolean>(false);
   const [createdTeamId, setCreatedTeamId] = useState("");
   const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    watch,
+    control,
+  } = useForm<FormInputs>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      name: "",
+      username: "",
+      domain: "",
+      subDomain: "",
+      topic: [],
+    },
+  });
 
   const handleColorSelect = (colorName: string) => {
     setSelectedColor(colorName);
@@ -93,21 +124,26 @@ function CreateTeam() {
     }
   }, [fetchedDomainTopics]);
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      name: "",
-      username: "",
-      domain: "",
-      subDomain: "",
-      topic: [],
-    },
+  const domain = useWatch({
+    control,
+    name: "domain",
+    defaultValue: "",
   });
+
+  const subDomain = useWatch({
+    control,
+    name: "subDomain",
+    defaultValue: "",
+  });
+  const name = watch("name");
+  const username = watch("username");
+
+  useEffect(() => {
+    const selectedDomain = domainOptions.find(
+      (domains: Domain) => domains.name === domain,
+    );
+    setSelectedDomainId(selectedDomain ? selectedDomain._id : "");
+  }, [domain]);
 
   const handleTopicChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -125,31 +161,15 @@ function CreateTeam() {
     });
   };
 
-  const handleInputChange =
-    (field: keyof Team) =>
-    (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      const value = event.target.value;
-
-      if (field === "domain") {
-        const selectedDomain = domainOptions.find(
-          (domain) => domain.name === value,
-        );
-        setSelectedDomainId(selectedDomain ? selectedDomain._id : "");
-        setTeam((prevTeam) => ({
-          ...prevTeam,
-          domain: selectedDomain ? selectedDomain.name : "",
-          subDomain: "",
-        }));
-      } else {
-        setTeam((prevTeam) => ({
-          ...prevTeam,
-          [field]: value,
-        }));
-      }
-    };
-
   const onSubmit = async () => {
-    const response = await mutation.mutateAsync(team);
+    const response = await mutation.mutateAsync({
+      name: name,
+      teamUsername: username,
+      domain: domain,
+      subDomain: subDomain,
+      subDomainTopics: team.subDomainTopics,
+      teamColor: team.teamColor,
+    });
     setCreatedTeamId(response.data._id);
     setIsTeamSuccess(true);
   };
@@ -193,6 +213,9 @@ function CreateTeam() {
               styles={
                 "w-full md:w-[350px] md:h-[180px] h-[120px] cursor-default"
               }
+              name={name}
+              domain={domain}
+              subDomain={subDomain}
             />
             <p className="font-medium mt-10">
               Your team was successfully created!
@@ -228,6 +251,9 @@ function CreateTeam() {
                   styles={
                     "w-full md:w-[350px] md:h-[180px] h-[120px] cursor-default"
                   }
+                  name={name}
+                  domain={domain}
+                  subDomain={subDomain}
                 />
               </div>
             </div>
@@ -250,7 +276,6 @@ function CreateTeam() {
                       className="input w-full border border-base-content focus:outline-none bg-transparent rounded-md placeholder-gray-300 mt-[5px]"
                       style={{ backgroundColor: "transparent" }}
                       {...register("name")}
-                      onChange={handleInputChange("name")}
                       id="name"
                     />
                     {errors.name && (
@@ -259,6 +284,7 @@ function CreateTeam() {
                       </p>
                     )}
                   </div>
+
                   <div className="mb-6">
                     <label
                       className="block text-base-content mb-[1%] text-[18px]"
@@ -275,7 +301,6 @@ function CreateTeam() {
                       className="input w-full border border-base-content focus:outline-none bg-transparent rounded-md placeholder-gray-300 mt-[5px]"
                       style={{ backgroundColor: "transparent" }}
                       {...register("username")}
-                      onChange={handleInputChange("teamUsername")}
                       id="username"
                     />
                     {errors.username && (
@@ -297,8 +322,7 @@ function CreateTeam() {
                     <select
                       className="select w-full border border-base-content focus:outline-none rounded-md placeholder-gray-100 mt-[5px] bg-transparent"
                       {...register("domain")}
-                      onChange={handleInputChange("domain")}
-                      value={team.domain} // Controlled value
+                      value={domain} // Controlled value
                       id="domain"
                     >
                       <option value="" disabled>
@@ -329,8 +353,8 @@ function CreateTeam() {
                     <select
                       className="select w-full border border-base-content focus:outline-none rounded-md placeholder-gray-300 mt-[5px] bg-transparent"
                       {...register("subDomain")}
-                      onChange={handleInputChange("subDomain")}
-                      value={team.subDomain} // Controlled value
+                      // onChange={handleInputChange("subDomain")}
+                      value={subDomain} // Controlled value
                       id="subDomain"
                       disabled={!selectedDomainId && subdomainsPending}
                     >
@@ -434,6 +458,7 @@ function CreateTeam() {
                       <span>Create Team</span>
                     )}
                   </button>
+                  {/* <DomainWatched control={control} /> */}
                 </form>
               </div>
             </div>
