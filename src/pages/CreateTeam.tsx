@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import TeamCard from "../components/TeamCard";
 import Team from "../entities/Team";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import useDomains from "../hooks/useDomains";
 import Domain from "../entities/Domain";
 import useSubDomains from "../hooks/useSubDomains";
@@ -11,12 +11,29 @@ import SubDomain from "../entities/SubDomain";
 import useDomainTopics from "../hooks/useDomainTopics";
 import DomainTopic from "../entities/DomainTopic";
 import useCreateTeam from "../hooks/useCreateTeam";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import axios, { AxiosError } from "axios";
+
+interface FormInputs {
+  name: string;
+  username: string;
+  domain: string;
+  subDomain: string;
+  topic: string[];
+}
 
 const schema = z.object({
-  name: z.string().min(3).max(30),
-  username: z.string().min(3).max(30),
+  name: z
+    .string()
+    .trim()
+    .min(3, "Name should have a minimum of 3 characters")
+    .max(30, "Name can be a max of 30 characters"),
+  username: z
+    .string()
+    .trim()
+    .min(3, "Nick name should have a minimum of 3 characters")
+    .max(30, "Nick name can be a max of 30 characters"),
   domain: z.string().nonempty("Please select a domain"),
   subDomain: z.string().nonempty("Please select a Sub Domain"),
   topic: z
@@ -25,9 +42,9 @@ const schema = z.object({
     .default([]),
 });
 
-type FormData = z.infer<typeof schema>;
-
 function CreateTeam() {
+  // TO FIX: Remove this later since it's not really useful
+  // It's currently used when setting team color and in handleTopicChange
   const [team, setTeam] = useState<Team>({
     name: "",
     teamUsername: "",
@@ -62,6 +79,42 @@ function CreateTeam() {
   const [isTeamSuccess, setIsTeamSuccess] = useState<boolean>(false);
   const [createdTeamId, setCreatedTeamId] = useState("");
   const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitted },
+    watch,
+    control,
+  } = useForm<FormInputs>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      name: "",
+      username: "",
+      domain: "",
+      subDomain: "",
+      topic: [],
+    },
+  });
+
+  const domain = useWatch({
+    control,
+    name: "domain",
+    defaultValue: "",
+  });
+
+  const subDomain = useWatch({
+    control,
+    name: "subDomain",
+    defaultValue: "",
+  });
+  const topic = useWatch({
+    control,
+    name: "topic",
+    defaultValue: [],
+  });
+  const name = watch("name");
+  const username = watch("username");
 
   const handleColorSelect = (colorName: string) => {
     setSelectedColor(colorName);
@@ -69,6 +122,22 @@ function CreateTeam() {
       ...prevTeam,
       teamColor: colorName,
     }));
+  };
+
+  const handleTopicChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+
+    setTeam((prevTeam) => {
+      const isAlreadySelected = (prevTeam.subDomainTopics || []).includes(
+        value,
+      );
+
+      const updatedTopics = isAlreadySelected
+        ? (prevTeam.subDomainTopics || []).filter((topic) => topic !== value)
+        : [...(prevTeam.subDomainTopics || []), value];
+      setValue("topic", updatedTopics);
+      return { ...prevTeam, subDomainTopics: updatedTopics };
+    });
   };
 
   const toggleDropdown = () => {
@@ -93,63 +162,41 @@ function CreateTeam() {
     }
   }, [fetchedDomainTopics]);
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      name: "",
-      username: "",
-      domain: "",
-      subDomain: "",
-      topic: [],
-    },
-  });
-
-  const handleTopicChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-
-    setTeam((prevTeam) => {
-      const isAlreadySelected = (prevTeam.subDomainTopics || []).includes(
-        value,
-      );
-
-      const updatedTopics = isAlreadySelected
-        ? (prevTeam.subDomainTopics || []).filter((topic) => topic !== value)
-        : [...(prevTeam.subDomainTopics || []), value];
-      setValue("topic", updatedTopics);
-      return { ...prevTeam, subDomainTopics: updatedTopics };
-    });
-  };
-
-  const handleInputChange =
-    (field: keyof Team) =>
-    (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      const value = event.target.value;
-
-      if (field === "domain") {
-        const selectedDomain = domainOptions.find(
-          (domain) => domain.name === value,
-        );
-        setSelectedDomainId(selectedDomain ? selectedDomain._id : "");
-        setTeam((prevTeam) => ({
-          ...prevTeam,
-          domain: selectedDomain ? selectedDomain.name : "",
-          subDomain: "",
-        }));
-      } else {
-        setTeam((prevTeam) => ({
-          ...prevTeam,
-          [field]: value,
-        }));
-      }
-    };
+  useEffect(() => {
+    const selectedDomain = domainOptions.find(
+      (domains: Domain) => domains.name === domain,
+    );
+    setSelectedDomainId(selectedDomain ? selectedDomain._id : "");
+  }, [domain]);
 
   const onSubmit = async () => {
-    const response = await mutation.mutateAsync(team);
+    const response = await mutation.mutateAsync(
+      {
+        name: name,
+        teamUsername: username,
+        domain: domain,
+        subDomain: subDomain,
+        subDomainTopics: team.subDomainTopics,
+        teamColor: team.teamColor,
+      },
+      {
+        onError: (error: Error) => {
+          const isAxiosError = (
+            error: Error,
+          ): error is AxiosError<{ message: string }> =>
+            axios.isAxiosError(error);
+
+          let errorMessage =
+            "An unexpected error occurred. Please try again later.";
+
+          if (isAxiosError(error) && error.response?.data?.message) {
+            errorMessage = error.response.data.message;
+          }
+
+          toast.error(`${errorMessage}`);
+        },
+      },
+    );
     setCreatedTeamId(response.data._id);
     setIsTeamSuccess(true);
   };
@@ -193,6 +240,9 @@ function CreateTeam() {
               styles={
                 "w-full md:w-[350px] md:h-[180px] h-[120px] cursor-default"
               }
+              name={name}
+              domain={domain}
+              subDomain={subDomain}
             />
             <p className="font-medium mt-10">
               Your team was successfully created!
@@ -228,6 +278,9 @@ function CreateTeam() {
                   styles={
                     "w-full md:w-[350px] md:h-[180px] h-[120px] cursor-default"
                   }
+                  name={name}
+                  domain={domain}
+                  subDomain={subDomain}
                 />
               </div>
             </div>
@@ -239,10 +292,12 @@ function CreateTeam() {
                       className="block text-base-content mb-[1%] text-[18px]"
                       htmlFor="name"
                     >
-                      Team Name{" "}
-                      <span className="text-error text-[13px] ml-[5px]">
-                        required*
-                      </span>
+                      Team Name
+                      {errors.name && (
+                        <span className="text-error text-[13px] ml-[5px]">
+                          required*
+                        </span>
+                      )}
                     </label>
                     <input
                       type="text"
@@ -250,7 +305,6 @@ function CreateTeam() {
                       className="input w-full border border-base-content focus:outline-none bg-transparent rounded-md placeholder-gray-300 mt-[5px]"
                       style={{ backgroundColor: "transparent" }}
                       {...register("name")}
-                      onChange={handleInputChange("name")}
                       id="name"
                     />
                     {errors.name && (
@@ -259,15 +313,18 @@ function CreateTeam() {
                       </p>
                     )}
                   </div>
+
                   <div className="mb-6">
                     <label
                       className="block text-base-content mb-[1%] text-[18px]"
                       htmlFor="username"
                     >
-                      Team Nickname{" "}
-                      <span className="text-error text-[13px] ml-[5px]">
-                        required*
-                      </span>
+                      Team Nickname
+                      {errors.username && (
+                        <span className="text-error text-[13px] ml-[5px]">
+                          required*
+                        </span>
+                      )}
                     </label>
                     <input
                       type="text"
@@ -275,7 +332,6 @@ function CreateTeam() {
                       className="input w-full border border-base-content focus:outline-none bg-transparent rounded-md placeholder-gray-300 mt-[5px]"
                       style={{ backgroundColor: "transparent" }}
                       {...register("username")}
-                      onChange={handleInputChange("teamUsername")}
                       id="username"
                     />
                     {errors.username && (
@@ -289,16 +345,17 @@ function CreateTeam() {
                       className="block text-base-content mb-[1%] text-[18px]"
                       htmlFor="domain"
                     >
-                      Domain{" "}
-                      <span className="text-error text-[13px] ml-[5px]">
-                        required*
-                      </span>
+                      Domain
+                      {errors.domain && (
+                        <span className="text-error text-[13px] ml-[5px]">
+                          required*
+                        </span>
+                      )}
                     </label>
                     <select
                       className="select w-full border border-base-content focus:outline-none rounded-md placeholder-gray-100 mt-[5px] bg-transparent"
                       {...register("domain")}
-                      onChange={handleInputChange("domain")}
-                      value={team.domain} // Controlled value
+                      value={domain} // Controlled value
                       id="domain"
                     >
                       <option value="" disabled>
@@ -321,16 +378,17 @@ function CreateTeam() {
                       className="block text-base-content mb-[1%] text-[18px]"
                       htmlFor="subDomain"
                     >
-                      Sub Domain{" "}
-                      <span className="text-error text-[13px] ml-[5px]">
-                        required*
-                      </span>
+                      Sub Domain
+                      {errors.subDomain && (
+                        <span className="text-error text-[13px] ml-[5px]">
+                          required*
+                        </span>
+                      )}
                     </label>
                     <select
                       className="select w-full border border-base-content focus:outline-none rounded-md placeholder-gray-300 mt-[5px] bg-transparent"
                       {...register("subDomain")}
-                      onChange={handleInputChange("subDomain")}
-                      value={team.subDomain} // Controlled value
+                      value={subDomain} // Controlled value
                       id="subDomain"
                       disabled={!selectedDomainId && subdomainsPending}
                     >
@@ -356,9 +414,11 @@ function CreateTeam() {
                       htmlFor="topics"
                     >
                       Topics
-                      <span className="text-error text-[13px] ml-[5px]">
-                        required*
-                      </span>
+                      {isSubmitted && topic.length === 0 && (
+                        <span className="text-error text-[13px] ml-[5px]">
+                          required*
+                        </span>
+                      )}
                     </label>
                     <button
                       type="button"
@@ -390,9 +450,9 @@ function CreateTeam() {
                         ))}
                       </div>
                     )}
-                    {errors.topic && (
+                    {isSubmitted && topic.length === 0 && (
                       <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
-                        {errors.topic?.message}
+                        Please select at least one topic
                       </p>
                     )}
                   </div>
