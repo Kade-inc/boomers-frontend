@@ -487,6 +487,7 @@ function CreateTeam() {
                   <button
                     className="btn w-full bg-yellow text-darkgrey border-none text-[17px] hover:bg-yellow rounded-sm font-medium disabled:opacity-100 xl:mb-8 3xl:mb-0"
                     type="submit"
+                    disabled={mutation.isPending}
                   >
                     {mutation.isPending ? (
                       <span className="loading loading-dots loading-md"></span>
