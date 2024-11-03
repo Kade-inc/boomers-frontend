@@ -11,12 +11,17 @@ import TeamsPage from "../pages/TeamsPage";
 import AppLayout from "../pages/AppLayout";
 import ProfilePage from "../pages/ProfilePage";
 import ProtectedRoute from "./ProtectedRoute";
+import TeamDetailsPage from "../pages/TeamDetailsPage";
 import ResetPassword from "../pages/ResetPasswordPage";
+import RecommendationsPage from "../pages/RecommendationsPage";
+import ErrorPage from "../pages/ErrorPage";
+import CreateTeam from "../pages/CreateTeam";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <ProtectedRoute element={<AppLayout />} fallback={<HomePage />} />,
+    errorElement: <ErrorPage />,
     children: [
       {
         index: true,
@@ -32,11 +37,28 @@ const router = createBrowserRouter([
         path: "teams",
         element: <ProtectedRoute element={<TeamsPage />} />,
       },
+      {
+        path: "teams/:teamId",
+        element: <ProtectedRoute element={<TeamDetailsPage />} />,
+      },
+      {
+        path: "/profile",
+        element: <ProtectedRoute element={<ProfilePage />} />,
+      },
+      {
+        path: "/recommendations",
+        element: <ProtectedRoute element={<RecommendationsPage />} />,
+      },
+      {
+        path: "/create-team",
+        element: <ProtectedRoute element={<CreateTeam />} />,
+      },
     ],
   },
   {
     path: "/auth",
     element: <Layout />,
+    errorElement: <ErrorPage />,
     children: [
       { index: true, element: <SignupForm /> },
       { path: "login", element: <LoginForm /> },
@@ -46,15 +68,13 @@ const router = createBrowserRouter([
   },
   {
     path: "/reset-password",
+    errorElement: <ErrorPage />,
     element: <ResetPassword />,
   },
   {
     path: "/signup-verification",
+    errorElement: <ErrorPage />,
     element: <SignupVerificationSuccess />,
-  },
-  {
-    path: "/profile",
-    element: <ProtectedRoute element={<ProfilePage />} />,
   },
 ]);
 

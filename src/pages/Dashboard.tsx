@@ -1,50 +1,327 @@
-import { useNavigate } from "react-router-dom";
 import AdviceCard from "../components/AdviceCard";
+import ChallengeCardCarousel from "../components/ChallengeCardCarousel";
 import ProfileCard from "../components/ProfileCard";
+import TeamCard from "../components/TeamCard";
+import Team from "../entities/Team";
+import useChallenges from "../hooks/useChallenges";
+import useTeamRecommendations from "../hooks/useTeamRecommendations";
+import useTeams from "../hooks/useTeams";
+import useAuthStore from "../stores/useAuthStore";
+import TeamCardCarousel from "../components/TeamCardCarousel";
+import { useEffect, useState } from "react";
+import Challenge from "../entities/Challenge";
+import { useNavigate } from "react-router-dom";
+import useRecommendationStore from "../stores/useRecommendationStore";
+import RecommendationsModal from "../components/RecommendationsModal";
 
 const Dashboard = () => {
+  const user = useAuthStore((s) => s.user);
+  const { data: teamsData, isPending: teamsLoading } = useTeams(user.user_id);
+  const { data: teamRecommendations, isPending: recommendationsLoading } =
+    useTeamRecommendations();
+  const { data: challengesData, isPending: challengesLoading } = useChallenges(
+    user.user_id || "",
+  );
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [challenges, setChallenges] = useState<Challenge[]>([]);
+  const [teamsFilter, setTeamsFilter] = useState("AllTeams");
+  const [challengesFilter, setChallengesFilter] = useState("AllChallenges");
   const navigate = useNavigate();
+  const setRecommendations = useRecommendationStore(
+    (s) => s.setRecommendations,
+  );
 
-  const profile = {
-    domain: "Software Engineering",
-    subdomain: "Full Stack",
-    topics: ["React Js", "Node js", "Javascript"],
+  const navigateToRecommendations = () => {
+    navigate("/recommendations");
   };
 
-  const additionalTopics = profile.topics.length - 1;
+  useEffect(() => {
+    if (teamsData) {
+      setTeams(teamsData);
+    }
+  }, [teamsData]);
+
+  useEffect(() => {
+    if (challengesData) {
+      setChallenges(challengesData);
+    }
+  }, [challengesData]);
+
+  useEffect(() => {
+    if (teamRecommendations) {
+      setRecommendations(teamRecommendations);
+    }
+  }, [teamRecommendations]);
+
+  const filteredTeams = teams.filter((team) => {
+    if (teamsFilter === "AllTeams") return true;
+    if (teamsFilter === "Owner") return team.owner_id === user.user_id;
+    if (teamsFilter === "Member") return team.owner_id !== user.user_id;
+    return true;
+  });
+
+  const filteredChallenges = challenges.filter((challenge) => {
+    if (challengesFilter === "AllChallenges") return true;
+    if (challengesFilter === "Owner")
+      return challenge.owner_id === user.user_id;
+    if (challengesFilter === "Member")
+      return challenge.owner_id !== user.user_id;
+    return true;
+  });
+
+  const handleTeamsFilter = (filter: string) => {
+    setTeamsFilter(filter);
+  };
+
+  const handleChallengesFilter = (filter: string) => {
+    setChallengesFilter(filter);
+  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedRecommendation, setSelectedRecommendation] =
+    useState<Team | null>(null);
+
+  const openModal = (team: Team) => {
+    setIsModalOpen(true);
+    setSelectedRecommendation(team);
+  };
+  const closeModal = () => setIsModalOpen(false);
+
+  if (teamsLoading || recommendationsLoading || challengesLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-base-100">
+        <span className="loading loading-dots loading-lg"></span>
+      </div>
+    );
+  }
   return (
     <>
-      <div>Welcome Home</div>
-      <button className="btn" onClick={() => navigate("/auth/login")}>
-        Back
-      </button>
-      <AdviceCard />
-      <ProfileCard />
-      <div className="h-screen ml-3">
-        <div
-          className="card bg-gradient-to-b from-[#005E78] to-[#00989B] text-white w-[450px]
-         h-[200px] rounded-[3px] font-body"
-        >
-          <div className="card-body">
-            <div className="flex justify-between w-full items-center">
-              <h2 className="font-medium">Paul and the Funky Bunch</h2>
-              <p className="text-right text-[12px]">Member</p>
-            </div>
-            <div className="flex justify-between w-full mt-[55px]">
-              <div className="flex-grow text-[12px]">
-                <div>
-                  {profile.domain} . {profile.subdomain} . {profile.topics[0]}{" "}
-                  {additionalTopics > 0 && `+${additionalTopics}`}
-                </div>
-                <div>Very Active</div>
-              </div>
-              <div className="flex mt-[-20px] mr-2.5">
-                <h2 className="font-normal rotate-[-90deg] origin-top-right whitespace-nowrap">
-                  5 Members
-                </h2>
-              </div>
-            </div>
+      <div className="h-screen w-full px-5 md:px-10 pt-10 lg:flex lg:justify-between font-body bg-base-100 text-base-content">
+        <div className="min-h-80 xl:w-4/5 lg:w-full md:w-full">
+          <div>
+            <p className="font-body text-[16px]">
+              Hi, {user.firstName ? <>{user.firstName}</> : user.username}
+            </p>
+            <p className="font-body font-medium text-[20px]">Welcome Back!</p>
           </div>
+          <div className="mt-6">
+            {teamsData?.length !== 0 && (
+              <div className="flex flex-col md:flex-row items-start md:items-center">
+                <div className="flex flex-row mb-5 md:mb-0">
+                  <p className="font-body font-semibold text-[16px] mr-5">
+                    Your Houses
+                  </p>
+                  <div
+                    className="tooltip tooltip-top tooltip-warning"
+                    data-tip="Add team"
+                    onClick={() => navigate("/create-team")}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="#F8B500"
+                      className="size-6 cursor-pointer"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <div className="flex flex-row justify-between content-center items-center text-[13px] md:text-[14px] font-medium">
+                  <p className="md:ml-10 ">Filter:</p>
+                  <div
+                    className={`ml-3 md:ml-5 py-1 px-6 rounded-md  cursor-pointer ${
+                      teamsFilter === "AllTeams"
+                        ? "bg-yellow font-medium text-darkgrey"
+                        : "border border-base-content"
+                    }`}
+                    onClick={() => handleTeamsFilter("AllTeams")}
+                  >
+                    All
+                  </div>
+                  <div
+                    className={`ml-3 md:ml-5  py-1 px-6 rounded-md cursor-pointer ${
+                      teamsFilter === "Member"
+                        ? "bg-yellow font-medium text-darkgrey"
+                        : "border border-base-content"
+                    }`}
+                    onClick={() => handleTeamsFilter("Member")}
+                  >
+                    Member
+                  </div>
+                  <div
+                    className={`ml-3 md:ml-5  py-1 px-6 rounded-md cursor-pointer ${
+                      teamsFilter === "Owner"
+                        ? "bg-yellow font-medium text-darkgrey"
+                        : "border border-base-content"
+                    }`}
+                    onClick={() => handleTeamsFilter("Owner")}
+                  >
+                    Owner
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {teamsData?.length == 0 && (
+              <>
+                <div className="flex items-center flex-col text-[16px] mt-10">
+                  <p className="mb-6">
+                    You do not belong to any team currently.
+                  </p>
+                  <div className="flex flex-row items-center justify-center gap-4">
+                    <button className="px-8 py-2.5 text-[14px] font-medium bg-[#000] rounded-[4px] text-white">
+                      Create Team
+                    </button>
+                    <button className="px-8 py-2.5 text-[14px] font-medium bg-yellow rounded-[4px] text-darkgrey">
+                      Join a Team
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex items-center flex-col text-[16px] mt-10">
+                  <p className="mb-6 font-semibold">
+                    Team recommendations based on your profile.
+                  </p>
+                  {teamRecommendations?.length === 0 && (
+                    <>
+                      <div className="flex flex-col items-center justify-center">
+                        <p className="mb-6">No recommendations found.</p>
+                        <div className="flex flex-col items-center justify-center">
+                          <p className="mb-6">
+                            Edit your profile with your interests to get
+                            recommendations.
+                          </p>
+                          <button className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-2">
+                            Edit Profile
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  {teamRecommendations && teamRecommendations?.length > 0 && (
+                    <>
+                      <div className="flex flex-col md:flex-row justify-center items-center w-full">
+                        {teamRecommendations
+                          ?.slice(0, 2)
+                          .map((recommendation: Team) => (
+                            <TeamCard
+                              key={recommendation._id}
+                              team={recommendation}
+                              styles={`w-full md:w-[400px] h-[130px] md:h-[200px] mb-3 md:mb-0 md:ml-6`}
+                              onClick={() => openModal(recommendation)}
+                            />
+                          ))}
+                      </div>
+                      {selectedRecommendation !== null && (
+                        <RecommendationsModal
+                          isOpen={isModalOpen}
+                          onClose={closeModal}
+                          modalData={selectedRecommendation}
+                        />
+                      )}
+                      <button
+                        className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-8"
+                        onClick={navigateToRecommendations}
+                      >
+                        View more
+                      </button>
+                    </>
+                  )}
+                </div>
+              </>
+            )}
+            {filteredTeams && filteredTeams?.length > 0 && (
+              <>
+                <TeamCardCarousel slides={filteredTeams} />
+              </>
+            )}
+          </div>
+          <div className="mt-12">
+            {teamsData && teamsData?.length !== 0 && (
+              <div className="flex flex-col md:flex-row items-start md:items-center">
+                <div className="flex flex-row mb-5 md:mb-0">
+                  <p className="font-body font-semibold text-[16px] mr-5">
+                    Challenges
+                  </p>
+                  <div
+                    className="tooltip tooltip-top tooltip-warning"
+                    data-tip="Add Challenge"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="#F8B500"
+                      className="size-6 cursor-pointer"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <div className="flex flex-row justify-between content-center items-center text-[13px] md:text-[14px] font-medium">
+                  <p className="md:ml-10">Filter:</p>
+                  <div
+                    className={`ml-3 md:ml-5 py-1 px-6 rounded-md  cursor-pointer ${
+                      challengesFilter === "AllChallenges"
+                        ? "bg-yellow font-medium text-darkgrey"
+                        : "border border-base-content"
+                    }`}
+                    onClick={() => handleChallengesFilter("AllChallenges")}
+                  >
+                    All
+                  </div>
+                  <div
+                    className={`ml-3 md:ml-5 py-1 px-6 rounded-md cursor-pointer ${
+                      challengesFilter === "Member"
+                        ? "bg-yellow font-medium text-darkgrey"
+                        : "border border-base-content"
+                    }`}
+                    onClick={() => handleChallengesFilter("Member")}
+                  >
+                    Member
+                  </div>
+                  <div
+                    className={`ml-3 md:ml-5 py-1 px-6 rounded-md cursor-pointer ${
+                      challengesFilter === "Owner"
+                        ? "bg-yellow font-medium text-darkgrey"
+                        : "border border-base-content"
+                    }`}
+                    onClick={() => handleChallengesFilter("Owner")}
+                  >
+                    Owner
+                  </div>
+                </div>
+              </div>
+            )}
+            {teamsData.length > 0 && challengesData?.length == 0 && (
+              <div className="flex items-center flex-col text-[16px] mt-10">
+                <p className="mb-6">
+                  You&apos;re all caught up! No challenges to display.
+                </p>
+              </div>
+            )}
+
+            {filteredChallenges && filteredChallenges?.length > 0 && (
+              <>
+                <ChallengeCardCarousel
+                  slides={filteredChallenges}
+                  teamsData={teamsData}
+                />
+              </>
+            )}
+          </div>
+        </div>
+        <div
+          className={`shadow-slate-300 rounded h-5/6 xl:w-[300px] xl:w-1/5 xl:flex xl:flex xl:right-3 xl:top-15 hidden py-5 flex-col bg-base-200 shadow-sm`}
+        >
+          <ProfileCard user={user} className="mb-5" />
+          <AdviceCard className="" />
         </div>
       </div>
     </>

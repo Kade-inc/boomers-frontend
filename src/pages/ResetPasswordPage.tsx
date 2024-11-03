@@ -95,7 +95,7 @@ const ResetPassword = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full bg-white">
+    <div className="flex flex-col items-center w-full h-screen bg-white">
       <h2 className="block font-heading text-[30px] leading-[31.86px] mt-48 md:mt-52 lg:mt-20 lg:text-[50px] lg:leading-[53.1px]">
         <Link to="/">LOGO</Link>
       </h2>
@@ -195,7 +195,7 @@ const ResetPassword = () => {
           </div>
           <button
             type="submit"
-            className={`w-full rounded-md lg:mt-6 py-3 text-[14px] leading-[17.07px] font-body text-darkgrey bg-yellow transition-opacity duration-200 lg:text-[20px] lg:leading-[24.38px]
+            className={`w-full rounded-md lg:mt-6 py-3 text-[14px] font-body text-darkgrey bg-yellow transition-opacity duration-200 lg:text-[20px]
             ${!isFormValid ? "opacity-50 cursor-not-allowed" : ""}`}
             disabled={!isFormValid}
           >

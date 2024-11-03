@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 import { useNavigate } from "react-router-dom";
 import success from "../assets/success.svg";
-import useSignUpStore from "../stores/store";
+import useSignUpStore from "../stores/signUpStore";
 import { useEffect } from "react";
 
 const SignupSuccess = () => {
@@ -12,9 +12,13 @@ const SignupSuccess = () => {
 
   useEffect(() => {
     if (!signUpSuccess) {
-      navigate("/");
+      navigate("/auth");
     }
   }, [signUpSuccess]);
+
+  if (!signUpSuccess) {
+    return <></>;
+  }
 
   return (
     <div className="text-center text-[#393E46] mx-2 mt-[40px]">

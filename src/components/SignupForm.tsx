@@ -5,7 +5,9 @@ import { z } from "zod";
 import useSignup from "../hooks/useSignup";
 import { Toaster } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-import useSignUpStore from "../stores/store";
+import useSignUpStore from "../stores/signUpStore";
+import { useState } from "react";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 
 const schema = z
   .object({
@@ -45,13 +47,20 @@ const SignupForm = () => {
 
   const onSubmit = async (data: FormData) => {
     const { confirmpassword, ...userData } = data; // eslint-disable-line @typescript-eslint/no-unused-vars
-    try {
-      await mutation.mutateAsync(userData);
-      setSignUpSuccess(true);
-      navigate("/auth/signup-success");
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    await mutation.mutateAsync(userData);
+    setSignUpSuccess(true);
+    navigate("/auth/signup-success");
+  };
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   return (
@@ -136,15 +145,28 @@ const SignupForm = () => {
           >
             Password
           </label>
-          <input
-            type="password"
-            autoComplete="on"
-            id="password"
-            placeholder="Create a password"
-            className="input w-full border border-gray-700 bg-transparent rounded-md font-body placeholder-gray-600 hover:border-gray-700 focus:outline-none"
-            style={{ backgroundColor: "transparent" }}
-            {...register("password")}
-          />
+          <div className="flex justify-end items-center relative">
+            {showPassword ? (
+              <EyeSlashIcon
+                className="absolute inset-y-0 right-3 flex items-center pl-2 w-8 h-8 top-2.5 cursor-pointer"
+                onClick={togglePasswordVisibility}
+              />
+            ) : (
+              <EyeIcon
+                className="absolute inset-y-0 right-3 flex items-center pl-2 w-8 h-8 top-2.5 cursor-pointer"
+                onClick={togglePasswordVisibility}
+              />
+            )}
+            <input
+              type={showPassword ? "text" : "password"}
+              autoComplete="on"
+              id="password"
+              placeholder="Create a password"
+              className="input w-full border border-gray-700 bg-transparent rounded-md font-body placeholder-gray-600 hover:border-gray-700 focus:outline-none"
+              style={{ backgroundColor: "transparent" }}
+              {...register("password")}
+            />
+          </div>
           {errors.password && (
             <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
               {errors.password.message}
@@ -159,15 +181,28 @@ const SignupForm = () => {
           >
             Confirm password
           </label>
-          <input
-            type="password"
-            autoComplete="on"
-            id="confirmpassword"
-            placeholder="Confirm your password"
-            className="input w-full border border-gray-700  rounded-md font-body placeholder-gray-600 hover:border-gray-700 focus:outline-none"
-            style={{ backgroundColor: "transparent" }}
-            {...register("confirmpassword")}
-          />
+          <div className="flex justify-end items-center relative">
+            {showConfirmPassword ? (
+              <EyeSlashIcon
+                className="absolute inset-y-0 right-3 flex items-center pl-2 w-8 h-8 top-2.5 cursor-pointer"
+                onClick={toggleConfirmPasswordVisibility}
+              />
+            ) : (
+              <EyeIcon
+                className="absolute inset-y-0 right-3 flex items-center pl-2 w-8 h-8 top-2.5 cursor-pointer"
+                onClick={toggleConfirmPasswordVisibility}
+              />
+            )}
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              autoComplete="on"
+              id="confirmpassword"
+              placeholder="Confirm your password"
+              className="input w-full border border-gray-700  rounded-md font-body placeholder-gray-600 hover:border-gray-700 focus:outline-none"
+              style={{ backgroundColor: "transparent" }}
+              {...register("confirmpassword")}
+            />
+          </div>
           {errors.confirmpassword && (
             <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
               {errors.confirmpassword.message}

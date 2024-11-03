@@ -25,11 +25,7 @@ const ForgotPassword = () => {
   });
 
   const onSubmit = async (data: FormData) => {
-    try {
-      await mutate(data.email);
-    } catch (error) {
-      console.log("Error:", error);
-    }
+    await mutate(data.email);
   };
 
   if (isSuccess) {
