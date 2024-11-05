@@ -10,10 +10,15 @@ import useTeamMemberRequests from "../hooks/useTeamMemberRequests";
 import { Toaster } from "react-hot-toast";
 import Challenge from "../entities/Challenge";
 import Request from "../entities/Request";
+import useAuthStore from "../stores/useAuthStore";
 
 const TeamDetailsPage = () => {
   const [activeTab, setActiveTab] = useState("members");
   const { teamId } = useParams<{ teamId: string }>();
+
+  //user
+  const { user } = useAuthStore.getState();
+
   const {
     data: team,
     isPending: isTeamPending,
@@ -143,11 +148,13 @@ const TeamDetailsPage = () => {
               role="tablist"
               className="tabs tabs-bordered max-w-md ml-0 mt-4"
             >
-              {["members", "challenges", "requests"].map((tab) => (
+              {["members", "challenges"].map((tab) => (
                 <button
                   key={tab}
                   role="tab"
-                  className={`tab font-body border-b-2 ${activeTab === tab ? "border-b-4" : "border-transparent"}`}
+                  className={`tab font-body border-b-2 ${
+                    activeTab === tab ? "border-b-4" : "border-transparent"
+                  }`}
                   style={{
                     borderColor:
                       activeTab === tab
@@ -156,30 +163,46 @@ const TeamDetailsPage = () => {
                   }}
                   onClick={() => handleTabClick(tab)}
                 >
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}{" "}
-                  {/* Capitalize first letter */}
+                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
                 </button>
               ))}
+
+              {user.user_id === team?.members[0]?._id && (
+                <button
+                  role="tab"
+                  className={`tab font-body border-b-2 ${
+                    activeTab === "requests"
+                      ? "border-b-4"
+                      : "border-transparent"
+                  }`}
+                  style={{
+                    borderColor:
+                      activeTab === "requests"
+                        ? "rgba(248, 181, 0, 1)"
+                        : "transparent",
+                  }}
+                  onClick={() => handleTabClick("requests")}
+                >
+                  Requests
+                </button>
+              )}
             </div>
 
             <div className="mt-5">
               {activeTab === "members" && (
                 <div className="flex gap-6">
-                  {team?.members.map((member: TeamMember) => (
-                    <MemberCard key={member._id} member={member} />
-                  ))}
+                  {team?.members
+                    .slice(1)
+                    .map((member: TeamMember) => (
+                      <MemberCard
+                        key={member._id}
+                        member={member}
+                        imgUrl={member.profile_picture}
+                      />
+                    ))}
                 </div>
               )}
-              {/* Skip owner as member */}
-              {/* {activeTab === "members" && (
-              <div className="flex gap-2">
-                {teamData?.members
-                  .slice(1)
-                  .map((member: TeamMember) => (
-                    <MemberCard key={member._id} member={member} />
-                  ))}
-              </div>
-            )} */}
+
               {activeTab === "challenges" && (
                 <div>
                   {challenges &&
@@ -197,28 +220,45 @@ const TeamDetailsPage = () => {
                   )}
                 </div>
               )}
-              {activeTab === "requests" && (
-                <div className="flex gap-6">
-                  {requests.length > 0 &&
-                    requests.map((request: Request) => (
-                      <MemberCard
-                        key={request._id}
-                        member={request.userProfile}
-                      />
-                    ))}
-                  {requests.length === 0 && (
-                    <>
+
+              {user.user_id === team?.members[0]?._id &&
+                activeTab === "requests" && (
+                  <div className="flex gap-6">
+                    {requests.length > 0 ? (
+                      requests.map((request: Request) => (
+                        <MemberCard
+                          key={request._id}
+                          member={request.userProfile}
+                          imgUrl={request.userProfile.profile_picture}
+                        />
+                      ))
+                    ) : (
                       <p className="font-body">No Member Requests</p>
-                    </>
-                  )}
-                </div>
-              )}
+                    )}
+                  </div>
+                )}
             </div>
 
             <div className="flex justify-end mt-12">
-              <button className="w-[98px] text-[14px] p-1 text-white bg-red-600 sm:w-[143px] font-body rounded">
-                Leave Team
-              </button>
+              {activeTab === "challenges" &&
+                user.user_id === team?.members[0]?._id && (
+                  <button className="w-[98px] text-[14px] p-1 text-white bg-red-600 sm:w-[143px] font-body rounded">
+                    Create Challenge
+                  </button>
+                )}
+
+              {activeTab === "members" &&
+                (team?.members.some(
+                  (member: TeamMember) => member._id === user.user_id,
+                ) ? (
+                  <button className="w-[98px] text-[14px] p-1 text-white bg-red-600 sm:w-[143px] font-body rounded">
+                    Leave Team
+                  </button>
+                ) : (
+                  <button className="w-[98px] text-[14px] p-1 text-white bg-green-600 sm:w-[143px] font-body rounded">
+                    Request
+                  </button>
+                ))}
             </div>
           </>
         )}
