@@ -39,6 +39,8 @@ const TeamDetailsPage = () => {
     setActiveTab(tab);
   };
 
+  const owner = user.user_id === team?.members[0]?._id;
+
   if (isTeamPending || isChallengesPending || isTeamMemberRequestsPending) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -242,23 +244,28 @@ const TeamDetailsPage = () => {
             <div className="flex justify-end mt-12">
               {activeTab === "challenges" &&
                 user.user_id === team?.members[0]?._id && (
-                  <button className="w-[98px] text-[14px] p-1 text-white bg-red-600 sm:w-[143px] font-body rounded">
+                  <button className="w-[98px] text-[14px] p-1 text-black bg-yellow sm:w-[143px] font-body rounded">
                     Create Challenge
                   </button>
                 )}
-
-              {activeTab === "members" &&
-                (team?.members.some(
-                  (member: TeamMember) => member._id === user.user_id,
-                ) ? (
-                  <button className="w-[98px] text-[14px] p-1 text-white bg-red-600 sm:w-[143px] font-body rounded">
-                    Leave Team
-                  </button>
-                ) : (
-                  <button className="w-[98px] text-[14px] p-1 text-white bg-green-600 sm:w-[143px] font-body rounded">
-                    Request
-                  </button>
-                ))}
+              {activeTab === "members" && (
+                <>
+                  {team?.members.length > 1 &&
+                  team.members
+                    .slice(1)
+                    .some(
+                      (member: TeamMember) => member._id === user.user_id,
+                    ) ? (
+                    <button className="w-[98px] text-[14px] p-1 text-base-content bg-red-600 sm:w-[143px] font-body rounded">
+                      Leave Team
+                    </button>
+                  ) : !owner ? (
+                    <button className="w-[98px] text-[14px] p-1 text-black bg-yellow sm:w-[143px] font-body rounded">
+                      Request
+                    </button>
+                  ) : null}{" "}
+                </>
+              )}
             </div>
           </>
         )}
