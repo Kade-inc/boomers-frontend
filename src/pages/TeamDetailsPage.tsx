@@ -250,20 +250,24 @@ const TeamDetailsPage = () => {
                 )}
               {activeTab === "members" && (
                 <>
-                  {team?.members.length > 1 &&
-                  team.members
-                    .slice(1)
-                    .some(
-                      (member: TeamMember) => member._id === user.user_id,
-                    ) ? (
-                    <button className="w-[98px] text-[14px] p-1 text-base-content bg-red-600 sm:w-[143px] font-body rounded">
+                  {owner ? (
+                    <button className="w-[98px] text-[14px] p-1 text-black bg-yellow sm:w-[143px] font-body rounded">
+                      Add Member
+                    </button>
+                  ) : team?.members.length > 1 &&
+                    team.members
+                      .slice(1)
+                      .some(
+                        (member: TeamMember) => member._id === user.user_id,
+                      ) ? (
+                    <button className="w-[98px] text-[14px] p-1 text-white bg-red-600 sm:w-[143px] font-body rounded">
                       Leave Team
                     </button>
-                  ) : !owner ? (
+                  ) : (
                     <button className="w-[98px] text-[14px] p-1 text-black bg-yellow sm:w-[143px] font-body rounded">
                       Request
                     </button>
-                  ) : null}{" "}
+                  )}
                 </>
               )}
             </div>
