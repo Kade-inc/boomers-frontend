@@ -17,10 +17,12 @@ export default interface User {
   user_id?: string;
   _v?: string;
   _id?: string;
+  location?: string;
+  job?: string;
 }
 
 interface Interest {
   domain: string;
   subdomain: string;
-  subdomainTopics: string[];
+  domainTopics: string[];
 }
