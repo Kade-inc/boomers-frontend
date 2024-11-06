@@ -6,7 +6,7 @@ const ForgotPasswordSuccess = () => {
     <>
       <div className="text-[#393E46]">
         <div className="flex justify-center flex-col items-center mt-16">
-          <p className="font-bold text-[20px] sm:text-[23px] md:text-[26px] lg:text-[30px] leading-[53px] font-body mb-8 mt-14">
+          <p className="font-bold text-[20px] sm:text-[23px] md:text-[26px] lg:text-[30px] font-body mb-8 mt-14">
             Check your email.
           </p>
           <img src={mail} />

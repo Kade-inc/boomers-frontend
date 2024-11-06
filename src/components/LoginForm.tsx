@@ -41,9 +41,7 @@ const LoginForm = () => {
         className="w-full px-4 py-[2%] md:px-24"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <p className="font-extrabold text-[50px] leading-[53px] font-heading">
-          SIGN IN
-        </p>
+        <p className="font-extrabold text-[50px] font-heading">SIGN IN</p>
         <p className="py-[2.6%] text-[18px] font-semibold font-body">
           Enter your credentials to sign in
         </p>
