@@ -1,46 +1,59 @@
-import { useState } from "react"
-import "./stepper.css"
 import { TiTick } from "react-icons/ti";
 
-function Stepper() {
-    const steps = ['Customer Info', 'Shipping Info', 'Payment']
-    const [currentStep, setCurrentStep] = useState(1)
-    const [complete, setComplete] = useState(false)
-  return (
-    <>
-      {/* <div className="flex justify-between w-[30%]">
-        {
-            steps?.map((step, i) => (
-                <div key={i} className={`step-item ${currentStep === i + 1 && "active"} ${(i + 1 < currentStep || complete) && "complete"}`}>
-                    <div className="step">{
-                        (i + 1 < currentStep || complete) ? <TiTick size={24}/> : i + 1 }</div>
-                    <p className="text-base-content"> {step}</p>
-                </div>
-            ))
-        }
-    </div> */}
-
-{/* Vertical stepper */}
-    <div className="flex flex-col justify-between w-[30%] h-[60%]">
-        {
-            steps?.map((step, i) => (
-                <div key={i} className={`step-item ${currentStep === i + 1 && "active"} ${(i + 1 < currentStep || complete) && "complete"}`}>
-                    <div className="step">{(i + 1 < currentStep || complete) ? <TiTick size={24}/> : i + 1 }</div>
-                    <p className="text-base-content"> {step}</p>
-                </div>
-            ))
-        }
-    </div>
-    {
-     !complete && <button className="btn" onClick={() => {
-        currentStep === steps.length ? setComplete(true) : setCurrentStep(prev => prev + 1)
-    
-    }}>{currentStep === steps.length ? "Finish" : "Next"}</button>
-    }
-    
-    </>
-  
-  )
+interface Step {
+  name: string;
+  complete: boolean;
 }
+interface StepperProps {
+  steps: Step[];
+  currentStep: number;
+  lineHeight?: number;
+  currentStepComplete?: boolean;
+}
+const Stepper = ({ steps, currentStep, lineHeight = 10 }: StepperProps) => {
+  return (
+    <div className="flex flex-col items-start">
+      {steps.map((step: Step, index: number) => (
+        <div key={index} className="flex items-start">
+          <div className="flex flex-col items-center">
+            {/* Step circle */}
+            <div
+              className={`flex items-center justify-center w-8 h-8 rounded-full ${index < currentStep && step.complete && "complete"}
+                            ${index < currentStep && "bg-sky-600 text-white"} bg-gray-300 text-gray-600
+                        `}
+            >
+              {index < currentStep && step.complete ? (
+                <TiTick size={24} />
+              ) : (
+                index + 1
+              )}
+            </div>
 
-export default Stepper
+            {/* Connecting line */}
+            {index < steps.length - 1 && (
+              <div
+                className="w-[3px] bg-gray-300 my-1"
+                style={{ height: `${lineHeight}px` }}
+              >
+                {index < currentStep - 1 && (
+                  <div className="h-full bg-sky-500" />
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Step label */}
+          <div className="ml-4">
+            <p
+              className={`font-normal ${index < currentStep ? "text-sky-600" : "text-lightgrey"}`}
+            >
+              {step.name}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default Stepper;

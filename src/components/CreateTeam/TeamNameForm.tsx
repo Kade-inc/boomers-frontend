@@ -1,73 +1,123 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
+import Team from "../../entities/Team";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 interface FormInputs {
-    name: string;
-  }
+  name: string;
+}
 
-  
-const schema = z
-  .object({
-    name: z.string()
+interface TeamNameFormProps {
+  teams: Team[];
+  handleTeamChange: (team: Team, stepComplete: boolean) => void;
+  selectedTeam: Team | undefined;
+}
+
+const schema = z.object({
+  name: z
+    .string()
     .trim()
     .min(3, "Name should have a minimum of 3 characters")
     .max(30, "Name can be a max of 30 characters"),
-  })
+});
 
+function TeamNameForm({
+  teams,
+  selectedTeam,
+  handleTeamChange,
+}: TeamNameFormProps) {
+  const {
+    register,
+    formState: { errors },
+  } = useForm<FormInputs>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      name: selectedTeam?.name || "",
+    },
+  });
 
-type FormData = z.infer<typeof schema>;
+  const navigate = useNavigate();
+  const [selectedTeamName, setSelectedTeamName] = useState(
+    selectedTeam?.name || "",
+  );
 
-function TeamNameForm() {
-    const {
-        register,
-        handleSubmit,
-        setValue,
-        formState: { errors, isSubmitted },
-        watch,
-        control,
-      } = useForm<FormInputs>({
-        resolver: zodResolver(schema),
-        defaultValues: {
-          name: "",
-        },
-      });
+  useEffect(() => {
+    if (selectedTeam) {
+      setSelectedTeamName(selectedTeam.name);
+      handleTeamChange(selectedTeam, true);
+    }
+  }, [selectedTeam]);
 
-      const onSubmit = () => {
+  // Handle selection change and call handleTeamChange only when selection changes
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const newTeamName = event.target.value;
+    setSelectedTeamName(newTeamName);
 
-      }
+    const newSelectedTeam = teams.find((team) => team.name === newTeamName);
+    if (newSelectedTeam) {
+      handleTeamChange(newSelectedTeam, true);
+    }
+  };
+
   return (
     <>
-        <form className="w-[80%]" onSubmit={handleSubmit(onSubmit)}>
-                  <div className="mb-6">
-                    <label
-                      className="block text-base-content mb-[1%] text-[18px]"
-                      htmlFor="name"
-                    >
-                      Team Name
-                      {errors.name && (
-                        <span className="text-error text-[13px] ml-[5px]">
-                          required*
-                        </span>
-                      )}
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Team Name"
-                      className="input w-full border border-base-content focus:outline-none bg-transparent rounded-md placeholder-gray-300 mt-[5px]"
-                      style={{ backgroundColor: "transparent" }}
-                      {...register("name")}
-                      id="name"
-                    />
-                    {errors.name && (
-                      <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
-                        {errors.name?.message}
-                      </p>
-                    )}
-                  </div></form>
+      {teams.length === 0 && (
+        <>
+          <div className="flex flex-col justify-center items-center mt-[200px]">
+            <p className="font-body text-base-content">
+              You do not own any teams. Create a team first and try again.
+            </p>
+            <button
+              className="btn bg-yellow text-darkgrey border-none hover:bg-yellow font-medium mt-8 px-8 text-[16px] font-body rounded-md"
+              onClick={() => navigate("/create-team")}
+            >
+              Create Team
+            </button>
+          </div>
+        </>
+      )}
+      {teams.length > 0 && (
+        <form className="w-[80%] font-body">
+          <div className="mb-6">
+            <label
+              className="block text-base-content mb-[1%] text-[18px]"
+              htmlFor="team"
+            >
+              Select a Team
+              {errors.name && (
+                <span className="text-error text-[13px] ml-[5px]">
+                  required*
+                </span>
+              )}
+            </label>
+            <select
+              className="select w-full border border-base-content focus:outline-none rounded-md placeholder-gray-100 mt-[5px] bg-transparent"
+              {...register("name")}
+              value={selectedTeamName}
+              onChange={handleSelectChange}
+              id="name"
+            >
+              <option value="" disabled>
+                Team
+              </option>
+              {teams.map((team) => (
+                <option key={team._id} value={team.name}>
+                  {team.name}
+                </option>
+              ))}
+            </select>
+            {errors.name && (
+              <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
+                {errors.name?.message}
+              </p>
+            )}
+          </div>
+        </form>
+      )}
     </>
-  )
+  );
 }
 
-export default TeamNameForm
+export default TeamNameForm;

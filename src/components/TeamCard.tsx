@@ -88,7 +88,7 @@ const TeamCard = ({
                       </div>
                     )}
                   </div>
-                  {team.name || (name?.trim() && <div>Active</div>)}
+                  {(team.name || name?.trim()) && <div>Active</div>}
                 </>
               )}
             </div>
