@@ -13,6 +13,8 @@ import Request from "../entities/Request";
 import useAuthStore from "../stores/useAuthStore";
 import AddMemberDialog from "../components/AddMemberDialog";
 import LeaveTeamDialog from "../components/LeaveTeamDialog";
+import MemberRequestDialog from "../components/MemberRequestDialog";
+import React from "react";
 
 const TeamDetailsPage = () => {
   const [activeTab, setActiveTab] = useState("members");
@@ -131,12 +133,14 @@ const TeamDetailsPage = () => {
                       {team.domain}{" "}
                       <div className="bg-white rounded-full w-1 h-1 mx-1"></div>{" "}
                       {team.subdomain}{" "}
-                      {team.subdomainTopics.map((topic: string) => (
-                        <>
-                          <div className="bg-white rounded-full w-1 h-1 mx-1"></div>{" "}
-                          <p>{topic}</p>
-                        </>
-                      ))}
+                      {team.subdomainTopics.map(
+                        (topic: string, index: number) => (
+                          <React.Fragment key={index}>
+                            <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
+                            <p>{topic}</p>
+                          </React.Fragment>
+                        ),
+                      )}
                     </div>
                   </div>
                   <div className="text-center flex flex-col items-center justify-center">
@@ -234,6 +238,14 @@ const TeamDetailsPage = () => {
                           key={request._id}
                           member={request.userProfile}
                           imgUrl={request.userProfile.profile_picture}
+                          onClick={() => {
+                            const modal = document.getElementById(
+                              "my_modal_7",
+                            ) as HTMLDialogElement | null;
+                            if (modal) {
+                              modal.showModal();
+                            }
+                          }}
                         />
                       ))
                     ) : (
@@ -297,6 +309,7 @@ const TeamDetailsPage = () => {
         )}
         <AddMemberDialog />
         <LeaveTeamDialog />
+        <MemberRequestDialog />
       </>
     </div>
   );
