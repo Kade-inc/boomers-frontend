@@ -1,45 +1,53 @@
 import { useEffect, useState } from "react";
-import TeamNameForm from "../components/CreateTeam/TeamNameForm";
+import TeamNameForm from "../components/CreateChallenge/TeamNameForm";
 import Stepper from "../components/Stepper/Stepper";
 import useAuthStore from "../stores/useAuthStore";
 import useTeams from "../hooks/useTeams";
 import Team from "../entities/Team";
+import ChallengeNameForm from "../components/CreateChallenge/ChallengeNameForm";
+
+interface ChallengeNameItems {
+  challenge_name: string;
+  due_date: string;
+  difficulty: number | null;
+}
 
 function CreateChallenge() {
   const [currentStep, setCurrentStep] = useState(1);
-  const steps = ["Step 1", "Step 2", "Step 3", "Step 4"];
-  const refactoredSteps = [
+  const stepsList = [
     {
-      name: "Step 1",
+      name: "Team",
       complete: false,
     },
     {
-      name: "Step 2",
+      name: "Challenge Name & Due Date",
       complete: false,
     },
     {
-      name: "Step 3",
+      name: "Challenge Description",
       complete: false,
     },
     {
-      name: "Step 4",
+      name: "Challenge Resources",
+      complete: false,
+    },
+    {
+      name: "Preview",
       complete: false,
     },
   ];
-  const [stepsState, setStepsState] = useState(refactoredSteps);
+  const [steps, setSteps] = useState(stepsList);
   const user = useAuthStore((s) => s.user);
   const { data: teamsData, isPending: teamsLoading } = useTeams(user.user_id);
 
   const [ownedTeams, setOwnedTeams] = useState();
   const [team, setTeam] = useState<Team>();
-  // const [errors, setErrors] = useState({
-  //     teamError: true,
-  //     challengeNameError: true,
-  //     challengeDescriptionError: true,
-  //     challengeResourcesError: true,
-  // })
-  const [currentStepError, setCurrentStepError] = useState(true);
-  const [currentStepComplete, setCurrentStepComplete] = useState(false);
+  const [challengeNameItems, setChallengeNameItems] =
+    useState<ChallengeNameItems>({
+      challenge_name: "",
+      due_date: "",
+      difficulty: null,
+    });
   useEffect(() => {
     if (teamsData) {
       setOwnedTeams(
@@ -49,35 +57,38 @@ function CreateChallenge() {
   }, [teamsData]);
 
   const getSelectedTeam = (team: Team) => {
-    // setErrors((prevErrors) => ({
-    //     ...prevErrors,
-    //     teamError: false,
-    // }));
-    setCurrentStepError(false);
     setTeam(team);
   };
   useEffect(() => {}, [getSelectedTeam]);
 
+  const getChallengeNameItems = (
+    updatedValues: Partial<typeof challengeNameItems>,
+  ) => {
+    setChallengeNameItems((prevItems) => ({
+      ...prevItems,
+      ...updatedValues,
+    }));
+  };
+
   const goToPreviousStep = () => {
-    console.log("current: ", currentStep);
+    setSteps((prevSteps) =>
+      prevSteps.map((step, index) =>
+        index === currentStep - 2 ? { ...step, complete: false } : step,
+      ),
+    );
+
     setCurrentStep((prev) => Math.min(prev - 1, 1));
-    if (currentStep === 2) {
-      if (!team) {
-        setCurrentStepError(false);
-      }
-    }
   };
 
   const goToNextStep = () => {
-    setCurrentStep((prev) => Math.min(prev + 1, steps.length));
-    setCurrentStepError(true);
-    setCurrentStepComplete(false);
-
-    setStepsState((prevSteps) =>
-      prevSteps.map((step) =>
-        step.name === "Step 1" ? { ...step, complete: true } : step,
+    // Mark the current step as complete
+    setSteps((prevSteps) =>
+      prevSteps.map((step, index) =>
+        index === currentStep - 1 ? { ...step, complete: true } : step,
       ),
     );
+
+    setCurrentStep((prev) => Math.min(prev + 1, steps.length));
   };
 
   return (
@@ -85,54 +96,40 @@ function CreateChallenge() {
       <div className="h-screen bg-base-100 px-5 md:px-10 pt-10 font-body font-semibold text-[18px]">
         <p className="mb-8">Challenge Your Team!</p>
         <div className="flex justify-between">
-          <div className="p-4 w-1/4">
-            <Stepper
-              steps={stepsState}
-              currentStep={currentStep}
-              lineHeight={50}
-              currentStepComplete={currentStepComplete}
-            />
-            <div className="mt-4">
-              <button
-                onClick={goToPreviousStep}
-                disabled={currentStep === 1}
-                className="px-4 py-2 mr-2 bg-gray-300 rounded disabled:opacity-50"
-              >
-                Previous
-              </button>
-              <button
-                onClick={goToNextStep}
-                disabled={currentStep === steps.length || currentStepError}
-                className="px-4 py-2 bg-yellow text-darkgrey rounded disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>
-          </div>
-          <div className="w-2/4 mt-[300px] ml-50">
-            {currentStep == 1 && teamsLoading && (
-              <>
-                <div className="loading loading-dots loading-md"></div>
-              </>
-            )}
+          <div className="p-4 w-2/4">
+            <Stepper steps={steps} currentStep={currentStep} lineHeight={50} />
           </div>
 
-          {currentStep == 1 && ownedTeams && (
+          {currentStep == 1 && teamsLoading && (
             <>
-              <div className="w-3/4">
-                <TeamNameForm
-                  teams={ownedTeams}
-                  handleTeamChange={getSelectedTeam}
-                  selectedTeam={team}
-                />
+              <div className="w-2/4 mt-[300px] ml-[100px]">
+                <div className="loading loading-dots loading-md"></div>
               </div>
             </>
           )}
 
-          {currentStep == 2 && (
-            <>
-              <p>Team t</p>
-            </>
+          {!teamsLoading && (
+            <div className="w-2/4">
+              {currentStep == 1 && ownedTeams && (
+                <TeamNameForm
+                  teams={ownedTeams}
+                  handleTeamChange={getSelectedTeam}
+                  selectedTeam={team}
+                  goToNextStep={goToNextStep}
+                />
+              )}
+
+              {currentStep == 2 && (
+                <>
+                  <ChallengeNameForm
+                    challengeNameItems={challengeNameItems}
+                    handleChallengeNameChange={getChallengeNameItems}
+                    goToNextStep={goToNextStep}
+                    goToPreviousStep={goToPreviousStep}
+                  />
+                </>
+              )}
+            </div>
           )}
         </div>
       </div>

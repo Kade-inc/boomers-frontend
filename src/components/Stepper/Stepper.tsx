@@ -8,7 +8,6 @@ interface StepperProps {
   steps: Step[];
   currentStep: number;
   lineHeight?: number;
-  currentStepComplete?: boolean;
 }
 const Stepper = ({ steps, currentStep, lineHeight = 10 }: StepperProps) => {
   return (
@@ -19,7 +18,7 @@ const Stepper = ({ steps, currentStep, lineHeight = 10 }: StepperProps) => {
             {/* Step circle */}
             <div
               className={`flex items-center justify-center w-8 h-8 rounded-full ${index < currentStep && step.complete && "complete"}
-                            ${index < currentStep && "bg-sky-600 text-white"} bg-gray-300 text-gray-600
+                            ${index < currentStep && "bg-[#4AC565] text-white"} bg-gray-300 text-gray-600
                         `}
             >
               {index < currentStep && step.complete ? (
@@ -36,7 +35,7 @@ const Stepper = ({ steps, currentStep, lineHeight = 10 }: StepperProps) => {
                 style={{ height: `${lineHeight}px` }}
               >
                 {index < currentStep - 1 && (
-                  <div className="h-full bg-sky-500" />
+                  <div className="h-full bg-[#4AC565]" />
                 )}
               </div>
             )}
@@ -45,7 +44,7 @@ const Stepper = ({ steps, currentStep, lineHeight = 10 }: StepperProps) => {
           {/* Step label */}
           <div className="ml-4">
             <p
-              className={`font-normal ${index < currentStep ? "text-sky-600" : "text-lightgrey"}`}
+              className={`font-normal ${index < currentStep ? "text-base-content" : "text-gray-400"}`}
             >
               {step.name}
             </p>

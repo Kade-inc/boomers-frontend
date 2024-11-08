@@ -13,6 +13,7 @@ interface TeamNameFormProps {
   teams: Team[];
   handleTeamChange: (team: Team, stepComplete: boolean) => void;
   selectedTeam: Team | undefined;
+  goToNextStep: () => void;
 }
 
 const schema = z.object({
@@ -27,6 +28,7 @@ function TeamNameForm({
   teams,
   selectedTeam,
   handleTeamChange,
+  goToNextStep,
 }: TeamNameFormProps) {
   const {
     register,
@@ -79,42 +81,53 @@ function TeamNameForm({
         </>
       )}
       {teams.length > 0 && (
-        <form className="w-[80%] font-body">
-          <div className="mb-6">
-            <label
-              className="block text-base-content mb-[1%] text-[18px]"
-              htmlFor="team"
-            >
-              Select a Team
-              {errors.name && (
-                <span className="text-error text-[13px] ml-[5px]">
-                  required*
-                </span>
-              )}
-            </label>
-            <select
-              className="select w-full border border-base-content focus:outline-none rounded-md placeholder-gray-100 mt-[5px] bg-transparent"
-              {...register("name")}
-              value={selectedTeamName}
-              onChange={handleSelectChange}
-              id="name"
-            >
-              <option value="" disabled>
-                Team
-              </option>
-              {teams.map((team) => (
-                <option key={team._id} value={team.name}>
-                  {team.name}
+        <>
+          <form className="w-[80%] font-body">
+            <div className="mb-6">
+              <label
+                className="block text-base-content mb-[1%] text-[18px]"
+                htmlFor="team"
+              >
+                Select a Team
+                {errors.name && (
+                  <span className="text-error text-[13px] ml-[5px]">
+                    required*
+                  </span>
+                )}
+              </label>
+              <select
+                className="select w-full border border-base-content focus:outline-none rounded-md placeholder-gray-100 mt-[5px] bg-transparent font-normal"
+                {...register("name")}
+                value={selectedTeamName}
+                onChange={handleSelectChange}
+                id="name"
+              >
+                <option value="" disabled>
+                  Team
                 </option>
-              ))}
-            </select>
-            {errors.name && (
-              <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
-                {errors.name?.message}
-              </p>
-            )}
+                {teams.map((team) => (
+                  <option key={team._id} value={team.name}>
+                    {team.name}
+                  </option>
+                ))}
+              </select>
+              {errors.name && (
+                <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
+                  {errors.name?.message}
+                </p>
+              )}
+            </div>
+          </form>
+          <div className="mt-4">
+            <button
+              onClick={goToNextStep}
+              disabled={!selectedTeamName}
+              className="btn px-12 bg-yellow text-darkgrey rounded disabled:opacity-50 text-[16px] hover:bg-yellow"
+            >
+              Next
+            </button>
           </div>
-        </form>
+        </>
       )}
     </>
   );
