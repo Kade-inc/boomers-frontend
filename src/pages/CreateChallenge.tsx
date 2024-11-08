@@ -81,7 +81,6 @@ function CreateChallenge() {
   };
 
   const goToNextStep = () => {
-    // Mark the current step as complete
     setSteps((prevSteps) =>
       prevSteps.map((step, index) =>
         index === currentStep - 1 ? { ...step, complete: true } : step,

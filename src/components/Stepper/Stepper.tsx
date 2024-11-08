@@ -17,9 +17,10 @@ const Stepper = ({ steps, currentStep, lineHeight = 10 }: StepperProps) => {
           <div className="flex flex-col items-center">
             {/* Step circle */}
             <div
-              className={`flex items-center justify-center w-8 h-8 rounded-full ${index < currentStep && step.complete && "complete"}
-                            ${index < currentStep && "bg-[#4AC565] text-white"} bg-gray-300 text-gray-600
-                        `}
+              className={`flex items-center justify-center w-8 h-8 rounded-full 
+              ${index < currentStep && step.complete ? "bg-[#4AC565] text-white" : ""}
+              ${index === currentStep - 1 && !step.complete ? "bg-[#4AC565] text-white" : ""}
+              ${index > currentStep - 1 && "bg-gray-300 text-gray-600"}`}
             >
               {index < currentStep && step.complete ? (
                 <TiTick size={24} />

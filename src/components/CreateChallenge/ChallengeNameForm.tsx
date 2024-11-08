@@ -137,7 +137,7 @@ function ChallengeNameForm({
       <div className="mt-4">
         <button
           onClick={() => handleChange("previous")}
-          className="btn px-12  mr-2 bg-black rounded disabled:opacity-50 font-normal text-white text-[16px] hover:bg-black"
+          className="btn px-12  mr-2 bg-black rounded disabled:opacity-50 font-normal text-white text-[16px] hover:bg-black border-none"
         >
           Previous
         </button>

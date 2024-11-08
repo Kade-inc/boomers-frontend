@@ -122,7 +122,7 @@ function TeamNameForm({
             <button
               onClick={goToNextStep}
               disabled={!selectedTeamName}
-              className="btn px-12 bg-yellow text-darkgrey rounded disabled:opacity-50 text-[16px] hover:bg-yellow"
+              className="btn px-12 bg-yellow text-darkgrey rounded disabled:opacity-50 text-[16px] hover:bg-yellow font-normal"
             >
               Next
             </button>
