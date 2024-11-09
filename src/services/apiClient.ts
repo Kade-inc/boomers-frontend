@@ -247,10 +247,14 @@ class APIClient {
     }
   };
 
-  getAllChallenges = async (userId: string, requiresAuth = true) => {
+  getAllChallenges = async (
+    userId: string,
+    valid: boolean,
+    requiresAuth = true,
+  ) => {
     try {
       const response = await this.axiosInstance.get(
-        `${this.endpoint}?userId=${userId}`,
+        `${this.endpoint}?userId=${userId}&valid=${valid}`,
         {
           headers: {
             requiresAuth,

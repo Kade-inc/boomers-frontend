@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Slider from "react-slick";
-import Team from "../entities/Team";
-import ChallengesCard from "./ChallengesCard";
-import Challenge from "../entities/Challenge";
+import Challenge from "../../entities/Challenge";
+import Team from "../../entities/Team";
+import ChallengesCard from "../ChallengesCard";
 
 interface CarouselProps {
   slides: Challenge[];

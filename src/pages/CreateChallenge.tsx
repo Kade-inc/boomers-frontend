@@ -5,6 +5,8 @@ import useAuthStore from "../stores/useAuthStore";
 import useTeams from "../hooks/useTeams";
 import Team from "../entities/Team";
 import ChallengeNameForm from "../components/CreateChallenge/ChallengeNameForm";
+import useChallenges from "../hooks/useChallenges";
+import ChallengeDraftModal from "../components/Modals/ChallengeDraftModal";
 
 interface ChallengeNameItems {
   challenge_name: string;
@@ -39,7 +41,7 @@ function CreateChallenge() {
   const [steps, setSteps] = useState(stepsList);
   const user = useAuthStore((s) => s.user);
   const { data: teamsData, isPending: teamsLoading } = useTeams(user.user_id);
-
+  const { data: draftChallenges } = useChallenges(user.user_id, false);
   const [ownedTeams, setOwnedTeams] = useState();
   const [team, setTeam] = useState<Team>();
   const [challengeNameItems, setChallengeNameItems] =
@@ -59,7 +61,6 @@ function CreateChallenge() {
   const getSelectedTeam = (team: Team) => {
     setTeam(team);
   };
-  useEffect(() => {}, [getSelectedTeam]);
 
   const getChallengeNameItems = (
     updatedValues: Partial<typeof challengeNameItems>,
@@ -90,8 +91,24 @@ function CreateChallenge() {
     setCurrentStep((prev) => Math.min(prev + 1, steps.length));
   };
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const closeModal = () => setIsModalOpen(false);
+
+  useEffect(() => {
+    if (draftChallenges) {
+      setIsModalOpen(true);
+    }
+  }, [draftChallenges]);
+
   return (
     <>
+      {draftChallenges && draftChallenges.length > 0 && (
+        <ChallengeDraftModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          modalData={draftChallenges}
+        />
+      )}
       <div className="h-screen bg-base-100 px-5 md:px-10 pt-10 font-body font-semibold text-[18px]">
         <p className="mb-8">Challenge Your Team!</p>
         <div className="flex justify-between">

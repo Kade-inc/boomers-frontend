@@ -1,8 +1,8 @@
 import Modal from "react-modal";
-import Team from "../entities/Team";
-import useTeam from "../hooks/useTeam";
 import { Toaster } from "react-hot-toast";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
+import useTeam from "../../hooks/useTeam";
+import Team from "../../entities/Team";
 
 type ModalTriggerProps = {
   isOpen: boolean;

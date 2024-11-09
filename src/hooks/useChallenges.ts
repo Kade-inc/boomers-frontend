@@ -5,10 +5,13 @@ import Challenge from "../entities/Challenge";
 
 const apiClient = new APIClient("/api/challenges");
 
-const useChallenges = (userId: string): UseQueryResult<any, Challenge[]> => {
+const useChallenges = (
+  userId: string = "",
+  valid: boolean = true,
+): UseQueryResult<any, Challenge[]> => {
   return useQuery({
-    queryKey: ["challenges", userId],
-    queryFn: () => apiClient.getAllChallenges(userId),
+    queryKey: ["challenges", userId, "valid", valid],
+    queryFn: () => apiClient.getAllChallenges(userId, valid),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };
