@@ -11,15 +11,22 @@ interface ChallengesSlimCardProps {
   section?: string;
   teamsInformation?: Team[];
   page?: string;
+  handleClick: () => void;
+  isSelected: boolean;
+  isDeleting: boolean;
 }
 
 const ChallengesSlimCard: React.FC<ChallengesSlimCardProps> = ({
   challenge,
   styles,
+  handleClick,
+  isSelected,
+  isDeleting,
 }: ChallengesSlimCardProps) => {
   return (
     <div
-      className={`card bg-gradient-to-b from-[#313232] to-[#444c4c] text-white rounded-[3px] font-body ${styles}`}
+      className={`card bg-gradient-to-b from-[#313232] to-[#444c4c] text-white rounded-[3px] font-body ${styles} ${isSelected ? "border-4 border-error" : ""}`}
+      onClick={isDeleting ? undefined : handleClick}
     >
       <div className="card-body flex flex-col justify-center px-4">
         <div className="flex justify-between w-full">

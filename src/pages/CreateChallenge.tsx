@@ -7,6 +7,7 @@ import Team from "../entities/Team";
 import ChallengeNameForm from "../components/CreateChallenge/ChallengeNameForm";
 import useChallenges from "../hooks/useChallenges";
 import ChallengeDraftModal from "../components/Modals/ChallengeDraftModal";
+import toast, { Toaster } from "react-hot-toast";
 
 interface ChallengeNameItems {
   challenge_name: string;
@@ -50,13 +51,6 @@ function CreateChallenge() {
       due_date: "",
       difficulty: null,
     });
-  useEffect(() => {
-    if (teamsData) {
-      setOwnedTeams(
-        teamsData.filter((team: Team) => team.owner_id === user.user_id),
-      );
-    }
-  }, [teamsData]);
 
   const getSelectedTeam = (team: Team) => {
     setTeam(team);
@@ -92,7 +86,33 @@ function CreateChallenge() {
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalAction, setModalAction] = useState("draft");
   const closeModal = () => setIsModalOpen(false);
+
+  const handleCreateChallenge = () => {
+    if (draftChallenges.length > 4) {
+      setModalAction("delete");
+    } else {
+      closeModal();
+    }
+  };
+
+  const [draftsDeleted, setDraftsDeleted] = useState(false);
+
+  const handleDraftsDeleted = () => {
+    setDraftsDeleted(true);
+  };
+  const handleSelectChallenge = (challengeId: string) => {
+    setSelectedChallengeId(challengeId);
+  };
+
+  useEffect(() => {
+    if (teamsData) {
+      setOwnedTeams(
+        teamsData.filter((team: Team) => team.owner_id === user.user_id),
+      );
+    }
+  }, [teamsData]);
 
   useEffect(() => {
     if (draftChallenges) {
@@ -100,13 +120,51 @@ function CreateChallenge() {
     }
   }, [draftChallenges]);
 
+  useEffect(() => {
+    if (draftsDeleted) {
+      toast.success("Draft(s) deleted successfully.", {
+        duration: 4000,
+      });
+      setDraftsDeleted(false);
+      setIsModalOpen(false);
+    }
+  }, [draftsDeleted]);
+
+  const [selectedChallengeId, setSelectedChallengeId] = useState<string | null>(
+    null,
+  );
+
+  useEffect(() => {
+    console.log("SELECTED CHALLENGE: ", selectedChallengeId);
+  }, [selectedChallengeId]);
+
   return (
     <>
+      <Toaster
+        position="bottom-center"
+        reverseOrder={true}
+        toastOptions={{
+          error: {
+            style: {
+              background: "#1AC171",
+              color: "white",
+            },
+            iconTheme: {
+              primary: "white",
+              secondary: "#D92D2D",
+            },
+          },
+        }}
+      />
       {draftChallenges && draftChallenges.length > 0 && (
         <ChallengeDraftModal
           isOpen={isModalOpen}
           onClose={closeModal}
           modalData={draftChallenges}
+          modalAction={modalAction}
+          handleCreateChallenge={handleCreateChallenge}
+          onDraftsDeleted={handleDraftsDeleted}
+          onSelectChallenge={handleSelectChallenge}
         />
       )}
       <div className="h-screen bg-base-100 px-5 md:px-10 pt-10 font-body font-semibold text-[18px]">

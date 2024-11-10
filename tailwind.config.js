@@ -14,6 +14,7 @@ export default {
         darkgrey: "#393E46",
         lightgrey: "#5C636E",
         yellow: "#F8B500",
+        success: "#1AC171",
       },
       backgroundImage: {
         "custom-gradient":

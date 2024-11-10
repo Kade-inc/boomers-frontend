@@ -420,6 +420,28 @@ class APIClient {
       );
     }
   };
+
+  deleteChallenges = async (
+    payload: { challengeIds: string[] },
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.delete(`${this.endpoint}`, {
+        headers: {
+          requiresAuth,
+        },
+        data: payload,
+      });
+      const { data } = response.data;
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error Deleting challenge(s):",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
 }
 
 export default APIClient;
