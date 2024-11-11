@@ -8,15 +8,16 @@ import ChallengeNameForm from "../components/CreateChallenge/ChallengeNameForm";
 import useChallenges from "../hooks/useChallenges";
 import ChallengeDraftModal from "../components/Modals/ChallengeDraftModal";
 import toast, { Toaster } from "react-hot-toast";
+import useCreateChallengeStore from "../stores/useCreateChallengeStore";
+import DescriptionForm from "../components/CreateChallenge/DescriptionForm";
 
 interface ChallengeNameItems {
   challenge_name: string;
   due_date: string;
-  difficulty: number | null;
+  difficulty: string;
 }
 
 function CreateChallenge() {
-  const [currentStep, setCurrentStep] = useState(1);
   const stepsList = [
     {
       name: "Team",
@@ -39,18 +40,30 @@ function CreateChallenge() {
       complete: false,
     },
   ];
+
+  const [currentStep, setCurrentStep] = useState(1);
   const [steps, setSteps] = useState(stepsList);
-  const user = useAuthStore((s) => s.user);
-  const { data: teamsData, isPending: teamsLoading } = useTeams(user.user_id);
-  const { data: draftChallenges } = useChallenges(user.user_id, false);
   const [ownedTeams, setOwnedTeams] = useState();
   const [team, setTeam] = useState<Team>();
   const [challengeNameItems, setChallengeNameItems] =
     useState<ChallengeNameItems>({
       challenge_name: "",
       due_date: "",
-      difficulty: null,
+      difficulty: "",
     });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalAction, setModalAction] = useState("draft");
+  const [draftsDeleted, setDraftsDeleted] = useState(false);
+  const [selectedChallengeId, setSelectedChallengeId] = useState<string | null>(
+    null,
+  );
+
+  const user = useAuthStore((s) => s.user);
+  const { draftUserChallenges, setDraftUserChallenges } =
+    useCreateChallengeStore();
+
+  const { data: teamsData, isPending: teamsLoading } = useTeams(user.user_id);
+  const { data: draftChallenges } = useChallenges(user.user_id, false);
 
   const getSelectedTeam = (team: Team) => {
     setTeam(team);
@@ -72,7 +85,7 @@ function CreateChallenge() {
       ),
     );
 
-    setCurrentStep((prev) => Math.min(prev - 1, 1));
+    setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
   const goToNextStep = () => {
@@ -85,8 +98,6 @@ function CreateChallenge() {
     setCurrentStep((prev) => Math.min(prev + 1, steps.length));
   };
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalAction, setModalAction] = useState("draft");
   const closeModal = () => setIsModalOpen(false);
 
   const handleCreateChallenge = () => {
@@ -96,8 +107,6 @@ function CreateChallenge() {
       closeModal();
     }
   };
-
-  const [draftsDeleted, setDraftsDeleted] = useState(false);
 
   const handleDraftsDeleted = () => {
     setDraftsDeleted(true);
@@ -116,6 +125,7 @@ function CreateChallenge() {
 
   useEffect(() => {
     if (draftChallenges) {
+      setDraftUserChallenges(draftChallenges);
       setIsModalOpen(true);
     }
   }, [draftChallenges]);
@@ -130,12 +140,34 @@ function CreateChallenge() {
     }
   }, [draftsDeleted]);
 
-  const [selectedChallengeId, setSelectedChallengeId] = useState<string | null>(
-    null,
-  );
-
   useEffect(() => {
-    console.log("SELECTED CHALLENGE: ", selectedChallengeId);
+    const challenge = draftUserChallenges.find(
+      (challenge) => challenge._id === selectedChallengeId,
+    );
+    if (challenge) {
+      const team = {
+        _id: challenge.team_id,
+        owner_id: challenge.owner_id,
+        name: challenge.teamName || "",
+      };
+      setTeam(team);
+      setChallengeNameItems({
+        challenge_name: challenge.challenge_name || "",
+        due_date: challenge.due_date || "",
+        difficulty:
+          challenge.difficulty !== null ? String(challenge.difficulty) : "",
+      });
+      const stepIndex = challenge.currentStep ? challenge.currentStep - 1 : 0;
+      setCurrentStep(challenge.currentStep || 1);
+
+      // Update steps state, marking previous steps as complete
+      const updatedSteps = stepsList.map((step, index) => ({
+        ...step,
+        complete: index < stepIndex, // Set complete to true for steps before currentStep
+      }));
+
+      setSteps(updatedSteps);
+    }
   }, [selectedChallengeId]);
 
   return (
@@ -198,6 +230,15 @@ function CreateChallenge() {
                   <ChallengeNameForm
                     challengeNameItems={challengeNameItems}
                     handleChallengeNameChange={getChallengeNameItems}
+                    goToNextStep={goToNextStep}
+                    goToPreviousStep={goToPreviousStep}
+                  />
+                </>
+              )}
+
+              {currentStep == 3 && (
+                <>
+                  <DescriptionForm
                     goToNextStep={goToNextStep}
                     goToPreviousStep={goToPreviousStep}
                   />

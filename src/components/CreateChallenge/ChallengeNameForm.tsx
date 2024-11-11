@@ -4,14 +4,14 @@ import { z } from "zod";
 
 interface FormInputs {
   challenge_name: string;
-  difficulty: number | null;
+  difficulty: string;
   due_date: string;
 }
 
 interface ChallengeNameItems {
   challenge_name: string;
   due_date: string;
-  difficulty: number | null;
+  difficulty: string;
 }
 
 interface ChallengeNameFormProps {
@@ -102,9 +102,11 @@ function ChallengeNameForm({
             <option value="" disabled>
               Difficulty
             </option>
-            <option value="0">Easy</option>
-            <option value="1">Medium</option>
-            <option value="2">Hard</option>
+            <option value="1">Easy</option>
+            <option value="2">Medium</option>
+            <option value="3">Hard</option>
+            <option value="4">Very Hard</option>
+            <option value="5">Legendary</option>
           </select>
           {errors.difficulty && (
             <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
