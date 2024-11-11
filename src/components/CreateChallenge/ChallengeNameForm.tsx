@@ -1,11 +1,17 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
+import "react-datetime-picker/dist/DateTimePicker.css";
+import "react-calendar/dist/Calendar.css";
+import "react-clock/dist/Clock.css";
+import { parseISO } from "date-fns";
+import { useEffect } from "react";
+import DateTimePickerWrapper from "../Wrappers/DateTimePickerWrapper";
 
 interface FormInputs {
   challenge_name: string;
   difficulty: string;
-  due_date: string;
+  due_date: Date | null;
 }
 
 interface ChallengeNameItems {
@@ -28,7 +34,12 @@ const schema = z.object({
     .min(3, "Name should have a minimum of 3 characters")
     .max(30, "Name can be a max of 30 characters"),
   difficulty: z.string(),
-  due_date: z.string().nonempty("Please select a date"),
+  due_date: z
+    .union([z.date(), z.null()]) // Accept null values
+    .refine((date) => date !== null, { message: "Please put a date" }) // Custom message for null date
+    .refine((date) => date === null || date > new Date(), {
+      message: "Please select a future date",
+    }), // Custom message for past date
 });
 
 function ChallengeNameForm({
@@ -39,21 +50,35 @@ function ChallengeNameForm({
 }: ChallengeNameFormProps) {
   const {
     register,
+    control,
     formState: { errors, isValid },
     getValues,
+    trigger,
   } = useForm<FormInputs>({
     resolver: zodResolver(schema),
     defaultValues: {
       challenge_name: challengeNameItems.challenge_name,
       difficulty: challengeNameItems.difficulty,
-      due_date: challengeNameItems.due_date,
+      due_date: challengeNameItems.due_date
+        ? parseISO(challengeNameItems.due_date)
+        : null, // Parse ISO string to Date
     },
     mode: "onChange", // Triggers validation on change
   });
 
+  // Use useEffect to validate the form on load
+  useEffect(() => {
+    if (challengeNameItems.due_date) {
+      trigger(); // Validate the form initially if due_date is preloaded
+    }
+  }, [challengeNameItems.due_date, trigger]);
+
   const handleChange = (value: string) => {
     const allValues = getValues();
-    handleChallengeNameChange(allValues);
+    handleChallengeNameChange({
+      ...allValues,
+      due_date: allValues.due_date ? allValues.due_date.toISOString() : "", // Convert Date to ISO string
+    });
     if (value === "previous") goToPreviousStep();
     else {
       goToNextStep();
@@ -121,13 +146,24 @@ function ChallengeNameForm({
           >
             Due Date
           </label>
-          <input
-            type="text"
-            placeholder="Due Date"
-            className="input w-full border border-base-content focus:outline-none bg-transparent rounded-md placeholder-gray-300 mt-[5px] font-normal"
-            style={{ backgroundColor: "transparent" }}
-            {...register("due_date")}
-            id="due_date"
+          <Controller
+            name="due_date"
+            control={control}
+            render={({ field }) => (
+              <DateTimePickerWrapper
+                {...field}
+                onChange={(date) => {
+                  field.onChange(date);
+                  handleChallengeNameChange({
+                    ...getValues(),
+                    due_date: date ? date.toISOString() : "",
+                  });
+                }}
+                minDate={new Date()} // Disables past dates in the picker
+                format="y-MM-dd h:mm a"
+                className="w-full border border-base-content focus:outline-none bg-transparent rounded-md mt-[5px] font-normal"
+              />
+            )}
           />
           {errors.due_date && (
             <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">

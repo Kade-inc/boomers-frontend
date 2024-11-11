@@ -10,8 +10,12 @@ type ExtendedChallengeInterface = Challenge & {
 
 interface CreateChallengeStore {
   draftUserChallenges: ExtendedChallengeInterface[];
+  currentEditingChallenge: ExtendedChallengeInterface | null;
   setDraftUserChallenges: (
     draftUserChallenges: ExtendedChallengeInterface[],
+  ) => void;
+  setCurrentEditingChallenge: (
+    currentEditingChallenge: ExtendedChallengeInterface,
   ) => void;
 }
 
@@ -24,9 +28,13 @@ const useCreateChallengeStore = create<CreateChallengeStore>(
   (persist as ChallengesPersist)(
     (set) => ({
       draftUserChallenges: [],
+      currentEditingChallenge: null,
       setDraftUserChallenges: (
         draftUserChallenges: ExtendedChallengeInterface[],
       ) => set(() => ({ draftUserChallenges })),
+      setCurrentEditingChallenge: (
+        currentEditingChallenge: ExtendedChallengeInterface,
+      ) => set(() => ({ currentEditingChallenge })),
     }),
     {
       name: "challenge-storage", // This persists the store's state

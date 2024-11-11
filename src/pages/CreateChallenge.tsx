@@ -59,8 +59,11 @@ function CreateChallenge() {
   );
 
   const user = useAuthStore((s) => s.user);
-  const { draftUserChallenges, setDraftUserChallenges } =
-    useCreateChallengeStore();
+  const {
+    draftUserChallenges,
+    setDraftUserChallenges,
+    setCurrentEditingChallenge,
+  } = useCreateChallengeStore();
 
   const { data: teamsData, isPending: teamsLoading } = useTeams(user.user_id);
   const { data: draftChallenges } = useChallenges(user.user_id, false);
@@ -145,6 +148,7 @@ function CreateChallenge() {
       (challenge) => challenge._id === selectedChallengeId,
     );
     if (challenge) {
+      setCurrentEditingChallenge(challenge);
       const team = {
         _id: challenge.team_id,
         owner_id: challenge.owner_id,
