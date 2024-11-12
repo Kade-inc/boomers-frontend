@@ -4,6 +4,11 @@ import ChallengesSlimCard from "../Cards/ChallengeSlimCard";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import useDeleteChallenges from "../../hooks/useDeleteChallenges";
+import useCreateChallengeStore from "../../stores/useCreateChallengeStore";
+
+type ExtendedChallengeInterface = Challenge & {
+  teamName?: string;
+};
 
 type ModalTriggerProps = {
   isOpen: boolean;
@@ -12,11 +17,7 @@ type ModalTriggerProps = {
   handleCreateChallenge: () => void;
   modalAction: string;
   onDraftsDeleted: () => void;
-  onSelectChallenge: (challengeId: string) => void;
-};
-
-type ExtendedChallengeInterface = Challenge & {
-  teamName?: string;
+  onSelectChallenge: (challenge: ExtendedChallengeInterface) => void;
 };
 
 function ChallengeDraftModal({
@@ -52,6 +53,8 @@ function ChallengeDraftModal({
   const [selectedChallengeIds, setSelectedChallengeIds] = useState<string[]>(
     [],
   );
+  const { draftUserChallenges, setDraftUserChallenges } =
+    useCreateChallengeStore();
 
   const deleteDrafts = async () => {
     const payload = {
@@ -59,6 +62,14 @@ function ChallengeDraftModal({
     };
 
     await mutation.mutateAsync(payload);
+
+    // Remove the deleted challenges from global draftUserChallenges
+    const updatedDraftUserChallenges = draftUserChallenges.filter(
+      (challenge) => !selectedChallengeIds.includes(challenge._id),
+    );
+
+    setDraftUserChallenges(updatedDraftUserChallenges); // Update the store with the filtered list
+    setSelectedChallengeIds([]);
     onDraftsDeleted();
   };
 
@@ -85,11 +96,11 @@ function ChallengeDraftModal({
     });
   };
 
-  const handleCardClick = (challengeId: string) => {
+  const handleCardClick = (challenge: Challenge) => {
     if (modalAction === "delete") {
-      addTeam(challengeId);
+      addTeam(challenge._id);
     } else {
-      onSelectChallenge(challengeId);
+      onSelectChallenge(challenge);
       onClose();
     }
   };
@@ -183,7 +194,7 @@ function ChallengeDraftModal({
                   challenge={challenge}
                   styles="h-[130px] w-[350px] cursor-pointer"
                   page="create-team"
-                  handleClick={() => handleCardClick(challenge._id)}
+                  handleClick={() => handleCardClick(challenge)}
                   isSelected={selectedChallengeIds.includes(challenge._id)}
                   isDeleting={mutation.isPending}
                 />

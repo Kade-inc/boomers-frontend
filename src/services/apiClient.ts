@@ -7,6 +7,7 @@ import { UserVerificationModel } from "../entities/UserVerificationModel";
 import { jwtDecode } from "jwt-decode";
 import useAuthStore from "../stores/useAuthStore";
 import Team from "../entities/Team";
+import { ExtendedChallengeInterface } from "../entities/Challenge";
 
 interface ErrorResponse {
   message: string;
@@ -440,6 +441,35 @@ class APIClient {
         "Error Deleting challenge(s):",
         axiosError.response?.data ?? axiosError.message,
       );
+    }
+  };
+
+  createChallenge = async (
+    teamId: string,
+    requiresAuth = true,
+  ): Promise<ExtendedChallengeInterface> => {
+    try {
+      const response = await this.axiosInstance.post(
+        `${this.endpoint}/${teamId}/challenges`,
+        null,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      return data;
+    } catch (error: any) {
+      let errorMessage =
+        "An unexpected error occurred. Please try again later.";
+
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+
+      toast.error(`${errorMessage}`);
+      throw new Error(errorMessage);
     }
   };
 }

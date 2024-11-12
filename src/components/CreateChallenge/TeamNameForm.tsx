@@ -4,6 +4,7 @@ import { z } from "zod";
 import Team from "../../entities/Team";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { InformationCircleIcon } from "@heroicons/react/24/solid";
 
 interface FormInputs {
   name: string;
@@ -14,6 +15,7 @@ interface TeamNameFormProps {
   handleTeamChange: (team: Team, stepComplete: boolean) => void;
   selectedTeam: Team | undefined;
   goToNextStep: () => void;
+  isLoading: boolean;
 }
 
 const schema = z.object({
@@ -29,6 +31,7 @@ function TeamNameForm({
   selectedTeam,
   handleTeamChange,
   goToNextStep,
+  isLoading,
 }: TeamNameFormProps) {
   const {
     register,
@@ -118,13 +121,23 @@ function TeamNameForm({
               )}
             </div>
           </form>
+          <div className="mt-4 flex">
+            <InformationCircleIcon height={26} width={26} fill="#1869A4" />
+            <p className="w-[70%] ml-2 text-[14px] text-[#1869A4]">
+              Selecting a team will begin the challenge creation process for the
+              selected team and save your progress when you click Next.
+            </p>
+          </div>
           <div className="mt-4">
             <button
               onClick={goToNextStep}
-              disabled={!selectedTeamName}
+              disabled={!selectedTeamName || isLoading}
               className="btn px-12 bg-yellow text-darkgrey rounded disabled:opacity-50 text-[16px] hover:bg-yellow font-normal"
             >
-              Next
+              {!isLoading && <span>Next</span>}
+              {isLoading && (
+                <span className="loading loading-dots loading-md"></span>
+              )}
             </button>
           </div>
         </>

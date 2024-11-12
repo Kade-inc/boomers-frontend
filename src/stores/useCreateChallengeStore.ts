@@ -1,7 +1,7 @@
-import { create, StateCreator } from "zustand";
+import { create } from "zustand";
 import { mountStoreDevtool } from "simple-zustand-devtools";
-import { persist, PersistOptions } from "zustand/middleware";
 import Challenge from "../entities/Challenge";
+import Team from "../entities/Team";
 
 type ExtendedChallengeInterface = Challenge & {
   teamName?: string;
@@ -11,36 +11,27 @@ type ExtendedChallengeInterface = Challenge & {
 interface CreateChallengeStore {
   draftUserChallenges: ExtendedChallengeInterface[];
   currentEditingChallenge: ExtendedChallengeInterface | null;
+  selectedTeams: Team[];
   setDraftUserChallenges: (
     draftUserChallenges: ExtendedChallengeInterface[],
   ) => void;
   setCurrentEditingChallenge: (
     currentEditingChallenge: ExtendedChallengeInterface,
   ) => void;
+  setSelectedTeams: (selectedTeam: Team[]) => void;
 }
 
-type ChallengesPersist = (
-  config: StateCreator<CreateChallengeStore>,
-  options: PersistOptions<CreateChallengeStore>,
-) => StateCreator<CreateChallengeStore>;
-
-const useCreateChallengeStore = create<CreateChallengeStore>(
-  (persist as ChallengesPersist)(
-    (set) => ({
-      draftUserChallenges: [],
-      currentEditingChallenge: null,
-      setDraftUserChallenges: (
-        draftUserChallenges: ExtendedChallengeInterface[],
-      ) => set(() => ({ draftUserChallenges })),
-      setCurrentEditingChallenge: (
-        currentEditingChallenge: ExtendedChallengeInterface,
-      ) => set(() => ({ currentEditingChallenge })),
-    }),
-    {
-      name: "challenge-storage", // This persists the store's state
-    },
-  ),
-);
+const useCreateChallengeStore = create<CreateChallengeStore>((set) => ({
+  draftUserChallenges: [],
+  currentEditingChallenge: null,
+  selectedTeams: [],
+  setDraftUserChallenges: (draftUserChallenges: ExtendedChallengeInterface[]) =>
+    set(() => ({ draftUserChallenges })),
+  setCurrentEditingChallenge: (
+    currentEditingChallenge: ExtendedChallengeInterface,
+  ) => set(() => ({ currentEditingChallenge })),
+  setSelectedTeams: (selectedTeams: Team[]) => set(() => ({ selectedTeams })),
+}));
 
 if (process.env.NODE_ENV === "development") {
   mountStoreDevtool("Create Challenge Store", useCreateChallengeStore);

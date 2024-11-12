@@ -10,6 +10,12 @@ import ChallengeDraftModal from "../components/Modals/ChallengeDraftModal";
 import toast, { Toaster } from "react-hot-toast";
 import useCreateChallengeStore from "../stores/useCreateChallengeStore";
 import DescriptionForm from "../components/CreateChallenge/DescriptionForm";
+import useCreateChallenge from "../hooks/Challenges/useCreateChallenge";
+import Challenge from "../entities/Challenge";
+
+type ExtendedChallengeInterface = Challenge & {
+  teamName?: string;
+};
 
 interface ChallengeNameItems {
   challenge_name: string;
@@ -61,12 +67,15 @@ function CreateChallenge() {
   const user = useAuthStore((s) => s.user);
   const {
     draftUserChallenges,
+    selectedTeams,
     setDraftUserChallenges,
     setCurrentEditingChallenge,
+    setSelectedTeams,
   } = useCreateChallengeStore();
 
   const { data: teamsData, isPending: teamsLoading } = useTeams(user.user_id);
   const { data: draftChallenges } = useChallenges(user.user_id, false);
+  const mutation = useCreateChallenge();
 
   const getSelectedTeam = (team: Team) => {
     setTeam(team);
@@ -91,7 +100,46 @@ function CreateChallenge() {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
-  const goToNextStep = () => {
+  const goToNextStep = async () => {
+    if (currentStep === 1) {
+      const teamFound = selectedTeams.find(
+        (selectedTeam) => selectedTeam._id === team?._id,
+      );
+
+      if (!teamFound) {
+        try {
+          const response = await mutation.mutateAsync(team?._id || "");
+
+          if (!response) {
+            return;
+          }
+
+          const currentDraftUserChallenges = [...draftUserChallenges];
+          currentDraftUserChallenges.push(response);
+          // Add challenge to global draftUserChallenges when created
+          setDraftUserChallenges(currentDraftUserChallenges);
+
+          const newTeams = [...selectedTeams];
+          if (team) newTeams.push(team);
+          setSelectedTeams(newTeams);
+        } catch (error: unknown) {
+          // Type guard to check if error is an instance of Error
+          if (error instanceof Error) {
+            if (
+              error.message ===
+              "Error: Maximum amount of drafts reached. Please delete some of your draft challenges before you proceed."
+            ) {
+              setModalAction("delete");
+              setIsModalOpen(true);
+              return;
+            }
+          } else {
+            console.error("An unexpected error occurred:", error);
+          }
+        }
+      }
+    }
+
     setSteps((prevSteps) =>
       prevSteps.map((step, index) =>
         index === currentStep - 1 ? { ...step, complete: true } : step,
@@ -104,7 +152,7 @@ function CreateChallenge() {
   const closeModal = () => setIsModalOpen(false);
 
   const handleCreateChallenge = () => {
-    if (draftChallenges.length > 4) {
+    if (draftUserChallenges.length > 4) {
       setModalAction("delete");
     } else {
       closeModal();
@@ -114,8 +162,13 @@ function CreateChallenge() {
   const handleDraftsDeleted = () => {
     setDraftsDeleted(true);
   };
-  const handleSelectChallenge = (challengeId: string) => {
-    setSelectedChallengeId(challengeId);
+  const handleSelectChallenge = (challenge: ExtendedChallengeInterface) => {
+    const team: Team = {
+      _id: challenge.team_id,
+      name: challenge.teamName || "",
+    };
+    setSelectedTeams([team]);
+    setSelectedChallengeId(challenge._id);
   };
 
   useEffect(() => {
@@ -182,7 +235,7 @@ function CreateChallenge() {
         toastOptions={{
           error: {
             style: {
-              background: "#1AC171",
+              background: "#D92D2D",
               color: "white",
             },
             iconTheme: {
@@ -192,11 +245,11 @@ function CreateChallenge() {
           },
         }}
       />
-      {draftChallenges && draftChallenges.length > 0 && (
+      {draftUserChallenges && isModalOpen && draftUserChallenges.length > 0 && (
         <ChallengeDraftModal
           isOpen={isModalOpen}
           onClose={closeModal}
-          modalData={draftChallenges}
+          modalData={draftUserChallenges}
           modalAction={modalAction}
           handleCreateChallenge={handleCreateChallenge}
           onDraftsDeleted={handleDraftsDeleted}
@@ -226,6 +279,7 @@ function CreateChallenge() {
                   handleTeamChange={getSelectedTeam}
                   selectedTeam={team}
                   goToNextStep={goToNextStep}
+                  isLoading={mutation.isPending}
                 />
               )}
 
