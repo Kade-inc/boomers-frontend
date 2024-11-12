@@ -1,12 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { z } from "zod";
 import "react-datetime-picker/dist/DateTimePicker.css";
 import "react-calendar/dist/Calendar.css";
 import "react-clock/dist/Clock.css";
 import { parseISO } from "date-fns";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import DateTimePickerWrapper from "../Wrappers/DateTimePickerWrapper";
+import useUpdateChallenge from "../../hooks/Challenges/useUpdateChallenge";
+import { debounce } from "lodash-es";
 
 interface FormInputs {
   challenge_name: string;
@@ -25,6 +27,8 @@ interface ChallengeNameFormProps {
   handleChallengeNameChange: (values: ChallengeNameItems) => void;
   goToNextStep: () => void;
   goToPreviousStep: () => void;
+  selectedChallengeId: string;
+  teamId: string;
 }
 
 const schema = z.object({
@@ -47,6 +51,8 @@ function ChallengeNameForm({
   handleChallengeNameChange,
   goToNextStep,
   goToPreviousStep,
+  selectedChallengeId,
+  teamId,
 }: ChallengeNameFormProps) {
   const {
     register,
@@ -66,7 +72,6 @@ function ChallengeNameForm({
     mode: "onChange", // Triggers validation on change
   });
 
-  // Use useEffect to validate the form on load
   useEffect(() => {
     if (challengeNameItems.due_date) {
       trigger(); // Validate the form initially if due_date is preloaded
@@ -84,6 +89,49 @@ function ChallengeNameForm({
       goToNextStep();
     }
   };
+
+  const watchedValues = useWatch({ control });
+  const updateChallengeMutation = useUpdateChallenge();
+
+  // Debounce the API call to reduce the frequency of updates
+  const debouncedUpdateChallenge = useCallback(
+    debounce((updatedValues: FormInputs) => {
+      if (
+        selectedChallengeId &&
+        teamId &&
+        updatedValues.challenge_name.trim() &&
+        updatedValues.challenge_name.trim().length >= 3 &&
+        updatedValues.challenge_name.trim().length <= 30
+      ) {
+        updateChallengeMutation.mutate({
+          challengeId: selectedChallengeId,
+          teamId,
+          payload: {
+            challenge_name: updatedValues.challenge_name.trim(),
+            difficulty: updatedValues.difficulty
+              ? Number(updatedValues.difficulty)
+              : undefined, // Convert to number
+            due_date: updatedValues.due_date
+              ? updatedValues.due_date.toISOString()
+              : undefined, // Convert to ISO string or undefined
+          },
+        });
+      }
+    }, 500), // Debounce delay
+    [selectedChallengeId, teamId],
+  );
+
+  useEffect(() => {
+    const updatedValues: FormInputs = {
+      challenge_name: watchedValues.challenge_name || "",
+      difficulty: watchedValues.difficulty || "",
+      due_date: watchedValues.due_date
+        ? parseISO(challengeNameItems.due_date)
+        : null,
+    };
+
+    debouncedUpdateChallenge(updatedValues);
+  }, [watchedValues, debouncedUpdateChallenge]);
 
   return (
     <>

@@ -472,6 +472,37 @@ class APIClient {
       throw new Error(errorMessage);
     }
   };
+
+  updateChallenge = async (
+    teamId: string,
+    challengeId: string,
+    payload: Partial<ExtendedChallengeInterface>,
+    requiresAuth = true,
+  ): Promise<ExtendedChallengeInterface> => {
+    try {
+      const response = await this.axiosInstance.put(
+        `${this.endpoint}/${teamId}/challenges/${challengeId}`,
+        payload,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      return data;
+    } catch (error: any) {
+      let errorMessage =
+        "An unexpected error occurred. Please try again later.";
+
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+
+      toast.error(`${errorMessage}`);
+      throw new Error(errorMessage);
+    }
+  };
 }
 
 export default APIClient;

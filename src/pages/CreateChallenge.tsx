@@ -5,13 +5,13 @@ import useAuthStore from "../stores/useAuthStore";
 import useTeams from "../hooks/useTeams";
 import Team from "../entities/Team";
 import ChallengeNameForm from "../components/CreateChallenge/ChallengeNameForm";
-import useChallenges from "../hooks/useChallenges";
 import ChallengeDraftModal from "../components/Modals/ChallengeDraftModal";
 import toast, { Toaster } from "react-hot-toast";
 import useCreateChallengeStore from "../stores/useCreateChallengeStore";
 import DescriptionForm from "../components/CreateChallenge/DescriptionForm";
 import useCreateChallenge from "../hooks/Challenges/useCreateChallenge";
 import Challenge from "../entities/Challenge";
+import useChallenges from "../hooks/Challenges/useChallenges";
 
 type ExtendedChallengeInterface = Challenge & {
   teamName?: string;
@@ -75,7 +75,7 @@ function CreateChallenge() {
 
   const { data: teamsData, isPending: teamsLoading } = useTeams(user.user_id);
   const { data: draftChallenges } = useChallenges(user.user_id, false);
-  const mutation = useCreateChallenge();
+  const createChallengeMutation = useCreateChallenge();
 
   const getSelectedTeam = (team: Team) => {
     setTeam(team);
@@ -108,7 +108,9 @@ function CreateChallenge() {
 
       if (!teamFound) {
         try {
-          const response = await mutation.mutateAsync(team?._id || "");
+          const response = await createChallengeMutation.mutateAsync(
+            team?._id || "",
+          );
 
           if (!response) {
             return;
@@ -279,7 +281,7 @@ function CreateChallenge() {
                   handleTeamChange={getSelectedTeam}
                   selectedTeam={team}
                   goToNextStep={goToNextStep}
-                  isLoading={mutation.isPending}
+                  isLoading={createChallengeMutation.isPending}
                 />
               )}
 
@@ -290,6 +292,8 @@ function CreateChallenge() {
                     handleChallengeNameChange={getChallengeNameItems}
                     goToNextStep={goToNextStep}
                     goToPreviousStep={goToPreviousStep}
+                    selectedChallengeId={selectedChallengeId || ""}
+                    teamId={team?._id || ""}
                   />
                 </>
               )}

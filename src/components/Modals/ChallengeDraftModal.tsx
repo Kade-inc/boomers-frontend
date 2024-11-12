@@ -3,7 +3,7 @@ import Challenge from "../../entities/Challenge";
 import ChallengesSlimCard from "../Cards/ChallengeSlimCard";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import useDeleteChallenges from "../../hooks/useDeleteChallenges";
+import useDeleteChallenges from "../../hooks/Challenges/useDeleteChallenges";
 import useCreateChallengeStore from "../../stores/useCreateChallengeStore";
 
 type ExtendedChallengeInterface = Challenge & {

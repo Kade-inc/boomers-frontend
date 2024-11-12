@@ -2,7 +2,6 @@ import AdviceCard from "../components/AdviceCard";
 import ProfileCard from "../components/ProfileCard";
 import TeamCard from "../components/TeamCard";
 import Team from "../entities/Team";
-import useChallenges from "../hooks/useChallenges";
 import useTeamRecommendations from "../hooks/useTeamRecommendations";
 import useTeams from "../hooks/useTeams";
 import useAuthStore from "../stores/useAuthStore";
@@ -13,6 +12,7 @@ import useRecommendationStore from "../stores/useRecommendationStore";
 import RecommendationsModal from "../components/Modals/RecommendationsModal";
 import TeamCardCarousel from "../components/Carousels/TeamCardCarousel";
 import ChallengeCardCarousel from "../components/Carousels/ChallengeCardCarousel";
+import useChallenges from "../hooks/Challenges/useChallenges";
 
 const Dashboard = () => {
   const user = useAuthStore((s) => s.user);

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
-import APIClient from "../services/apiClient";
+import APIClient from "../../services/apiClient";
 
 const apiClient = new APIClient("/api/challenges");
 
