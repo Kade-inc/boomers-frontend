@@ -9,6 +9,7 @@ import { useCallback, useEffect } from "react";
 import DateTimePickerWrapper from "../Wrappers/DateTimePickerWrapper";
 import useUpdateChallenge from "../../hooks/Challenges/useUpdateChallenge";
 import { debounce } from "lodash-es";
+import { InformationCircleIcon } from "@heroicons/react/24/solid";
 
 interface FormInputs {
   challenge_name: string;
@@ -234,6 +235,12 @@ function ChallengeNameForm({
         >
           Next
         </button>
+      </div>
+      <div className="mt-4 flex items-center">
+        <InformationCircleIcon height={26} width={26} fill="#1869A4" />
+        <p className="w-[70%] ml-2 text-[14px] text-[#1869A4]">
+          Your input is automatically saved as you type.
+        </p>
       </div>
     </>
   );
