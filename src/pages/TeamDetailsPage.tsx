@@ -20,6 +20,19 @@ const TeamDetailsPage = () => {
   const [activeTab, setActiveTab] = useState("members");
   const { teamId } = useParams<{ teamId: string }>();
 
+  const [dialogMode, setDialogMode] = useState<"request" | "member">("request");
+
+  // Function to open the dialog
+  const openMemberDialog = (mode: "request" | "member") => {
+    setDialogMode(mode);
+    const modal = document.getElementById(
+      "my_modal_7",
+    ) as HTMLDialogElement | null;
+    if (modal) {
+      modal.showModal();
+    }
+  };
+
   //user
   const { user } = useAuthStore.getState();
 
@@ -206,6 +219,7 @@ const TeamDetailsPage = () => {
                         key={member._id}
                         member={member}
                         imgUrl={member.profile_picture}
+                        onClick={() => openMemberDialog("member")}
                       />
                     ))}
                 </div>
@@ -238,14 +252,7 @@ const TeamDetailsPage = () => {
                           key={request._id}
                           member={request.userProfile}
                           imgUrl={request.userProfile.profile_picture}
-                          onClick={() => {
-                            const modal = document.getElementById(
-                              "my_modal_7",
-                            ) as HTMLDialogElement | null;
-                            if (modal) {
-                              modal.showModal();
-                            }
-                          }}
+                          onClick={() => openMemberDialog("request")}
                         />
                       ))
                     ) : (
@@ -309,7 +316,7 @@ const TeamDetailsPage = () => {
         )}
         <AddMemberDialog />
         <LeaveTeamDialog />
-        <MemberRequestDialog />
+        <MemberRequestDialog mode={dialogMode} />
       </>
     </div>
   );

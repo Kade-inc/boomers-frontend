@@ -15,9 +15,7 @@ const LeaveTeamDialog = () => {
           <div className="modal-action">
             <form method="dialog" className="w-full">
               {/* if there is a button in form, it will close the modal */}
-              <button className="btn w-full text-white bg-green-600">
-                Go Back
-              </button>
+              <button className="btn w-full text-white bg-green-600"></button>
             </form>
           </div>
           <button className="btn w-full text-white bg-red-600">
