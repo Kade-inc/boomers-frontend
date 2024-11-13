@@ -12,6 +12,7 @@ import DescriptionForm from "../components/CreateChallenge/DescriptionForm";
 import useCreateChallenge from "../hooks/Challenges/useCreateChallenge";
 import Challenge from "../entities/Challenge";
 import useChallenges from "../hooks/Challenges/useChallenges";
+import ResourcesForm from "../components/CreateChallenge/ResourcesForm";
 
 type ExtendedChallengeInterface = Challenge & {
   teamName?: string;
@@ -57,6 +58,8 @@ function CreateChallenge() {
       due_date: "",
       difficulty: "",
     });
+
+  const [description, setDescription] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalAction, setModalAction] = useState("draft");
   const [draftsDeleted, setDraftsDeleted] = useState(false);
@@ -90,6 +93,9 @@ function CreateChallenge() {
     }));
   };
 
+  const getDescription = (description: string) => {
+    setDescription(description);
+  };
   const goToPreviousStep = () => {
     setSteps((prevSteps) =>
       prevSteps.map((step, index) =>
@@ -216,6 +222,7 @@ function CreateChallenge() {
         difficulty:
           challenge.difficulty !== null ? String(challenge.difficulty) : "",
       });
+      setDescription(challenge.description || "");
       const stepIndex = challenge.currentStep ? challenge.currentStep - 1 : 0;
       setCurrentStep(challenge.currentStep || 1);
 
@@ -286,25 +293,31 @@ function CreateChallenge() {
               )}
 
               {currentStep == 2 && (
-                <>
-                  <ChallengeNameForm
-                    challengeNameItems={challengeNameItems}
-                    handleChallengeNameChange={getChallengeNameItems}
-                    goToNextStep={goToNextStep}
-                    goToPreviousStep={goToPreviousStep}
-                    selectedChallengeId={selectedChallengeId || ""}
-                    teamId={team?._id || ""}
-                  />
-                </>
+                <ChallengeNameForm
+                  challengeNameItems={challengeNameItems}
+                  handleChallengeNameChange={getChallengeNameItems}
+                  goToNextStep={goToNextStep}
+                  goToPreviousStep={goToPreviousStep}
+                  selectedChallengeId={selectedChallengeId || ""}
+                  teamId={team?._id || ""}
+                />
               )}
 
               {currentStep == 3 && (
-                <>
-                  <DescriptionForm
-                    goToNextStep={goToNextStep}
-                    goToPreviousStep={goToPreviousStep}
-                  />
-                </>
+                <DescriptionForm
+                  handleDescriptionChange={getDescription}
+                  selectedChallengeId={selectedChallengeId || ""}
+                  teamId={team?._id || ""}
+                  description={description}
+                  goToNextStep={goToNextStep}
+                  goToPreviousStep={goToPreviousStep}
+                />
+              )}
+              {currentStep == 4 && (
+                <ResourcesForm
+                  goToNextStep={goToNextStep}
+                  goToPreviousStep={goToPreviousStep}
+                />
               )}
             </div>
           )}
