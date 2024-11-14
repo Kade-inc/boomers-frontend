@@ -419,7 +419,7 @@ class APIClient {
 
   updateUserProfile = async (
     userId: string,
-    updatedProfile: User,
+    updatedProfile: FormData,
     requiresAuth = true,
   ) => {
     try {
@@ -429,6 +429,7 @@ class APIClient {
         {
           headers: {
             requiresAuth,
+            "Content-Type": "multipart/form-data",
           },
         },
       );

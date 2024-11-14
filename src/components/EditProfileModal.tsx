@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import useUpdateUser from "../hooks/useUpdateUser";
 import useAuthStore from "../stores/useAuthStore";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
+import { useRef, useState } from "react";
 
 type ModalTriggerProps = {
   isOpen: boolean;
@@ -46,6 +47,19 @@ type FormData = z.infer<typeof schema>;
 
 const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
   const mutation = useUpdateUser(user.user_id!);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    setImageFile(file);
+    console.log("Selected file:", file);
+  };
+
+  const handleButtonClick = () => {
+    // Trigger the hidden file input click using the ref
+    fileInputRef.current?.click();
+  };
 
   const { setUser } = useAuthStore();
 
@@ -68,9 +82,17 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
   });
 
   const onSubmit = async (updatedProfile: FormData) => {
-    const updateData = await mutation.mutateAsync(updatedProfile);
+    const newForm = new FormData();
+
+    newForm.append("firstName", updatedProfile.firstName);
+    newForm.append("lastName", updatedProfile.lastName);
+
+    if (imageFile) {
+      newForm.append("image", imageFile);
+    }
+
+    const updateData = await mutation.mutateAsync(newForm);
     setUser(updateData);
-    console.log(updateData);
     onClose();
   };
 
@@ -118,7 +140,10 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                   )}
                 </div>
                 <div className="flex flex-col md:flex-row items-center md:space-x-4">
-                  <button className="flex justify-evenly items-center h-[26px] md:h-[33px] w-[135px] md:w-[181px]  rounded-[3px] border-[1px] bg-yellow font-body font-semibold text-[11px] md:text-sm  text-nowrap mb-2">
+                  <button
+                    onClick={handleButtonClick}
+                    className="flex justify-evenly items-center h-[26px] md:h-[33px] w-[135px] md:w-[181px]  rounded-[3px] border-[1px] bg-yellow font-body font-semibold text-[11px] md:text-sm  text-nowrap mb-2"
+                  >
                     Change picture{" "}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -135,6 +160,13 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                       />
                     </svg>
                   </button>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    style={{ display: "none" }} // Hide the input
+                    accept="image/*"
+                    onChange={handleFileChange}
+                  />
 
                   <button className="h-[26px] md:h-[33px] w-[135px] md:w-[155px]  rounded-[3px] border-[1px] bg-[#BEBEBE] font-body font-semibold text-[11px] md:text-sm text-[#E02828] ">
                     Delete picture
