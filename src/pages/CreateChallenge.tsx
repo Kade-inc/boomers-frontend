@@ -281,7 +281,7 @@ function CreateChallenge() {
           )}
 
           {!teamsLoading && (
-            <div className="w-2/4">
+            <div className={`${currentStep === 3 ? "w-3/4" : "w-2/4"}`}>
               {currentStep == 1 && ownedTeams && (
                 <TeamNameForm
                   teams={ownedTeams}
