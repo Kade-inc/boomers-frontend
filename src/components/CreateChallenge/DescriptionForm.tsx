@@ -4,6 +4,8 @@ import { useCallback, useState } from "react";
 import { debounce } from "lodash-es";
 import useUpdateChallenge from "../../hooks/Challenges/useUpdateChallenge";
 import { InformationCircleIcon } from "@heroicons/react/24/solid";
+import { Editor } from "@ckeditor/ckeditor5-core";
+import ImageUploadAdapter from "../../services/imageUploader";
 
 interface DescriptionFormProps {
   selectedChallengeId: string;
@@ -12,6 +14,17 @@ interface DescriptionFormProps {
   goToNextStep: () => void;
   goToPreviousStep: () => void;
   handleDescriptionChange: (description: string) => void;
+}
+interface Loader {
+  file: Promise<File | null>;
+}
+
+function ImageCustomUploadAdapterPlugin(editor: Editor) {
+  editor.plugins.get("FileRepository").createUploadAdapter = (
+    loader: Loader,
+  ) => {
+    return new ImageUploadAdapter(loader);
+  };
 }
 
 function DescriptionForm({
@@ -57,6 +70,9 @@ function DescriptionForm({
       <div>
         <CKEditor
           editor={ClassicEditor}
+          config={{
+            extraPlugins: [ImageCustomUploadAdapterPlugin], // Use the custom adapter for image uploads
+          }}
           data={description}
           onChange={(event, editor) => {
             const data = editor.getData();
