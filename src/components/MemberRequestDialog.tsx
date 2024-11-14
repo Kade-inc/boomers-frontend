@@ -25,7 +25,6 @@ const MemberRequestDialog = ({ mode }: MemberRequestDialogProps) => {
       onClose={handleDialogClose}
     >
       <div className="modal-box p-0" style={{ borderRadius: "0px" }}>
-        {/* Header with Image and Name */}
         <div className="text-center flex flex-col items-center justify-center bg-yellow">
           <img className="mb-3 mx-auto mt-5" src={lebron} alt="img" />
           <h3 className="text-white mb-5 text-[18px] font-bold">John Doe</h3>
@@ -33,12 +32,10 @@ const MemberRequestDialog = ({ mode }: MemberRequestDialogProps) => {
 
         {!acceptClicked ? (
           <>
-            {/* User Details Section */}
             <div className="p-4">
               <h3 className="text-[16px] font-bold mb-2">Current Teams</h3>
               <div className="flex gap-2 mb-4">
                 <UserDetailsCard />
-
                 <UserDetailsCard />
               </div>
               <h3 className="py-2 text-[16px] font-bold">Interests</h3>
@@ -59,19 +56,33 @@ const MemberRequestDialog = ({ mode }: MemberRequestDialogProps) => {
                 </button>
               ) : (
                 <>
-                  <div className="flex w-full">
-                    <form method="dialog" className="w-1/2 !m-0">
+                  {mode === "request" && (
+                    <div className="flex w-full flex-col">
                       <button className="btn w-full text-white bg-green-600 rounded-none hover:bg-green-700">
-                        Cancel
+                        Accept
                       </button>
-                    </form>
-                    <button
-                      className="btn w-1/2 text-white bg-red-600 rounded-none hover:bg-red-700 !m-0"
-                      onClick={() => setAcceptClicked(true)}
-                    >
-                      Remove
-                    </button>
-                  </div>
+                      <form method="dialog">
+                        <button className="btn w-full text-white bg-red-600 rounded-none hover:bg-red-700">
+                          Reject
+                        </button>
+                      </form>
+                    </div>
+                  )}
+                  {mode === "member" && selectedMember && (
+                    <div className="flex w-full">
+                      <form method="dialog" className="w-1/2 !m-0">
+                        <button className="btn w-full text-white bg-green-600 rounded-none hover:bg-green-700">
+                          Cancel
+                        </button>
+                      </form>
+                      <button
+                        className="btn w-1/2 text-white bg-red-600 rounded-none hover:bg-red-700 !m-0"
+                        onClick={() => setAcceptClicked(true)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  )}
                 </>
               )}
             </div>
@@ -79,7 +90,9 @@ const MemberRequestDialog = ({ mode }: MemberRequestDialogProps) => {
         ) : (
           <div className="p-4 text-center">
             <p className="text-[16px] text-black mb-4">
-              Paul Vitalis has been removed from the team
+              {mode === "member"
+                ? "Paul Vitalis has been removed from the team"
+                : "Request has been processed"}
             </p>
             <form method="dialog">
               <button className="btn w-[150px] text-white bg-red-600 rounded-none hover:bg-red-700">

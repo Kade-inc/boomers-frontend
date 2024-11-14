@@ -212,16 +212,20 @@ const TeamDetailsPage = () => {
             <div className="mt-5">
               {activeTab === "members" && (
                 <div className="flex gap-6">
-                  {team?.members
-                    .slice(1)
-                    .map((member: TeamMember) => (
-                      <MemberCard
-                        key={member._id}
-                        member={member}
-                        imgUrl={member.profile_picture}
-                        onClick={() => openMemberDialog("member")}
-                      />
-                    ))}
+                  {team?.members.slice(1).map((member: TeamMember) => (
+                    <MemberCard
+                      key={member._id}
+                      member={member}
+                      imgUrl={member.profile_picture}
+                      onClick={() => {
+                        if (user.user_id === team?.members[0]?._id) {
+                          openMemberDialog("member");
+                        } else {
+                          // Do nothing
+                        }
+                      }}
+                    />
+                  ))}
                 </div>
               )}
 
@@ -323,3 +327,6 @@ const TeamDetailsPage = () => {
 };
 
 export default TeamDetailsPage;
+
+// Georgecl00ney!
+// Bern1eM@c
