@@ -11,7 +11,7 @@ export default interface Challenge {
   resources?: string;
   comments?: Comment;
   image_url?: string;
-  valid: boolean;
+  valid?: boolean;
   createdAt?: string;
   updatedAt?: string;
   __v?: number;

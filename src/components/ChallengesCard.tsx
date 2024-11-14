@@ -47,7 +47,7 @@ const ChallengesCard: React.FC<ChallengesCardProps> = ({
     return daysLeft;
   };
 
-  const daysLeft = calculateDaysLeft(due_date);
+  const daysLeft = due_date && calculateDaysLeft(due_date);
 
   return (
     <div
@@ -70,6 +70,8 @@ const ChallengesCard: React.FC<ChallengesCardProps> = ({
               {difficulty === 1 && "Easy"}
               {difficulty === 2 && "Medium"}
               {difficulty === 3 && "Hard"}
+              {difficulty === 4 && "Very Hard"}
+              {difficulty === 5 && "Legendary"}
             </div>
           </div>
           <div className="flex items-end">
