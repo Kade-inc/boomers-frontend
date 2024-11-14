@@ -39,10 +39,6 @@ function CreateChallenge() {
       complete: false,
     },
     {
-      name: "Challenge Resources",
-      complete: false,
-    },
-    {
       name: "Preview",
       complete: false,
     },

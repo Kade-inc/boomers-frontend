@@ -41,7 +41,7 @@ const ChallengesSlimCard: React.FC<ChallengesSlimCardProps> = ({
 
           <div className="flex items-end">
             <h2 className="flex items-center text-center text-[12px] gap-x-2">
-              Step {challenge.currentStep}
+              Step {challenge.currentStep || "1"}
             </h2>
           </div>
         </div>
