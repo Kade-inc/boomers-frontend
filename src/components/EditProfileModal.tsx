@@ -339,13 +339,13 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
             <div className="mt-6 flex justify-end space-x-4 mb-10 w-full ">
               <button
                 onClick={onClose}
-                className="px-4 md:px-6 h-[32px] max-w-full rounded-[5px] font-body font-semibold text-[11px] md:text-sm  text-nowrap text-darkgrey  border-[1px] border-darkgrey hover:bg-base-200 hover:text-base-content"
+                className="px-4 md:px-6 btn max-w-full rounded-md font-body font-semibold text-[11px] md:text-sm  text-nowrap text-darkgrey  border-[1px] border-darkgrey hover:bg-base-200 hover:text-base-content"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 md:px-6 h-[32px] max-w-full rounded-[5px] bg-yellow font-body font-semibold text-[11px] md:text-sm  text-nowrap text-darkgrey hover:bg-base-200 hover:text-base-content"
+                className="px-4 md:px-6 btn rounded-md bg-yellow hover:bg-yellow font-body font-semibold text-[11px] md:text-sm  text-nowrap text-darkgrey hover:bg-base-200 hover:text-base-content"
               >
                 {mutation.isPending ? (
                   <span className="loading loading-spinner loading-xs"></span>
