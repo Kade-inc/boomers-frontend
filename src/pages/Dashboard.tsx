@@ -10,7 +10,7 @@ import useAuthStore from "../stores/useAuthStore";
 import TeamCardCarousel from "../components/TeamCardCarousel";
 import { useEffect, useState } from "react";
 import Challenge from "../entities/Challenge";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useRecommendationStore from "../stores/useRecommendationStore";
 import RecommendationsModal from "../components/RecommendationsModal";
 
@@ -194,9 +194,11 @@ const Dashboard = () => {
                             Edit your profile with your interests to get
                             recommendations.
                           </p>
-                          <button className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-2">
-                            Edit Profile
-                          </button>
+                          <Link to="/profile">
+                            <button className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-2">
+                              Edit Profile
+                            </button>
+                          </Link>
                         </div>
                       </div>
                     </>

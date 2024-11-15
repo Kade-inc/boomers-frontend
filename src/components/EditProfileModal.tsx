@@ -49,11 +49,22 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
   const mutation = useUpdateUser(user.user_id!);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [previewImage, setPreviewImage] = useState<File | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
     setImageFile(file);
-    console.log("Selected file:", file);
+    if (file) {
+      const reader = new FileReader();
+      // Create a preview URL when the file is read
+      reader.onloadend = () => {
+        setPreviewImage(file); // Set the file itself as state
+      };
+
+      reader.readAsDataURL(file); // Convert the file to a data URL
+    } else {
+      setPreviewImage(null); // Reset if no file selected
+    }
   };
 
   const handleButtonClick = () => {
@@ -83,9 +94,9 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
 
   const onSubmit = async (updatedProfile: FormData) => {
     const newForm = new FormData();
-
-    newForm.append("firstName", updatedProfile.firstName);
-    newForm.append("lastName", updatedProfile.lastName);
+    Object.entries(updatedProfile).forEach(([key, value]) => {
+      newForm.append(key, value as string);
+    });
 
     if (imageFile) {
       newForm.append("image", imageFile);
@@ -94,17 +105,23 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
     const updateData = await mutation.mutateAsync(newForm);
     setUser(updateData);
     onClose();
+    setImageFile(null);
+  };
+
+  const handleClose = () => {
+    onClose();
+    setImageFile(null);
   };
 
   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
-      className="flex items-center justify-center"
+      className="flex items-center justify-center "
       overlayClassName="fixed inset-0 z-50 backdrop-blur-sm bg-[#00000033] bg-opacity-30"
     >
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="bg-base-100 text-base-content rounded-lg shadow-lg px-20 mx-auto h-[90vh] top-[5vh] overflow-y-auto relative mb-14 ">
+        <div className="bg-base-100 text-base-content rounded-lg shadow-lg px-10 mx-auto h-[90vh] top-[5vh] overflow-y-auto relative mb-14 ">
           <div className="flex justify-center items-center flex-col">
             <div className="flex justify-end w-full mt-6">
               <svg
@@ -112,7 +129,7 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                 viewBox="0 0 24 24"
                 fill="#D92D2D"
                 className="size-8 cursor-pointer"
-                onClick={onClose}
+                onClick={handleClose}
               >
                 <path
                   fillRule="evenodd"
@@ -129,9 +146,12 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
               </div>
               <div className="flex flex-row items-center">
                 <div className="rounded-full overflow-hidden">
-                  {user?.profile_picture ? (
+                  {previewImage || user.profile_picture ? (
                     <img
-                      src={user.profile_picture}
+                      src={
+                        (previewImage && URL.createObjectURL(previewImage)) ||
+                        user.profile_picture
+                      }
                       alt="Profile picture"
                       className="rounded-full w-[90px] h-[90px] object-cover mr-4"
                     />
@@ -141,24 +161,31 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                 </div>
                 <div className="flex flex-col md:flex-row items-center md:space-x-4">
                   <button
+                    type="button"
                     onClick={handleButtonClick}
-                    className="flex justify-evenly items-center h-[26px] md:h-[33px] w-[135px] md:w-[181px]  rounded-[3px] border-[1px] bg-yellow font-body font-semibold text-[11px] md:text-sm  text-nowrap mb-2"
+                    className="flex justify-evenly items-center btn rounded-[3px]  bg-yellow font-body font-semibold text-[11px] md:text-sm  text-nowrap mb-2 border-none text-darkgrey hover:bg-yellow"
                   >
-                    Change picture{" "}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="size-4 ml-2"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"
-                      />
-                    </svg>
+                    {imageFile ? (
+                      imageFile.name
+                    ) : (
+                      <>
+                        Change picture{" "}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="size-4 ml-2"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"
+                          />
+                        </svg>
+                      </>
+                    )}
                   </button>
                   <input
                     type="file"
@@ -168,9 +195,12 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                     onChange={handleFileChange}
                   />
 
-                  <button className="h-[26px] md:h-[33px] w-[135px] md:w-[155px]  rounded-[3px] border-[1px] bg-[#BEBEBE] font-body font-semibold text-[11px] md:text-sm text-[#E02828] ">
+                  {/* <button
+                    type="button"
+                    className="h-[26px] md:h-[33px] w-[135px] md:w-[155px]  rounded-[3px] border-[1px] bg-[#BEBEBE] font-body font-semibold text-[11px] md:text-sm text-[#E02828] "
+                  >
                     Delete picture
-                  </button>
+                  </button> */}
                 </div>
               </div>
 
@@ -185,7 +215,7 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                   className="bg-[B9B9B9] text-[9CA1A8] block w-full px-3 py-2 border-[1px] border-base-content rounded-[5px] font-body font-semibold text-sm cursor-not-allowed "
                 />
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-x-6">
                 <div className="flex flex-col">
                   <label className="font-body font-semibold text-[13px] md:text-base  ">
                     First Name
@@ -338,14 +368,15 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
             </div>
             <div className="mt-6 flex justify-end space-x-4 mb-10 w-full ">
               <button
-                onClick={onClose}
-                className="px-4 md:px-6 btn max-w-full rounded-md font-body font-semibold text-[11px] md:text-sm  text-nowrap text-darkgrey  border-[1px] border-darkgrey hover:bg-base-200 hover:text-base-content"
+                onClick={handleClose}
+                className="px-4 md:px-6 btn max-w-full rounded-md font-body font-semibold text-[11px] md:text-sm text-nowrap text-white bg-darkgrey border-[1px] border-darkgrey "
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 md:px-6 btn rounded-md bg-yellow hover:bg-yellow font-body font-semibold text-[11px] md:text-sm  text-nowrap text-darkgrey hover:bg-base-200 hover:text-base-content"
+                className="px-4 md:px-6 btn rounded-md bg-yellow  font-body font-semibold text-[11px] md:text-sm  text-nowrap text-darkgrey hover:bg-yellow"
+                disabled={mutation.isPending}
               >
                 {mutation.isPending ? (
                   <span className="loading loading-spinner loading-xs"></span>
