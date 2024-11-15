@@ -16,7 +16,7 @@ interface CreateChallengeStore {
     draftUserChallenges: ExtendedChallengeInterface[],
   ) => void;
   setCurrentEditingChallenge: (
-    currentEditingChallenge: ExtendedChallengeInterface,
+    currentEditingChallenge: ExtendedChallengeInterface | null,
   ) => void;
   setSelectedTeams: (selectedTeam: Team[]) => void;
 }
@@ -28,7 +28,7 @@ const useCreateChallengeStore = create<CreateChallengeStore>((set) => ({
   setDraftUserChallenges: (draftUserChallenges: ExtendedChallengeInterface[]) =>
     set(() => ({ draftUserChallenges })),
   setCurrentEditingChallenge: (
-    currentEditingChallenge: ExtendedChallengeInterface,
+    currentEditingChallenge: ExtendedChallengeInterface | null,
   ) => set(() => ({ currentEditingChallenge })),
   setSelectedTeams: (selectedTeams: Team[]) => set(() => ({ selectedTeams })),
 }));

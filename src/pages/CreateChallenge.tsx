@@ -64,7 +64,8 @@ function CreateChallenge() {
   const [draftsDeleted, setDraftsDeleted] = useState(false);
   const [selectedChallengeId, setSelectedChallengeId] = useState<string | null>(
     null,
-  );
+  ); // This is needed when a user selects a draft challenge to edit
+  const [editingChallengeId, setEditingChallengeId] = useState<string>(""); // This is needed in case the user did not select a draft challenge to edit
   const [isCompleted, setIsCompleted] = useState(false);
   const [challenge, setChallenge] = useState<ExtendedChallengeInterface>();
 
@@ -132,6 +133,7 @@ function CreateChallenge() {
           const newTeams = [...selectedTeams];
           if (team) newTeams.push(team);
           setSelectedTeams(newTeams);
+          setEditingChallengeId(response._id);
         } catch (error: unknown) {
           // Type guard to check if error is an instance of Error
           if (error instanceof Error) {
@@ -150,7 +152,7 @@ function CreateChallenge() {
       }
     } else if (currentStep === 4) {
       const createdChallenge = await updateChallengeMutation.mutateAsync({
-        challengeId: selectedChallengeId || "",
+        challengeId: selectedChallengeId || editingChallengeId,
         teamId: team?._id || "",
         payload: {
           valid: true,
@@ -159,6 +161,9 @@ function CreateChallenge() {
 
       setIsCompleted(true);
       setChallenge(createdChallenge);
+      setDraftUserChallenges([]);
+      setCurrentEditingChallenge(null);
+      setSelectedTeams([]);
     }
 
     setSteps((prevSteps) =>
@@ -280,7 +285,9 @@ function CreateChallenge() {
       )}
       {!isCompleted && (
         <div className="h-screen bg-base-100 px-5 md:px-10 pt-10 font-body font-semibold text-[18px]">
-          <p className="mb-8">Challenge Your Team!</p>
+          <p className="mb-8 text-[20px] font-bold text-[#1869A4]">
+            Challenge Your Team!
+          </p>
           <div className="flex justify-between">
             <div className="p-4 w-2/4">
               <Stepper
@@ -318,7 +325,9 @@ function CreateChallenge() {
                     handleChallengeNameChange={getChallengeNameItems}
                     goToNextStep={goToNextStep}
                     goToPreviousStep={goToPreviousStep}
-                    selectedChallengeId={selectedChallengeId || ""}
+                    selectedChallengeId={
+                      selectedChallengeId || editingChallengeId
+                    }
                     teamId={team?._id || ""}
                   />
                 )}
@@ -326,7 +335,9 @@ function CreateChallenge() {
                 {currentStep == 3 && (
                   <DescriptionForm
                     handleDescriptionChange={getDescription}
-                    selectedChallengeId={selectedChallengeId || ""}
+                    selectedChallengeId={
+                      selectedChallengeId || editingChallengeId
+                    }
                     teamId={team?._id || ""}
                     description={description}
                     goToNextStep={goToNextStep}
@@ -350,7 +361,7 @@ function CreateChallenge() {
       )}
       {isCompleted && challenge && (
         <>
-          <div className="flex flex-col item-center mt-40 text-base-content font-body h-screen">
+          <div className="flex flex-col items-center mt-40 text-base-content font-body h-screen">
             <CheckCircleIcon height={80} width={80} fill={"#4AC565"} />
             <ChallengesCard
               challenge={challenge}
