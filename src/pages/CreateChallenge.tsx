@@ -206,7 +206,7 @@ function CreateChallenge() {
   }, [teamsData]);
 
   useEffect(() => {
-    if (draftChallenges) {
+    if (draftChallenges && draftChallenges.length > 0) {
       setDraftUserChallenges(draftChallenges);
       setIsModalOpen(true);
     }
