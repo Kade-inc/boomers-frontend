@@ -7,7 +7,7 @@ interface ChallengeNameItems {
   due_date: string;
   difficulty: string;
 }
-interface ResourcesFormProps {
+interface PreviewProps {
   goToNextStep: () => void;
   goToPreviousStep: () => void;
   team: Team | undefined;
@@ -16,14 +16,14 @@ interface ResourcesFormProps {
   isPending: boolean;
 }
 
-function ResourcesForm({
+function Preview({
   goToNextStep,
   goToPreviousStep,
   team,
   challengeNameItems,
   description,
   isPending,
-}: ResourcesFormProps) {
+}: PreviewProps) {
   const handleChange = (value: string) => {
     if (value === "previous") goToPreviousStep();
     else {
@@ -96,4 +96,4 @@ function ResourcesForm({
   );
 }
 
-export default ResourcesForm;
+export default Preview;

@@ -12,10 +12,10 @@ import DescriptionForm from "../components/CreateChallenge/DescriptionForm";
 import useCreateChallenge from "../hooks/Challenges/useCreateChallenge";
 import Challenge from "../entities/Challenge";
 import useChallenges from "../hooks/Challenges/useChallenges";
-import ResourcesForm from "../components/CreateChallenge/ResourcesForm";
 import ChallengesCard from "../components/ChallengesCard";
 import useUpdateChallenge from "../hooks/Challenges/useUpdateChallenge";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
+import Preview from "../components/CreateChallenge/Preview";
 
 type ExtendedChallengeInterface = Challenge & {
   teamName?: string;
@@ -349,7 +349,7 @@ function CreateChallenge() {
                     />
                   )}
                   {currentStep == 4 && (
-                    <ResourcesForm
+                    <Preview
                       goToNextStep={goToNextStep}
                       goToPreviousStep={goToPreviousStep}
                       team={team}
