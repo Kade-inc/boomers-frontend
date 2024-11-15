@@ -1,4 +1,8 @@
-import { useMutation, UseMutationResult } from "@tanstack/react-query";
+import {
+  useMutation,
+  UseMutationResult,
+  useQueryClient,
+} from "@tanstack/react-query";
 import APIClient from "../../services/apiClient";
 import Challenge from "../../entities/Challenge";
 
@@ -18,10 +22,18 @@ const useUpdateChallenge = (): UseMutationResult<
   },
   unknown
 > => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationKey: ["update-challenge"],
     mutationFn: ({ teamId, challengeId, payload }) =>
       apiClient.updateChallenge(teamId, challengeId, payload),
+    onSuccess: (data) => {
+      // Check if `valid` is true before invalidating the query
+      if (data.valid) {
+        queryClient.invalidateQueries({ queryKey: ["challenges"] });
+      }
+    },
   });
 };
 

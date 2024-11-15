@@ -272,92 +272,97 @@ function CreateChallenge() {
           },
         }}
       />
-      {draftUserChallenges && isModalOpen && draftUserChallenges.length > 0 && (
-        <ChallengeDraftModal
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          modalData={draftUserChallenges}
-          modalAction={modalAction}
-          handleCreateChallenge={handleCreateChallenge}
-          onDraftsDeleted={handleDraftsDeleted}
-          onSelectChallenge={handleSelectChallenge}
-        />
-      )}
       {!isCompleted && (
-        <div className="h-screen bg-base-100 px-5 md:px-10 pt-10 font-body font-semibold text-[18px]">
-          <p className="mb-8 text-[20px] font-bold text-[#1869A4]">
-            Challenge Your Team!
-          </p>
-          <div className="flex justify-between">
-            <div className="p-4 w-2/4">
-              <Stepper
-                steps={steps}
-                currentStep={currentStep}
-                lineHeight={50}
+        <>
+          {draftUserChallenges &&
+            isModalOpen &&
+            draftUserChallenges.length > 0 && (
+              <ChallengeDraftModal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                modalData={draftUserChallenges}
+                modalAction={modalAction}
+                handleCreateChallenge={handleCreateChallenge}
+                onDraftsDeleted={handleDraftsDeleted}
+                onSelectChallenge={handleSelectChallenge}
               />
-            </div>
-
-            {currentStep == 1 && teamsLoading && (
-              <>
-                <div className="w-2/4 mt-[300px] ml-[100px]">
-                  <div className="loading loading-dots loading-md"></div>
-                </div>
-              </>
             )}
 
-            {!teamsLoading && (
-              <div
-                className={`${currentStep === 3 || currentStep === 4 ? "w-3/4" : "w-2/4"}`}
-              >
-                {currentStep == 1 && ownedTeams && (
-                  <TeamNameForm
-                    teams={ownedTeams}
-                    handleTeamChange={getSelectedTeam}
-                    selectedTeam={team}
-                    goToNextStep={goToNextStep}
-                    isLoading={createChallengeMutation.isPending}
-                  />
-                )}
-
-                {currentStep == 2 && (
-                  <ChallengeNameForm
-                    challengeNameItems={challengeNameItems}
-                    handleChallengeNameChange={getChallengeNameItems}
-                    goToNextStep={goToNextStep}
-                    goToPreviousStep={goToPreviousStep}
-                    selectedChallengeId={
-                      selectedChallengeId || editingChallengeId
-                    }
-                    teamId={team?._id || ""}
-                  />
-                )}
-
-                {currentStep == 3 && (
-                  <DescriptionForm
-                    handleDescriptionChange={getDescription}
-                    selectedChallengeId={
-                      selectedChallengeId || editingChallengeId
-                    }
-                    teamId={team?._id || ""}
-                    description={description}
-                    goToNextStep={goToNextStep}
-                    goToPreviousStep={goToPreviousStep}
-                  />
-                )}
-                {currentStep == 4 && (
-                  <ResourcesForm
-                    goToNextStep={goToNextStep}
-                    goToPreviousStep={goToPreviousStep}
-                    team={team}
-                    challengeNameItems={challengeNameItems}
-                    description={description}
-                    isPending={updateChallengeMutation.isPending}
-                  />
-                )}
+          <div className="h-screen bg-base-100 px-5 md:px-10 pt-10 font-body font-semibold text-[18px]">
+            <p className="mb-8 text-[20px] font-bold text-[#1869A4]">
+              Challenge Your Team!
+            </p>
+            <div className="flex justify-between">
+              <div className="p-4 w-2/4">
+                <Stepper
+                  steps={steps}
+                  currentStep={currentStep}
+                  lineHeight={50}
+                />
               </div>
-            )}
+
+              {currentStep == 1 && teamsLoading && (
+                <>
+                  <div className="w-2/4 mt-[300px] ml-[100px]">
+                    <div className="loading loading-dots loading-md"></div>
+                  </div>
+                </>
+              )}
+
+              {!teamsLoading && (
+                <div
+                  className={`${currentStep === 3 || currentStep === 4 ? "w-3/4" : "w-2/4"}`}
+                >
+                  {currentStep == 1 && ownedTeams && (
+                    <TeamNameForm
+                      teams={ownedTeams}
+                      handleTeamChange={getSelectedTeam}
+                      selectedTeam={team}
+                      goToNextStep={goToNextStep}
+                      isLoading={createChallengeMutation.isPending}
+                    />
+                  )}
+
+                  {currentStep == 2 && (
+                    <ChallengeNameForm
+                      challengeNameItems={challengeNameItems}
+                      handleChallengeNameChange={getChallengeNameItems}
+                      goToNextStep={goToNextStep}
+                      goToPreviousStep={goToPreviousStep}
+                      selectedChallengeId={
+                        selectedChallengeId || editingChallengeId
+                      }
+                      teamId={team?._id || ""}
+                    />
+                  )}
+
+                  {currentStep == 3 && (
+                    <DescriptionForm
+                      handleDescriptionChange={getDescription}
+                      selectedChallengeId={
+                        selectedChallengeId || editingChallengeId
+                      }
+                      teamId={team?._id || ""}
+                      description={description}
+                      goToNextStep={goToNextStep}
+                      goToPreviousStep={goToPreviousStep}
+                    />
+                  )}
+                  {currentStep == 4 && (
+                    <ResourcesForm
+                      goToNextStep={goToNextStep}
+                      goToPreviousStep={goToPreviousStep}
+                      team={team}
+                      challengeNameItems={challengeNameItems}
+                      description={description}
+                      isPending={updateChallengeMutation.isPending}
+                    />
+                  )}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        </>
       )}
       {isCompleted && challenge && (
         <>
