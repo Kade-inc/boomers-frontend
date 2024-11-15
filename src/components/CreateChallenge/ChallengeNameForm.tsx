@@ -109,12 +109,11 @@ function ChallengeNameForm({
           teamId,
           payload: {
             challenge_name: updatedValues.challenge_name.trim(),
-            difficulty: updatedValues.difficulty
-              ? Number(updatedValues.difficulty)
-              : undefined, // Convert to number
-            due_date: updatedValues.due_date
-              ? updatedValues.due_date.toISOString()
-              : undefined, // Convert to ISO string or undefined
+            difficulty:
+              updatedValues.difficulty !== "undefined"
+                ? Number(updatedValues.difficulty)
+                : undefined,
+            due_date: updatedValues.due_date?.toISOString(),
           },
         });
       }
