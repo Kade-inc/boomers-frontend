@@ -361,7 +361,7 @@ function CreateChallenge() {
       )}
       {isCompleted && challenge && (
         <>
-          <div className="flex flex-col items-center mt-40 text-base-content font-body h-screen">
+          <div className="flex flex-col items-center pt-40 text-base-content font-body h-screen bg-base-100">
             <CheckCircleIcon height={80} width={80} fill={"#4AC565"} />
             <ChallengesCard
               challenge={challenge}
