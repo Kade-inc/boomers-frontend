@@ -2,8 +2,8 @@ export default interface Team {
   _id?: string;
   owner_id?: string;
   name: string;
-  teamUsername: string;
-  domain: string;
+  teamUsername?: string;
+  domain?: string;
   subDomain?: string;
   subDomainTopics?: string[];
   createdAt?: string;

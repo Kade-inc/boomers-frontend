@@ -7,6 +7,7 @@ import { UserVerificationModel } from "../entities/UserVerificationModel";
 import { jwtDecode } from "jwt-decode";
 import useAuthStore from "../stores/useAuthStore";
 import Team from "../entities/Team";
+import { ExtendedChallengeInterface } from "../entities/Challenge";
 
 interface ErrorResponse {
   message: string;
@@ -247,10 +248,14 @@ class APIClient {
     }
   };
 
-  getAllChallenges = async (userId: string, requiresAuth = true) => {
+  getAllChallenges = async (
+    userId: string,
+    valid: boolean,
+    requiresAuth = true,
+  ) => {
     try {
       const response = await this.axiosInstance.get(
-        `${this.endpoint}?userId=${userId}`,
+        `${this.endpoint}?userId=${userId}&valid=${valid}`,
         {
           headers: {
             requiresAuth,
@@ -417,6 +422,87 @@ class APIClient {
     }
   };
 
+  deleteChallenges = async (
+    payload: { challengeIds: string[] },
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.delete(`${this.endpoint}`, {
+        headers: {
+          requiresAuth,
+        },
+        data: payload,
+      });
+      const { data } = response.data;
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error Deleting challenge(s):",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
+  createChallenge = async (
+    teamId: string,
+    requiresAuth = true,
+  ): Promise<ExtendedChallengeInterface> => {
+    try {
+      const response = await this.axiosInstance.post(
+        `${this.endpoint}/${teamId}/challenges`,
+        null,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      return data;
+    } catch (error: any) {
+      let errorMessage =
+        "An unexpected error occurred. Please try again later.";
+
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+
+      toast.error(`${errorMessage}`);
+      throw new Error(errorMessage);
+    }
+  };
+
+  updateChallenge = async (
+    teamId: string,
+    challengeId: string,
+    payload: Partial<ExtendedChallengeInterface>,
+    requiresAuth = true,
+  ): Promise<ExtendedChallengeInterface> => {
+    try {
+      const response = await this.axiosInstance.put(
+        `${this.endpoint}/${teamId}/challenges/${challengeId}`,
+        payload,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      return data;
+    } catch (error: any) {
+      let errorMessage =
+        "An unexpected error occurred. Please try again later.";
+
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+
+      toast.error(`${errorMessage}`);
+      throw new Error(errorMessage);
+    }
+  };
   updateUserProfile = async (
     userId: string,
     updatedProfile: FormData,

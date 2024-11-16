@@ -6,7 +6,7 @@ import useAuthStore from "../stores/useAuthStore";
 import useTeams from "../hooks/useTeams";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import Team from "../entities/Team";
-import TeamCardCarousel from "../components/TeamCardCarousel";
+import TeamCardCarousel from "../components/Carousels/TeamCardCarousel";
 
 const ProfilePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

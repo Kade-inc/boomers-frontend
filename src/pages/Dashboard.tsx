@@ -1,18 +1,18 @@
 import AdviceCard from "../components/AdviceCard";
-import ChallengeCardCarousel from "../components/ChallengeCardCarousel";
 import ProfileCard from "../components/ProfileCard";
 import TeamCard from "../components/TeamCard";
 import Team from "../entities/Team";
-import useChallenges from "../hooks/useChallenges";
 import useTeamRecommendations from "../hooks/useTeamRecommendations";
 import useTeams from "../hooks/useTeams";
 import useAuthStore from "../stores/useAuthStore";
-import TeamCardCarousel from "../components/TeamCardCarousel";
 import { useEffect, useState } from "react";
 import Challenge from "../entities/Challenge";
 import { Link, useNavigate } from "react-router-dom";
 import useRecommendationStore from "../stores/useRecommendationStore";
-import RecommendationsModal from "../components/RecommendationsModal";
+import RecommendationsModal from "../components/Modals/RecommendationsModal";
+import TeamCardCarousel from "../components/Carousels/TeamCardCarousel";
+import ChallengeCardCarousel from "../components/Carousels/ChallengeCardCarousel";
+import useChallenges from "../hooks/Challenges/useChallenges";
 
 const Dashboard = () => {
   const user = useAuthStore((s) => s.user);
@@ -251,6 +251,7 @@ const Dashboard = () => {
                   <div
                     className="tooltip tooltip-top tooltip-warning"
                     data-tip="Add Challenge"
+                    onClick={() => navigate("/create-challenge")}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

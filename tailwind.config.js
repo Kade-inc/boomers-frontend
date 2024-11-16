@@ -14,6 +14,7 @@ export default {
         darkgrey: "#393E46",
         lightgrey: "#5C636E",
         yellow: "#F8B500",
+        success: "#1AC171",
       },
       backgroundImage: {
         "custom-gradient":
@@ -37,12 +38,14 @@ export default {
           ...require("daisyui/src/theming/themes")["[data-theme=light]"],
           "base-100": "#F7F7F7",
           "base-200": "#FFFFFF",
+          "base-300": "#1869A4",
           "base-content": "#393E46",
         },
         dark: {
           ...require("daisyui/src/theming/themes")["[data-theme=dark]"],
           "base-100": "#141414",
           "base-200": "#393E46",
+          "base-300": "#FFFFFF",
           "base-content": "#ffffff",
         },
       },

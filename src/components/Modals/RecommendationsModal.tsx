@@ -1,8 +1,8 @@
 import Modal from "react-modal";
-import Team from "../entities/Team";
-import useTeam from "../hooks/useTeam";
 import { Toaster } from "react-hot-toast";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
+import useTeam from "../../hooks/useTeam";
+import Team from "../../entities/Team";
 
 type ModalTriggerProps = {
   isOpen: boolean;
@@ -48,7 +48,8 @@ const RecommendationsModal = ({
       <Modal
         isOpen={isOpen}
         onRequestClose={onClose}
-        className="fixed inset-0 flex items-center justify-center bg-[#00000033]"
+        className="flex items-center justify-center z-50"
+        overlayClassName="fixed inset-0 z-50 backdrop-blur-sm bg-[#00000033] bg-opacity-30"
       >
         <div className=" rounded-lg shadow-lg w-[90%] md:max-w-4xl mx-auto h-[80vh] top-[5vh] overflow-y-auto relative mb-14 px-4 md:px-[80px] py-10 bg-base-100 text-base-content font-body">
           <div className="flex justify-end w-full">

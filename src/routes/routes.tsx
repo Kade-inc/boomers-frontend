@@ -16,6 +16,7 @@ import ResetPassword from "../pages/ResetPasswordPage";
 import RecommendationsPage from "../pages/RecommendationsPage";
 import ErrorPage from "../pages/ErrorPage";
 import CreateTeam from "../pages/CreateTeam";
+import CreateChallenge from "../pages/CreateChallenge";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
       {
         path: "/create-team",
         element: <ProtectedRoute element={<CreateTeam />} />,
+      },
+      {
+        path: "create-challenge",
+        element: <ProtectedRoute element={<CreateChallenge />} />,
       },
     ],
   },
