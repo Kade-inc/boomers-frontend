@@ -137,7 +137,7 @@ function ChallengeNameForm({
 
   return (
     <>
-      <form className="w-full md:w-[80%] font-body">
+      <form className="w-full lg:w-[80%] font-body">
         <div className="mb-6">
           <label
             className="block text-base-content mb-[1%] text-[16px] md:text-[16px]"

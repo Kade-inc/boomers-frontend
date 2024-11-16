@@ -36,7 +36,7 @@ const Stepper = ({ steps, currentStep, lineHeight = 10 }: StepperProps) => {
               {/* Connecting line */}
               {index < steps.length - 1 && (
                 <div
-                  className="lg:w-[3px] lg:h-10  h-[3px] lg:my-1 mx-2 bg-gray-300"
+                  className="md:w-[3px] md:h-10  h-[3px] md:my-1 mx-2 bg-gray-300"
                   style={{ height: `${lineHeight}px` }}
                 >
                   {index < currentStep - 1 && (

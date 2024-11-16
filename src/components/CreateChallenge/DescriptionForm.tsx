@@ -63,7 +63,7 @@ function DescriptionForm({
 
   return (
     <>
-      <h2 className="md:w-[75%] mb-4">
+      <h2 className="lg:w-[75%] mb-4">
         Give a description about the challenge that will help the user
         understand the deliverables.
       </h2>

@@ -85,7 +85,7 @@ function TeamNameForm({
       )}
       {teams.length > 0 && (
         <>
-          <form className="md:w-[80%] w-full font-body">
+          <form className="lg:w-[80%] w-full font-body">
             <div className="mb-6 mt-4 md:mt-0">
               <label
                 className="hidden md:block text-base-content mb-[1%] text-[18px]"
