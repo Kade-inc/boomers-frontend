@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Slider from "react-slick";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Team from "../../entities/Team";
 import TeamCard from "../TeamCard";
 
@@ -15,12 +15,16 @@ function TeamCardCarousel({ slides }: CarouselProps) {
   }
 
   const [currentSlide, setCurrentSlide] = useState(0);
+  const currentRoute = useLocation();
 
   const settings = {
     dots: true,
     infinite: false,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow:
+      currentRoute.pathname === "/dashboard" || currentRoute.pathname === "/"
+        ? 3
+        : 2,
     slidesToScroll: 1,
     afterChange: (index: number) => setCurrentSlide(index),
     customPaging: (i: number) => (
@@ -66,7 +70,7 @@ function TeamCardCarousel({ slides }: CarouselProps) {
               <TeamCard
                 key={slide._id}
                 team={slide}
-                styles={`w-full md:w-[400px] h-[200px]`}
+                styles={`w-full md:w-[400px] h-[180px] md:h-[200px]`}
                 section="dashboard-section"
                 onClick={() => {
                   navigate(`/teams/${slide._id}`);
