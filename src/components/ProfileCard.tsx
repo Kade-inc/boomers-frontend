@@ -1,5 +1,6 @@
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import User from "../entities/User";
+import { Link } from "react-router-dom";
 
 interface ProfileCardProps {
   user?: User;
@@ -37,9 +38,11 @@ const ProfileCard = ({ user, className }: ProfileCardProps) => {
           </div>
         </>
       )}
-      <button className="btn bg-darkgrey px-10 rounded-md text-white font-body font-medium text-[14px] border-none text-center">
-        Edit Profile
-      </button>
+      <Link to="/profile">
+        <button className="btn bg-darkgrey px-10 rounded-md text-white font-body font-medium text-[14px] border-none text-center">
+          Edit Profile
+        </button>
+      </Link>
     </div>
   );
 };

@@ -416,6 +416,34 @@ class APIClient {
       );
     }
   };
+
+  updateUserProfile = async (
+    userId: string,
+    updatedProfile: FormData,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.put(
+        `${this.endpoint}/${userId}/profile`,
+        updatedProfile,
+        {
+          headers: {
+            requiresAuth,
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+      toast.success("Profile updated successfully");
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error updating profile: ",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
 }
 
 export default APIClient;
