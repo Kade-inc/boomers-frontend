@@ -85,10 +85,10 @@ function TeamNameForm({
       )}
       {teams.length > 0 && (
         <>
-          <form className="w-[80%] font-body">
-            <div className="mb-6">
+          <form className="md:w-[80%] w-full font-body">
+            <div className="mb-6 mt-4 md:mt-0">
               <label
-                className="block text-base-content mb-[1%] text-[18px]"
+                className="hidden md:block text-base-content mb-[1%] text-[18px]"
                 htmlFor="team"
               >
                 Select a Team
@@ -123,7 +123,7 @@ function TeamNameForm({
           </form>
           <div className="mt-4 flex">
             <InformationCircleIcon height={26} width={26} fill="#1869A4" />
-            <p className="w-[70%] ml-2 text-[14px] text-[#1869A4]">
+            <p className="w-full md:w-[70%] ml-2 text-[14px] text-base-300">
               Selecting a team will begin the challenge creation process for the
               selected team and save your progress when you click Next.
             </p>

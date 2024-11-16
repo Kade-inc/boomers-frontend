@@ -112,14 +112,14 @@ function ChallengeDraftModal({
       className="flex items-center justify-center z-50"
       overlayClassName="fixed inset-0 z-50 backdrop-blur-sm bg-[#00000033] bg-opacity-30"
     >
-      <div className="rounded-lg shadow-lg w-[90%] md:max-w-4xl mx-auto h-[80vh] top-[5vh] overflow-y-auto relative mb-14 px-4 md:px-[80px] py-10 bg-base-100 text-base-content font-body">
+      <div className="rounded-lg shadow-lg w-[90%] md:max-w-4xl mx-auto h-[80vh] top-[5vh] overflow-y-auto relative mb-14 px-4 md:px-[80px] md:py-10 py-4 bg-base-100 text-base-content font-body">
         <div>
-          <div className="relative mt-5">
+          <div className="relative md:mt-5">
             <div
               className={`absolute bottom-0 top-8 left-3 transform -translate-x-1/2 w-6 h-[6px] rounded ${modalAction === "delete" ? "bg-error" : "bg-base-content"} `}
             ></div>
             <p
-              className={`font-bold text-[20px] ${modalAction === "delete" ? "text-error" : ""}`}
+              className={`font-bold text-[20px] ${modalAction === "delete" ? "text-error" : "text-base-300"}`}
             >
               {modalAction === "delete" ? (
                 <span>Delete Draft</span>
@@ -129,22 +129,25 @@ function ChallengeDraftModal({
             </p>
           </div>
 
-          <p className="mt-8 mb-4">
+          <p className="mt-4 md:mt-8 md:mb-4 mb-2">
             {modalAction === "delete" ? (
               <span>
                 You have reached the maximum of{" "}
                 <span className="font-bold">5</span> draft challenges. Delete
-                one or more drafts in order to create a new challenge.
+                some drafts to proceed.
               </span>
             ) : (
-              <span>
-                {" "}
-                You have the following draft challenges. Choose one to complete
-                it&apos;s creation.
-              </span>
+              <>
+                <span>
+                  {" "}
+                  You have the following draft challenges. Choose one to
+                  complete it&apos;s creation.{" "}
+                </span>
+                <span className="md:hidden">Scroll to view more.</span>
+              </>
             )}
           </p>
-          <label className="input input-bordered flex items-center gap-2 mb-8 md:hidden flex">
+          <label className="input input-bordered flex items-center gap-2 mb-8 hidden flex">
             <input
               type="text"
               className="grow focus:border-yellow-500 focus:ring-yellow-500"
@@ -183,17 +186,17 @@ function ChallengeDraftModal({
               </svg>
 
               <p className="ml-2 text-error font-semibold text-[14px]">
-                Click on a draft to select it for deletion.
+                Click on a draft to select it for deletion.{" "}
               </p>
             </div>
           )}
           {filteredData.length > 0 ? (
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[40vh] overflow-scroll md:h-full">
               {filteredData.map((challenge) => (
                 <ChallengesSlimCard
                   key={challenge._id}
                   challenge={challenge}
-                  styles="h-[130px] w-[350px] cursor-pointer"
+                  styles="h-full md:h-[130px] w-full cursor-pointer"
                   page="create-team"
                   handleClick={() => handleCardClick(challenge)}
                   isSelected={selectedChallengeIds.includes(challenge._id)}
@@ -211,7 +214,7 @@ function ChallengeDraftModal({
             </p>
           )}
 
-          <div className="flex justify-end  items-center mt-30 absolute bottom-[10%] right-[12%]">
+          <div className="flex itemc-center absolute bottom-[2%] md:bottom-[10%] md:right-[12%]">
             <button
               className="btn bg-black rounded-md text-white font-medium border-none hover:bg-error"
               onClick={() => navigate("/")}
@@ -219,7 +222,7 @@ function ChallengeDraftModal({
               Quit
             </button>
             <button
-              className={`btn  rounded-md font-medium  ml-6 ${modalAction === "delete" ? "bg-error text-white hover:bg-error" : "hover:bg-yellow bg-yellow text-darkgrey "}`}
+              className={`btn  rounded-md font-medium border-none ml-6 ${modalAction === "delete" ? "bg-error text-white hover:bg-error" : "hover:bg-yellow bg-yellow text-darkgrey "}`}
               onClick={handleAction}
               disabled={
                 (modalAction === "delete" &&

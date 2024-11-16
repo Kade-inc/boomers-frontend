@@ -289,11 +289,11 @@ function CreateChallenge() {
             )}
 
           <div className="h-screen bg-base-100 px-5 md:px-10 pt-10 font-body font-semibold text-[18px]">
-            <p className="mb-8 text-[20px] font-bold text-[#1869A4]">
+            <p className="mb-8 text-[20px] font-bold text-base-300">
               Challenge Your Team!
             </p>
-            <div className="flex justify-between">
-              <div className="p-4 w-2/4">
+            <div className="flex flex-col md:flex-row justify-between">
+              <div className="md:p-4 md:w-2/4">
                 <Stepper
                   steps={steps}
                   currentStep={currentStep}
@@ -303,7 +303,7 @@ function CreateChallenge() {
 
               {currentStep == 1 && teamsLoading && (
                 <>
-                  <div className="w-2/4 mt-[300px] ml-[100px]">
+                  <div className="md:w-2/4 mt-[300px] ml-[100px]">
                     <div className="loading loading-dots loading-md"></div>
                   </div>
                 </>
@@ -311,7 +311,7 @@ function CreateChallenge() {
 
               {!teamsLoading && (
                 <div
-                  className={`${currentStep === 3 || currentStep === 4 ? "w-3/4" : "w-2/4"}`}
+                  className={`${currentStep === 3 || currentStep === 4 ? "md:w-3/4" : "md:w-2/4"} mt-4 md:mt-0`}
                 >
                   {currentStep == 1 && ownedTeams && (
                     <TeamNameForm
@@ -375,7 +375,7 @@ function CreateChallenge() {
             <p className="mt-8 font-semibold">
               Challenge created successfully!
             </p>
-            <button className="btn bg-yellow hover:bg-yellow rounded-sm mt-4">
+            <button className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4">
               View Challenge
             </button>
           </div>

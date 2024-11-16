@@ -33,10 +33,10 @@ const ChallengesSlimCard: React.FC<ChallengesSlimCardProps> = ({
           <div className="text-[14px] w-[80%]">
             <div className="mb-2">
               <h2 className="font-semibold">
-                {challenge.challenge_name || "Unnamed"}
+                {challenge?.challenge_name || "Unnamed"}
               </h2>
             </div>
-            <div>{challenge.teamName}</div>
+            <div>{challenge?.teamName || ""}</div>
           </div>
 
           <div className="flex items-end">

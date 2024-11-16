@@ -39,8 +39,8 @@ function Preview({
     <>
       <div>
         <div className="relative">
-          <div className="absolute bottom-0 top-8 left-3 transform -translate-x-1/2 w-6 h-[6px] bg-[#1869A4] rounded "></div>
-          <p className="font-bold text-[24px] text-[#1869A4]">Preview</p>
+          <div className="absolute bottom-0 top-8 left-3 transform -translate-x-1/2 w-6 h-[6px] bg-base-300 rounded "></div>
+          <p className="font-bold text-[24px] text-base-300">Preview</p>
         </div>
         <p className="mt-8 mb-2 text-[16px]">Team name</p>
         <p className="bg-base-200 px-4 py-4 font-normal text-[16px] rounded-sm shadow-lg">
@@ -74,7 +74,7 @@ function Preview({
           />
         </div>
       </div>
-      <div className="mt-4">
+      <div className="mt-4 mb-8">
         <button
           onClick={() => handleChange("previous")}
           className="btn px-12  mr-2 bg-black rounded disabled:opacity-50 font-normal text-white text-[16px] hover:bg-black border-none"

@@ -62,8 +62,8 @@ function DescriptionForm({
   );
 
   return (
-    <div className="">
-      <h2 className="w-[75%] mb-4">
+    <>
+      <h2 className="md:w-[75%] mb-4">
         Give a description about the challenge that will help the user
         understand the deliverables.
       </h2>
@@ -102,11 +102,11 @@ function DescriptionForm({
       </div>
       <div className="mt-4 flex items-center">
         <InformationCircleIcon height={26} width={26} fill="#1869A4" />
-        <p className="w-[70%] ml-2 text-[14px] text-[#1869A4]">
+        <p className="md:w-[70%] ml-2 text-[14px] text-base-300">
           Your input is automatically saved as you type.
         </p>
       </div>
-    </div>
+    </>
   );
 }
 

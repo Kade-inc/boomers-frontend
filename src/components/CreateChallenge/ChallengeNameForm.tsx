@@ -111,7 +111,9 @@ function ChallengeNameForm({
             challenge_name: updatedValues.challenge_name.trim(),
             difficulty:
               updatedValues.difficulty !== "undefined"
-                ? Number(updatedValues.difficulty)
+                ? updatedValues.difficulty !== ""
+                  ? Number(updatedValues.difficulty)
+                  : undefined
                 : undefined,
             due_date: updatedValues.due_date?.toISOString(),
           },
@@ -135,10 +137,10 @@ function ChallengeNameForm({
 
   return (
     <>
-      <form className="w-[80%] font-body">
+      <form className="w-full md:w-[80%] font-body">
         <div className="mb-6">
           <label
-            className="block text-base-content mb-[1%] text-[18px]"
+            className="block text-base-content mb-[1%] text-[16px] md:text-[16px]"
             htmlFor="challenge_name"
           >
             Challenge Name
@@ -159,7 +161,7 @@ function ChallengeNameForm({
         </div>
         <div className="mb-6">
           <label
-            className="block text-base-content mb-[1%] text-[18px]"
+            className="block text-base-content mb-[1%] text-[16px] md:text-[16px]"
             htmlFor="difficulty"
           >
             Difficulty
@@ -189,7 +191,7 @@ function ChallengeNameForm({
         </div>
         <div className="mb-6">
           <label
-            className="block text-base-content mb-[1%] text-[18px]"
+            className="block text-base-content mb-[1%] text-[16px] md:text-[16px]"
             htmlFor="dueDate"
           >
             Due Date
@@ -209,7 +211,7 @@ function ChallengeNameForm({
                 }}
                 minDate={new Date()} // Disables past dates in the picker
                 format="y-MM-dd h:mm a"
-                className="w-full border border-base-content focus:outline-none bg-transparent rounded-md mt-[5px] font-normal"
+                className="w-full border border-base-content border-[1px] focus:outline-none bg-transparent rounded-md mt-[5px] font-normal"
               />
             )}
           />
@@ -237,7 +239,7 @@ function ChallengeNameForm({
       </div>
       <div className="mt-4 flex items-center">
         <InformationCircleIcon height={26} width={26} fill="#1869A4" />
-        <p className="w-[70%] ml-2 text-[14px] text-[#1869A4]">
+        <p className="md:w-[70%] ml-2 text-[14px] text-base-300">
           Your input is automatically saved as you type.
         </p>
       </div>
