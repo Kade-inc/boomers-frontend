@@ -329,6 +329,28 @@ class APIClient {
     }
   };
 
+  // Leave Team
+  leaveTeam = async (teamId: string, requiresAuth = true) => {
+    try {
+      const response = await this.axiosInstance.delete(
+        `${this.endpoint}/${teamId}`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error leaving the team",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
   logout = async () => {
     try {
       const response = await this.axiosInstance.post(`${this.endpoint}`, {

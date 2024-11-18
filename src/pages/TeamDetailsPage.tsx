@@ -319,7 +319,7 @@ const TeamDetailsPage = () => {
           </>
         )}
         <AddMemberDialog />
-        <LeaveTeamDialog />
+        <LeaveTeamDialog teamId={teamId!} />
         <MemberRequestDialog mode={dialogMode} />
       </>
     </div>
@@ -330,3 +330,4 @@ export default TeamDetailsPage;
 
 // Georgecl00ney!
 // Bern1eM@c
+// BradP1tt!
