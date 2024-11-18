@@ -1,20 +1,44 @@
 import { useState, useRef } from "react";
-import lebron from "../assets/Mask group.svg";
 import UserDetailsCard from "./UserDetailsCard";
+import TeamMember from "../entities/TeamMember";
+import elipse from "../assets/Ellipse 103.svg";
+import useRemoveTeamMember from "../hooks/useRemoveTeamMember";
 
 interface MemberRequestDialogProps {
   mode: "request" | "member";
+  selectedTeamMember: TeamMember | null;
+  teamId: string;
 }
 
-const MemberRequestDialog = ({ mode }: MemberRequestDialogProps) => {
+const MemberRequestDialog = ({
+  mode,
+  selectedTeamMember,
+  teamId,
+}: MemberRequestDialogProps) => {
   const [selectedMember, setSelectedMember] = useState(false);
   const [acceptClicked, setAcceptClicked] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const removeTeamMemberMutation = useRemoveTeamMember();
 
+  if (!selectedTeamMember) return null;
   // Reset state when the dialog is closed
   const handleDialogClose = () => {
     setAcceptClicked(false);
     setSelectedMember(false);
+  };
+
+  // Handle Remove Team Member
+  const handleRemoveTeamMember = async () => {
+    if (selectedTeamMember && teamId) {
+      await removeTeamMemberMutation.mutateAsync(
+        { teamId, userId: selectedTeamMember._id },
+        {
+          onSuccess: () => {
+            setAcceptClicked(true);
+          },
+        },
+      );
+    }
   };
 
   return (
@@ -26,8 +50,14 @@ const MemberRequestDialog = ({ mode }: MemberRequestDialogProps) => {
     >
       <div className="modal-box p-0" style={{ borderRadius: "0px" }}>
         <div className="text-center flex flex-col items-center justify-center bg-yellow">
-          <img className="mb-3 mx-auto mt-5" src={lebron} alt="img" />
-          <h3 className="text-white mb-5 text-[18px] font-bold">John Doe</h3>
+          <img
+            className="mb-3 mx-auto mt-5"
+            src={selectedTeamMember.profile_picture ?? elipse}
+            alt="Profile image"
+          />
+          <h3 className="text-white mb-5 text-[18px] font-bold">
+            {selectedTeamMember.username}
+          </h3>
         </div>
 
         {!acceptClicked ? (
@@ -39,9 +69,17 @@ const MemberRequestDialog = ({ mode }: MemberRequestDialogProps) => {
                 <UserDetailsCard />
               </div>
               <h3 className="py-2 text-[16px] font-bold">Interests</h3>
-              <p className="text-[14px] font-medium">
+              {/* <p className="text-[14px] font-medium">
                 Software Engineering • Frontend • ReactJS
-              </p>
+              </p> */}
+              {/* {selectedTeamMember.interests?.subdomainTopics.map(
+                (topic: string, index: number) => (
+                  <React.Fragment key={index}>
+                    <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
+                    <p>{topic}</p>
+                  </React.Fragment>
+                ),
+              )} */}
             </div>
 
             {/* Modal Action Buttons */}
@@ -74,13 +112,13 @@ const MemberRequestDialog = ({ mode }: MemberRequestDialogProps) => {
                         <button className="btn w-full text-white bg-green-600 rounded-none hover:bg-green-700">
                           Cancel
                         </button>
+                        <button
+                          className="btn w-1/2 text-white bg-red-600 rounded-none hover:bg-red-700 !m-0"
+                          onClick={handleRemoveTeamMember}
+                        >
+                          Remove
+                        </button>
                       </form>
-                      <button
-                        className="btn w-1/2 text-white bg-red-600 rounded-none hover:bg-red-700 !m-0"
-                        onClick={() => setAcceptClicked(true)}
-                      >
-                        Remove
-                      </button>
                     </div>
                   )}
                 </>

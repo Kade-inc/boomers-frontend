@@ -351,6 +351,33 @@ class APIClient {
     }
   };
 
+  // Remove Team Member
+  removeTeamMember = async (
+    teamId: string,
+    userId: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.delete(this.endpoint, {
+        headers: {
+          requiresAuth,
+        },
+        params: {
+          teamId,
+          userId,
+        },
+      });
+      const { data } = response.data;
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error removing the team member",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
   logout = async () => {
     try {
       const response = await this.axiosInstance.post(`${this.endpoint}`, {

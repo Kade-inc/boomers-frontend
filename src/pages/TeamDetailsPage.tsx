@@ -19,6 +19,8 @@ import React from "react";
 const TeamDetailsPage = () => {
   const [activeTab, setActiveTab] = useState("members");
   const { teamId } = useParams<{ teamId: string }>();
+  const [selectedTeamMember, setSelectedTeamMember] =
+    useState<TeamMember | null>(null);
 
   const [dialogMode, setDialogMode] = useState<"request" | "member">("request");
 
@@ -219,6 +221,7 @@ const TeamDetailsPage = () => {
                       imgUrl={member.profile_picture}
                       onClick={() => {
                         if (user.user_id === team?.members[0]?._id) {
+                          setSelectedTeamMember(member);
                           openMemberDialog("member");
                         } else {
                           // Do nothing
@@ -320,7 +323,11 @@ const TeamDetailsPage = () => {
         )}
         <AddMemberDialog />
         <LeaveTeamDialog teamId={teamId!} />
-        <MemberRequestDialog mode={dialogMode} />
+        <MemberRequestDialog
+          mode={dialogMode}
+          teamId={teamId as string}
+          selectedTeamMember={selectedTeamMember}
+        />
       </>
     </div>
   );
