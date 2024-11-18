@@ -39,7 +39,7 @@ const ProfileCard = ({ user, className }: ProfileCardProps) => {
         </>
       )}
       <Link to="/profile">
-        <button className="btn bg-darkgrey px-10 rounded-md text-white font-body font-medium text-[14px] border-none text-center">
+        <button className="btn bg-darkgrey px-10 rounded-md text-white font-body font-medium text-[14px] border-none text-center hover:bg-darkgrey">
           Edit Profile
         </button>
       </Link>

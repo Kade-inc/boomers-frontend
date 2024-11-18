@@ -369,7 +369,7 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
             <div className="mt-6 flex justify-end space-x-4 mb-10 w-full ">
               <button
                 onClick={handleClose}
-                className="px-4 md:px-6 btn max-w-full rounded-md font-body font-semibold text-[11px] md:text-sm text-nowrap text-white bg-darkgrey border-[1px] border-darkgrey "
+                className="px-4 md:px-6 btn max-w-full rounded-md font-body font-semibold text-[11px] md:text-sm text-nowrap text-white bg-darkgrey border-[1px] border-darkgrey hover:bg-darkgrey"
               >
                 Cancel
               </button>
