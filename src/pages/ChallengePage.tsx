@@ -133,7 +133,7 @@ function ChallengePage() {
           )}
         </div>
         <div className="flex justify-between mt-10">
-          <div className="w-3/4 pr-12">
+          <div className="w-[60%]">
             <div role="tablist" className="tabs tabs-bordered">
               {["description", "solutions", "comments", "my plan"].map(
                 (tab) => (
