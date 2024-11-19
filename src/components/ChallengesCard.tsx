@@ -3,6 +3,7 @@ import Challenge from "../entities/Challenge";
 import useAuthStore from "../stores/useAuthStore";
 import Team from "../entities/Team";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 type ExtendedChallengeInterface = Challenge & {
   teamName?: string;
@@ -22,6 +23,7 @@ const ChallengesCard: React.FC<ChallengesCardProps> = ({
   const { challenge_name, owner_id, difficulty, due_date } = challenge;
   const { user } = useAuthStore.getState();
   const [updatedChallenge, setUpdatedChallenge] = useState(challenge);
+  const navigate = useNavigate();
 
   const checkTeamsInformation = () => {
     teamsInformation?.map((team) => {
@@ -49,9 +51,14 @@ const ChallengesCard: React.FC<ChallengesCardProps> = ({
 
   const daysLeft = due_date && calculateDaysLeft(due_date);
 
+  const handleCardClick = () => {
+    navigate(`/challenge/${challenge._id}`);
+  };
+
   return (
     <div
-      className={`card bg-gradient-to-b from-[#313232] to-[#444c4c] text-white rounded-[3px] font-body ${styles}`}
+      className={`card bg-gradient-to-b from-[#313232] to-[#444c4c] text-white rounded-[3px] font-body ${styles} hover:cursor-pointer`}
+      onClick={handleCardClick}
     >
       <div className="card-body flex flex-col justify-between h-full py-5">
         <div className="flex justify-between w-full items-center">
