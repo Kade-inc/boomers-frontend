@@ -67,32 +67,34 @@ function ChallengePage() {
     return () => clearInterval(timer); // Cleanup interval on unmount
   }, [challenge?.due_date]);
 
-  if (!challengeId || (!team && !teamPending)) {
-    return (
-      <div className="h-screen flex justify-center items-center text-base-content">
-        Unable to load theChallenge
-      </div>
-    );
-  }
-  if (challengePending || teamPending) {
+  if (challengePending || (challenge && teamPending)) {
     return (
       <>
-        <div className="h-screen flex justify-center items-center">
-          <span className="loading loading-dots loading-md"></span>
+        <div className="h-screen flex justify-center items-center bg-base-100 h-screen">
+          <span className="loading loading-dots loading-lg"></span>
         </div>
       </>
     );
   }
 
+  if (!team) {
+    return (
+      <div className="h-screen flex flex-col justify-center items-center text-base-100 font-body font-medium text-[18px] space-y-2 bg-base-content">
+        <p>Unable to load the Challenge</p>
+        <button className="btn bg-yellow">Try again</button>
+      </div>
+    );
+  }
+
   const isOwner = () => {
-    return user.user_id === team.members[0]._id;
+    return user.user_id === team?.members[0]._id;
   };
 
   const isTeamMember = () => {
-    const teamMember = team.members.find(
+    const teamMember = team?.members.find(
       (member: Team) => member._id === user.user_id,
     );
-    return user.user_id !== team.members[0]._id && teamMember;
+    return user.user_id !== team?.members[0]._id && teamMember;
   };
 
   const tabsList = isTeamMember()
@@ -235,8 +237,14 @@ function ChallengePage() {
               {challenge?.difficulty === 4 && "Very Hard"}
               {challenge?.difficulty === 5 && "Legendary"}
             </p>
-            <div>
-              <p className="font-semibold text-white">Team member ratings</p>
+            {/* Add functionality on the backend to rate a team then uncomment this code. */}
+            {/* <div>
+              <div className="flex items-center justify-between lg:w-[90%] xl:w-[3/4]">
+              <p onClick={() => selectRatingType('averageRating')}  className={`font-semibold text-white cursor-pointer ${displayedRating === 'averageRating' && isTeamMember()  ? 'border px-4 py-1 rounded' : ''}`}>Average rating</p>
+              {isTeamMember() && <p onClick={() => selectRatingType('myRating')} className={`font-semibold text-white cursor-pointer ${displayedRating === 'myRating' ? 'border px-4 py-1 rounded' : ''}`}>My rating</p>}
+              
+              </div>
+              
               <div className="flex justify-between rating rating-md mt-4 w-3/4">
                 <input
                   type="radio"
@@ -265,12 +273,25 @@ function ChallengePage() {
                   className="mask mask-star-2  bg-slate-100"
                 />
               </div>
-              {isTeamMember() && (
-                <button className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 w-full">
-                  Rate challenge
+              {isTeamMember() && displayedRating === 'myRating' && (
+                <>
+                {isRatingChallenge && <div className="flex items-center justify-between mt-4 lg:w-full">
+                <button className="btn bg-error hover:bg-error text-white border-none rounded-sm w-1/2" onClick={() => setIsRatingChallenge(!isRatingChallenge)}>
+                  Cancel
                 </button>
+                <button className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm px-8" onClick={() => setIsRatingChallenge(!isRatingChallenge)}>
+                  Submit
+                </button>
+                </div>}
+                {!isRatingChallenge &&  <button className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 w-full" onClick={() => setIsRatingChallenge(!isRatingChallenge)}>
+                  Rate challenge
+                </button>}
+               
+                </>
+                
               )}
-            </div>
+            </div> */}
+
             <div className="flex items-center ">
               <p className="text-white font-normal mr-4">Comments</p>
               <p className="bg-white rounded-full text-darkgrey w-8 h-8 flex justify-center items-center pl-0.2">
