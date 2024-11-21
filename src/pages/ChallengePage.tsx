@@ -137,7 +137,7 @@ function ChallengePage() {
           )}
         </div>
         <div className="flex justify-between mt-10">
-          <div className="w-full md:w-[60%]">
+          <div className="w-full md:w-[55%] xl:w-[60%]">
             <div role="tablist" className="tabs tabs-bordered">
               {["description", "solutions", "my plan"].map((tab) => (
                 <button
@@ -152,7 +152,7 @@ function ChallengePage() {
                 >
                   <>
                     <span
-                      className={`mr-1 md:mr-4 ${activeTab === tab ? "block" : "hidden md:block"}`}
+                      className={`mr-1 md:mr-4 ${activeTab === tab ? "block" : "hidden lg:block"}`}
                     >
                       {tab.charAt(0).toUpperCase() + tab.slice(1)}{" "}
                     </span>
@@ -194,7 +194,7 @@ function ChallengePage() {
               )}
             </div>
           </div>
-          <div className="bg-darkgrey w-1/4 min-h-[50vh] rounded-lg pt-8 px-8 space-y-4 relative mt-8 hidden md:block">
+          <div className="bg-darkgrey w-[40%] xl:w-1/4 h-[400px] rounded-lg pt-8 px-8 space-y-4 relative mt-8 hidden md:block">
             <p className="text-white font-normal">
               {challenge?.difficulty === 1 && "Easy"}
               {challenge?.difficulty === 2 && "Medium"}
@@ -232,17 +232,17 @@ function ChallengePage() {
                   className="mask mask-star-2  bg-slate-100"
                 />
               </div>
-              <button className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 font-medium">
+              <button className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 w-full">
                 Rate this challenge
               </button>
             </div>
-            <button className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 w-[88%] absolute bottom-6 left-6 ">
+            <button className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 md:w-[80%] lg:w-[85%] absolute bottom-6 left-8 ">
               Begin challenge
             </button>
           </div>
         </div>
       </div>
-      <button className="py-4 bg-yellow hover:bg-yellow rounded-none font-body text-darkgrey w-full fixed bottom-0 z-40 font-medium">
+      <button className="py-4 bg-yellow hover:bg-yellow rounded-none font-body text-darkgrey w-full fixed bottom-0 z-40 font-medium md:hidden">
         Begin Challenge
       </button>
       <button
