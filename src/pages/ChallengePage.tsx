@@ -12,6 +12,9 @@ import {
   PresentationChartBarIcon,
 } from "@heroicons/react/24/outline";
 import ChallengeStatsModal from "../components/Modals/ChallengeStatsModal";
+import useAuthStore from "../stores/useAuthStore";
+import Team from "../entities/Team";
+import { PencilSquareIcon } from "@heroicons/react/24/solid";
 
 function ChallengePage() {
   const [showStatsModal, setShowStatsModal] = useState(false);
@@ -35,6 +38,8 @@ function ChallengePage() {
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
   };
+
+  const { user } = useAuthStore();
   // Calculate time difference and update the state
   useEffect(() => {
     if (!challenge?.due_date) return;
@@ -79,13 +84,42 @@ function ChallengePage() {
     );
   }
 
+  const isOwner = () => {
+    return user.user_id === team.members[0]._id;
+  };
+
+  const isTeamMember = () => {
+    const teamMember = team.members.find(
+      (member: Team) => member._id === user.user_id,
+    );
+    return user.user_id !== team.members[0]._id && teamMember;
+  };
+
+  const isNotTeamMember = () => {
+    return !isOwner() && !isTeamMember();
+  };
+
+  const tabsList = isTeamMember()
+    ? ["description", "solutions", "my plan"]
+    : ["description", "solutions"];
+
   return (
     <>
       <div className="h-screen bg-base-100 px-5 md:px-10 pt-10 font-body font-semibold">
         <div className="flex flex-col items-center justify-center space-y-4">
-          <h1 className="font-heading text-[32px]">
-            {challenge?.challenge_name}
-          </h1>
+          <div className="flex items-center justify-center">
+            <h1 className="font-heading text-4xl mr-4">
+              <span>{challenge?.challenge_name}</span>
+            </h1>
+            {isOwner() && (
+              <PencilSquareIcon
+                height={28}
+                width={28}
+                color="teal"
+                className="cursor-pointer"
+              />
+            )}
+          </div>
           <p>{team?.name}</p>
 
           <div className="border-2 border-base-300 rounded-full px-8 py-1 text-base-300 text-[14px]">
@@ -142,7 +176,7 @@ function ChallengePage() {
         <div className="flex justify-between mt-10">
           <div className="w-full md:w-[55%] xl:w-[60%]">
             <div role="tablist" className="tabs tabs-bordered">
-              {["description", "solutions", "my plan"].map((tab) => (
+              {tabsList.map((tab) => (
                 <button
                   key={tab}
                   role="tab"
@@ -235,9 +269,11 @@ function ChallengePage() {
                   className="mask mask-star-2  bg-slate-100"
                 />
               </div>
-              <button className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 w-full">
-                Rate this challenge
-              </button>
+              {!isNotTeamMember() && (
+                <button className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 w-full">
+                  Rate challenge
+                </button>
+              )}
             </div>
             <div className="flex items-center ">
               <p className="text-white font-normal mr-4">Comments</p>
@@ -245,15 +281,30 @@ function ChallengePage() {
                 34
               </p>
             </div>
-            <button className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 md:w-[80%] lg:w-[85%] absolute bottom-6 left-8 ">
-              Begin challenge
-            </button>
+            {isOwner() && (
+              <button className="btn bg-error hover:bg-yellow text-white border-none rounded-sm mt-4 md:w-[80%] lg:w-[85%] absolute bottom-6 left-8 ">
+                Delete Challenge
+              </button>
+            )}
+            {isTeamMember() && (
+              <button className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 md:w-[80%] lg:w-[85%] absolute bottom-6 left-8 ">
+                Begin challenge
+              </button>
+            )}
           </div>
         </div>
       </div>
-      <button className="py-4 bg-yellow hover:bg-yellow rounded-none font-body text-darkgrey w-full fixed bottom-0 z-40 font-medium md:hidden">
-        Begin Challenge
-      </button>
+      {isTeamMember() && (
+        <button className="py-4 bg-yellow rounded-none font-body text-darkgrey w-full fixed bottom-0 z-40 font-medium md:hidden">
+          Begin Challenge
+        </button>
+      )}
+
+      {isOwner() && (
+        <button className="py-4 bg-error rounded-none font-body text-white w-full fixed bottom-0 z-40 font-medium md:hidden">
+          Delete Challenge
+        </button>
+      )}
       <button
         className="flex items-center pl-4 h-[50px] w-[100px] bg-black bottom-28 -right-10 md:hidden z-50 rounded-full fixed "
         onClick={() => setShowStatsModal(!showStatsModal)}
@@ -271,6 +322,7 @@ function ChallengePage() {
           isOpen={showStatsModal}
           onClose={closeModal}
           challenge={challenge}
+          isNotTeamMember={isNotTeamMember}
         />
       )}
     </>
