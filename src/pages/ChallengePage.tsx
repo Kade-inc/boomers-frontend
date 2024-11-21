@@ -7,7 +7,10 @@ import { AiOutlineExperiment, AiFillExperiment } from "react-icons/ai";
 import { IoRocketOutline, IoRocket } from "react-icons/io5";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
+import {
+  ChatBubbleOvalLeftIcon,
+  PresentationChartBarIcon,
+} from "@heroicons/react/24/outline";
 import ChallengeStatsModal from "../components/Modals/ChallengeStatsModal";
 
 function ChallengePage() {
@@ -236,6 +239,12 @@ function ChallengePage() {
                 Rate this challenge
               </button>
             </div>
+            <div className="flex items-center ">
+              <p className="text-white font-normal mr-4">Comments</p>
+              <p className="bg-white rounded-full text-darkgrey w-8 h-8 flex justify-center items-center pl-0.2">
+                34
+              </p>
+            </div>
             <button className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 md:w-[80%] lg:w-[85%] absolute bottom-6 left-8 ">
               Begin challenge
             </button>
@@ -244,6 +253,12 @@ function ChallengePage() {
       </div>
       <button className="py-4 bg-yellow hover:bg-yellow rounded-none font-body text-darkgrey w-full fixed bottom-0 z-40 font-medium md:hidden">
         Begin Challenge
+      </button>
+      <button
+        className="flex items-center pl-4 h-[50px] w-[100px] bg-black bottom-28 -right-10 md:hidden z-50 rounded-full fixed "
+        onClick={() => setShowStatsModal(!showStatsModal)}
+      >
+        <ChatBubbleOvalLeftIcon width={30} height={30} color="white" />
       </button>
       <button
         className="flex items-center pl-4 h-[50px] w-[100px] bg-gradient-to-b from-[#00989B] to-[#005E78] bottom-10 -right-10 md:hidden z-50 rounded-full fixed "
