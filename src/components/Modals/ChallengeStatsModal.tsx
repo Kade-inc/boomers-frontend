@@ -6,14 +6,14 @@ type ModalTriggerProps = {
   isOpen: boolean;
   onClose: () => void;
   challenge: ExtendedChallengeInterface;
-  isNotTeamMember: () => void;
+  isTeamMember: () => boolean;
 };
 
 const ChallengeStatsModal = ({
   isOpen,
   onClose,
   challenge,
-  isNotTeamMember,
+  isTeamMember,
 }: ModalTriggerProps) => {
   return (
     <>
@@ -70,9 +70,9 @@ const ChallengeStatsModal = ({
                   className="mask mask-star-2  bg-slate-100"
                 />
               </div>
-              {!isNotTeamMember && (
+              {isTeamMember() && (
                 <button className="py-2 bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 font-medium w-full">
-                  Rate this challenge
+                  Rate challenge
                 </button>
               )}
             </div>

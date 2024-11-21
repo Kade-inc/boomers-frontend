@@ -95,10 +95,6 @@ function ChallengePage() {
     return user.user_id !== team.members[0]._id && teamMember;
   };
 
-  const isNotTeamMember = () => {
-    return !isOwner() && !isTeamMember();
-  };
-
   const tabsList = isTeamMember()
     ? ["description", "solutions", "my plan"]
     : ["description", "solutions"];
@@ -269,7 +265,7 @@ function ChallengePage() {
                   className="mask mask-star-2  bg-slate-100"
                 />
               </div>
-              {!isNotTeamMember() && (
+              {isTeamMember() && (
                 <button className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 w-full">
                   Rate challenge
                 </button>
@@ -282,7 +278,7 @@ function ChallengePage() {
               </p>
             </div>
             {isOwner() && (
-              <button className="btn bg-error hover:bg-yellow text-white border-none rounded-sm mt-4 md:w-[80%] lg:w-[85%] absolute bottom-6 left-8 ">
+              <button className="btn bg-error hover:bg-error text-white border-none rounded-sm mt-4 md:w-[80%] lg:w-[85%] absolute bottom-6 left-8 ">
                 Delete Challenge
               </button>
             )}
@@ -322,7 +318,7 @@ function ChallengePage() {
           isOpen={showStatsModal}
           onClose={closeModal}
           challenge={challenge}
-          isNotTeamMember={isNotTeamMember}
+          isTeamMember={isTeamMember}
         />
       )}
     </>
