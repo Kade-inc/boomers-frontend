@@ -5,11 +5,15 @@ import useTeam from "../hooks/useTeam";
 import { MdDescription, MdOutlineDescription } from "react-icons/md";
 import { AiOutlineExperiment, AiFillExperiment } from "react-icons/ai";
 import { IoRocketOutline, IoRocket } from "react-icons/io5";
-import { FaRegComments, FaComments } from "react-icons/fa";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
+import ChallengeStatsModal from "../components/Modals/ChallengeStatsModal";
 
 function ChallengePage() {
+  const [showStatsModal, setShowStatsModal] = useState(false);
+
+  const closeModal = () => setShowStatsModal(false);
   const { challengeId } = useParams<{ challengeId: string }>();
   const { data: challenge, isPending: challengePending } = useChallenge(
     challengeId || "",
@@ -94,7 +98,7 @@ function ChallengePage() {
           ) : (
             <div className="grid grid-flow-col gap-5 text-center auto-cols-max">
               <div className="flex flex-col p-2 bg-gradient-to-b from-[#D9436D] to-[#F26A4B] rounded-box text-neutral-content text-white">
-                <span className="countdown text-5xl font-heading">
+                <span className="countdown text-4xl md:text-5xl font-heading">
                   <span
                     style={{ "--value": timeLeft.days } as React.CSSProperties}
                   ></span>
@@ -102,7 +106,7 @@ function ChallengePage() {
                 days
               </div>
               <div className="flex flex-col p-2 bg-gradient-to-b from-[#D9436D] to-[#F26A4B] rounded-box text-neutral-content text-white">
-                <span className="countdown text-5xl font-heading">
+                <span className="countdown text-4xl  md:text-5xl font-heading">
                   <span
                     style={{ "--value": timeLeft.hours } as React.CSSProperties}
                   ></span>
@@ -110,7 +114,7 @@ function ChallengePage() {
                 hours
               </div>
               <div className="flex flex-col p-2 bg-gradient-to-b from-[#D9436D] to-[#F26A4B] rounded-box text-neutral-content text-white">
-                <span className="countdown text-5xl font-heading">
+                <span className="countdown text-4xl  md:text-5xl font-heading">
                   <span
                     style={
                       { "--value": timeLeft.minutes } as React.CSSProperties
@@ -120,7 +124,7 @@ function ChallengePage() {
                 min
               </div>
               <div className="flex flex-col p-2 bg-gradient-to-b from-[#D9436D] to-[#F26A4B] rounded-box text-neutral-content text-white">
-                <span className="countdown text-5xl font-heading">
+                <span className="countdown text-4xl  md:text-5xl font-heading">
                   <span
                     style={
                       { "--value": timeLeft.seconds } as React.CSSProperties
@@ -133,51 +137,47 @@ function ChallengePage() {
           )}
         </div>
         <div className="flex justify-between mt-10">
-          <div className="w-[60%]">
+          <div className="w-full md:w-[60%]">
             <div role="tablist" className="tabs tabs-bordered">
-              {["description", "solutions", "comments", "my plan"].map(
-                (tab) => (
-                  <button
-                    key={tab}
-                    role="tab"
-                    className={`tab font-body text-[16px] border-b-2 ${activeTab === tab ? "border-b-4" : "border-transparent"}`}
-                    style={{
-                      borderColor:
-                        activeTab === tab ? "rgba(248, 181, 0, 1)" : "#C3BABA",
-                    }}
-                    onClick={() => handleTabClick(tab)}
-                  >
-                    <>
-                      <span className="mr-4">
-                        {tab.charAt(0).toUpperCase() + tab.slice(1)}{" "}
-                      </span>
-                      {tab === "description" && activeTab === tab ? (
-                        <MdDescription size={20} />
-                      ) : (
-                        tab === "description" && (
-                          <MdOutlineDescription size={20} />
-                        )
-                      )}
-                      {tab === "solutions" && activeTab === tab ? (
-                        <AiFillExperiment size={20} />
-                      ) : (
-                        tab === "solutions" && <AiOutlineExperiment size={20} />
-                      )}
-                      {tab === "comments" && activeTab === tab ? (
-                        <FaComments size={20} />
-                      ) : (
-                        tab === "comments" && <FaRegComments size={20} />
-                      )}
-                      {tab === "my plan" && activeTab === tab ? (
-                        <IoRocket size={20} />
-                      ) : (
-                        tab === "my plan" && <IoRocketOutline size={20} />
-                      )}
-                    </>
-                    {/* Capitalize first letter */}
-                  </button>
-                ),
-              )}
+              {["description", "solutions", "my plan"].map((tab) => (
+                <button
+                  key={tab}
+                  role="tab"
+                  className={`p-0 md:px-1 tab font-body text-[16px] border-b-2 ${activeTab === tab ? "border-b-4" : "border-transparent"}`}
+                  style={{
+                    borderColor:
+                      activeTab === tab ? "rgba(248, 181, 0, 1)" : "#C3BABA",
+                  }}
+                  onClick={() => handleTabClick(tab)}
+                >
+                  <>
+                    <span
+                      className={`mr-1 md:mr-4 ${activeTab === tab ? "block" : "hidden md:block"}`}
+                    >
+                      {tab.charAt(0).toUpperCase() + tab.slice(1)}{" "}
+                    </span>
+                    {tab === "description" && activeTab === tab ? (
+                      <MdDescription size={20} />
+                    ) : (
+                      tab === "description" && (
+                        <MdOutlineDescription size={20} />
+                      )
+                    )}
+                    {tab === "solutions" && activeTab === tab ? (
+                      <AiFillExperiment size={20} />
+                    ) : (
+                      tab === "solutions" && <AiOutlineExperiment size={20} />
+                    )}
+
+                    {tab === "my plan" && activeTab === tab ? (
+                      <IoRocket size={20} />
+                    ) : (
+                      tab === "my plan" && <IoRocketOutline size={20} />
+                    )}
+                  </>
+                  {/* Capitalize first letter */}
+                </button>
+              ))}
             </div>
             <div className="mt-6 h-[55vh] overflow-scroll">
               {activeTab === "description" && (
@@ -194,7 +194,7 @@ function ChallengePage() {
               )}
             </div>
           </div>
-          <div className="bg-darkgrey w-1/4 min-h-[50vh] rounded-lg pt-8 px-8 space-y-4 relative mt-8">
+          <div className="bg-darkgrey w-1/4 min-h-[50vh] rounded-lg pt-8 px-8 space-y-4 relative mt-8 hidden md:block">
             <p className="text-white font-normal">
               {challenge?.difficulty === 1 && "Easy"}
               {challenge?.difficulty === 2 && "Medium"}
@@ -242,6 +242,22 @@ function ChallengePage() {
           </div>
         </div>
       </div>
+      <button className="py-4 bg-yellow hover:bg-yellow rounded-none font-body text-darkgrey w-full fixed bottom-0 z-40 font-medium">
+        Begin Challenge
+      </button>
+      <button
+        className="flex items-center pl-4 h-[50px] w-[100px] bg-gradient-to-b from-[#00989B] to-[#005E78] bottom-10 -right-10 md:hidden z-50 rounded-full fixed "
+        onClick={() => setShowStatsModal(!showStatsModal)}
+      >
+        <PresentationChartBarIcon width={30} height={30} color="white" />
+      </button>
+      {showStatsModal && challenge && (
+        <ChallengeStatsModal
+          isOpen={showStatsModal}
+          onClose={closeModal}
+          challenge={challenge}
+        />
+      )}
     </>
   );
 }
