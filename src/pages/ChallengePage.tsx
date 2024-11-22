@@ -16,23 +16,13 @@ import useAuthStore from "../stores/useAuthStore";
 import Team from "../entities/Team";
 import { PencilSquareIcon } from "@heroicons/react/24/solid";
 import DeleteChallengeModal from "../components/Modals/DeleteChallengeModal";
+import ReactECharts from "echarts-for-react";
 
 function ChallengePage() {
   const [showStatsModal, setShowStatsModal] = useState(false);
   const [showDeleteChallengeModal, setShowDeleteChallengeModal] =
     useState(false);
   const [challengeDeleted, setchallengeDeleted] = useState(false);
-
-  const navigate = useNavigate();
-  const closeStatsModal = () => setShowStatsModal(false);
-  const closeDeleteChallengeModal = () => setShowDeleteChallengeModal(false);
-  const { challengeId } = useParams<{ challengeId: string }>();
-  const { data: challenge, isPending: challengePending } = useChallenge(
-    challengeId || "",
-  );
-  const { data: team, isPending: teamPending } = useTeam(
-    challenge?.team_id || "",
-  );
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -41,11 +31,45 @@ function ChallengePage() {
   });
   const [isDue, setIsDue] = useState(false);
   const [activeTab, setActiveTab] = useState("description");
+
+  const { user } = useAuthStore();
+
+  const navigate = useNavigate();
+  const { challengeId } = useParams<{ challengeId: string }>();
+
+  const closeStatsModal = () => setShowStatsModal(false);
+  const closeDeleteChallengeModal = () => setShowDeleteChallengeModal(false);
+
+  const { data: challenge, isPending: challengePending } = useChallenge(
+    challengeId || "",
+  );
+  const { data: team, isPending: teamPending } = useTeam(
+    challenge?.team_id || "",
+  );
+
+  const isOwner = () => {
+    return user.user_id === team?.members[0]._id;
+  };
+
+  const isTeamMember = () => {
+    const teamMember = team?.members.find(
+      (member: Team) => member._id === user.user_id,
+    );
+    return user.user_id !== team?.members[0]._id && teamMember;
+  };
+
+  const tabsList = isTeamMember()
+    ? ["description", "solutions", "my plan"]
+    : ["description", "solutions"];
+
+  const handleDeleteChallenge = () => {
+    setShowDeleteChallengeModal(true);
+  };
+
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
   };
 
-  const { user } = useAuthStore();
   // Calculate time difference and update the state
   useEffect(() => {
     if (!challenge?.due_date) return;
@@ -97,23 +121,45 @@ function ChallengePage() {
     );
   }
 
-  const isOwner = () => {
-    return user.user_id === team?.members[0]._id;
-  };
-
-  const isTeamMember = () => {
-    const teamMember = team?.members.find(
-      (member: Team) => member._id === user.user_id,
-    );
-    return user.user_id !== team?.members[0]._id && teamMember;
-  };
-
-  const tabsList = isTeamMember()
-    ? ["description", "solutions", "my plan"]
-    : ["description", "solutions"];
-
-  const handleDeleteChallenge = () => {
-    setShowDeleteChallengeModal(true);
+  const option = {
+    tooltip: {
+      trigger: "item",
+    },
+    legend: {
+      top: "5%",
+      left: "center",
+      textStyle: {
+        color: "#fffff", // Set the legend text color
+        fontSize: 14, // Optionally, adjust the font size
+      },
+    },
+    series: [
+      {
+        name: "",
+        type: "pie",
+        radius: ["40%", "70%"],
+        avoidLabelOverlap: false,
+        label: {
+          show: false,
+          position: "center",
+        },
+        emphasis: {
+          label: {
+            show: false,
+            fontSize: 11,
+            fontWeight: "bold",
+          },
+        },
+        labelLine: {
+          show: false,
+        },
+        data: [
+          { value: 1048, name: "Completed" },
+          { value: 735, name: "Not Started" },
+        ],
+      },
+    ],
+    color: ["#FFFFFF", "#F8B500"],
   };
 
   return (
@@ -254,7 +300,7 @@ function ChallengePage() {
                   )}
                 </div>
               </div>
-              <div className="bg-darkgrey w-[40%] xl:w-1/4 h-[400px] rounded-lg pt-8 px-8 space-y-4 relative mt-8 hidden md:block">
+              <div className="bg-darkgrey w-[40%] xl:w-1/4 h-[450px] rounded-lg pt-8 px-8 space-y-4 relative mt-8 hidden md:block">
                 <p className="text-white font-normal">
                   {challenge?.difficulty === 1 && "Easy"}
                   {challenge?.difficulty === 2 && "Medium"}
@@ -323,6 +369,9 @@ function ChallengePage() {
                     34
                   </p>
                 </div>
+                <div className="w-[60%] mx-auto my-0">
+                  <ReactECharts option={option} />
+                </div>
                 {isOwner() && (
                   <button
                     className="btn bg-error hover:bg-error text-white border-none rounded-sm mt-4 md:w-[80%] lg:w-[85%] absolute bottom-6 left-8 "
@@ -384,6 +433,7 @@ function ChallengePage() {
         <ChallengeStatsModal
           isOpen={showStatsModal}
           onClose={closeStatsModal}
+          challenge={challenge}
         />
       )}
       {showDeleteChallengeModal && !challengeDeleted && (
