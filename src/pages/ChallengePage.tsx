@@ -311,61 +311,6 @@ function ChallengePage() {
                   {challenge?.difficulty === 4 && "Very Hard"}
                   {challenge?.difficulty === 5 && "Legendary"}
                 </p>
-                {/* Add functionality on the backend to rate a team then uncomment this code. */}
-                {/* <div>
-              <div className="flex items-center justify-between lg:w-[90%] xl:w-[3/4]">
-              <p onClick={() => selectRatingType('averageRating')}  className={`font-semibold text-white cursor-pointer ${displayedRating === 'averageRating' && isTeamMember()  ? 'border px-4 py-1 rounded' : ''}`}>Average rating</p>
-              {isTeamMember() && <p onClick={() => selectRatingType('myRating')} className={`font-semibold text-white cursor-pointer ${displayedRating === 'myRating' ? 'border px-4 py-1 rounded' : ''}`}>My rating</p>}
-              
-              </div>
-              
-              <div className="flex justify-between rating rating-md mt-4 w-3/4">
-                <input
-                  type="radio"
-                  name="rating-10"
-                  className="mask mask-star-2 bg-slate-100"
-                />
-                <input
-                  type="radio"
-                  name="rating-10"
-                  className="mask mask-star-2 bg-slate-100"
-                  defaultChecked
-                />
-                <input
-                  type="radio"
-                  name="rating-10"
-                  className="mask mask-star-2  bg-slate-100"
-                />
-                <input
-                  type="radio"
-                  name="rating-10"
-                  className="mask mask-star-2  bg-slate-100"
-                />
-                <input
-                  type="radio"
-                  name="rating-10"
-                  className="mask mask-star-2  bg-slate-100"
-                />
-              </div>
-              {isTeamMember() && displayedRating === 'myRating' && (
-                <>
-                {isRatingChallenge && <div className="flex items-center justify-between mt-4 lg:w-full">
-                <button className="btn bg-error hover:bg-error text-white border-none rounded-sm w-1/2" onClick={() => setIsRatingChallenge(!isRatingChallenge)}>
-                  Cancel
-                </button>
-                <button className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm px-8" onClick={() => setIsRatingChallenge(!isRatingChallenge)}>
-                  Submit
-                </button>
-                </div>}
-                {!isRatingChallenge &&  <button className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 w-full" onClick={() => setIsRatingChallenge(!isRatingChallenge)}>
-                  Rate challenge
-                </button>}
-               
-                </>
-                
-              )}
-            </div> */}
-
                 <div className="flex items-center ">
                   <p className="text-white font-normal mr-4">Comments</p>
                   <p className="bg-white text-darkgrey rounded-full px-2 py-1.5 bg-base-100 cursor-pointer">
