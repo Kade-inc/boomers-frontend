@@ -17,11 +17,13 @@ import Team from "../entities/Team";
 import { PencilSquareIcon } from "@heroicons/react/24/solid";
 import DeleteChallengeModal from "../components/Modals/DeleteChallengeModal";
 import ReactECharts from "echarts-for-react";
+import ChallengeCommentsModal from "../components/Modals/ChallengeCommentsModal";
 
 function ChallengePage() {
   const [showStatsModal, setShowStatsModal] = useState(false);
   const [showDeleteChallengeModal, setShowDeleteChallengeModal] =
     useState(false);
+  const [showCommentsModal, setShowCommentsModal] = useState(false);
   const [challengeDeleted, setchallengeDeleted] = useState(false);
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
@@ -39,6 +41,7 @@ function ChallengePage() {
 
   const closeStatsModal = () => setShowStatsModal(false);
   const closeDeleteChallengeModal = () => setShowDeleteChallengeModal(false);
+  const closeCommentsModal = () => setShowCommentsModal(false);
 
   const { data: challenge, isPending: challengePending } = useChallenge(
     challengeId || "",
@@ -365,8 +368,13 @@ function ChallengePage() {
 
                 <div className="flex items-center ">
                   <p className="text-white font-normal mr-4">Comments</p>
-                  <p className="bg-white rounded-full text-darkgrey w-8 h-8 flex justify-center items-center pl-0.2">
-                    34
+                  <p className="bg-white text-darkgrey rounded-full px-2 py-1.5 bg-base-100 cursor-pointer">
+                    <label
+                      htmlFor="my-drawer-4"
+                      className="drawer-button cursor-pointer"
+                    >
+                      34
+                    </label>
                   </p>
                 </div>
                 <div className="w-[60%] mx-auto my-0">
@@ -404,7 +412,7 @@ function ChallengePage() {
           )}
           <button
             className="flex items-center pl-4 h-[50px] w-[100px] bg-black bottom-28 -right-10 md:hidden z-50 rounded-full fixed "
-            onClick={() => setShowStatsModal(!showStatsModal)}
+            onClick={() => setShowCommentsModal(!showCommentsModal)}
           >
             <ChatBubbleOvalLeftIcon width={30} height={30} color="white" />
           </button>
@@ -436,6 +444,12 @@ function ChallengePage() {
           challenge={challenge}
         />
       )}
+      {showCommentsModal && (
+        <ChallengeCommentsModal
+          isOpen={showCommentsModal}
+          onClose={closeCommentsModal}
+        />
+      )}
       {showDeleteChallengeModal && !challengeDeleted && (
         <DeleteChallengeModal
           isOpen={showDeleteChallengeModal}
@@ -445,6 +459,26 @@ function ChallengePage() {
           setChallengeDeleted={setchallengeDeleted}
         />
       )}
+      <div className="drawer drawer-end">
+        <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
+
+        <div className="drawer-side z-50">
+          <label
+            htmlFor="my-drawer-4"
+            aria-label="close sidebar"
+            className="drawer-overlay"
+          ></label>
+          <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+            {/* Sidebar content here */}
+            <li>
+              <a>Sidebar Item 1</a>
+            </li>
+            <li>
+              <a>Sidebar Item 2</a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </>
   );
 }
