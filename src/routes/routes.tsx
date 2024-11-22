@@ -17,6 +17,7 @@ import RecommendationsPage from "../pages/RecommendationsPage";
 import ErrorPage from "../pages/ErrorPage";
 import CreateTeam from "../pages/CreateTeam";
 import CreateChallenge from "../pages/CreateChallenge";
+import ChallengePage from "../pages/ChallengePage";
 
 const router = createBrowserRouter([
   {
@@ -57,6 +58,10 @@ const router = createBrowserRouter([
       {
         path: "create-challenge",
         element: <ProtectedRoute element={<CreateChallenge />} />,
+      },
+      {
+        path: "/challenge/:challengeId",
+        element: <ProtectedRoute element={<ChallengePage />} />,
       },
     ],
   },

@@ -273,6 +273,27 @@ class APIClient {
     }
   };
 
+  getChallenge = async (challengeId: string, requiresAuth = true) => {
+    try {
+      const response = await this.axiosInstance.get(
+        `${this.endpoint}/${challengeId}`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching challenge:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
   getTeamMemberRequests = async (teamId: string, requiresAuth = true) => {
     try {
       const response = await this.axiosInstance.get(
@@ -441,6 +462,35 @@ class APIClient {
         "Error Deleting challenge(s):",
         axiosError.response?.data ?? axiosError.message,
       );
+    }
+  };
+
+  deleteChallenge = async (
+    teamId: string,
+    challengeId: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.delete(
+        `${this.endpoint}/${teamId}/challenges/${challengeId}`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      return data;
+    } catch (error: any) {
+      let errorMessage =
+        "An unexpected error occurred. Please try again later.";
+
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+
+      toast.error(`${errorMessage}`);
+      throw new Error(errorMessage);
     }
   };
 
