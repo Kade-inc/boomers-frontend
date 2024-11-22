@@ -1,20 +1,12 @@
 import Modal from "react-modal";
-import { ExtendedChallengeInterface } from "../../entities/Challenge";
 import { XCircleIcon } from "@heroicons/react/24/solid";
 
 type ModalTriggerProps = {
   isOpen: boolean;
   onClose: () => void;
-  challenge: ExtendedChallengeInterface;
-  isTeamMember: () => boolean;
 };
 
-const ChallengeStatsModal = ({
-  isOpen,
-  onClose,
-  challenge,
-  isTeamMember,
-}: ModalTriggerProps) => {
+const ChallengeStatsModal = ({ isOpen, onClose }: ModalTriggerProps) => {
   return (
     <>
       <Modal
@@ -31,7 +23,8 @@ const ChallengeStatsModal = ({
             color="#D92D2D"
           />
         </div>
-        <div className="flex items-center justify-center h-screen ">
+        {/* Add functionality for rating a challenge in the backend */}
+        {/* <div className="flex items-center justify-center h-screen ">
           <div className="rounded-lg shadow-lg bg-darkgrey font-body h-[50vh] w-[80%] px-4 pt-8 space-y-2">
             <p className="text-white font-normal">
               {challenge?.difficulty === 1 && "Easy"}
@@ -77,7 +70,7 @@ const ChallengeStatsModal = ({
               )}
             </div>
           </div>
-        </div>
+        </div> */}
       </Modal>
     </>
   );
