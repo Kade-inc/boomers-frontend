@@ -9,22 +9,23 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import {
   ChatBubbleOvalLeftIcon,
+  EllipsisHorizontalIcon,
   PresentationChartBarIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
+import { FaRegEdit } from "react-icons/fa";
 import ChallengeStatsModal from "../components/Modals/ChallengeStatsModal";
 import useAuthStore from "../stores/useAuthStore";
 import Team from "../entities/Team";
-import {
-  PencilSquareIcon,
-  UserCircleIcon,
-  XCircleIcon,
-} from "@heroicons/react/24/solid";
+import { UserCircleIcon, XCircleIcon } from "@heroicons/react/24/solid";
 import DeleteChallengeModal from "../components/Modals/DeleteChallengeModal";
 import ReactECharts from "echarts-for-react";
 import ChallengeCommentsModal from "../components/Modals/ChallengeCommentsModal";
 import useChallengeComments from "../hooks/Challenges/useChallengeComments";
 import { PiChatsBold } from "react-icons/pi";
 import { formatDistanceToNow } from "date-fns";
+import useDeleteComment from "../hooks/Challenges/useDeleteComment";
+import { Toaster } from "react-hot-toast";
 
 function ChallengePage() {
   const [showStatsModal, setShowStatsModal] = useState(false);
@@ -40,6 +41,7 @@ function ChallengePage() {
   });
   const [isDue, setIsDue] = useState(false);
   const [activeTab, setActiveTab] = useState("description");
+  const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
 
   const { user } = useAuthStore();
 
@@ -49,6 +51,9 @@ function ChallengePage() {
   const closeStatsModal = () => setShowStatsModal(false);
   const closeDeleteChallengeModal = () => setShowDeleteChallengeModal(false);
   const closeCommentsModal = () => setShowCommentsModal(false);
+  const toggleTooltip = (id: string | null) => {
+    setActiveTooltip((prev) => (prev === id ? null : id)); // Toggle between opening and closing
+  };
 
   const { data: challenge, isPending: challengePending } = useChallenge(
     challengeId || "",
@@ -59,6 +64,8 @@ function ChallengePage() {
   const { data: comments, isPending: commentsPending } = useChallengeComments(
     challengeId || "",
   );
+
+  const deleteCommentMutation = useDeleteComment();
 
   const isOwner = () => {
     return user.user_id === team?.members[0]._id;
@@ -83,6 +90,11 @@ function ChallengePage() {
     setActiveTab(tab);
   };
 
+  const handleDeleteComment = async (commentId: string) => {
+    const challengeId = challenge?._id || "";
+    await deleteCommentMutation.mutateAsync({ challengeId, commentId });
+    setActiveTooltip(null);
+  };
   // Calculate time difference and update the state
   useEffect(() => {
     if (!challenge?.due_date) return;
@@ -177,6 +189,23 @@ function ChallengePage() {
 
   return (
     <>
+      <Toaster
+        position="bottom-center"
+        reverseOrder={true}
+        toastOptions={{
+          error: {
+            style: {
+              background: "#D92D2D",
+              color: "white",
+            },
+            iconTheme: {
+              primary: "white",
+              secondary: "#D92D2D",
+            },
+          },
+        }}
+      />
+
       {!challengeDeleted && (
         <>
           <div className="h-screen bg-base-100 px-5 md:px-10 pt-10 font-body font-semibold">
@@ -186,12 +215,7 @@ function ChallengePage() {
                   <span>{challenge?.challenge_name}</span>
                 </h1>
                 {isOwner() && (
-                  <PencilSquareIcon
-                    height={28}
-                    width={28}
-                    color="teal"
-                    className="cursor-pointer"
-                  />
+                  <FaRegEdit size={24} className="cursor-pointer" fill="teal" />
                 )}
               </div>
               <p>{team?.name}</p>
@@ -356,27 +380,30 @@ function ChallengePage() {
             </div>
           </div>
           {isTeamMember() && !isDue && (
-            <button className="py-4 bg-yellow rounded-none font-body text-darkgrey w-full fixed bottom-0 z-40 font-medium md:hidden">
+            <button className="py-4 bg-yellow rounded-none font-body text-darkgrey w-full fixed bottom-0 z-30 font-medium md:hidden">
               Begin Challenge
             </button>
           )}
 
           {isOwner() && (
             <button
-              className="py-4 bg-error rounded-none font-body text-white w-full fixed bottom-0 z-40 font-medium md:hidden"
+              className="py-4 bg-error rounded-none font-body text-white w-full fixed bottom-0 z-30 font-medium md:hidden"
               onClick={handleDeleteChallenge}
             >
               Delete Challenge
             </button>
           )}
           <button
-            className="flex items-center pl-4 h-[50px] w-[100px] bg-black bottom-28 -right-10 md:hidden z-50 rounded-full fixed "
+            className="flex items-center pl-4 h-[50px] w-[105px] bg-black bottom-28 -right-10 md:hidden z-30 rounded-full fixed "
             onClick={() => setShowCommentsModal(!showCommentsModal)}
           >
-            <ChatBubbleOvalLeftIcon width={30} height={30} color="white" />
+            <ChatBubbleOvalLeftIcon width={30} height={30} color="white" />{" "}
+            <span className="text-white font-body ml-1 font-semibold">
+              {comments && comments.length > 0 && comments.length}
+            </span>
           </button>
           <button
-            className="flex items-center pl-4 h-[50px] w-[100px] bg-gradient-to-b from-[#00989B] to-[#005E78] bottom-10 -right-10 md:hidden z-50 rounded-full fixed "
+            className="flex items-center pl-4 h-[50px] w-[105px] bg-gradient-to-b from-[#00989B] to-[#005E78] bottom-10 -right-10 md:hidden z-50 rounded-full fixed "
             onClick={() => setShowStatsModal(!showStatsModal)}
           >
             <PresentationChartBarIcon width={30} height={30} color="white" />
@@ -399,7 +426,7 @@ function ChallengePage() {
       <div className="drawer drawer-end font-body">
         <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
 
-        <div className="drawer-side z-50">
+        <div className="drawer-side z-40">
           <label
             htmlFor="my-drawer-4"
             aria-label="close sidebar"
@@ -442,42 +469,81 @@ function ChallengePage() {
             {comments && comments.length > 0 && (
               <>
                 <div className="py-2 h-[70vh] overflow-scroll">
-                  {comments.map((comment) => (
-                    <div className="py-2" key={comment._id}>
-                      <div className="py-2">
-                        <div className="flex items-center p-0">
-                          {comment.user.profile.profile_picture ? (
-                            <img
-                              src={comment.user.profile.profile_picture}
-                              alt="profile Picture"
-                              className=" object-cover rounded-full w-10 h-10 overflow-hidden "
+                  {comments.map((comment, index) => (
+                    <div className="py-2" key={`${comment._id}-${index}`}>
+                      <div className="relative flex items-center p-0">
+                        {comment.user.profile.profile_picture ? (
+                          <img
+                            src={comment.user.profile?.profile_picture}
+                            alt="profile Picture"
+                            className="object-cover rounded-full w-10 h-10 overflow-hidden "
+                          />
+                        ) : (
+                          <UserCircleIcon
+                            height={42}
+                            width={42}
+                            className="text-base-content"
+                          />
+                        )}
+                        <p className="font-semibold ml-4 text-[13px]">
+                          {comment.user.profile.firstName &&
+                          comment.user.profile.lastName
+                            ? comment.user.profile.firstName +
+                              " " +
+                              comment.user.profile.lastName
+                            : comment.user.username}
+                        </p>
+
+                        {comment.user._id === user.user_id && (
+                          <div className="ml-auto">
+                            <EllipsisHorizontalIcon
+                              height={20}
+                              width={20}
+                              className="cursor-pointer hover:bg-[#EDD38B] hover:rounded-full"
+                              onClick={() => toggleTooltip(comment._id)}
                             />
-                          ) : (
-                            <UserCircleIcon
-                              height={42}
-                              width={42}
-                              className="text-base-content"
-                            />
-                          )}
-                          <p className="font-semibold ml-4 text-[13px]">
-                            {comment.user.profile.firstName &&
-                            comment.user.profile.lastName
-                              ? comment.user.profile.firstName +
-                                " " +
-                                comment.user.profile.lastName
-                              : comment.user.username}
-                          </p>
-                        </div>
-                        <div className="flex justify-between mt-2 border-b-2 pb-4">
-                          <p className="ml-2 w-[240px] font-medium text-[13px]">
-                            {comment.comment}
-                          </p>
-                          <p className="text-[10px] content-end font-semibold">
-                            {formatDistanceToNow(new Date(comment.createdAt), {
-                              addSuffix: true,
-                            })}
-                          </p>
-                        </div>
+                            {activeTooltip === comment._id && (
+                              <div className="absolute right-0 top-full mt-2 w-40 bg-base-100 shadow-md rounded-md">
+                                <ul className="py-0 text-sm text-gray-700">
+                                  <li
+                                    className="px-0 py-0 cursor-pointer flex flex-row items-center space-x-0 hover:bg-gray-200"
+                                    onClick={() =>
+                                      handleDeleteComment(comment._id)
+                                    }
+                                  >
+                                    <TrashIcon
+                                      height={50}
+                                      width={50}
+                                      color="red"
+                                      className="hover:bg-transparent"
+                                    />
+                                    <button
+                                      className="text-error font-medium hover:bg-transparent bg-transparent"
+                                      disabled={deleteCommentMutation.isPending}
+                                    >
+                                      {deleteCommentMutation.isPending ? (
+                                        <span>Deleting...</span>
+                                      ) : (
+                                        <span>Delete</span>
+                                      )}
+                                    </button>
+                                  </li>
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex justify-between mt-2 border-b-2 pb-4">
+                        <p className="ml-2 w-[240px] font-medium text-[13px]">
+                          {comment.comment}
+                        </p>
+                        <p className="text-[10px] content-end font-semibold">
+                          {formatDistanceToNow(new Date(comment.createdAt), {
+                            addSuffix: true,
+                          })}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -514,6 +580,7 @@ function ChallengePage() {
           isOpen={showCommentsModal}
           onClose={closeCommentsModal}
           comments={comments || []}
+          challengeId={challenge?._id || ""}
         />
       )}
       {showDeleteChallengeModal && !challengeDeleted && (

@@ -601,6 +601,32 @@ class APIClient {
       );
     }
   };
+
+  deleteChallengeComment = async (
+    challengeId: string,
+    commentId: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.delete(
+        `${this.endpoint}/${challengeId}/comments/${commentId}`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      toast.success("Comment deleted successfully");
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error delete challenge comments:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
 }
 
 export default APIClient;

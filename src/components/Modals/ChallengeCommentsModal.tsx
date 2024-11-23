@@ -3,20 +3,55 @@ import Modal from "react-modal";
 import Comment from "../../entities/Comment";
 import { PiChatsBold } from "react-icons/pi";
 import { formatDistanceToNow } from "date-fns";
+import { EllipsisHorizontalIcon, TrashIcon } from "@heroicons/react/24/outline";
+import useAuthStore from "../../stores/useAuthStore";
+import { useState } from "react";
+import useDeleteComment from "../../hooks/Challenges/useDeleteComment";
+import { Toaster } from "react-hot-toast";
 
 type ModalTriggerProps = {
   isOpen: boolean;
   onClose: () => void;
   comments: Comment[];
+  challengeId: string;
 };
 
 const ChallengeCommentsModal = ({
   isOpen,
   onClose,
   comments,
+  challengeId,
 }: ModalTriggerProps) => {
+  const { user } = useAuthStore();
+  const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
+
+  const toggleTooltip = (id: string | null) => {
+    setActiveTooltip((prev) => (prev === id ? null : id)); // Toggle between opening and closing
+  };
+  const deleteCommentMutation = useDeleteComment();
+
+  const handleDeleteComment = async (commentId: string) => {
+    await deleteCommentMutation.mutateAsync({ challengeId, commentId });
+    setActiveTooltip(null);
+  };
   return (
     <>
+      <Toaster
+        position="bottom-center"
+        reverseOrder={true}
+        toastOptions={{
+          error: {
+            style: {
+              background: "#D92D2D",
+              color: "white",
+            },
+            iconTheme: {
+              primary: "white",
+              secondary: "#D92D2D",
+            },
+          },
+        }}
+      />
       <Modal
         isOpen={isOpen}
         onRequestClose={onClose}
@@ -53,7 +88,7 @@ const ChallengeCommentsModal = ({
                 {comments.map((comment) => (
                   <div className="py-2" key={comment._id}>
                     <div className="py-2">
-                      <div className="flex items-center p-0">
+                      <div className="flex items-center p-0 relative">
                         {comment.user.profile.profile_picture ? (
                           <img
                             src={comment.user.profile.profile_picture}
@@ -75,11 +110,51 @@ const ChallengeCommentsModal = ({
                               comment.user.profile.lastName
                             : comment.user.username}
                         </p>
+                        {comment.user._id === user.user_id && (
+                          <div className="ml-auto">
+                            <EllipsisHorizontalIcon
+                              height={20}
+                              width={20}
+                              className="cursor-pointer hover:bg-[#EDD38B] hover:rounded-full"
+                              onClick={() => toggleTooltip(comment._id)}
+                            />
+                            {activeTooltip === comment._id && (
+                              <div className="absolute right-0 top-full mt-2 w-40 bg-base-100 shadow-md rounded-md">
+                                <ul className="py-0 text-sm text-gray-700">
+                                  <li
+                                    className="px-4 py-2 cursor-pointer flex flex-row items-center space-x-0 hover:bg-gray-200"
+                                    onClick={() =>
+                                      handleDeleteComment(comment._id)
+                                    }
+                                  >
+                                    <TrashIcon
+                                      height={22}
+                                      width={22}
+                                      color="red"
+                                      className="hover:bg-transparent"
+                                    />
+                                    <button
+                                      className="text-error font-medium hover:bg-transparent bg-transparent pl-8"
+                                      disabled={deleteCommentMutation.isPending}
+                                    >
+                                      {deleteCommentMutation.isPending ? (
+                                        <span>Deleting...</span>
+                                      ) : (
+                                        <span>Delete</span>
+                                      )}
+                                    </button>
+                                  </li>
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                       <div className="flex justify-between mt-2 border-b-2 pb-4">
                         <p className="ml-2 w-[240px] font-medium text-[13px]">
                           {comment.comment}
                         </p>
+
                         <p className="text-[10px] content-end font-semibold">
                           {formatDistanceToNow(new Date(comment.createdAt), {
                             addSuffix: true,
