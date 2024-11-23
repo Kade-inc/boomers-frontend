@@ -444,7 +444,7 @@ function ChallengePage() {
                   <UserCircleIcon
                     height={42}
                     width={42}
-                    className="text-darkgrey"
+                    className="text-base-content"
                   />
                   <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
                 </div>
@@ -465,7 +465,7 @@ function ChallengePage() {
                   <UserCircleIcon
                     height={42}
                     width={42}
-                    className="text-darkgrey"
+                    className="text-base-content"
                   />
                   <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
                 </div>
@@ -486,7 +486,7 @@ function ChallengePage() {
                   <UserCircleIcon
                     height={42}
                     width={42}
-                    className="text-darkgrey"
+                    className="text-base-content"
                   />
                   <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
                 </div>
@@ -507,7 +507,7 @@ function ChallengePage() {
                   <UserCircleIcon
                     height={42}
                     width={42}
-                    className="text-darkgrey"
+                    className="text-base-content"
                   />
                   <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
                 </div>
@@ -528,7 +528,7 @@ function ChallengePage() {
                   <UserCircleIcon
                     height={42}
                     width={42}
-                    className="text-darkgrey"
+                    className="text-base-content"
                   />
                   <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
                 </div>
@@ -549,7 +549,7 @@ function ChallengePage() {
                   <UserCircleIcon
                     height={42}
                     width={42}
-                    className="text-darkgrey"
+                    className="text-base-content"
                   />
                   <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
                 </div>
@@ -568,7 +568,7 @@ function ChallengePage() {
             <label className="form-control absolute w-[85%] bottom-2">
               <div className="relative">
                 <textarea
-                  className="textarea h-24 text-[13px] focus:border-yellow w-full pr-24"
+                  className="textarea h-24 text-[13px] focus:border-none focus:outline-none w-full pr-24"
                   placeholder="Add comment..."
                 ></textarea>
                 <button
