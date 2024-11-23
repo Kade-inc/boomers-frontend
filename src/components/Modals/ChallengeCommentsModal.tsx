@@ -2,6 +2,7 @@ import { ArrowLeftIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import Modal from "react-modal";
 import Comment from "../../entities/Comment";
 import { PiChatsBold } from "react-icons/pi";
+import { formatDistanceToNow } from "date-fns";
 
 type ModalTriggerProps = {
   isOpen: boolean;
@@ -40,134 +41,51 @@ const ChallengeCommentsModal = ({
               </div>
             </>
           )}
+
           {comments.length > 0 && (
-            <div className="py-2 h-[70vh] overflow-scroll">
-              <div className="py-2">
-                <div className="flex items-center p-0">
-                  <UserCircleIcon
-                    height={42}
-                    width={42}
-                    className="text-base-content"
-                  />
-                  <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
-                </div>
-                <div className="flex justify-between mt-2 border-b-2 pb-4">
-                  <p className="ml-2 w-[240px] font-medium text-[13px]">
-                    This challenge was really cool! I will test multiline
-                    comments. They are long comments but I dont know how Ill
-                    take it.
-                  </p>
-                  <p className="text-[10px] content-end font-semibold">
-                    1 day ago
-                  </p>
-                </div>
+            <>
+              <div className="py-2 h-[70vh] overflow-scroll">
+                {comments.map((comment) => (
+                  <div className="py-2" key={comment._id}>
+                    <div className="py-2">
+                      <div className="flex items-center p-0">
+                        {comment.user.profile.profile_picture ? (
+                          <img
+                            src={comment.user.profile.profile_picture}
+                            alt="profile Picture"
+                            className=" object-cover rounded-full w-10 h-10 overflow-hidden "
+                          />
+                        ) : (
+                          <UserCircleIcon
+                            height={42}
+                            width={42}
+                            className="text-base-content"
+                          />
+                        )}
+                        <p className="font-semibold ml-4 text-[13px]">
+                          {comment.user.profile.firstName &&
+                          comment.user.profile.lastName
+                            ? comment.user.profile.firstName +
+                              " " +
+                              comment.user.profile.lastName
+                            : comment.user.username}
+                        </p>
+                      </div>
+                      <div className="flex justify-between mt-2 border-b-2 pb-4">
+                        <p className="ml-2 w-[240px] font-medium text-[13px]">
+                          {comment.comment}
+                        </p>
+                        <p className="text-[10px] content-end font-semibold">
+                          {formatDistanceToNow(new Date(comment.createdAt), {
+                            addSuffix: true,
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-
-              <div className="py-2">
-                <div className="flex items-center p-0">
-                  <UserCircleIcon
-                    height={42}
-                    width={42}
-                    className="text-base-content"
-                  />
-                  <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
-                </div>
-                <div className="flex justify-between mt-2 border-b-2 pb-4">
-                  <p className="ml-2 w-[240px] font-medium text-[13px]">
-                    This challenge was really cool! I will test multiline
-                    comments. They are long comments but I dont know how Ill
-                    take it.
-                  </p>
-                  <p className="text-[10px] content-end font-semibold">
-                    1 day ago
-                  </p>
-                </div>
-              </div>
-
-              <div className="py-2">
-                <div className="flex items-center p-0">
-                  <UserCircleIcon
-                    height={42}
-                    width={42}
-                    className="text-base-content"
-                  />
-                  <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
-                </div>
-                <div className="flex justify-between mt-2 border-b-2 pb-4">
-                  <p className="ml-2 w-[240px] font-medium text-[13px]">
-                    This challenge was really cool! I will test multiline
-                    comments. They are long comments but I dont know how Ill
-                    take it.
-                  </p>
-                  <p className="text-[10px] content-end font-semibold">
-                    1 day ago
-                  </p>
-                </div>
-              </div>
-
-              <div className="py-2">
-                <div className="flex items-center p-0">
-                  <UserCircleIcon
-                    height={42}
-                    width={42}
-                    className="text-base-content"
-                  />
-                  <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
-                </div>
-                <div className="flex justify-between mt-2 border-b-2 pb-4">
-                  <p className="ml-2 w-[240px] font-medium text-[13px]">
-                    This challenge was really cool! I will test multiline
-                    comments. They are long comments but I dont know how Ill
-                    take it.
-                  </p>
-                  <p className="text-[10px] content-end font-semibold">
-                    1 day ago
-                  </p>
-                </div>
-              </div>
-
-              <div className="py-2">
-                <div className="flex items-center p-0">
-                  <UserCircleIcon
-                    height={42}
-                    width={42}
-                    className="text-base-content"
-                  />
-                  <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
-                </div>
-                <div className="flex justify-between mt-2 border-b-2 pb-4">
-                  <p className="ml-2 w-[240px] font-medium text-[13px]">
-                    This challenge was really cool! I will test multiline
-                    comments. They are long comments but I dont know how Ill
-                    take it.
-                  </p>
-                  <p className="text-[10px] content-end font-semibold">
-                    1 day ago
-                  </p>
-                </div>
-              </div>
-
-              <div className="py-2">
-                <div className="flex items-center p-0">
-                  <UserCircleIcon
-                    height={42}
-                    width={42}
-                    className="text-base-content"
-                  />
-                  <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
-                </div>
-                <div className="flex justify-between mt-2 border-b-2 pb-4">
-                  <p className="ml-2 w-[240px] font-medium text-[13px]">
-                    This challenge was really cool! I will test multiline
-                    comments. They are long comments but I dont know how Ill
-                    take it.
-                  </p>
-                  <p className="text-[10px] content-end font-semibold">
-                    1 day ago
-                  </p>
-                </div>
-              </div>
-            </div>
+            </>
           )}
           <label className="form-control absolute w-[85%] bottom-2">
             <div className="relative">
