@@ -321,16 +321,20 @@ function ChallengePage() {
                   {challenge?.difficulty === 4 && "Very Hard"}
                   {challenge?.difficulty === 5 && "Legendary"}
                 </p>
-                <div className="flex items-center ">
-                  <p className="text-white font-normal mr-4">Comments</p>
-                  <p className="bg-white text-darkgrey rounded-full px-2 py-1.5 bg-base-100 cursor-pointer">
+                <div className="flex items-center space-x-4">
+                  <p className="text-white font-normal">Comments</p>
+                  <p className="  bg-white text-darkgrey rounded-full px-4 py-2  bg-base-100 cursor-pointer">
                     <label
                       htmlFor="my-drawer-4"
                       className="drawer-button cursor-pointer"
                     >
-                      34
+                      {comments && comments.length}
                     </label>
                   </p>
+                  {/* <label
+                      htmlFor="my-drawer-4"
+                      className="drawer-button cursor-pointer"
+                    ><button className="bg-yellow px-4 py-1 text-[12px] font-medium rounded-sm">Open</button></label> */}
                 </div>
                 <div className="w-[60%] mx-auto my-0">
                   <ReactECharts option={option} />
@@ -406,7 +410,12 @@ function ChallengePage() {
             {/* Sidebar content here */}
             <div className="flex justify-between border-b-[1px] pb-4">
               <p className="text-base-content font-semibold text-[18px]">
-                Comments
+                Comments{" "}
+                {comments && comments.length > 0 && (
+                  <span className="ml-2 bg-gray-200 text-base-content p-2 rounded-full text-sm font-semibold px-3">
+                    {comments.length}
+                  </span>
+                )}
               </p>
               <XCircleIcon
                 height={26}

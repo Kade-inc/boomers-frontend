@@ -30,7 +30,12 @@ const ChallengeCommentsModal = ({
 
           <div className="flex justify-between border-b-[1px] pb-4 mt-4">
             <p className="text-base-content font-semibold text-[18px]">
-              Comments
+              Comments{" "}
+              {comments && comments.length > 0 && (
+                <span className="ml-2 bg-gray-200 text-base-content p-2 rounded-full text-sm font-semibold px-3">
+                  {comments.length}
+                </span>
+              )}
             </p>
           </div>
           {comments.length === 0 && (
