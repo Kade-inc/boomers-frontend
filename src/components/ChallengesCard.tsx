@@ -83,7 +83,13 @@ const ChallengesCard: React.FC<ChallengesCardProps> = ({
           </div>
           <div className="flex items-end">
             <h2 className="flex items-center text-center text-[12px] gap-x-2">
-              <LuClock2 /> {daysLeft} days left
+              {daysLeft && daysLeft > 0 ? (
+                <>
+                  <LuClock2 /> {daysLeft} days left
+                </>
+              ) : (
+                <span>Expired</span>
+              )}
             </h2>
           </div>
         </div>
