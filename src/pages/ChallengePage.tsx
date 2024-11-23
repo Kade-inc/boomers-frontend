@@ -14,7 +14,11 @@ import {
 import ChallengeStatsModal from "../components/Modals/ChallengeStatsModal";
 import useAuthStore from "../stores/useAuthStore";
 import Team from "../entities/Team";
-import { PencilSquareIcon } from "@heroicons/react/24/solid";
+import {
+  PencilSquareIcon,
+  UserCircleIcon,
+  XCircleIcon,
+} from "@heroicons/react/24/solid";
 import DeleteChallengeModal from "../components/Modals/DeleteChallengeModal";
 import ReactECharts from "echarts-for-react";
 import ChallengeCommentsModal from "../components/Modals/ChallengeCommentsModal";
@@ -404,7 +408,7 @@ function ChallengePage() {
           setChallengeDeleted={setchallengeDeleted}
         />
       )}
-      <div className="drawer drawer-end">
+      <div className="drawer drawer-end font-body">
         <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
 
         <div className="drawer-side z-50">
@@ -413,14 +417,168 @@ function ChallengePage() {
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
-          <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+
+          <ul className="menu bg-base-200 text-base-content min-h-full w-[400px] py-4 px-8">
             {/* Sidebar content here */}
-            <li>
-              <a>Sidebar Item 1</a>
-            </li>
-            <li>
-              <a>Sidebar Item 2</a>
-            </li>
+            <div className="flex justify-between border-b-[1px] pb-4">
+              <p className="text-base-content font-semibold text-[18px]">
+                Comments
+              </p>
+              <XCircleIcon
+                height={26}
+                width={26}
+                className=""
+                onClick={() => {
+                  const drawer = document.getElementById(
+                    "my-drawer-4",
+                  ) as HTMLInputElement | null;
+                  if (drawer) {
+                    drawer.checked = false;
+                  }
+                }}
+              />
+            </div>
+            <div className="py-2 h-[70vh] overflow-scroll">
+              <div className="py-2">
+                <div className="flex items-center p-0">
+                  <UserCircleIcon
+                    height={42}
+                    width={42}
+                    className="text-darkgrey"
+                  />
+                  <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
+                </div>
+                <div className="flex justify-between mt-2 border-b-2 pb-4">
+                  <p className="ml-2 w-[240px] font-medium text-[13px]">
+                    This challenge was really cool! I will test multiline
+                    comments. They are long comments but I dont know how Ill
+                    take it.
+                  </p>
+                  <p className="text-[10px] content-end font-semibold">
+                    1 day ago
+                  </p>
+                </div>
+              </div>
+
+              <div className="py-2">
+                <div className="flex items-center p-0">
+                  <UserCircleIcon
+                    height={42}
+                    width={42}
+                    className="text-darkgrey"
+                  />
+                  <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
+                </div>
+                <div className="flex justify-between mt-2 border-b-2 pb-4">
+                  <p className="ml-2 w-[240px] font-medium text-[13px]">
+                    This challenge was really cool! I will test multiline
+                    comments. They are long comments but I dont know how Ill
+                    take it.
+                  </p>
+                  <p className="text-[10px] content-end font-semibold">
+                    1 day ago
+                  </p>
+                </div>
+              </div>
+
+              <div className="py-2">
+                <div className="flex items-center p-0">
+                  <UserCircleIcon
+                    height={42}
+                    width={42}
+                    className="text-darkgrey"
+                  />
+                  <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
+                </div>
+                <div className="flex justify-between mt-2 border-b-2 pb-4">
+                  <p className="ml-2 w-[240px] font-medium text-[13px]">
+                    This challenge was really cool! I will test multiline
+                    comments. They are long comments but I dont know how Ill
+                    take it.
+                  </p>
+                  <p className="text-[10px] content-end font-semibold">
+                    1 day ago
+                  </p>
+                </div>
+              </div>
+
+              <div className="py-2">
+                <div className="flex items-center p-0">
+                  <UserCircleIcon
+                    height={42}
+                    width={42}
+                    className="text-darkgrey"
+                  />
+                  <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
+                </div>
+                <div className="flex justify-between mt-2 border-b-2 pb-4">
+                  <p className="ml-2 w-[240px] font-medium text-[13px]">
+                    This challenge was really cool! I will test multiline
+                    comments. They are long comments but I dont know how Ill
+                    take it.
+                  </p>
+                  <p className="text-[10px] content-end font-semibold">
+                    1 day ago
+                  </p>
+                </div>
+              </div>
+
+              <div className="py-2">
+                <div className="flex items-center p-0">
+                  <UserCircleIcon
+                    height={42}
+                    width={42}
+                    className="text-darkgrey"
+                  />
+                  <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
+                </div>
+                <div className="flex justify-between mt-2 border-b-2 pb-4">
+                  <p className="ml-2 w-[240px] font-medium text-[13px]">
+                    This challenge was really cool! I will test multiline
+                    comments. They are long comments but I dont know how Ill
+                    take it.
+                  </p>
+                  <p className="text-[10px] content-end font-semibold">
+                    1 day ago
+                  </p>
+                </div>
+              </div>
+
+              <div className="py-2">
+                <div className="flex items-center p-0">
+                  <UserCircleIcon
+                    height={42}
+                    width={42}
+                    className="text-darkgrey"
+                  />
+                  <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
+                </div>
+                <div className="flex justify-between mt-2 border-b-2 pb-4">
+                  <p className="ml-2 w-[240px] font-medium text-[13px]">
+                    This challenge was really cool! I will test multiline
+                    comments. They are long comments but I dont know how Ill
+                    take it.
+                  </p>
+                  <p className="text-[10px] content-end font-semibold">
+                    1 day ago
+                  </p>
+                </div>
+              </div>
+            </div>
+            <label className="form-control absolute w-[85%] bottom-2">
+              <div className="relative">
+                <textarea
+                  className="textarea h-24 text-[13px] focus:border-yellow w-full pr-24"
+                  placeholder="Add comment..."
+                ></textarea>
+                <button
+                  className="absolute bottom-2 right-2 btn btn-sm bg-yellow text-darkgrey rounded-sm text-[13px] font-medium"
+                  type="submit"
+                >
+                  Send
+                </button>
+              </div>
+            </label>
           </ul>
         </div>
       </div>
