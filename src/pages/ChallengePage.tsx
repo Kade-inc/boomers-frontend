@@ -22,6 +22,8 @@ import {
 import DeleteChallengeModal from "../components/Modals/DeleteChallengeModal";
 import ReactECharts from "echarts-for-react";
 import ChallengeCommentsModal from "../components/Modals/ChallengeCommentsModal";
+import useChallengeComments from "../hooks/Challenges/useChallengeComments";
+import { PiChatsBold } from "react-icons/pi";
 
 function ChallengePage() {
   const [showStatsModal, setShowStatsModal] = useState(false);
@@ -53,6 +55,11 @@ function ChallengePage() {
   const { data: team, isPending: teamPending } = useTeam(
     challenge?.team_id || "",
   );
+  const { data: comments, isPending: commentsPending } = useChallengeComments(
+    challengeId || "",
+  );
+
+  console.log("COMMENTS: ", comments);
 
   const isOwner = () => {
     return user.user_id === team?.members[0]._id;
@@ -104,7 +111,7 @@ function ChallengePage() {
     return () => clearInterval(timer); // Cleanup interval on unmount
   }, [challenge?.due_date]);
 
-  if (challengePending || (challenge && teamPending)) {
+  if (challengePending || commentsPending || (challenge && teamPending)) {
     return (
       <>
         <div className="h-screen flex justify-center items-center bg-base-100 h-screen">
@@ -386,28 +393,6 @@ function ChallengePage() {
           </div>
         </>
       )}
-      {showStatsModal && challenge && (
-        <ChallengeStatsModal
-          isOpen={showStatsModal}
-          onClose={closeStatsModal}
-          challenge={challenge}
-        />
-      )}
-      {showCommentsModal && (
-        <ChallengeCommentsModal
-          isOpen={showCommentsModal}
-          onClose={closeCommentsModal}
-        />
-      )}
-      {showDeleteChallengeModal && !challengeDeleted && (
-        <DeleteChallengeModal
-          isOpen={showDeleteChallengeModal}
-          onClose={closeDeleteChallengeModal}
-          teamId={team?._id}
-          challengeId={challenge?._id || ""}
-          setChallengeDeleted={setchallengeDeleted}
-        />
-      )}
       <div className="drawer drawer-end font-body">
         <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
 
@@ -427,7 +412,7 @@ function ChallengePage() {
               <XCircleIcon
                 height={26}
                 width={26}
-                className=""
+                className="cursor-pointer"
                 onClick={() => {
                   const drawer = document.getElementById(
                     "my-drawer-4",
@@ -438,133 +423,146 @@ function ChallengePage() {
                 }}
               />
             </div>
-            <div className="py-2 h-[70vh] overflow-scroll">
-              <div className="py-2">
-                <div className="flex items-center p-0">
-                  <UserCircleIcon
-                    height={42}
-                    width={42}
-                    className="text-base-content"
-                  />
-                  <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
+            {comments && comments.length === 0 && (
+              <>
+                <div className="py-2 h-[70vh] flex flex-col justify-center items-center space-y-2">
+                  <PiChatsBold size={80} />
+                  <p>No comments</p>
                 </div>
-                <div className="flex justify-between mt-2 border-b-2 pb-4">
-                  <p className="ml-2 w-[240px] font-medium text-[13px]">
-                    This challenge was really cool! I will test multiline
-                    comments. They are long comments but I dont know how Ill
-                    take it.
-                  </p>
-                  <p className="text-[10px] content-end font-semibold">
-                    1 day ago
-                  </p>
-                </div>
-              </div>
+              </>
+            )}
+            {comments && comments.length > 0 && (
+              <>
+                <div className="py-2 h-[70vh] overflow-scroll">
+                  <div className="py-2">
+                    <div className="flex items-center p-0">
+                      <UserCircleIcon
+                        height={42}
+                        width={42}
+                        className="text-base-content"
+                      />
+                      <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
+                    </div>
+                    <div className="flex justify-between mt-2 border-b-2 pb-4">
+                      <p className="ml-2 w-[240px] font-medium text-[13px]">
+                        This challenge was really cool! I will test multiline
+                        comments. They are long comments but I dont know how Ill
+                        take it.
+                      </p>
+                      <p className="text-[10px] content-end font-semibold">
+                        1 day ago
+                      </p>
+                    </div>
+                  </div>
 
-              <div className="py-2">
-                <div className="flex items-center p-0">
-                  <UserCircleIcon
-                    height={42}
-                    width={42}
-                    className="text-base-content"
-                  />
-                  <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
-                </div>
-                <div className="flex justify-between mt-2 border-b-2 pb-4">
-                  <p className="ml-2 w-[240px] font-medium text-[13px]">
-                    This challenge was really cool! I will test multiline
-                    comments. They are long comments but I dont know how Ill
-                    take it.
-                  </p>
-                  <p className="text-[10px] content-end font-semibold">
-                    1 day ago
-                  </p>
-                </div>
-              </div>
+                  <div className="py-2">
+                    <div className="flex items-center p-0">
+                      <UserCircleIcon
+                        height={42}
+                        width={42}
+                        className="text-base-content"
+                      />
+                      <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
+                    </div>
+                    <div className="flex justify-between mt-2 border-b-2 pb-4">
+                      <p className="ml-2 w-[240px] font-medium text-[13px]">
+                        This challenge was really cool! I will test multiline
+                        comments. They are long comments but I dont know how Ill
+                        take it.
+                      </p>
+                      <p className="text-[10px] content-end font-semibold">
+                        1 day ago
+                      </p>
+                    </div>
+                  </div>
 
-              <div className="py-2">
-                <div className="flex items-center p-0">
-                  <UserCircleIcon
-                    height={42}
-                    width={42}
-                    className="text-base-content"
-                  />
-                  <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
-                </div>
-                <div className="flex justify-between mt-2 border-b-2 pb-4">
-                  <p className="ml-2 w-[240px] font-medium text-[13px]">
-                    This challenge was really cool! I will test multiline
-                    comments. They are long comments but I dont know how Ill
-                    take it.
-                  </p>
-                  <p className="text-[10px] content-end font-semibold">
-                    1 day ago
-                  </p>
-                </div>
-              </div>
+                  <div className="py-2">
+                    <div className="flex items-center p-0">
+                      <UserCircleIcon
+                        height={42}
+                        width={42}
+                        className="text-base-content"
+                      />
+                      <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
+                    </div>
+                    <div className="flex justify-between mt-2 border-b-2 pb-4">
+                      <p className="ml-2 w-[240px] font-medium text-[13px]">
+                        This challenge was really cool! I will test multiline
+                        comments. They are long comments but I dont know how Ill
+                        take it.
+                      </p>
+                      <p className="text-[10px] content-end font-semibold">
+                        1 day ago
+                      </p>
+                    </div>
+                  </div>
 
-              <div className="py-2">
-                <div className="flex items-center p-0">
-                  <UserCircleIcon
-                    height={42}
-                    width={42}
-                    className="text-base-content"
-                  />
-                  <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
-                </div>
-                <div className="flex justify-between mt-2 border-b-2 pb-4">
-                  <p className="ml-2 w-[240px] font-medium text-[13px]">
-                    This challenge was really cool! I will test multiline
-                    comments. They are long comments but I dont know how Ill
-                    take it.
-                  </p>
-                  <p className="text-[10px] content-end font-semibold">
-                    1 day ago
-                  </p>
-                </div>
-              </div>
+                  <div className="py-2">
+                    <div className="flex items-center p-0">
+                      <UserCircleIcon
+                        height={42}
+                        width={42}
+                        className="text-base-content"
+                      />
+                      <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
+                    </div>
+                    <div className="flex justify-between mt-2 border-b-2 pb-4">
+                      <p className="ml-2 w-[240px] font-medium text-[13px]">
+                        This challenge was really cool! I will test multiline
+                        comments. They are long comments but I dont know how Ill
+                        take it.
+                      </p>
+                      <p className="text-[10px] content-end font-semibold">
+                        1 day ago
+                      </p>
+                    </div>
+                  </div>
 
-              <div className="py-2">
-                <div className="flex items-center p-0">
-                  <UserCircleIcon
-                    height={42}
-                    width={42}
-                    className="text-base-content"
-                  />
-                  <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
-                </div>
-                <div className="flex justify-between mt-2 border-b-2 pb-4">
-                  <p className="ml-2 w-[240px] font-medium text-[13px]">
-                    This challenge was really cool! I will test multiline
-                    comments. They are long comments but I dont know how Ill
-                    take it.
-                  </p>
-                  <p className="text-[10px] content-end font-semibold">
-                    1 day ago
-                  </p>
-                </div>
-              </div>
+                  <div className="py-2">
+                    <div className="flex items-center p-0">
+                      <UserCircleIcon
+                        height={42}
+                        width={42}
+                        className="text-base-content"
+                      />
+                      <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
+                    </div>
+                    <div className="flex justify-between mt-2 border-b-2 pb-4">
+                      <p className="ml-2 w-[240px] font-medium text-[13px]">
+                        This challenge was really cool! I will test multiline
+                        comments. They are long comments but I dont know how Ill
+                        take it.
+                      </p>
+                      <p className="text-[10px] content-end font-semibold">
+                        1 day ago
+                      </p>
+                    </div>
+                  </div>
 
-              <div className="py-2">
-                <div className="flex items-center p-0">
-                  <UserCircleIcon
-                    height={42}
-                    width={42}
-                    className="text-base-content"
-                  />
-                  <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
+                  <div className="py-2">
+                    <div className="flex items-center p-0">
+                      <UserCircleIcon
+                        height={42}
+                        width={42}
+                        className="text-base-content"
+                      />
+                      <p className="font-semibold ml-4 text-[13px]">Cynthia</p>
+                    </div>
+                    <div className="flex justify-between mt-2 border-b-2 pb-4">
+                      <p className="ml-2 w-[240px] font-medium text-[13px]">
+                        This challenge was really cool! I will test multiline
+                        comments. They are long comments but I dont know how Ill
+                        take it.
+                      </p>
+                      <p className="text-[10px] content-end font-semibold">
+                        1 day ago
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex justify-between mt-2 border-b-2 pb-4">
-                  <p className="ml-2 w-[240px] font-medium text-[13px]">
-                    This challenge was really cool! I will test multiline
-                    comments. They are long comments but I dont know how Ill
-                    take it.
-                  </p>
-                  <p className="text-[10px] content-end font-semibold">
-                    1 day ago
-                  </p>
-                </div>
-              </div>
-            </div>
+              </>
+            )}
+
             <label className="form-control absolute w-[85%] bottom-2">
               <div className="relative">
                 <textarea
@@ -582,6 +580,29 @@ function ChallengePage() {
           </ul>
         </div>
       </div>
+      {showStatsModal && challenge && (
+        <ChallengeStatsModal
+          isOpen={showStatsModal}
+          onClose={closeStatsModal}
+          challenge={challenge}
+        />
+      )}
+      {showCommentsModal && (
+        <ChallengeCommentsModal
+          isOpen={showCommentsModal}
+          onClose={closeCommentsModal}
+          comments={comments || []}
+        />
+      )}
+      {showDeleteChallengeModal && !challengeDeleted && (
+        <DeleteChallengeModal
+          isOpen={showDeleteChallengeModal}
+          onClose={closeDeleteChallengeModal}
+          teamId={team?._id}
+          challengeId={challenge?._id || ""}
+          setChallengeDeleted={setchallengeDeleted}
+        />
+      )}
     </>
   );
 }
