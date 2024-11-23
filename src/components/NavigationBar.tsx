@@ -22,7 +22,7 @@ function NavigationBar() {
   };
 
   return (
-    <div className="navbar bg-base-100 flex md:px-10 justify-between px-5 md:pt-4 fixed z-50">
+    <div className="navbar bg-base-100 flex md:px-10 justify-between px-5 md:pt-4 fixed z-40">
       <div className="flex p-0 w-[20%] md:w-[20%]">
         <Link
           to="/"

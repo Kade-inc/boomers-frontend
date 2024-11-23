@@ -90,42 +90,6 @@ const ChallengeStatsModal = ({
             <div className="w-[60%] mx-auto my-0">
               <ReactECharts option={option} />
             </div>
-            {/* <div>
-              <p className="font-semibold text-white">Team member ratings</p>
-              <div className="flex justify-between rating rating-md mt-4 w-3/4">
-                <input
-                  type="radio"
-                  name="rating-10"
-                  className="mask mask-star-2 bg-slate-100"
-                />
-                <input
-                  type="radio"
-                  name="rating-10"
-                  className="mask mask-star-2 bg-slate-100"
-                  defaultChecked
-                />
-                <input
-                  type="radio"
-                  name="rating-10"
-                  className="mask mask-star-2  bg-slate-100"
-                />
-                <input
-                  type="radio"
-                  name="rating-10"
-                  className="mask mask-star-2  bg-slate-100"
-                />
-                <input
-                  type="radio"
-                  name="rating-10"
-                  className="mask mask-star-2  bg-slate-100"
-                />
-              </div>
-              {isTeamMember() && (
-                <button className="py-2 bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 font-medium w-full">
-                  Rate challenge
-                </button>
-              )}
-            </div> */}
           </div>
         </div>
       </Modal>
