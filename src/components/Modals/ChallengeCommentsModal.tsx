@@ -89,7 +89,7 @@ const ChallengeCommentsModal = ({
                   <div className="py-2" key={comment._id}>
                     <div className="py-2">
                       <div className="flex items-center p-0 relative">
-                        {comment.user.profile.profile_picture ? (
+                        {comment.user.profile?.profile_picture ? (
                           <img
                             src={comment.user.profile.profile_picture}
                             alt="profile Picture"
@@ -103,8 +103,8 @@ const ChallengeCommentsModal = ({
                           />
                         )}
                         <p className="font-semibold ml-4 text-[13px]">
-                          {comment.user.profile.firstName &&
-                          comment.user.profile.lastName
+                          {comment.user.profile?.firstName &&
+                          comment.user.profile?.lastName
                             ? comment.user.profile.firstName +
                               " " +
                               comment.user.profile.lastName

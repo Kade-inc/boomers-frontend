@@ -355,10 +355,19 @@ function ChallengePage() {
                       {comments && comments.length}
                     </label>
                   </p>
-                  {/* <label
-                      htmlFor="my-drawer-4"
-                      className="drawer-button cursor-pointer"
-                    ><button className="bg-yellow px-4 py-1 text-[12px] font-medium rounded-sm">Open</button></label> */}
+                  <button
+                    className="bg-yellow px-4 py-1 text-[12px] font-medium rounded-sm text-darkgrey"
+                    onClick={() => {
+                      const drawer = document.getElementById(
+                        "my-drawer-4",
+                      ) as HTMLInputElement | null;
+                      if (drawer) {
+                        drawer.checked = true; // Open the drawer
+                      }
+                    }}
+                  >
+                    View
+                  </button>
                 </div>
                 <div className="w-[60%] mx-auto my-0">
                   <ReactECharts option={option} />
@@ -439,7 +448,7 @@ function ChallengePage() {
               <p className="text-base-content font-semibold text-[18px]">
                 Comments{" "}
                 {comments && comments.length > 0 && (
-                  <span className="ml-2 bg-gray-200 text-base-content p-2 rounded-full text-sm font-semibold px-3">
+                  <span className="ml-2 bg-gray-200 text-darkgrey p-2 rounded-full text-sm font-semibold px-3">
                     {comments.length}
                   </span>
                 )}
@@ -472,7 +481,7 @@ function ChallengePage() {
                   {comments.map((comment, index) => (
                     <div className="py-2" key={`${comment._id}-${index}`}>
                       <div className="relative flex items-center p-0">
-                        {comment.user.profile.profile_picture ? (
+                        {comment.user.profile?.profile_picture ? (
                           <img
                             src={comment.user.profile?.profile_picture}
                             alt="profile Picture"
@@ -486,8 +495,8 @@ function ChallengePage() {
                           />
                         )}
                         <p className="font-semibold ml-4 text-[13px]">
-                          {comment.user.profile.firstName &&
-                          comment.user.profile.lastName
+                          {comment.user.profile?.firstName &&
+                          comment.user.profile?.lastName
                             ? comment.user.profile.firstName +
                               " " +
                               comment.user.profile.lastName
