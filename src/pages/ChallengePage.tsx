@@ -403,7 +403,7 @@ function ChallengePage() {
             </button>
           )}
           <button
-            className="flex items-center pl-4 h-[50px] w-[105px] bg-black bottom-28 -right-10 md:hidden z-30 rounded-full fixed "
+            className="flex items-center pl-2 h-[50px] w-[105px] bg-black bottom-28 -right-10 md:hidden z-30 rounded-full fixed "
             onClick={() => setShowCommentsModal(!showCommentsModal)}
           >
             <ChatBubbleOvalLeftIcon width={30} height={30} color="white" />{" "}
@@ -561,17 +561,19 @@ function ChallengePage() {
             )}
 
             <label className="form-control absolute w-[85%] bottom-2">
-              <div className="relative">
+              <div className="relative flex flex-col bg-base-100 rounded-md">
                 <textarea
-                  className="textarea h-24 text-[13px] focus:border-none focus:outline-none w-full pr-24"
+                  className="textarea h-24 text-[13px] focus:border-none focus:outline-none w-full mb-2"
                   placeholder="Add comment..."
                 ></textarea>
-                <button
-                  className="absolute bottom-2 right-2 btn btn-sm bg-yellow text-darkgrey rounded-sm text-[13px] font-medium"
-                  type="submit"
-                >
-                  Send
-                </button>
+                <div className="flex justify-end border-t-2 w-[90%] mx-auto">
+                  <button
+                    className="btn btn-sm bg-yellow text-darkgrey rounded-md text-[13px] font-medium mt-2 mb-2"
+                    type="submit"
+                  >
+                    Send
+                  </button>
+                </div>
               </div>
             </label>
           </ul>
