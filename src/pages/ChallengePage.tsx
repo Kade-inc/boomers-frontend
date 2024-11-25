@@ -598,29 +598,28 @@ function ChallengePage() {
                 </div>
               </>
             )}
-            {isOwner() ||
-              (isTeamMember() && (
-                <label className="form-control absolute w-[85%] bottom-2">
-                  <div className="relative flex flex-col bg-base-100 rounded-md">
-                    <textarea
-                      className="textarea h-24 text-[13px] focus:border-none focus:outline-none w-full mb-2"
-                      placeholder="Add comment..."
-                      onChange={handleCommentChange}
-                      value={comment}
-                    ></textarea>
-                    <div className="flex justify-end border-t-2 w-[90%] mx-auto">
-                      <button
-                        className="btn btn-sm bg-yellow text-darkgrey rounded-md text-[13px] font-medium mt-2 mb-2 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-yellow"
-                        type="submit"
-                        onClick={handlePostComment}
-                        disabled={postCommentIsPending}
-                      >
-                        {postCommentIsPending ? "Posting..." : "Send"}
-                      </button>
-                    </div>
+            {(isOwner() || isTeamMember()) && (
+              <label className="form-control absolute w-[85%] bottom-2">
+                <div className="relative flex flex-col bg-base-100 rounded-md">
+                  <textarea
+                    className="textarea h-24 text-[13px] focus:border-none focus:outline-none w-full mb-2"
+                    placeholder="Add comment..."
+                    onChange={handleCommentChange}
+                    value={comment}
+                  ></textarea>
+                  <div className="flex justify-end border-t-2 w-[90%] mx-auto">
+                    <button
+                      className="btn btn-sm bg-yellow text-darkgrey rounded-md text-[13px] font-medium mt-2 mb-2 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-yellow"
+                      type="submit"
+                      onClick={handlePostComment}
+                      disabled={postCommentIsPending}
+                    >
+                      {postCommentIsPending ? "Posting..." : "Send"}
+                    </button>
                   </div>
-                </label>
-              ))}
+                </div>
+              </label>
+            )}
           </ul>
         </div>
       </div>

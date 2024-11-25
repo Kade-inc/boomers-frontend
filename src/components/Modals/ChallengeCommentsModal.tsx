@@ -181,29 +181,28 @@ const ChallengeCommentsModal = ({
               </div>
             </>
           )}
-          {isTeamMember() ||
-            (isOwner() && (
-              <label className="form-control absolute w-[85%] bottom-2 ">
-                <div className="relative flex flex-col bg-base-200 rounded-md">
-                  <textarea
-                    className="textarea h-24 text-[13px] focus:border-none focus:outline-none w-full mb-2 bg-base-200"
-                    placeholder="Add comment..."
-                    value={comment}
-                    onChange={handleCommentChange}
-                  ></textarea>
-                  <div className="flex justify-end border-t-2 w-[90%] mx-auto">
-                    <button
-                      className="btn btn-sm bg-yellow text-darkgrey rounded-md text-[13px] font-medium mt-2 mb-2"
-                      type="submit"
-                      onClick={handlePostComment}
-                      disabled={postCommentIsPending}
-                    >
-                      {postCommentIsPending ? "Posting..." : "Send"}
-                    </button>
-                  </div>
+          {(isTeamMember() || isOwner()) && (
+            <label className="form-control absolute w-[85%] bottom-2 ">
+              <div className="relative flex flex-col bg-base-200 rounded-md">
+                <textarea
+                  className="textarea h-24 text-[13px] focus:border-none focus:outline-none w-full mb-2 bg-base-200"
+                  placeholder="Add comment..."
+                  value={comment}
+                  onChange={handleCommentChange}
+                ></textarea>
+                <div className="flex justify-end border-t-2 w-[90%] mx-auto">
+                  <button
+                    className="btn btn-sm bg-yellow text-darkgrey rounded-md text-[13px] font-medium mt-2 mb-2"
+                    type="submit"
+                    onClick={handlePostComment}
+                    disabled={postCommentIsPending}
+                  >
+                    {postCommentIsPending ? "Posting..." : "Send"}
+                  </button>
                 </div>
-              </label>
-            ))}
+              </div>
+            </label>
+          )}
         </div>
       </Modal>
     </>
