@@ -252,7 +252,14 @@ function ChallengePage() {
                   <span>{challenge?.challenge_name}</span>
                 </h1>
                 {isOwner() && (
-                  <FaRegEdit size={24} className="cursor-pointer" fill="teal" />
+                  <FaRegEdit
+                    size={24}
+                    className="cursor-pointer"
+                    fill="teal"
+                    onClick={() =>
+                      navigate(`/edit-challenge/${challenge?._id}`)
+                    }
+                  />
                 )}
               </div>
               <p>{team?.name}</p>

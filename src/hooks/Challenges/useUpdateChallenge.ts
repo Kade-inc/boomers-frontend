@@ -19,6 +19,7 @@ const useUpdateChallenge = (): UseMutationResult<
     teamId: string;
     challengeId: string;
     payload: Partial<ExtendedChallengeInterface>;
+    userId?: string;
   },
   unknown
 > => {
@@ -28,10 +29,15 @@ const useUpdateChallenge = (): UseMutationResult<
     mutationKey: ["update-challenge"],
     mutationFn: ({ teamId, challengeId, payload }) =>
       apiClient.updateChallenge(teamId, challengeId, payload),
-    onSuccess: (data) => {
-      // Check if `valid` is true before invalidating the query
+    onSuccess: (data, { challengeId, userId }) => {
       if (data.valid) {
-        queryClient.invalidateQueries({ queryKey: ["challenges"] });
+        queryClient.invalidateQueries({
+          queryKey: ["challenge", challengeId],
+        });
+
+        queryClient.invalidateQueries({
+          queryKey: ["challenges", userId, "valid", true],
+        });
       }
     },
   });

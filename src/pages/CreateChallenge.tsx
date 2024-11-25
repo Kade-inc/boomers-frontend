@@ -16,6 +16,7 @@ import ChallengesCard from "../components/ChallengesCard";
 import useUpdateChallenge from "../hooks/Challenges/useUpdateChallenge";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
 import Preview from "../components/CreateChallenge/Preview";
+import { useNavigate } from "react-router-dom";
 
 type ExtendedChallengeInterface = Challenge & {
   teamName?: string;
@@ -46,6 +47,8 @@ function CreateChallenge() {
       complete: false,
     },
   ];
+
+  const navigate = useNavigate();
 
   const [currentStep, setCurrentStep] = useState(1);
   const [steps, setSteps] = useState(stepsList);
@@ -375,7 +378,10 @@ function CreateChallenge() {
             <p className="mt-8 font-semibold">
               Challenge created successfully!
             </p>
-            <button className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4">
+            <button
+              className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4"
+              onClick={() => navigate(`/challenge/${challenge._id}`)}
+            >
               View Challenge
             </button>
           </div>

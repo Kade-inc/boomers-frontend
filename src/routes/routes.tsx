@@ -18,6 +18,7 @@ import ErrorPage from "../pages/ErrorPage";
 import CreateTeam from "../pages/CreateTeam";
 import CreateChallenge from "../pages/CreateChallenge";
 import ChallengePage from "../pages/ChallengePage";
+import EditChallengePage from "../pages/EditChallengePage";
 
 const router = createBrowserRouter([
   {
@@ -62,6 +63,10 @@ const router = createBrowserRouter([
       {
         path: "/challenge/:challengeId",
         element: <ProtectedRoute element={<ChallengePage />} />,
+      },
+      {
+        path: "/edit-challenge/:challengeId",
+        element: <ProtectedRoute element={<EditChallengePage />} />,
       },
     ],
   },
