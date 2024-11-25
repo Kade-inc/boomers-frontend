@@ -3,16 +3,19 @@ import UserDetailsCard from "./UserDetailsCard";
 import TeamMember from "../entities/TeamMember";
 import elipse from "../assets/Ellipse 103.svg";
 import useRemoveTeamMember from "../hooks/useRemoveTeamMember";
+import React from "react";
 
 interface MemberRequestDialogProps {
   mode: "request" | "member";
   selectedTeamMember: TeamMember | null;
+  selectedRequest: TeamMember | null;
   teamId: string;
 }
 
 const MemberRequestDialog = ({
   mode,
   selectedTeamMember,
+  selectedRequest,
   teamId,
 }: MemberRequestDialogProps) => {
   const [selectedMember, setSelectedMember] = useState(false);
@@ -20,7 +23,8 @@ const MemberRequestDialog = ({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const removeTeamMemberMutation = useRemoveTeamMember();
 
-  if (!selectedTeamMember) return null;
+  if (!selectedTeamMember && mode === "member") return null;
+
   // Reset state when the dialog is closed
   const handleDialogClose = () => {
     setAcceptClicked(false);
@@ -50,13 +54,22 @@ const MemberRequestDialog = ({
     >
       <div className="modal-box p-0" style={{ borderRadius: "0px" }}>
         <div className="text-center flex flex-col items-center justify-center bg-yellow">
+          <form method="dialog" className="ml-[90%] mt-1">
+            <button className="text-white ">X</button>
+          </form>
           <img
-            className="mb-3 mx-auto mt-5"
-            src={selectedTeamMember.profile_picture ?? elipse}
+            className="mb-3 mx-auto mt-5 h-[81px] w-[81px] rounded-full"
+            src={
+              mode === "member"
+                ? (selectedTeamMember?.profile_picture ?? elipse)
+                : (selectedRequest?.profile_picture ?? elipse)
+            }
             alt="Profile image"
           />
           <h3 className="text-white mb-5 text-[18px] font-bold">
-            {selectedTeamMember.username}
+            {mode === "member"
+              ? selectedTeamMember?.username
+              : selectedRequest?.username}
           </h3>
         </div>
 
@@ -69,17 +82,37 @@ const MemberRequestDialog = ({
                 <UserDetailsCard />
               </div>
               <h3 className="py-2 text-[16px] font-bold">Interests</h3>
-              {/* <p className="text-[14px] font-medium">
-                Software Engineering • Frontend • ReactJS
-              </p> */}
-              {/* {selectedTeamMember.interests?.subdomainTopics.map(
-                (topic: string, index: number) => (
-                  <React.Fragment key={index}>
-                    <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
-                    <p>{topic}</p>
-                  </React.Fragment>
-                ),
-              )} */}
+              <div className="flex items-center mb-2 font-regular text-[14px]">
+                {mode === "member" ? (
+                  <>
+                    {selectedTeamMember?.interests?.domain}{" "}
+                    <div className="bg-black rounded-full w-1 h-1 mx-1"></div>{" "}
+                    {selectedTeamMember?.interests?.subdomain}{" "}
+                    {selectedTeamMember?.interests?.subdomainTopics?.map(
+                      (topic: string, index: number) => (
+                        <React.Fragment key={index}>
+                          <div className="bg-black rounded-full w-1 h-1 mx-1"></div>
+                          <p>{topic}</p>
+                        </React.Fragment>
+                      ),
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {selectedRequest?.interests?.domain}{" "}
+                    <div className="bg-black rounded-full w-1 h-1 mx-1"></div>{" "}
+                    {selectedRequest?.interests?.subdomain}{" "}
+                    {selectedRequest?.interests?.subdomainTopics?.map(
+                      (topic: string, index: number) => (
+                        <React.Fragment key={index}>
+                          <div className="bg-black rounded-full w-1 h-1 mx-1"></div>
+                          <p>{topic}</p>
+                        </React.Fragment>
+                      ),
+                    )}
+                  </>
+                )}
+              </div>
             </div>
 
             {/* Modal Action Buttons */}
@@ -112,13 +145,13 @@ const MemberRequestDialog = ({
                         <button className="btn w-full text-white bg-green-600 rounded-none hover:bg-green-700">
                           Cancel
                         </button>
-                        <button
-                          className="btn w-1/2 text-white bg-red-600 rounded-none hover:bg-red-700 !m-0"
-                          onClick={handleRemoveTeamMember}
-                        >
-                          Remove
-                        </button>
                       </form>
+                      <button
+                        className="btn w-1/2 text-white bg-red-600 rounded-none hover:bg-red-700 !m-0"
+                        onClick={handleRemoveTeamMember}
+                      >
+                        Remove
+                      </button>
                     </div>
                   )}
                 </>
@@ -129,7 +162,7 @@ const MemberRequestDialog = ({
           <div className="p-4 text-center">
             <p className="text-[16px] text-black mb-4">
               {mode === "member"
-                ? "Paul Vitalis has been removed from the team"
+                ? `${selectedTeamMember?.username} has been removed from the team`
                 : "Request has been processed"}
             </p>
             <form method="dialog">
