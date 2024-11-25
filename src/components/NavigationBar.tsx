@@ -156,7 +156,7 @@ function NavigationBar() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <UserCircleIcon className="w-full h-full text-darkgrey" />
+                <UserCircleIcon className="w-full h-full text-base-content" />
               )}
             </div>
           </div>
