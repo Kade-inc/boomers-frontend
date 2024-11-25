@@ -71,7 +71,7 @@ const Stepper = ({ steps, currentStep, lineHeight = 10 }: StepperProps) => {
           {steps.map((step: Step, index: number) => (
             <div key={index} className="">
               <div
-                className={`w-20 h-1
+                className={`${steps.length === 4 ? "w-20" : "w-28"} h-1
               ${index < currentStep && step.complete ? "bg-[#4AC565] text-white" : ""}
               ${index === currentStep - 1 && !step.complete ? "bg-[#4AC565] text-white" : ""}
               ${index > currentStep - 1 && "bg-gray-300 text-gray-600"}`}
@@ -80,7 +80,7 @@ const Stepper = ({ steps, currentStep, lineHeight = 10 }: StepperProps) => {
           ))}
         </div>
         <p className="font-normal text-[14px] mt-2">
-          Step {currentStep}/4:{" "}
+          Step {currentStep}/{steps.length}:{" "}
           <span className="font-semibold">{steps[currentStep - 1].name}</span>
         </p>
       </div>
