@@ -14,6 +14,10 @@ type ModalTriggerProps = {
   onClose: () => void;
   comments: Comment[];
   challengeId: string;
+  comment: string;
+  handleCommentChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  handlePostComment: () => void;
+  postCommentIsPending: boolean;
 };
 
 const ChallengeCommentsModal = ({
@@ -21,6 +25,10 @@ const ChallengeCommentsModal = ({
   onClose,
   comments,
   challengeId,
+  comment,
+  handleCommentChange,
+  handlePostComment,
+  postCommentIsPending,
 }: ModalTriggerProps) => {
   const { user } = useAuthStore();
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
@@ -172,13 +180,17 @@ const ChallengeCommentsModal = ({
               <textarea
                 className="textarea h-24 text-[13px] focus:border-none focus:outline-none w-full mb-2 bg-base-200"
                 placeholder="Add comment..."
+                value={comment}
+                onChange={handleCommentChange}
               ></textarea>
               <div className="flex justify-end border-t-2 w-[90%] mx-auto">
                 <button
                   className="btn btn-sm bg-yellow text-darkgrey rounded-md text-[13px] font-medium mt-2 mb-2"
                   type="submit"
+                  onClick={handlePostComment}
+                  disabled={postCommentIsPending}
                 >
-                  Send
+                  {postCommentIsPending ? "Posting..." : "Send"}
                 </button>
               </div>
             </div>
