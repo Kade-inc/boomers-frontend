@@ -25,7 +25,8 @@ import useChallengeComments from "../hooks/Challenges/useChallengeComments";
 import { PiChatsBold } from "react-icons/pi";
 import { formatDistanceToNow } from "date-fns";
 import useDeleteComment from "../hooks/Challenges/useDeleteComment";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
+import usePostChallengeComment from "../hooks/Challenges/usePostChallengeComment";
 
 function ChallengePage() {
   const [showStatsModal, setShowStatsModal] = useState(false);
@@ -42,6 +43,7 @@ function ChallengePage() {
   const [isDue, setIsDue] = useState(false);
   const [activeTab, setActiveTab] = useState("description");
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
+  const [comment, setComment] = useState("");
 
   const { user } = useAuthStore();
 
@@ -64,6 +66,9 @@ function ChallengePage() {
   const { data: comments, isPending: commentsPending } = useChallengeComments(
     challengeId || "",
   );
+
+  const { mutate: postComment, isPending: postCommentIsPending } =
+    usePostChallengeComment();
 
   const deleteCommentMutation = useDeleteComment();
 
@@ -95,6 +100,28 @@ function ChallengePage() {
     await deleteCommentMutation.mutateAsync({ challengeId, commentId });
     setActiveTooltip(null);
   };
+
+  const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setComment(e.target.value);
+  };
+
+  const handlePostComment = () => {
+    const trimmedComment = comment.trim(); // Remove extra spaces
+    if (!trimmedComment) {
+      toast.error("Comment cannot be empty!");
+      return;
+    }
+
+    postComment(
+      { challengeId: challenge?._id || "", comment: comment },
+      {
+        onSuccess: () => {
+          setComment("");
+        },
+      },
+    );
+  };
+
   // Calculate time difference and update the state
   useEffect(() => {
     if (!challenge?.due_date) return;
@@ -201,6 +228,16 @@ function ChallengePage() {
             iconTheme: {
               primary: "white",
               secondary: "#D92D2D",
+            },
+          },
+          success: {
+            style: {
+              background: "#1AC171",
+              color: "white",
+            },
+            iconTheme: {
+              primary: "white",
+              secondary: "#1AC171",
             },
           },
         }}
@@ -467,7 +504,7 @@ function ChallengePage() {
                 }}
               />
             </div>
-            {comments && comments.length === 0 && (
+            {comments && comments.length === 0 && !commentsPending && (
               <>
                 <div className="py-2 h-[70vh] flex flex-col justify-center items-center space-y-2">
                   <PiChatsBold size={80} />
@@ -475,7 +512,14 @@ function ChallengePage() {
                 </div>
               </>
             )}
-            {comments && comments.length > 0 && (
+            {commentsPending && (
+              <>
+                <div className="h-screen flex  justify-center items-center">
+                  <span className="loading loading-dots loading-md"></span>
+                </div>
+              </>
+            )}
+            {comments && comments.length > 0 && !commentsPending && (
               <>
                 <div className="py-2 h-[70vh] overflow-scroll">
                   {comments.map((comment, index) => (
@@ -560,22 +604,28 @@ function ChallengePage() {
               </>
             )}
 
-            <label className="form-control absolute w-[85%] bottom-2">
-              <div className="relative flex flex-col bg-base-100 rounded-md">
-                <textarea
-                  className="textarea h-24 text-[13px] focus:border-none focus:outline-none w-full mb-2"
-                  placeholder="Add comment..."
-                ></textarea>
-                <div className="flex justify-end border-t-2 w-[90%] mx-auto">
-                  <button
-                    className="btn btn-sm bg-yellow text-darkgrey rounded-md text-[13px] font-medium mt-2 mb-2"
-                    type="submit"
-                  >
-                    Send
-                  </button>
+            {!commentsPending && (
+              <label className="form-control absolute w-[85%] bottom-2">
+                <div className="relative flex flex-col bg-base-100 rounded-md">
+                  <textarea
+                    className="textarea h-24 text-[13px] focus:border-none focus:outline-none w-full mb-2"
+                    placeholder="Add comment..."
+                    onChange={handleCommentChange}
+                    value={comment}
+                  ></textarea>
+                  <div className="flex justify-end border-t-2 w-[90%] mx-auto">
+                    <button
+                      className="btn btn-sm bg-yellow text-darkgrey rounded-md text-[13px] font-medium mt-2 mb-2 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-yellow"
+                      type="submit"
+                      onClick={handlePostComment}
+                      disabled={postCommentIsPending}
+                    >
+                      {postCommentIsPending ? "Posting..." : "Send"}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </label>
+              </label>
+            )}
           </ul>
         </div>
       </div>
