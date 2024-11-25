@@ -14,6 +14,12 @@ type ModalTriggerProps = {
   onClose: () => void;
   comments: Comment[];
   challengeId: string;
+  comment: string;
+  handleCommentChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  handlePostComment: () => void;
+  postCommentIsPending: boolean;
+  isTeamMember: () => boolean;
+  isOwner: () => boolean;
 };
 
 const ChallengeCommentsModal = ({
@@ -21,6 +27,12 @@ const ChallengeCommentsModal = ({
   onClose,
   comments,
   challengeId,
+  comment,
+  handleCommentChange,
+  handlePostComment,
+  postCommentIsPending,
+  isTeamMember,
+  isOwner,
 }: ModalTriggerProps) => {
   const { user } = useAuthStore();
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
@@ -67,7 +79,7 @@ const ChallengeCommentsModal = ({
             <p className="text-base-content font-semibold text-[18px]">
               Comments{" "}
               {comments && comments.length > 0 && (
-                <span className="ml-2 bg-gray-200 text-base-content p-2 rounded-full text-sm font-semibold px-3">
+                <span className="ml-2 bg-gray-200 text-darkgrey p-2 rounded-full text-sm font-semibold px-3">
                   {comments.length}
                 </span>
               )}
@@ -84,12 +96,14 @@ const ChallengeCommentsModal = ({
 
           {comments.length > 0 && (
             <>
-              <div className="py-2 h-[70vh] overflow-scroll">
+              <div
+                className={`py-2 overflow-scroll ${isOwner() || isTeamMember() ? "h-[70vh]" : "h-[90vh]"}`}
+              >
                 {comments.map((comment) => (
                   <div className="py-2" key={comment._id}>
                     <div className="py-2">
                       <div className="flex items-center p-0 relative">
-                        {comment.user.profile.profile_picture ? (
+                        {comment.user.profile?.profile_picture ? (
                           <img
                             src={comment.user.profile.profile_picture}
                             alt="profile Picture"
@@ -103,8 +117,8 @@ const ChallengeCommentsModal = ({
                           />
                         )}
                         <p className="font-semibold ml-4 text-[13px]">
-                          {comment.user.profile.firstName &&
-                          comment.user.profile.lastName
+                          {comment.user.profile?.firstName &&
+                          comment.user.profile?.lastName
                             ? comment.user.profile.firstName +
                               " " +
                               comment.user.profile.lastName
@@ -167,20 +181,28 @@ const ChallengeCommentsModal = ({
               </div>
             </>
           )}
-          <label className="form-control absolute w-[85%] bottom-2">
-            <div className="relative">
-              <textarea
-                className="textarea h-24 text-[13px] focus:border-none w-full pr-24 focus:outline-none bg-base-200 shadow-lg"
-                placeholder="Add comment..."
-              ></textarea>
-              <button
-                className="absolute bottom-2 right-2 btn btn-sm bg-yellow text-darkgrey rounded-sm text-[13px] font-medium "
-                type="submit"
-              >
-                Send
-              </button>
-            </div>
-          </label>
+          {(isTeamMember() || isOwner()) && (
+            <label className="form-control absolute w-[85%] bottom-2 ">
+              <div className="relative flex flex-col bg-base-200 rounded-md">
+                <textarea
+                  className="textarea h-24 text-[13px] focus:border-none focus:outline-none w-full mb-2 bg-base-200"
+                  placeholder="Add comment..."
+                  value={comment}
+                  onChange={handleCommentChange}
+                ></textarea>
+                <div className="flex justify-end border-t-2 w-[90%] mx-auto">
+                  <button
+                    className="btn btn-sm bg-yellow text-darkgrey rounded-md text-[13px] font-medium mt-2 mb-2"
+                    type="submit"
+                    onClick={handlePostComment}
+                    disabled={postCommentIsPending}
+                  >
+                    {postCommentIsPending ? "Posting..." : "Send"}
+                  </button>
+                </div>
+              </div>
+            </label>
+          )}
         </div>
       </Modal>
     </>

@@ -25,7 +25,8 @@ import useChallengeComments from "../hooks/Challenges/useChallengeComments";
 import { PiChatsBold } from "react-icons/pi";
 import { formatDistanceToNow } from "date-fns";
 import useDeleteComment from "../hooks/Challenges/useDeleteComment";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
+import usePostChallengeComment from "../hooks/Challenges/usePostChallengeComment";
 
 function ChallengePage() {
   const [showStatsModal, setShowStatsModal] = useState(false);
@@ -42,6 +43,7 @@ function ChallengePage() {
   const [isDue, setIsDue] = useState(false);
   const [activeTab, setActiveTab] = useState("description");
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
+  const [comment, setComment] = useState("");
 
   const { user } = useAuthStore();
 
@@ -64,6 +66,9 @@ function ChallengePage() {
   const { data: comments, isPending: commentsPending } = useChallengeComments(
     challengeId || "",
   );
+
+  const { mutate: postComment, isPending: postCommentIsPending } =
+    usePostChallengeComment();
 
   const deleteCommentMutation = useDeleteComment();
 
@@ -95,6 +100,28 @@ function ChallengePage() {
     await deleteCommentMutation.mutateAsync({ challengeId, commentId });
     setActiveTooltip(null);
   };
+
+  const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setComment(e.target.value);
+  };
+
+  const handlePostComment = () => {
+    const trimmedComment = comment.trim(); // Remove extra spaces
+    if (!trimmedComment) {
+      toast.error("Comment cannot be empty!");
+      return;
+    }
+
+    postComment(
+      { challengeId: challenge?._id || "", comment: comment },
+      {
+        onSuccess: () => {
+          setComment("");
+        },
+      },
+    );
+  };
+
   // Calculate time difference and update the state
   useEffect(() => {
     if (!challenge?.due_date) return;
@@ -201,6 +228,16 @@ function ChallengePage() {
             iconTheme: {
               primary: "white",
               secondary: "#D92D2D",
+            },
+          },
+          success: {
+            style: {
+              background: "#1AC171",
+              color: "white",
+            },
+            iconTheme: {
+              primary: "white",
+              secondary: "#1AC171",
             },
           },
         }}
@@ -355,10 +392,19 @@ function ChallengePage() {
                       {comments && comments.length}
                     </label>
                   </p>
-                  {/* <label
-                      htmlFor="my-drawer-4"
-                      className="drawer-button cursor-pointer"
-                    ><button className="bg-yellow px-4 py-1 text-[12px] font-medium rounded-sm">Open</button></label> */}
+                  <button
+                    className="bg-yellow px-4 py-1 text-[12px] font-medium rounded-sm text-darkgrey"
+                    onClick={() => {
+                      const drawer = document.getElementById(
+                        "my-drawer-4",
+                      ) as HTMLInputElement | null;
+                      if (drawer) {
+                        drawer.checked = true; // Open the drawer
+                      }
+                    }}
+                  >
+                    View
+                  </button>
                 </div>
                 <div className="w-[60%] mx-auto my-0">
                   <ReactECharts option={option} />
@@ -394,7 +440,7 @@ function ChallengePage() {
             </button>
           )}
           <button
-            className="flex items-center pl-4 h-[50px] w-[105px] bg-black bottom-28 -right-10 md:hidden z-30 rounded-full fixed "
+            className="flex items-center pl-2 h-[50px] w-[105px] bg-black bottom-28 -right-8 md:hidden z-30 rounded-full fixed "
             onClick={() => setShowCommentsModal(!showCommentsModal)}
           >
             <ChatBubbleOvalLeftIcon width={30} height={30} color="white" />{" "}
@@ -403,7 +449,7 @@ function ChallengePage() {
             </span>
           </button>
           <button
-            className="flex items-center pl-4 h-[50px] w-[105px] bg-gradient-to-b from-[#00989B] to-[#005E78] bottom-10 -right-10 md:hidden z-50 rounded-full fixed "
+            className="flex items-center pl-4 h-[50px] w-[105px] bg-gradient-to-b from-[#00989B] to-[#005E78] bottom-10 -right-8 md:hidden z-50 rounded-full fixed "
             onClick={() => setShowStatsModal(!showStatsModal)}
           >
             <PresentationChartBarIcon width={30} height={30} color="white" />
@@ -439,7 +485,7 @@ function ChallengePage() {
               <p className="text-base-content font-semibold text-[18px]">
                 Comments{" "}
                 {comments && comments.length > 0 && (
-                  <span className="ml-2 bg-gray-200 text-base-content p-2 rounded-full text-sm font-semibold px-3">
+                  <span className="ml-2 bg-gray-200 text-darkgrey p-2 rounded-full text-sm font-semibold px-3">
                     {comments.length}
                   </span>
                 )}
@@ -468,11 +514,13 @@ function ChallengePage() {
             )}
             {comments && comments.length > 0 && (
               <>
-                <div className="py-2 h-[70vh] overflow-scroll">
+                <div
+                  className={`py-2 overflow-scroll ${isOwner() || isTeamMember() ? "h-[70vh]" : "h-[90vh]"}`}
+                >
                   {comments.map((comment, index) => (
                     <div className="py-2" key={`${comment._id}-${index}`}>
                       <div className="relative flex items-center p-0">
-                        {comment.user.profile.profile_picture ? (
+                        {comment.user.profile?.profile_picture ? (
                           <img
                             src={comment.user.profile?.profile_picture}
                             alt="profile Picture"
@@ -486,8 +534,8 @@ function ChallengePage() {
                           />
                         )}
                         <p className="font-semibold ml-4 text-[13px]">
-                          {comment.user.profile.firstName &&
-                          comment.user.profile.lastName
+                          {comment.user.profile?.firstName &&
+                          comment.user.profile?.lastName
                             ? comment.user.profile.firstName +
                               " " +
                               comment.user.profile.lastName
@@ -550,21 +598,28 @@ function ChallengePage() {
                 </div>
               </>
             )}
-
-            <label className="form-control absolute w-[85%] bottom-2">
-              <div className="relative">
-                <textarea
-                  className="textarea h-24 text-[13px] focus:border-none focus:outline-none w-full pr-24"
-                  placeholder="Add comment..."
-                ></textarea>
-                <button
-                  className="absolute bottom-2 right-2 btn btn-sm bg-yellow text-darkgrey rounded-sm text-[13px] font-medium"
-                  type="submit"
-                >
-                  Send
-                </button>
-              </div>
-            </label>
+            {(isOwner() || isTeamMember()) && (
+              <label className="form-control absolute w-[85%] bottom-2">
+                <div className="relative flex flex-col bg-base-100 rounded-md">
+                  <textarea
+                    className="textarea h-24 text-[13px] focus:border-none focus:outline-none w-full mb-2"
+                    placeholder="Add comment..."
+                    onChange={handleCommentChange}
+                    value={comment}
+                  ></textarea>
+                  <div className="flex justify-end border-t-2 w-[90%] mx-auto">
+                    <button
+                      className="btn btn-sm bg-yellow text-darkgrey rounded-md text-[13px] font-medium mt-2 mb-2 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-yellow"
+                      type="submit"
+                      onClick={handlePostComment}
+                      disabled={postCommentIsPending}
+                    >
+                      {postCommentIsPending ? "Posting..." : "Send"}
+                    </button>
+                  </div>
+                </div>
+              </label>
+            )}
           </ul>
         </div>
       </div>
@@ -581,6 +636,12 @@ function ChallengePage() {
           onClose={closeCommentsModal}
           comments={comments || []}
           challengeId={challenge?._id || ""}
+          comment={comment}
+          handlePostComment={handlePostComment}
+          handleCommentChange={handleCommentChange}
+          postCommentIsPending={postCommentIsPending}
+          isTeamMember={isTeamMember}
+          isOwner={isOwner}
         />
       )}
       {showDeleteChallengeModal && !challengeDeleted && (
