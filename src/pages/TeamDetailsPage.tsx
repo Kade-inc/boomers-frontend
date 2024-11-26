@@ -21,9 +21,7 @@ const TeamDetailsPage = () => {
   const { teamId } = useParams<{ teamId: string }>();
   const [selectedTeamMember, setSelectedTeamMember] =
     useState<TeamMember | null>(null);
-  const [selectedRequest, setSelectedRequest] = useState<TeamMember | null>(
-    null,
-  );
+  const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
 
   const [dialogMode, setDialogMode] = useState<"request" | "member">("request");
 
@@ -264,7 +262,7 @@ const TeamDetailsPage = () => {
                           imgUrl={request.userProfile.profile_picture}
                           onClick={() => {
                             if (user.user_id === team?.members[0]?._id) {
-                              setSelectedRequest(request.userProfile);
+                              setSelectedRequest(request);
                               openMemberDialog("request");
                             } else {
                               // Do nothing
@@ -349,3 +347,4 @@ export default TeamDetailsPage;
 // Georgecl00ney!
 // Bern1eM@c
 // BradP1tt!
+// C@ptainBubb11ez!

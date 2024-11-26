@@ -1,14 +1,17 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import UserDetailsCard from "./UserDetailsCard";
 import TeamMember from "../entities/TeamMember";
+import Request from "../entities/Request";
 import elipse from "../assets/Ellipse 103.svg";
 import useRemoveTeamMember from "../hooks/useRemoveTeamMember";
+import useTeams from "../hooks/useTeams";
 import React from "react";
+import Team from "../entities/Team";
 
 interface MemberRequestDialogProps {
   mode: "request" | "member";
   selectedTeamMember: TeamMember | null;
-  selectedRequest: TeamMember | null;
+  selectedRequest: Request | null;
   teamId: string;
 }
 
@@ -22,6 +25,18 @@ const MemberRequestDialog = ({
   const [acceptClicked, setAcceptClicked] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const removeTeamMemberMutation = useRemoveTeamMember();
+
+  // Fetch teams based on the selected request or member
+  const activeUserId =
+    mode === "member" ? selectedTeamMember?._id : selectedRequest?.user_id;
+  console.log("activeUserId:", activeUserId);
+  const { data: teams, isLoading, isError } = useTeams(activeUserId || "");
+
+  useEffect(() => {
+    if (dialogRef.current && activeUserId) {
+      dialogRef.current.showModal();
+    }
+  }, [activeUserId]);
 
   if (!selectedTeamMember && mode === "member") return null;
 
@@ -62,14 +77,14 @@ const MemberRequestDialog = ({
             src={
               mode === "member"
                 ? (selectedTeamMember?.profile_picture ?? elipse)
-                : (selectedRequest?.profile_picture ?? elipse)
+                : (selectedRequest?.userProfile?.profile_picture ?? elipse)
             }
-            alt="Profile image"
+            alt="Profile"
           />
           <h3 className="text-white mb-5 text-[18px] font-bold">
             {mode === "member"
               ? selectedTeamMember?.username
-              : selectedRequest?.username}
+              : selectedRequest?.userProfile?.username}
           </h3>
         </div>
 
@@ -77,41 +92,71 @@ const MemberRequestDialog = ({
           <>
             <div className="p-4">
               <h3 className="text-[16px] font-bold mb-2">Current Teams</h3>
-              <div className="flex gap-2 mb-4">
-                <UserDetailsCard />
-                <UserDetailsCard />
-              </div>
-              <h3 className="py-2 text-[16px] font-bold">Interests</h3>
-              <div className="flex items-center mb-2 font-regular text-[14px]">
-                {mode === "member" ? (
-                  <>
-                    {selectedTeamMember?.interests?.domain}{" "}
-                    <div className="bg-black rounded-full w-1 h-1 mx-1"></div>{" "}
-                    {selectedTeamMember?.interests?.subdomain}{" "}
-                    {selectedTeamMember?.interests?.subdomainTopics?.map(
-                      (topic: string, index: number) => (
-                        <React.Fragment key={index}>
-                          <div className="bg-black rounded-full w-1 h-1 mx-1"></div>
-                          <p>{topic}</p>
-                        </React.Fragment>
-                      ),
-                    )}
-                  </>
-                ) : (
-                  <>
-                    {selectedRequest?.interests?.domain}{" "}
-                    <div className="bg-black rounded-full w-1 h-1 mx-1"></div>{" "}
-                    {selectedRequest?.interests?.subdomain}{" "}
-                    {selectedRequest?.interests?.subdomainTopics?.map(
-                      (topic: string, index: number) => (
-                        <React.Fragment key={index}>
-                          <div className="bg-black rounded-full w-1 h-1 mx-1"></div>
-                          <p>{topic}</p>
-                        </React.Fragment>
-                      ),
-                    )}
-                  </>
-                )}
+              {isLoading ? (
+                <p>Loading teams...</p>
+              ) : isError ? (
+                <p>Error loading teams.</p>
+              ) : teams && teams.length > 0 ? (
+                <div className="flex gap-2 mb-4">
+                  {teams.map((team: Team) => (
+                    <UserDetailsCard key={team._id} team={team} />
+                  ))}
+                </div>
+              ) : (
+                <p>No teams found.</p>
+              )}
+              <div>
+                <h3 className="py-2 text-[16px] font-bold">Interests</h3>
+                <div className="flex items-center mb-2 font-regular text-[14px]">
+                  {mode === "member" && selectedTeamMember?.interests ? (
+                    <>
+                      {selectedTeamMember.interests.domain ||
+                      selectedTeamMember.interests.subdomain ||
+                      selectedTeamMember.interests.subdomainTopics?.length >
+                        0 ? (
+                        <>
+                          {selectedTeamMember.interests.domain}{" "}
+                          {selectedTeamMember.interests.subdomain}{" "}
+                          {selectedTeamMember.interests.subdomainTopics?.map(
+                            (topic: string, index: number) => (
+                              <React.Fragment key={index}>
+                                <div className="bg-black rounded-full w-1 h-1 mx-1"></div>
+                                <p>{topic}</p>
+                              </React.Fragment>
+                            ),
+                          )}
+                        </>
+                      ) : (
+                        <p>No interests found.</p>
+                      )}
+                    </>
+                  ) : mode === "request" &&
+                    selectedRequest?.userProfile.interests ? (
+                    <>
+                      {selectedRequest.userProfile.interests.domain ||
+                      selectedRequest.userProfile.interests.subdomain ||
+                      selectedRequest.userProfile.interests.subdomainTopics
+                        ?.length > 0 ? (
+                        <>
+                          {selectedRequest.userProfile.interests.domain}{" "}
+                          {selectedRequest.userProfile.interests.subdomain}{" "}
+                          {selectedRequest.userProfile.interests.subdomainTopics?.map(
+                            (topic: string, index: number) => (
+                              <React.Fragment key={index}>
+                                <div className="bg-black rounded-full w-1 h-1 mx-1"></div>
+                                <p>{topic}</p>
+                              </React.Fragment>
+                            ),
+                          )}
+                        </>
+                      ) : (
+                        <p>No interests found.</p>
+                      )}
+                    </>
+                  ) : (
+                    <p>No interests found.</p>
+                  )}
+                </div>
               </div>
             </div>
 
