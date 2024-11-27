@@ -3,7 +3,7 @@ import useRecommendationStore from "../stores/useRecommendationStore";
 import Team from "../entities/Team";
 import TeamCard from "../components/TeamCard";
 import { useEffect, useState } from "react";
-import RecommendationsModal from "../components/RecommendationsModal";
+import RecommendationsModal from "../components/Modals/RecommendationsModal";
 
 function RecommendationsPage() {
   const { recommendations } = useRecommendationStore();

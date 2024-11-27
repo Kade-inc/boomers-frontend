@@ -15,6 +15,10 @@ import TeamDetailsPage from "../pages/TeamDetailsPage";
 import ResetPassword from "../pages/ResetPasswordPage";
 import RecommendationsPage from "../pages/RecommendationsPage";
 import ErrorPage from "../pages/ErrorPage";
+import CreateTeam from "../pages/CreateTeam";
+import CreateChallenge from "../pages/CreateChallenge";
+import ChallengePage from "../pages/ChallengePage";
+import EditChallengePage from "../pages/EditChallengePage";
 
 const router = createBrowserRouter([
   {
@@ -47,6 +51,22 @@ const router = createBrowserRouter([
       {
         path: "/recommendations",
         element: <ProtectedRoute element={<RecommendationsPage />} />,
+      },
+      {
+        path: "/create-team",
+        element: <ProtectedRoute element={<CreateTeam />} />,
+      },
+      {
+        path: "create-challenge",
+        element: <ProtectedRoute element={<CreateChallenge />} />,
+      },
+      {
+        path: "/challenge/:challengeId",
+        element: <ProtectedRoute element={<ChallengePage />} />,
+      },
+      {
+        path: "/edit-challenge/:challengeId",
+        element: <ProtectedRoute element={<EditChallengePage />} />,
       },
     ],
   },

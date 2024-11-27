@@ -5,7 +5,7 @@ import MemberCard from "../components/MemberCard";
 import { useParams } from "react-router-dom";
 import TeamMember from "../entities/TeamMember";
 import useTeam from "../hooks/useTeam";
-import useTeamChallenges from "../hooks/useTeamChallenges";
+import useTeamChallenges from "../hooks/Challenges/useTeamChallenges";
 import useTeamMemberRequests from "../hooks/useTeamMemberRequests";
 import { Toaster } from "react-hot-toast";
 import Challenge from "../entities/Challenge";

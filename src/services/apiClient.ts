@@ -6,6 +6,8 @@ import Cookies from "js-cookie";
 import { UserVerificationModel } from "../entities/UserVerificationModel";
 import { jwtDecode } from "jwt-decode";
 import useAuthStore from "../stores/useAuthStore";
+import Team from "../entities/Team";
+import { ExtendedChallengeInterface } from "../entities/Challenge";
 
 interface ErrorResponse {
   message: string;
@@ -134,8 +136,6 @@ class APIClient {
       return response.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
-      const errorMessage = axiosError.response?.data ?? axiosError.message;
-      toast.error(`Reset Password Error: ${errorMessage}`);
       throw axiosError;
     }
   };
@@ -248,10 +248,14 @@ class APIClient {
     }
   };
 
-  getAllChallenges = async (userId: string, requiresAuth = true) => {
+  getAllChallenges = async (
+    userId: string,
+    valid: boolean,
+    requiresAuth = true,
+  ) => {
     try {
       const response = await this.axiosInstance.get(
-        `${this.endpoint}?userId=${userId}`,
+        `${this.endpoint}?userId=${userId}&valid=${valid}`,
         {
           headers: {
             requiresAuth,
@@ -264,6 +268,27 @@ class APIClient {
       const axiosError = error as AxiosError;
       toast.error(
         "Error fetching challenges:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
+  getChallenge = async (challengeId: string, requiresAuth = true) => {
+    try {
+      const response = await this.axiosInstance.get(
+        `${this.endpoint}/${challengeId}`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching challenge:",
         axiosError.response?.data ?? axiosError.message,
       );
     }
@@ -329,6 +354,308 @@ class APIClient {
     }
   };
 
+  getDomains = async (requiresAuth = true) => {
+    try {
+      const response = await this.axiosInstance.get(`${this.endpoint}`, {
+        headers: {
+          requiresAuth,
+        },
+      });
+      const { data } = response.data;
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching Domains",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
+  getSubDomains = async (parentDomain: string, requiresAuth = true) => {
+    try {
+      const response = await this.axiosInstance.get(
+        `${this.endpoint}/${parentDomain}/subdomains`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching Sub domains",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
+  getDomainTopics = async (requiresAuth = true) => {
+    try {
+      const response = await this.axiosInstance.get(`${this.endpoint}`, {
+        headers: {
+          requiresAuth,
+        },
+      });
+      const { data } = response.data;
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching Sub domains",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
+  createTeam = async (data: Team, requiresAuth = true): Promise<any> => {
+    try {
+      const response = await this.axiosInstance.post(this.endpoint, data, {
+        headers: {
+          requiresAuth,
+        },
+      });
+
+      const responseData = response.data;
+      return responseData;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      throw axiosError;
+    }
+  };
+
+  logout = async () => {
+    try {
+      const response = await this.axiosInstance.post(`${this.endpoint}`, {
+        token: Cookies.get("token"),
+      });
+      const { data } = response.data;
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error Logging out",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
+  deleteChallenges = async (
+    payload: { challengeIds: string[] },
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.delete(`${this.endpoint}`, {
+        headers: {
+          requiresAuth,
+        },
+        data: payload,
+      });
+      const { data } = response.data;
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error Deleting challenge(s):",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
+  deleteChallenge = async (
+    teamId: string,
+    challengeId: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.delete(
+        `${this.endpoint}/${teamId}/challenges/${challengeId}`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      return data;
+    } catch (error: any) {
+      let errorMessage =
+        "An unexpected error occurred. Please try again later.";
+
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+
+      toast.error(`${errorMessage}`);
+      throw new Error(errorMessage);
+    }
+  };
+
+  createChallenge = async (
+    teamId: string,
+    requiresAuth = true,
+  ): Promise<ExtendedChallengeInterface> => {
+    try {
+      const response = await this.axiosInstance.post(
+        `${this.endpoint}/${teamId}/challenges`,
+        null,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      return data;
+    } catch (error: any) {
+      let errorMessage =
+        "An unexpected error occurred. Please try again later.";
+
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+
+      toast.error(`${errorMessage}`);
+      throw new Error(errorMessage);
+    }
+  };
+
+  updateChallenge = async (
+    teamId: string,
+    challengeId: string,
+    payload: Partial<ExtendedChallengeInterface>,
+    requiresAuth = true,
+  ): Promise<ExtendedChallengeInterface> => {
+    try {
+      const response = await this.axiosInstance.put(
+        `${this.endpoint}/${teamId}/challenges/${challengeId}`,
+        payload,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      return data;
+    } catch (error: any) {
+      let errorMessage =
+        "An unexpected error occurred. Please try again later.";
+
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+
+      toast.error(`${errorMessage}`);
+      throw new Error(errorMessage);
+    }
+  };
+  updateUserProfile = async (
+    userId: string,
+    updatedProfile: FormData,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.put(
+        `${this.endpoint}/${userId}/profile`,
+        updatedProfile,
+        {
+          headers: {
+            requiresAuth,
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+      toast.success("Profile updated successfully");
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error updating profile: ",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  getChallengeComments = async (challengeId: string, requiresAuth = true) => {
+    try {
+      const response = await this.axiosInstance.get(
+        `${this.endpoint}/${challengeId}/comments`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching challenge comments:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
+  deleteChallengeComment = async (
+    challengeId: string,
+    commentId: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.delete(
+        `${this.endpoint}/${challengeId}/comments/${commentId}`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      toast.success("Comment deleted successfully");
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error delete challenge comments:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
+  postChallengeComment = async (
+    challengeId: string,
+    comment: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.post(
+        `${this.endpoint}/${challengeId}/comments`,
+        { comment },
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      toast.success("Comment posted successfully");
+      return data;
+    } catch (error: any) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        `Error posting challenge comment: ${
+          axiosError.response?.data ?? axiosError.message
+        }`,
+      );
+      throw error; // Throw the error to allow React Query to handle it
+    }
+  };
   // Leave Team
   leaveTeam = async (teamId: string, requiresAuth = true) => {
     try {
@@ -373,22 +700,6 @@ class APIClient {
       const axiosError = error as AxiosError;
       toast.error(
         "Error removing the team member",
-        axiosError.response?.data ?? axiosError.message,
-      );
-    }
-  };
-
-  logout = async () => {
-    try {
-      const response = await this.axiosInstance.post(`${this.endpoint}`, {
-        token: Cookies.get("token"),
-      });
-      const { data } = response.data;
-      return data;
-    } catch (error: unknown) {
-      const axiosError = error as AxiosError;
-      toast.error(
-        "Error Logging out",
         axiosError.response?.data ?? axiosError.message,
       );
     }

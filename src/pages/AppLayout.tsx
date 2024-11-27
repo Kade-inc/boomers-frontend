@@ -3,9 +3,12 @@ import NavigationBar from "../components/NavigationBar";
 import useAuthStore from "../stores/useAuthStore";
 import { useEffect } from "react";
 import Cookies from "js-cookie";
+import useLoadingStore from "../stores/useLoadingStore";
+import Loader from "../components/Loader/Loader";
 
 function AppLayout() {
   const { logout, checkAuth } = useAuthStore();
+  const isLoading = useLoadingStore((state) => state.isLoading);
   const navigate = useNavigate();
   useEffect(() => {
     checkAuth();
@@ -25,8 +28,9 @@ function AppLayout() {
 
   return (
     <>
+      <Loader isLoading={isLoading} />
       <NavigationBar />
-      <div>
+      <div className="pt-[60px]">
         <Outlet />
       </div>
     </>

@@ -9,9 +9,20 @@ interface TeamProps {
   team: ExtendedTeamInterface;
   styles?: string;
   section?: string;
-  onClick: () => void;
+  onClick?: () => void;
+  name?: string;
+  domain?: string;
+  subDomain?: string;
 }
-const TeamCard = ({ team, styles, section, onClick }: TeamProps) => {
+const TeamCard = ({
+  team,
+  styles,
+  section,
+  onClick,
+  name,
+  domain,
+  subDomain,
+}: TeamProps) => {
   const { user } = useAuthStore.getState();
 
   return (
@@ -23,8 +34,10 @@ const TeamCard = ({ team, styles, section, onClick }: TeamProps) => {
         onClick={onClick}
       >
         <div className="card-body py-4 justify-between">
-          <div className="flex justify-between w-full items-center">
-            <h2 className="font-medium">{team.name}</h2>
+          <div className="flex justify-between w-full">
+            <h2 className="font-medium w-[65%] break-words">
+              {team.name || name}
+            </h2>
             {section === "dashboard-section" && (
               <>
                 {team.owner_id === user.user_id && (
@@ -48,26 +61,34 @@ const TeamCard = ({ team, styles, section, onClick }: TeamProps) => {
               {team && (
                 <>
                   <div className="flex items-center mb-2 font-medium">
-                    {team.domain}
-                    <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
-                    {team.subdomain}
-                    <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
-                    {team?.subdomainTopics && (
+                    {team?.domain || domain}
+                    {team?.subDomain ||
+                      (domain && (
+                        <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
+                      ))}
+
+                    {team?.subDomain || subDomain}
+                    {team.subDomainTopics &&
+                      team.subDomainTopics.length > 0 && (
+                        <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
+                      )}
+
+                    {team?.subDomainTopics && (
                       <div
-                        className={`${team.subdomainTopics.length > 0 ? "tooltip tooltip-top tooltip-warning" : ""}`}
+                        className={`${team.subDomainTopics.length > 1 ? "tooltip tooltip-top tooltip-warning" : ""}`}
                         data-tip={
-                          team.subdomainTopics.length > 0
-                            ? team.subdomainTopics.map((topic: string) => topic)
+                          team.subDomainTopics.length > 0
+                            ? team.subDomainTopics.map((topic: string) => topic)
                             : ""
                         }
                       >
-                        {team.subdomainTopics[0]}
-                        {team.subdomainTopics.length - 1 > 0 &&
-                          ` +${team.subdomainTopics.length - 1}`}
+                        {team.subDomainTopics[0]}
+                        {team.subDomainTopics.length - 1 > 0 &&
+                          ` +${team.subDomainTopics.length - 1}`}
                       </div>
                     )}
                   </div>
-                  <div>Active</div>
+                  {(team.name || name?.trim()) && <div>Active</div>}
                 </>
               )}
             </div>

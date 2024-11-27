@@ -10,6 +10,7 @@ const useTeam = (teamId: string): UseQueryResult<any, UserTeam> => {
     queryKey: ["team", teamId],
     queryFn: () => apiClient.getTeamDetails(teamId),
     staleTime: 1000 * 60 * 5, // 5 minutes
+    enabled: !!teamId, // Only enable when teamId has a value
   });
 };
 

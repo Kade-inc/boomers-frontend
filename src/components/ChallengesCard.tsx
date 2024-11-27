@@ -3,6 +3,7 @@ import Challenge from "../entities/Challenge";
 import useAuthStore from "../stores/useAuthStore";
 import Team from "../entities/Team";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 type ExtendedChallengeInterface = Challenge & {
   teamName?: string;
@@ -22,6 +23,7 @@ const ChallengesCard: React.FC<ChallengesCardProps> = ({
   const { challenge_name, owner_id, difficulty, due_date } = challenge;
   const { user } = useAuthStore.getState();
   const [updatedChallenge, setUpdatedChallenge] = useState(challenge);
+  const navigate = useNavigate();
 
   const checkTeamsInformation = () => {
     teamsInformation?.map((team) => {
@@ -47,11 +49,16 @@ const ChallengesCard: React.FC<ChallengesCardProps> = ({
     return daysLeft;
   };
 
-  const daysLeft = calculateDaysLeft(due_date);
+  const daysLeft = due_date && calculateDaysLeft(due_date);
+
+  const handleCardClick = () => {
+    navigate(`/challenge/${challenge._id}`);
+  };
 
   return (
     <div
-      className={`card bg-gradient-to-b from-[#313232] to-[#444c4c] text-white rounded-[3px] font-body ${styles}`}
+      className={`card bg-gradient-to-b from-[#313232] to-[#444c4c] text-white rounded-[3px] font-body ${styles} hover:cursor-pointer`}
+      onClick={handleCardClick}
     >
       <div className="card-body flex flex-col justify-between h-full py-5">
         <div className="flex justify-between w-full items-center">
@@ -70,11 +77,19 @@ const ChallengesCard: React.FC<ChallengesCardProps> = ({
               {difficulty === 1 && "Easy"}
               {difficulty === 2 && "Medium"}
               {difficulty === 3 && "Hard"}
+              {difficulty === 4 && "Very Hard"}
+              {difficulty === 5 && "Legendary"}
             </div>
           </div>
           <div className="flex items-end">
             <h2 className="flex items-center text-center text-[12px] gap-x-2">
-              <LuClock2 /> {daysLeft} days left
+              {daysLeft && daysLeft > 0 ? (
+                <>
+                  <LuClock2 /> {daysLeft} days left
+                </>
+              ) : (
+                <span>Expired</span>
+              )}
             </h2>
           </div>
         </div>

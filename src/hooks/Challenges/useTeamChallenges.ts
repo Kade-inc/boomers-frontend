@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
-import APIClient from "../services/apiClient";
-import Challenge from "../entities/Challenge";
+import APIClient from "../../services/apiClient";
+import Challenge from "../../entities/Challenge";
 
 const apiClient = new APIClient("/api/teams");
 
