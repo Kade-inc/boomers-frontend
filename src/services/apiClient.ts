@@ -704,6 +704,40 @@ class APIClient {
       );
     }
   };
+
+  // accept Team Request
+  acceptTeamRequest = async (
+    requestId: string,
+    payload: { status: string; comment: string },
+  ) => {
+    try {
+      await axios.patch(
+        `http://localhost:5001/api/team-member/join/${requestId}`,
+        payload,
+      );
+      toast.success(`Request ${status.toLowerCase()} successfully!`);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update request. Please try again.");
+    }
+  };
+
+  // Reject Team Request
+  rejectTeamRequest = async (
+    requestId: string,
+    payload: { status: string; comment: string },
+  ) => {
+    try {
+      await axios.put(
+        `http://localhost:5001/api/team-member/join/${requestId}`,
+        payload,
+      );
+      toast.success(`Request ${status.toLowerCase()} successfully!`);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update request. Please try again.");
+    }
+  };
 }
 
 export default APIClient;
