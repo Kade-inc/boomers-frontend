@@ -19,10 +19,10 @@ const UserDetailsCard: React.FC<UserDetailsCardProps> = ({ team, styles }) => {
             <div className="bg-black rounded-full w-1 h-1 mx-1"></div>
           </>
         )}
-        {team.subdomain && (
+        {team.subDomain && (
           <>
-            {team.subdomain}
-            {team.subdomainTopics?.map((topic, index) => (
+            {team.subDomain}
+            {team.subDomainTopics?.map((topic, index) => (
               <React.Fragment key={index}>
                 <div className="bg-black rounded-full w-1 h-1 mx-1"></div>
                 <p>{topic}</p>

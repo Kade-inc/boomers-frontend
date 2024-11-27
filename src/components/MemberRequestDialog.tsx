@@ -7,6 +7,7 @@ import useRemoveTeamMember from "../hooks/useRemoveTeamMember";
 import useTeams from "../hooks/useTeams";
 import React from "react";
 import Team from "../entities/Team";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface MemberRequestDialogProps {
   mode: "request" | "member";
@@ -29,7 +30,7 @@ const MemberRequestDialog = ({
   // Fetch teams based on the selected request or member
   const activeUserId =
     mode === "member" ? selectedTeamMember?._id : selectedRequest?.user_id;
-  console.log("activeUserId:", activeUserId);
+  // console.log("activeUserId:", activeUserId);
   const { data: teams, isLoading, isError } = useTeams(activeUserId || "");
 
   useEffect(() => {
@@ -47,16 +48,26 @@ const MemberRequestDialog = ({
   };
 
   // Handle Remove Team Member
+  const queryClient = useQueryClient();
+
   const handleRemoveTeamMember = async () => {
     if (selectedTeamMember && teamId) {
-      await removeTeamMemberMutation.mutateAsync(
-        { teamId, userId: selectedTeamMember._id },
-        {
-          onSuccess: () => {
-            setAcceptClicked(true);
+      try {
+        await removeTeamMemberMutation.mutateAsync(
+          { teamId, userId: selectedTeamMember._id },
+          {
+            onSuccess: () => {
+              // Invalidate the query to refetch updated members
+              queryClient.invalidateQueries({
+                queryKey: ["teams", teamId],
+              });
+              setAcceptClicked(true);
+            },
           },
-        },
-      );
+        );
+      } catch (error) {
+        console.error("Error removing team member:", error);
+      }
     }
   };
 
