@@ -8,6 +8,7 @@ import useTeams from "../hooks/useTeams";
 import React from "react";
 import Team from "../entities/Team";
 import { useQueryClient } from "@tanstack/react-query";
+import useJoinTeamRequest from "../hooks/useJoinTeamRequest";
 
 interface MemberRequestDialogProps {
   mode: "request" | "member";
@@ -26,6 +27,7 @@ const MemberRequestDialog = ({
   const [acceptClicked, setAcceptClicked] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const removeTeamMemberMutation = useRemoveTeamMember();
+  const { mutate: joinRequest } = useJoinTeamRequest();
 
   // Fetch teams based on the selected request or member
   const activeUserId =
@@ -68,6 +70,18 @@ const MemberRequestDialog = ({
       } catch (error) {
         console.error("Error removing team member:", error);
       }
+    }
+  };
+
+  // Handle Accept Request
+  const handleJoinRequest = (
+    status: "APPROVED" | "DECLINED",
+    comment: string,
+  ) => {
+    if (selectedRequest) {
+      const payload = { status, comment };
+      joinRequest({ requestId: selectedRequest._id, payload });
+      setAcceptClicked(true);
     }
   };
 
@@ -185,14 +199,23 @@ const MemberRequestDialog = ({
                 <>
                   {mode === "request" && (
                     <div className="flex w-full flex-col">
-                      <button className="btn w-full text-white bg-green-600 rounded-none hover:bg-green-700">
+                      <button
+                        className="btn w-full text-white bg-green-600 rounded-none hover:bg-green-700"
+                        onClick={() =>
+                          handleJoinRequest("APPROVED", "Looks good")
+                        }
+                      >
                         Accept
                       </button>
-                      <form method="dialog">
-                        <button className="btn w-full text-white bg-red-600 rounded-none hover:bg-red-700">
-                          Reject
-                        </button>
-                      </form>
+
+                      <button
+                        className="btn w-full text-white bg-red-600 rounded-none hover:bg-red-700"
+                        onClick={() =>
+                          handleJoinRequest("DECLINED", "Declined")
+                        }
+                      >
+                        Reject
+                      </button>
                     </div>
                   )}
                   {mode === "member" && selectedMember && (

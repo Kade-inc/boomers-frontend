@@ -705,37 +705,31 @@ class APIClient {
     }
   };
 
-  // accept Team Request
-  acceptTeamRequest = async (
+  // Join Team Request
+  joinTeamRequest = async (
     requestId: string,
     payload: { status: string; comment: string },
+    requiresAuth = true,
   ) => {
     try {
-      await axios.patch(
-        `http://localhost:5001/api/team-member/join/${requestId}`,
+      const response = await this.axiosInstance.put(
+        `${this.endpoint}/${requestId}`,
         payload,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
       );
-      toast.success(`Request ${status.toLowerCase()} successfully!`);
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to update request. Please try again.");
-    }
-  };
-
-  // Reject Team Request
-  rejectTeamRequest = async (
-    requestId: string,
-    payload: { status: string; comment: string },
-  ) => {
-    try {
-      await axios.put(
-        `http://localhost:5001/api/team-member/join/${requestId}`,
-        payload,
+      const { data } = response.data;
+      toast.success(`Request ${payload.status.toLowerCase()} successfully!`);
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Failed to update request.",
+        axiosError.response?.data ?? axiosError.message,
       );
-      toast.success(`Request ${status.toLowerCase()} successfully!`);
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to update request. Please try again.");
     }
   };
 }

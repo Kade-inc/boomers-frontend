@@ -4,11 +4,11 @@ import APIClient from "../services/apiClient";
 
 const apiClient = new APIClient("/api/team-member/join");
 
-const useRejectRequest = () => {
+const useJoinTeamRequest = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: ["reject-request"],
+    mutationKey: ["update-request-status"],
     mutationFn: async ({
       requestId,
       payload,
@@ -16,7 +16,7 @@ const useRejectRequest = () => {
       requestId: string;
       payload: { status: string; comment: string };
     }) => {
-      return apiClient.rejectTeamRequest(requestId, payload);
+      return apiClient.joinTeamRequest(requestId, payload);
     },
 
     onSuccess: () => {
@@ -28,4 +28,4 @@ const useRejectRequest = () => {
   });
 };
 
-export default useRejectRequest;
+export default useJoinTeamRequest;
