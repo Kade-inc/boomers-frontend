@@ -8,7 +8,7 @@ const useJoinTeamRequest = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: ["update-request-status"],
+    mutationKey: ["update-request-status"], // Unique mutation key
     mutationFn: async ({
       requestId,
       payload,
@@ -18,9 +18,9 @@ const useJoinTeamRequest = () => {
     }) => {
       return apiClient.joinTeamRequest(requestId, payload);
     },
-
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["team-requests"] });
+      queryClient.invalidateQueries({ queryKey: ["team-member-requests"] });
+      queryClient.invalidateQueries({ queryKey: ["teams"] });
     },
     onError: (error: any) => {
       console.error("Failed to update request status:", error);

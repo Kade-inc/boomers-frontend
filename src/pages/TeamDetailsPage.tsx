@@ -250,26 +250,31 @@ const TeamDetailsPage = () => {
                   )}
                 </div>
               )}
-
-              {user.user_id === team?.members[0]?._id &&
-                activeTab === "requests" && (
+              {activeTab === "requests" &&
+                user.user_id === team?.members[0]?._id && (
                   <div className="flex gap-6">
                     {requests.length > 0 ? (
-                      requests.map((request: Request) => (
-                        <MemberCard
-                          key={request._id}
-                          member={request.userProfile}
-                          imgUrl={request.userProfile.profile_picture}
-                          onClick={() => {
-                            if (user.user_id === team?.members[0]?._id) {
-                              setSelectedRequest(request);
-                              openMemberDialog("request");
-                            } else {
-                              // Do nothing
-                            }
-                          }}
-                        />
-                      ))
+                      requests
+                        .filter(
+                          (request: Request) =>
+                            request.status !== "APPROVED" &&
+                            request.status !== "DECLINED",
+                        ) // Filter out APPROVED and DECLINED requests
+                        .map((request: Request) => (
+                          <MemberCard
+                            key={request._id}
+                            member={request.userProfile}
+                            imgUrl={request.userProfile.profile_picture}
+                            onClick={() => {
+                              if (user.user_id === team?.members[0]?._id) {
+                                setSelectedRequest(request);
+                                openMemberDialog("request");
+                              } else {
+                                // Do nothing
+                              }
+                            }}
+                          />
+                        ))
                     ) : (
                       <p className="font-body">No Member Requests</p>
                     )}

@@ -59,7 +59,7 @@ const MemberRequestDialog = ({
           { teamId, userId: selectedTeamMember._id },
           {
             onSuccess: () => {
-              // Invalidate the query to refetch updated members
+              // Invalidate the query
               queryClient.invalidateQueries({
                 queryKey: ["teams", teamId],
               });
@@ -73,15 +73,21 @@ const MemberRequestDialog = ({
     }
   };
 
-  // Handle Accept Request
+  // Handle join Request
   const handleJoinRequest = (
     status: "APPROVED" | "DECLINED",
     comment: string,
   ) => {
     if (selectedRequest) {
       const payload = { status, comment };
-      joinRequest({ requestId: selectedRequest._id, payload });
-      setAcceptClicked(true);
+      joinRequest(
+        { requestId: selectedRequest._id, payload },
+        {
+          onSuccess: () => {
+            setAcceptClicked(true);
+          },
+        },
+      );
     }
   };
 
