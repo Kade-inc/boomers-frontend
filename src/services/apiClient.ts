@@ -172,6 +172,24 @@ class APIClient {
     }
   };
 
+  // Function to get all users
+  getUsers(username?: string, requiresAuth = true) {
+    const url = username
+      ? `${this.endpoint}?/username=${username}`
+      : `${this.endpoint}`;
+
+    return axios
+      .get(url, {
+        headers: {
+          requiresAuth,
+        },
+      })
+      .then((response) => response.data)
+      .catch((error) => {
+        throw error;
+      });
+  }
+
   getToken = () => {
     return Cookies.get("token");
   };

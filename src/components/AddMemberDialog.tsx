@@ -1,8 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import elipse from "../assets/Ellipse 103.svg";
+import useGetAllUsers from "../hooks/useGetAllUsers";
 
 const AddMemberDialog = () => {
   const [viewClicked, setViewClicked] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Fetch users with the username query
+  const { data, isLoading, error } = useGetAllUsers(searchQuery);
+  const users = Array.isArray(data) ? data : [];
+  console.log(users);
+
+  // Update searchQuery based on input
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.value);
+    setSearchQuery(e.target.value);
+  };
+
+  useEffect(() => {
+    setViewClicked(false);
+  }, [searchQuery]);
 
   return (
     <dialog
@@ -34,23 +51,45 @@ const AddMemberDialog = () => {
                   clipRule="evenodd"
                 />
               </svg>
-              <input type="text" className="w-full" />
+              <input
+                type="text"
+                className="w-full"
+                value={searchQuery}
+                onChange={handleInputChange} // Update search query
+              />
             </label>
-            <div className="card w-[250px] h-[250px] bg-black font-body shadow-lg mt-8">
-              <div className="card-body flex flex-col justify-center items-center">
-                <img
-                  className="h-[81px] w-[81px] rounded-full"
-                  src={elipse}
-                  alt="image"
-                />
-                <p className="text-white">Paul Otieno</p>
-                <button
-                  className="btn bg-yellow border-none w-[90px]"
-                  onClick={() => setViewClicked(true)}
-                >
-                  VIEW
-                </button>
-              </div>
+
+            {/* Spinner */}
+            {isLoading && <p className="text-white">Loading...</p>}
+            {error && <p className="text-white">Error: {error.message}</p>}
+
+            {/* Show filtered users*/}
+            <div className="mt-4">
+              {users?.length === 0 ? (
+                <p className="text-white">No users found</p>
+              ) : (
+                users?.map((user) => (
+                  <div
+                    key={user._id}
+                    className="card w-[250px] h-[250px] bg-black font-body shadow-lg mt-8"
+                  >
+                    <div className="card-body flex flex-col justify-center items-center">
+                      <img
+                        className="h-[81px] w-[81px] rounded-full"
+                        src={elipse}
+                        alt="image"
+                      />
+                      <p className="text-white">{user.username}</p>
+                      <button
+                        className="btn bg-yellow border-none w-[90px]"
+                        onClick={() => setViewClicked(true)}
+                      >
+                        VIEW
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </>
         ) : (
