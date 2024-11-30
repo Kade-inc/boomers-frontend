@@ -175,16 +175,32 @@ class APIClient {
   // Function to get all users
   getUsers(username?: string, requiresAuth = true) {
     const url = username
-      ? `${this.endpoint}?/username=${username}`
+      ? `${this.endpoint}?username=${username}`
       : `${this.endpoint}`;
 
-    return axios
+    return this.axiosInstance
       .get(url, {
         headers: {
           requiresAuth,
         },
       })
       .then((response) => response.data)
+      .catch((error) => {
+        throw error;
+      });
+  }
+
+  // Get a user
+  getUserProfileById(userId: string, requiresAuth = true) {
+    const url = `${this.endpoint}/${userId}/profile`;
+
+    return this.axiosInstance
+      .get(url, {
+        headers: {
+          requiresAuth,
+        },
+      })
+      .then((response) => response.data.profile)
       .catch((error) => {
         throw error;
       });
