@@ -191,20 +191,23 @@ class APIClient {
   }
 
   // Get a user
-  getUserProfileById(userId: string, requiresAuth = true) {
+  getUserProfileById = async (userId: string, requiresAuth = true) => {
     const url = `${this.endpoint}/${userId}/profile`;
-
-    return this.axiosInstance
-      .get(url, {
+    try {
+      const response = await this.axiosInstance.get(url, {
         headers: {
           requiresAuth,
         },
-      })
-      .then((response) => response.data.profile)
-      .catch((error) => {
-        throw error;
       });
-  }
+      return response.data.profile;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching User profile:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
 
   getToken = () => {
     return Cookies.get("token");

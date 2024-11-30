@@ -1,37 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import elipse from "../assets/Ellipse 103.svg";
 import useGetAllUsers from "../hooks/useGetAllUsers";
 import useGetUser from "../hooks/useGetUser";
-import UserProfile from "../entities/UserProfile";
 
 const AddMemberDialog = () => {
   const [viewClicked, setViewClicked] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [userId, setUserId] = useState<string>("");
-  const [isUserLoading, setIsUserLoading] = useState(false);
-  const [user, setUser] = useState<UserProfile | undefined>(undefined);
-
-  // Fetch users with the username query
+  const { data: user, isLoading: isUserLoading } = useGetUser(userId);
   const { data, isLoading, error } = useGetAllUsers(searchQuery);
   const users = Array.isArray(data) ? data : [];
-  // console.log(users);
-
-  const handleGetUser = (userId: string) => {
-    setIsUserLoading(true);
-    const { data: getUser, isLoading: getUserLoading } = useGetUser(userId);
-    console.log(user);
-    setIsUserLoading(getUserLoading);
-    setUser(getUser);
-  };
-
-  useEffect(() => {
-    if (userId) {
-      console.log("fetching...");
-      handleGetUser(userId);
-    }
-  }, [userId]);
-
-  // Fetch individual user profile by userId
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -40,7 +18,7 @@ const AddMemberDialog = () => {
   return (
     <dialog
       id="my_modal_3"
-      className="modal fixed inset-0 bg-black bg-opacity-80 flex justify-center items-start"
+      className="modal fixed inset-0 bg-black bg-opacity-80 flex justify-center items-start overflow-scroll"
     >
       <div className="mt-[90px] text-left">
         <form method="dialog" onClick={() => setViewClicked(false)}>
@@ -82,30 +60,34 @@ const AddMemberDialog = () => {
               {users?.length === 0 ? (
                 <p className="text-white">No users found</p>
               ) : (
-                users?.map((user) => (
-                  <div
-                    key={user._id}
-                    className="card w-[250px] h-[250px] bg-black font-body shadow-lg mt-8"
-                  >
-                    <div className="card-body flex flex-col justify-center items-center">
-                      <img
-                        className="h-[81px] w-[81px] rounded-full"
-                        src={elipse}
-                        alt="User avatar"
-                      />
-                      <p className="text-white">{user.username}</p>
-                      <button
-                        className="btn bg-yellow border-none w-[90px]"
-                        onClick={() => {
-                          setViewClicked(true);
-                          if (user.user_id) setUserId(user.user_id);
-                        }}
-                      >
-                        VIEW
-                      </button>
+                users
+                  ?.filter((user) => user.isVerified)
+                  .map((user) => (
+                    <div
+                      key={user._id}
+                      className="card w-[250px] h-[250px] bg-black font-body shadow-lg mt-8"
+                    >
+                      <div className="card-body flex flex-col justify-center items-center">
+                        <img
+                          className="h-[81px] w-[81px] rounded-full"
+                          src={elipse}
+                          alt="User avatar"
+                        />
+                        <p className="text-white">{user.username}</p>
+                        <button
+                          className="btn bg-yellow border-none w-[90px]"
+                          onClick={() => {
+                            setViewClicked(true);
+                            if (user._id) {
+                              setUserId(user._id);
+                            }
+                          }}
+                        >
+                          VIEW
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))
+                  ))
               )}
             </div>
           </>
@@ -122,13 +104,11 @@ const AddMemberDialog = () => {
             ) : user ? (
               <>
                 <p className="text-white mb-6">
-                  {user.profile?.username || "Username not available"}
+                  {user?.username || "Username not available"}
                 </p>
                 <p className="text-white mb-6">
                   Interests:{" "}
-                  <span>
-                    {user.profile?.interests || "No interests provided"}
-                  </span>
+                  <span>{user?.interests || "No interests provided"}</span>
                 </p>
                 <button className="btn bg-yellow text-black border-none w-[150px]">
                   Add to team
