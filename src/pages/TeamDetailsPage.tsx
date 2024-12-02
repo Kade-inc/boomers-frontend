@@ -334,7 +334,7 @@ const TeamDetailsPage = () => {
             </div>
           </>
         )}
-        <AddMemberDialog />
+        <AddMemberDialog teamId={teamId as string} />
         <LeaveTeamDialog teamId={teamId!} />
         <MemberRequestDialog
           mode={dialogMode}

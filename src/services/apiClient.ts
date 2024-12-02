@@ -769,6 +769,33 @@ class APIClient {
       );
     }
   };
+
+  // Add Team member
+  addTeamMember = async (
+    payload: { team_id: string; username: string },
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.post(
+        `${this.endpoint}`,
+        payload,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      toast.success(`Added successfully`);
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Failed to add member.",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
 }
 
 export default APIClient;

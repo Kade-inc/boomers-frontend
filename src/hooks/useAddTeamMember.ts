@@ -2,24 +2,22 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import APIClient from "../services/apiClient";
 
-const apiClient = new APIClient("/api/team-member/join");
+const apiClient = new APIClient("/api/team-member/create");
 
-const useJoinTeamRequest = () => {
+const useAddTeamMember = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: ["update-request-status"],
+    mutationKey: ["add-team-member"],
     mutationFn: async ({
-      requestId,
       payload,
     }: {
-      requestId: string;
-      payload: { status: string; comment: string };
+      payload: { team_id: string; username: string };
     }) => {
-      return apiClient.joinTeamRequest(requestId, payload);
+      return apiClient.addTeamMember(payload);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["team-member-requests"] });
+      queryClient.invalidateQueries({ queryKey: ["add-team-member"] });
       queryClient.invalidateQueries({ queryKey: ["teams"] });
     },
     onError: (error: any) => {
@@ -28,4 +26,4 @@ const useJoinTeamRequest = () => {
   });
 };
 
-export default useJoinTeamRequest;
+export default useAddTeamMember;

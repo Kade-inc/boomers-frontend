@@ -2,17 +2,36 @@ import { useState } from "react";
 import elipse from "../assets/Ellipse 103.svg";
 import useGetAllUsers from "../hooks/useGetAllUsers";
 import useGetUser from "../hooks/useGetUser";
+import React from "react";
+import useAddTeamMember from "../hooks/useAddTeamMember";
 
-const AddMemberDialog = () => {
+interface AddMemberDialogProps {
+  teamId: string;
+}
+
+const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
   const [viewClicked, setViewClicked] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [userId, setUserId] = useState<string>("");
+  const [userName, setUserName] = useState<string>("");
+
   const { data: user, isLoading: isUserLoading } = useGetUser(userId);
   const { data, isLoading, error } = useGetAllUsers(searchQuery);
   const users = Array.isArray(data) ? data : [];
+  const { mutate: addTeamMember } = useAddTeamMember();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
+  };
+
+  const handleAddTeammember = () => {
+    // Replace with dynamic data from state (userName is now dynamically set)
+    const testPayload = {
+      team_id: teamId,
+      username: userName,
+    };
+
+    addTeamMember({ payload: testPayload });
   };
 
   return (
@@ -49,7 +68,7 @@ const AddMemberDialog = () => {
                 type="text"
                 className="w-full"
                 value={searchQuery}
-                onChange={handleInputChange} // Update search query
+                onChange={handleInputChange}
               />
             </label>
 
@@ -80,6 +99,7 @@ const AddMemberDialog = () => {
                             setViewClicked(true);
                             if (user._id) {
                               setUserId(user._id);
+                              setUserName(user?.username || "");
                             }
                           }}
                         >
@@ -104,13 +124,26 @@ const AddMemberDialog = () => {
             ) : user ? (
               <>
                 <p className="text-white mb-6">
-                  {user?.username || "Username not available"}
+                  {user?.firstName && user?.lastName
+                    ? `${user.firstName} ${user.lastName}`
+                    : user?.username || "Username not available"}
                 </p>
-                <p className="text-white mb-6">
-                  Interests:{" "}
-                  <span>{user?.interests || "No interests provided"}</span>
-                </p>
-                <button className="btn bg-yellow text-black border-none w-[150px]">
+
+                <div className="flex items-center mb-2 font-regular text-[14px] text-white">
+                  {user?.interests?.domain} {user?.interests?.subdomain}{" "}
+                  {user?.interests?.domainTopics.map(
+                    (topic: string, index: number) => (
+                      <React.Fragment key={index}>
+                        <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
+                        <p>{topic}</p>
+                      </React.Fragment>
+                    ),
+                  )}
+                </div>
+                <button
+                  className="btn bg-yellow text-black border-none w-[150px]"
+                  onClick={handleAddTeammember}
+                >
                   Add to team
                 </button>
               </>
