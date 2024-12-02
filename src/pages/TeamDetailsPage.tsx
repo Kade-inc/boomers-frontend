@@ -22,6 +22,7 @@ const TeamDetailsPage = () => {
   const [selectedTeamMember, setSelectedTeamMember] =
     useState<TeamMember | null>(null);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
+  const [isClicked, setIsClicked] = useState(false);
 
   const [dialogMode, setDialogMode] = useState<"request" | "member">("request");
 
@@ -57,6 +58,10 @@ const TeamDetailsPage = () => {
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
+  };
+  const handleRequestClick = () => {
+    console.log("clicked");
+    setIsClicked(true);
   };
 
   const owner = user.user_id === team?.members[0]?._id;
@@ -325,8 +330,16 @@ const TeamDetailsPage = () => {
                       Leave Team
                     </button>
                   ) : (
-                    <button className="w-[98px] text-[14px] p-1 text-black bg-yellow sm:w-[143px] font-body rounded">
-                      Request
+                    <button
+                      className={`w-[98px] text-[14px] p-1 text-black sm:w-[143px] font-body rounded ${
+                        isClicked
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-yellow"
+                      }`}
+                      onClick={handleRequestClick}
+                      disabled={isClicked}
+                    >
+                      {isClicked ? "Requested" : "Request"}
                     </button>
                   )}
                 </>
