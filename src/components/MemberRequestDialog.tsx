@@ -61,7 +61,7 @@ const MemberRequestDialog = ({
             onSuccess: () => {
               // Invalidate the query
               queryClient.invalidateQueries({
-                queryKey: ["teams", teamId],
+                queryKey: ["team", teamId],
               });
               setAcceptClicked(true);
             },

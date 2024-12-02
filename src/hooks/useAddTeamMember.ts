@@ -17,8 +17,8 @@ const useAddTeamMember = () => {
       return apiClient.addTeamMember(payload);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["add-team-member"] });
-      queryClient.invalidateQueries({ queryKey: ["teams"] });
+      queryClient.invalidateQueries({ queryKey: ["team-member-requests"] });
+      queryClient.invalidateQueries({ queryKey: ["team"] });
     },
     onError: (error: any) => {
       console.error("Failed to update request status:", error);

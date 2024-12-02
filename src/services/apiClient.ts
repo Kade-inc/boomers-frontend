@@ -796,6 +796,33 @@ class APIClient {
       );
     }
   };
+
+  // Add Team Request
+  addTeamRequest = async (
+    payload: { team_id: string },
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.post(
+        `${this.endpoint}`,
+        payload,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      toast.success(`REquest sent successfully`);
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Failed to send Request.",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
 }
 
 export default APIClient;

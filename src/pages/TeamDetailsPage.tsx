@@ -15,6 +15,7 @@ import AddMemberDialog from "../components/AddMemberDialog";
 import LeaveTeamDialog from "../components/LeaveTeamDialog";
 import MemberRequestDialog from "../components/MemberRequestDialog";
 import React from "react";
+import useSendTeamRequest from "../hooks/useSendTeamRequest";
 
 const TeamDetailsPage = () => {
   const [activeTab, setActiveTab] = useState("members");
@@ -23,6 +24,7 @@ const TeamDetailsPage = () => {
     useState<TeamMember | null>(null);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
   const [isClicked, setIsClicked] = useState(false);
+  const { mutate: sendRequest } = useSendTeamRequest();
 
   const [dialogMode, setDialogMode] = useState<"request" | "member">("request");
 
@@ -60,8 +62,13 @@ const TeamDetailsPage = () => {
     setActiveTab(tab);
   };
   const handleRequestClick = () => {
-    console.log("clicked");
-    setIsClicked(true);
+    if (teamId) {
+      sendRequest({ payload: { team_id: teamId } });
+      setIsClicked(true);
+    } else {
+      // Handle the case when teamId is undefined
+      console.error("teamId is undefined");
+    }
   };
 
   const owner = user.user_id === team?.members[0]?._id;
