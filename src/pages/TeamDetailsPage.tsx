@@ -2,7 +2,7 @@ import { useState } from "react";
 import lebron from "../assets/Mask group.svg";
 import ChallengesCard from "../components/ChallengesCard";
 import MemberCard from "../components/MemberCard";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import TeamMember from "../entities/TeamMember";
 import useTeam from "../hooks/useTeam";
 import useTeamChallenges from "../hooks/Challenges/useTeamChallenges";
@@ -25,6 +25,8 @@ const TeamDetailsPage = () => {
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
   const [isClicked, setIsClicked] = useState(false);
   const { mutate: sendRequest } = useSendTeamRequest();
+  const navigate = useNavigate();
+  const [filter, setFilter] = useState<"all" | "drafts" | "completed">("all");
 
   const [dialogMode, setDialogMode] = useState<"request" | "member">("request");
 
@@ -84,6 +86,23 @@ const TeamDetailsPage = () => {
   if (teamError) {
     return <p>Error loading page.</p>;
   }
+
+  // Function to get filtered challenges
+  const getFilteredChallenges = () => {
+    if (!challenges) return [];
+    switch (filter) {
+      case "drafts":
+        return challenges.filter(
+          (challenge: Challenge) => challenge.valid === false,
+        );
+      case "completed":
+        return challenges.filter(
+          (challenge: Challenge) => challenge.valid === true,
+        );
+      default:
+        return challenges;
+    }
+  };
 
   return (
     <div className="h-screen bg-base-100 py-10 px-[40px]">
@@ -244,24 +263,76 @@ const TeamDetailsPage = () => {
                   ))}
                 </div>
               )}
-
               {activeTab === "challenges" && (
                 <div>
-                  {challenges &&
-                    challenges.map((challenge: Challenge) => (
-                      <ChallengesCard
-                        key={challenge._id}
-                        challenge={challenge}
-                        styles={"w-[300px]"}
-                      />
-                    ))}
-                  {!challenges && (
-                    <>
-                      <p className="font-body">No Challenges to display</p>
-                    </>
+                  {/* Filter Buttons */}
+                  <div className="flex gap-2 items-center mb-4">
+                    <p>Filter By:</p>
+                    <button
+                      className={`btn btn-outline ${
+                        filter === "all" ? "bg-yellow text-black" : ""
+                      }`}
+                      onClick={() => setFilter("all")}
+                    >
+                      All
+                    </button>
+                    <button
+                      className={`btn btn-outline ${
+                        filter === "drafts" ? "bg-yellow text-black" : ""
+                      }`}
+                      onClick={() => setFilter("drafts")}
+                    >
+                      Drafts
+                    </button>
+                    <button
+                      className={`btn btn-outline ${
+                        filter === "completed" ? "bg-yellow text-black" : ""
+                      }`}
+                      onClick={() => setFilter("completed")}
+                    >
+                      Completed
+                    </button>
+                  </div>
+
+                  {/* Additional Buttons for Drafts */}
+                  {filter === "drafts" && (
+                    <div className="flex gap-2 mb-4">
+                      <button
+                        className="btn btn-outline"
+                        onClick={() => {
+                          console.log("Delete Drafts clicked");
+                        }}
+                      >
+                        Delete Drafts
+                      </button>
+                      <button
+                        className="btn btn-outline"
+                        onClick={() => {
+                          console.log("Cancel clicked");
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   )}
+
+                  {/* Challenges */}
+                  <div>
+                    {getFilteredChallenges().length > 0 ? (
+                      getFilteredChallenges().map((challenge: Challenge) => (
+                        <ChallengesCard
+                          key={challenge._id}
+                          challenge={challenge}
+                          styles={"w-[300px]"}
+                        />
+                      ))
+                    ) : (
+                      <p className="font-body">No Challenges to display</p>
+                    )}
+                  </div>
                 </div>
               )}
+
               {activeTab === "requests" &&
                 user.user_id === team?.members[0]?._id && (
                   <div className="flex gap-6">
@@ -297,7 +368,10 @@ const TeamDetailsPage = () => {
             <div className="flex justify-end mt-12">
               {activeTab === "challenges" &&
                 user.user_id === team?.members[0]?._id && (
-                  <button className="w-[98px] text-[14px] p-1 text-black bg-yellow sm:w-[143px] font-body rounded">
+                  <button
+                    className="w-[98px] text-[14px] p-1 text-black bg-yellow sm:w-[143px] font-body rounded"
+                    onClick={() => navigate("/create-challenge")}
+                  >
                     Create Challenge
                   </button>
                 )}
