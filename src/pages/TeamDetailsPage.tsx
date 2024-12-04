@@ -27,8 +27,9 @@ const TeamDetailsPage = () => {
   const { mutate: sendRequest } = useSendTeamRequest();
   const navigate = useNavigate();
   const [filter, setFilter] = useState<"all" | "drafts" | "completed">("all");
-
   const [dialogMode, setDialogMode] = useState<"request" | "member">("request");
+  const [isDeleteMode, setIsDeleteMode] = useState(false);
+  const [selectedChallenges, setSelectedChallenges] = useState<string[]>([]);
 
   // Function to open the dialog
   const openMemberDialog = (mode: "request" | "member") => {
@@ -86,6 +87,28 @@ const TeamDetailsPage = () => {
   if (teamError) {
     return <p>Error loading page.</p>;
   }
+
+  // challenge card
+  const handleDeleteDrafts = () => {
+    setIsDeleteMode(true);
+  };
+
+  const handleCancel = () => {
+    setIsDeleteMode(false);
+    setSelectedChallenges([]);
+  };
+
+  const handleCardClick = (challengeId: string) => {
+    if (isDeleteMode) {
+      setSelectedChallenges((prev) =>
+        prev.includes(challengeId)
+          ? prev.filter((id) => id !== challengeId)
+          : [...prev, challengeId],
+      );
+    } else {
+      navigate(`/challenges/${challengeId}`);
+    }
+  };
 
   // Function to get filtered challenges
   const getFilteredChallenges = () => {
@@ -298,21 +321,19 @@ const TeamDetailsPage = () => {
                   {filter === "drafts" && (
                     <div className="flex gap-2 mb-4">
                       <button
-                        className="btn btn-outline"
-                        onClick={() => {
-                          console.log("Delete Drafts clicked");
-                        }}
+                        className={`btn ${isDeleteMode ? "bg-red-500" : "bg-yellow"}`}
+                        onClick={handleDeleteDrafts}
                       >
                         Delete Drafts
                       </button>
-                      <button
-                        className="btn btn-outline"
-                        onClick={() => {
-                          console.log("Cancel clicked");
-                        }}
-                      >
-                        Cancel
-                      </button>
+                      {isDeleteMode && (
+                        <button
+                          className="btn btn-outline"
+                          onClick={handleCancel}
+                        >
+                          Cancel
+                        </button>
+                      )}
                     </div>
                   )}
 
