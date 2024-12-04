@@ -25,13 +25,14 @@ const TeamsPage = () => {
       const filtered = teams.filter((team: Team) => {
         const matchesDomain =
           !filters.domain ||
-          team.domain.toLowerCase().includes(filters.domain.toLowerCase());
+          team?.domain?.toLowerCase().includes(filters.domain.toLowerCase());
 
         const matchesSubDomain =
           !filters.subDomain ||
-          team.subdomain
-            .toLowerCase()
-            .includes(filters.subDomain.toLowerCase());
+          (team?.subdomain &&
+            team.subdomain
+              .toLowerCase()
+              .includes(filters.subDomain.toLowerCase()));
 
         const matchesTopics =
           !filters.topics ||

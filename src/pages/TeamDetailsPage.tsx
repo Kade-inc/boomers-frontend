@@ -64,17 +64,21 @@ const TeamDetailsPage = () => {
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
   };
+
+  const owner = user.user_id === team?.members[0]?._id;
+  // find user in requests
+  const userRequest = requests?.find(
+    (request: Request) => request.user_id === user.user_id,
+  );
+
   const handleRequestClick = () => {
     if (teamId) {
       sendRequest({ payload: { team_id: teamId } });
       setIsClicked(true);
     } else {
-      // Handle the case when teamId is undefined
       console.error("teamId is undefined");
     }
   };
-
-  const owner = user.user_id === team?.members[0]?._id;
 
   if (isTeamPending || isChallengesPending || isTeamMemberRequestsPending) {
     return (
@@ -445,14 +449,14 @@ const TeamDetailsPage = () => {
                   ) : (
                     <button
                       className={`w-[98px] text-[14px] p-1 text-black sm:w-[143px] font-body rounded ${
-                        isClicked
+                        isClicked || userRequest
                           ? "bg-gray-400 cursor-not-allowed"
                           : "bg-yellow"
                       }`}
                       onClick={handleRequestClick}
-                      disabled={isClicked}
+                      disabled={isClicked || userRequest}
                     >
-                      {isClicked ? "Requested" : "Request"}
+                      {isClicked || userRequest ? "Requested" : "Request"}
                     </button>
                   )}
                 </>
