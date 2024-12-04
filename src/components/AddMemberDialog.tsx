@@ -25,7 +25,6 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
   };
 
   const handleAddTeammember = () => {
-    // Replace with dynamic data from state (userName is now dynamically set)
     const testPayload = {
       team_id: teamId,
       username: userName,
@@ -140,9 +139,19 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
                     ),
                   )}
                 </div>
+
                 <button
                   className="btn bg-yellow text-black border-none w-[150px]"
-                  onClick={handleAddTeammember}
+                  onClick={() => {
+                    handleAddTeammember();
+                    setViewClicked(false);
+                    const modal = document.getElementById(
+                      "my_modal_3",
+                    ) as HTMLDialogElement | null;
+                    if (modal) {
+                      modal.close();
+                    }
+                  }}
                 >
                   Add to team
                 </button>

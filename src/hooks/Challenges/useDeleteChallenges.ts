@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useMutation, UseMutationResult } from "@tanstack/react-query";
+import {
+  useMutation,
+  UseMutationResult,
+  useQueryClient,
+} from "@tanstack/react-query";
 import APIClient from "../../services/apiClient";
 
 const apiClient = new APIClient("/api/challenges");
@@ -11,9 +15,13 @@ const useDeleteChallenges = (): UseMutationResult<
   { challengeIds: string[] },
   unknown
 > => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["delete-challenges"],
     mutationFn: (payload) => apiClient.deleteChallenges(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["team-challenges"] });
+    },
   });
 };
 

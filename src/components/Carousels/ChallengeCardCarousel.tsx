@@ -3,6 +3,7 @@ import Slider from "react-slick";
 import Challenge from "../../entities/Challenge";
 import Team from "../../entities/Team";
 import ChallengesCard from "../ChallengesCard";
+import { useNavigate } from "react-router-dom";
 
 interface CarouselProps {
   slides: Challenge[];
@@ -15,6 +16,7 @@ function ChallengeCardCarousel({ slides, teamsData }: CarouselProps) {
   }
 
   const [currentSlide, setCurrentSlide] = useState(0);
+  const navigate = useNavigate();
 
   const settings = {
     dots: true,
@@ -70,6 +72,9 @@ function ChallengeCardCarousel({ slides, teamsData }: CarouselProps) {
                 teamsInformation={teamsData}
                 styles={`w-full md:w-[350px] h-[180px]`}
                 section="dashboard-section"
+                onCardClick={() => {
+                  navigate(`/challenge/${slide._id}`);
+                }}
               />
             </div>
           </div>

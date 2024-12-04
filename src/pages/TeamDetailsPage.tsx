@@ -46,9 +46,6 @@ const TeamDetailsPage = () => {
   //user
   const { user } = useAuthStore.getState();
 
-  // Delete selected challenges
-  console.log(selectedChallenges);
-
   const { mutate: deleteChallenges } = useDeleteChallenges();
 
   // Delete selected challenges
