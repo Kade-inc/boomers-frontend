@@ -16,6 +16,7 @@ import LeaveTeamDialog from "../components/LeaveTeamDialog";
 import MemberRequestDialog from "../components/MemberRequestDialog";
 import React from "react";
 import useSendTeamRequest from "../hooks/useSendTeamRequest";
+import useDeleteChallenges from "../hooks/Challenges/useDeleteChallenges";
 
 const TeamDetailsPage = () => {
   const [activeTab, setActiveTab] = useState("members");
@@ -44,6 +45,27 @@ const TeamDetailsPage = () => {
 
   //user
   const { user } = useAuthStore.getState();
+
+  // Delete selected challenges
+  console.log(selectedChallenges);
+
+  const { mutate: deleteChallenges } = useDeleteChallenges();
+
+  // Delete selected challenges
+  const handleDeleteDrafts = () => {
+    if (isDeleteMode && selectedChallenges.length > 0) {
+      deleteChallenges({ challengeIds: selectedChallenges });
+      setIsDeleteMode(false);
+      setSelectedChallenges([]);
+    } else {
+      setIsDeleteMode(true);
+    }
+  };
+
+  const handleCancel = () => {
+    setIsDeleteMode(false);
+    setSelectedChallenges([]);
+  };
 
   const {
     data: team,
@@ -91,16 +113,6 @@ const TeamDetailsPage = () => {
   if (teamError) {
     return <p>Error loading page.</p>;
   }
-
-  // challenge card
-  const handleDeleteDrafts = () => {
-    setIsDeleteMode(true);
-  };
-
-  const handleCancel = () => {
-    setIsDeleteMode(false);
-    setSelectedChallenges([]);
-  };
 
   // Function to get filtered challenges
   const getFilteredChallenges = () => {
@@ -280,42 +292,38 @@ const TeamDetailsPage = () => {
               )}
               {activeTab === "challenges" && (
                 <div>
-                  {/* Filter Buttons */}
-                  <div className="flex gap-2 items-center mb-4">
-                    <p>Filter By:</p>
-                    <button
-                      className={`btn btn-outline ${
-                        filter === "all" ? "bg-yellow text-black" : ""
-                      }`}
-                      onClick={() => {
-                        setFilter("all");
-                        setIsDeleteMode(false);
-                        setSelectedChallenges([]);
-                      }}
-                    >
-                      All
-                    </button>
-                    <button
-                      className={`btn btn-outline ${
-                        filter === "drafts" ? "bg-yellow text-black" : ""
-                      }`}
-                      onClick={() => setFilter("drafts")}
-                    >
-                      Drafts
-                    </button>
-                    <button
-                      className={`btn btn-outline ${
-                        filter === "completed" ? "bg-yellow text-black" : ""
-                      }`}
-                      onClick={() => {
-                        setFilter("completed");
-                        setIsDeleteMode(false);
-                        setSelectedChallenges([]);
-                      }}
-                    >
-                      Completed
-                    </button>
-                  </div>
+                  {/* Only show filter buttons if the user is the team owner */}
+                  {user.user_id === team?.members[0]?._id && (
+                    <div className="flex gap-2 items-center mb-4">
+                      <p>Filter By:</p>
+                      <button
+                        className={`btn btn-outline ${filter === "all" ? "bg-yellow text-black" : ""}`}
+                        onClick={() => {
+                          setFilter("all");
+                          setIsDeleteMode(false);
+                          setSelectedChallenges([]);
+                        }}
+                      >
+                        All
+                      </button>
+                      <button
+                        className={`btn btn-outline ${filter === "drafts" ? "bg-yellow text-black" : ""}`}
+                        onClick={() => setFilter("drafts")}
+                      >
+                        Drafts
+                      </button>
+                      <button
+                        className={`btn btn-outline ${filter === "completed" ? "bg-yellow text-black" : ""}`}
+                        onClick={() => {
+                          setFilter("completed");
+                          setIsDeleteMode(false);
+                          setSelectedChallenges([]);
+                        }}
+                      >
+                        Completed
+                      </button>
+                    </div>
+                  )}
 
                   {/* Additional Buttons for Drafts */}
                   {filter === "drafts" && (
@@ -324,7 +332,7 @@ const TeamDetailsPage = () => {
                         className={`btn ${isDeleteMode ? "bg-red-500" : "bg-yellow"}`}
                         onClick={handleDeleteDrafts}
                       >
-                        Delete Drafts
+                        {isDeleteMode ? "Delete" : "Delete Drafts"}
                       </button>
                       {isDeleteMode && (
                         <button
@@ -355,7 +363,6 @@ const TeamDetailsPage = () => {
                                   ? prev.filter((id) => id !== challenge._id)
                                   : [...prev, challenge._id],
                               );
-                              console.log(selectedChallenges);
                             } else {
                               navigate(`/challenge/${challenge._id}`);
                             }
