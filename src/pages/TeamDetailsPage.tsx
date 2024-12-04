@@ -98,18 +98,6 @@ const TeamDetailsPage = () => {
     setSelectedChallenges([]);
   };
 
-  const handleCardClick = (challengeId: string) => {
-    if (isDeleteMode) {
-      setSelectedChallenges((prev) =>
-        prev.includes(challengeId)
-          ? prev.filter((id) => id !== challengeId)
-          : [...prev, challengeId],
-      );
-    } else {
-      navigate(`/challenges/${challengeId}`);
-    }
-  };
-
   // Function to get filtered challenges
   const getFilteredChallenges = () => {
     if (!challenges) return [];
@@ -295,7 +283,11 @@ const TeamDetailsPage = () => {
                       className={`btn btn-outline ${
                         filter === "all" ? "bg-yellow text-black" : ""
                       }`}
-                      onClick={() => setFilter("all")}
+                      onClick={() => {
+                        setFilter("all");
+                        setIsDeleteMode(false);
+                        setSelectedChallenges([]);
+                      }}
                     >
                       All
                     </button>
@@ -311,7 +303,11 @@ const TeamDetailsPage = () => {
                       className={`btn btn-outline ${
                         filter === "completed" ? "bg-yellow text-black" : ""
                       }`}
-                      onClick={() => setFilter("completed")}
+                      onClick={() => {
+                        setFilter("completed");
+                        setIsDeleteMode(false);
+                        setSelectedChallenges([]);
+                      }}
                     >
                       Completed
                     </button>
@@ -344,7 +340,22 @@ const TeamDetailsPage = () => {
                         <ChallengesCard
                           key={challenge._id}
                           challenge={challenge}
-                          styles={"w-[300px]"}
+                          isDeleteMode={isDeleteMode}
+                          isSelected={selectedChallenges.includes(
+                            challenge._id,
+                          )}
+                          onCardClick={() => {
+                            if (isDeleteMode) {
+                              setSelectedChallenges((prev) =>
+                                prev.includes(challenge._id)
+                                  ? prev.filter((id) => id !== challenge._id)
+                                  : [...prev, challenge._id],
+                              );
+                              console.log(selectedChallenges);
+                            } else {
+                              navigate(`/challenge/${challenge._id}`);
+                            }
+                          }}
                         />
                       ))
                     ) : (
