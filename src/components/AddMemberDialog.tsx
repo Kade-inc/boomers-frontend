@@ -1,5 +1,5 @@
 import { useState } from "react";
-import elipse from "../assets/Ellipse 103.svg";
+import userImg from "../assets/user-image.svg";
 import useGetAllUsers from "../hooks/useGetAllUsers";
 import useGetUser from "../hooks/useGetUser";
 import React from "react";
@@ -36,7 +36,7 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
   return (
     <dialog
       id="my_modal_3"
-      className="modal fixed inset-0 bg-black bg-opacity-80 flex justify-center items-start overflow-scroll"
+      className="modal fixed inset-0 bg-black backdrop-blur-sm bg-opacity-30 flex justify-center items-start overflow-scroll"
     >
       <div className="mt-[90px] text-left">
         <form method="dialog" onClick={() => setViewClicked(false)}>
@@ -87,8 +87,8 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
                     >
                       <div className="card-body flex flex-col justify-center items-center">
                         <img
-                          className="h-[81px] w-[81px] rounded-full"
-                          src={elipse}
+                          className="h-[81px] w-[81px] rounded-full bg-white"
+                          src={user.profile_picture || userImg}
                           alt="User avatar"
                         />
                         <p className="text-white">{user.username}</p>

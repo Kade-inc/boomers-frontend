@@ -1,5 +1,5 @@
 import { useState } from "react";
-import lebron from "../assets/Mask group.svg";
+import userImg from "../assets/user-image.svg";
 import ChallengesCard from "../components/ChallengesCard";
 import MemberCard from "../components/MemberCard";
 import { useNavigate, useParams } from "react-router-dom";
@@ -87,7 +87,8 @@ const TeamDetailsPage = () => {
   const owner = user.user_id === team?.members[0]?._id;
   // find user in requests
   const userRequest = requests?.find(
-    (request: Request) => request.user_id === user.user_id,
+    (request: Request) =>
+      request.user_id === user.user_id && request.status === "PENDING",
   );
 
   const handleRequestClick = () => {
@@ -215,7 +216,11 @@ const TeamDetailsPage = () => {
                     </div>
                   </div>
                   <div className="text-center flex flex-col items-center justify-center">
-                    <img className="mb-3 mx-auto" src={lebron} alt="img" />
+                    <img
+                      className="mb-3 mx-auto w-[81px] h-[81px] rounded-full"
+                      src={team?.members[0]?.profile_picture || userImg}
+                      alt="img"
+                    />
                     <p>{team?.members[0]?.username}</p>
                     <p className="text-center text-[12px]">Owner</p>
                   </div>

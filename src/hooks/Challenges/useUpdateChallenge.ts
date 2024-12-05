@@ -38,6 +38,9 @@ const useUpdateChallenge = (): UseMutationResult<
         queryClient.invalidateQueries({
           queryKey: ["challenges", userId, "valid", true],
         });
+        queryClient.invalidateQueries({
+          queryKey: ["team-challenges"],
+        });
       }
     },
   });
