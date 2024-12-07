@@ -9,7 +9,6 @@ interface CarouselProps {
   slides: Challenge[];
   teamsData?: Team[];
 }
-
 function ChallengeCardCarousel({ slides, teamsData }: CarouselProps) {
   if (!slides || slides.length === 0) {
     return <div>No slides available</div>; // Handle the case when there is no data

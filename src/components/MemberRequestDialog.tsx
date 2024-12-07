@@ -9,6 +9,9 @@ import React from "react";
 import Team from "../entities/Team";
 import { useQueryClient } from "@tanstack/react-query";
 import useJoinTeamRequest from "../hooks/useJoinTeamRequest";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
 
 interface MemberRequestDialogProps {
   mode: "request" | "member";
@@ -16,6 +19,15 @@ interface MemberRequestDialogProps {
   selectedRequest: Request | null;
   teamId: string;
 }
+
+// carousel
+const settings = {
+  dots: true,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 2,
+  slidesToScroll: 2,
+};
 
 const MemberRequestDialog = ({
   mode,
@@ -128,11 +140,11 @@ const MemberRequestDialog = ({
               ) : isError ? (
                 <p>Error loading teams.</p>
               ) : teams && teams.length > 0 ? (
-                <div className="flex gap-2 mb-4">
+                <Slider {...settings}>
                   {teams.map((team: Team) => (
                     <UserDetailsCard key={team._id} team={team} />
                   ))}
-                </div>
+                </Slider>
               ) : (
                 <p>No teams found.</p>
               )}
