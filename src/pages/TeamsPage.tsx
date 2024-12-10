@@ -19,7 +19,6 @@ const TeamsPage = () => {
   const navigate = useNavigate();
 
   // Filter teams
-
   useEffect(() => {
     if (teams && !isPending && !error) {
       const filtered = teams.filter((team: Team) => {
@@ -62,19 +61,30 @@ const TeamsPage = () => {
     return <div>No teams found</div>;
   }
 
+  const activeFilterCount = Object.values(filters).filter(
+    (value) => value,
+  ).length;
+
   return (
     <div className="h-screen text-base-content bg-base-100 px-10">
       {!teamId ? (
         <>
-          <p className="text-[20px] pt-3 mb-3 font-bold ">Teams</p>
+          <p className="text-[20px] pt-3 mb-3 font-bold">Teams</p>
 
           <div className="flex gap-2 flex-wrap items-center justify-between">
             <div className="flex gap-2 flex-wrap items-center">
               <p>
-                Filters: <span className="sm:hidden">(3)</span>
+                Filters:{" "}
+                {activeFilterCount > 0 && (
+                  <span className="sm:hidden">({activeFilterCount})</span>
+                )}
               </p>
+              <button className="w-[98px] text-[14px] p-1 text-white bg-yellow sm:hidden sm:w-[143px]">
+                Show Filters
+              </button>
+
               <select
-                className="max-w-xs bg-transparent border border-1 w-[143px] p-1 text-[14px] hidden sm:block"
+                className="max-w-xs bg-transparent border border-1 w-[143px] p-1 text-[14px]"
                 style={{ borderColor: "rgba(204, 205, 207, 1)" }}
                 value={filters.domain}
                 onChange={(e) =>
@@ -89,7 +99,7 @@ const TeamsPage = () => {
                 </option>
               </select>
               <select
-                className="max-w-xs bg-transparent border p-1 border-1 w-[143px] text-[14px] hidden sm:block"
+                className="max-w-xs bg-transparent border p-1 border-1 w-[143px] text-[14px]"
                 style={{ borderColor: "rgba(204, 205, 207, 1)" }}
                 value={filters.subDomain}
                 onChange={(e) =>
@@ -104,7 +114,7 @@ const TeamsPage = () => {
                 <option value="Full Stack">Full Stack</option>
               </select>
               <select
-                className="max-w-xs bg-transparent border p-1 border-1 w-[143px] text-[14px] hidden sm:block"
+                className="max-w-xs bg-transparent border p-1 border-1 w-[143px] text-[14px]"
                 style={{ borderColor: "rgba(204, 205, 207, 1)" }}
                 value={filters.topics}
                 onChange={(e) =>
@@ -121,9 +131,6 @@ const TeamsPage = () => {
                 <option value="Next.Js">Next.Js</option>
                 <option value="Node.Js">Node.Js</option>
               </select>
-              <button className="w-[98px] text-[14px] p-1 text-white bg-yellow sm:hidden sm:w-[143px]">
-                Show Filters
-              </button>
               <button
                 className="w-[98px] text-[14px] p-1 text-white bg-red-600 sm:w-[143px]"
                 onClick={() =>
@@ -157,7 +164,7 @@ const TeamsPage = () => {
             </label>
           </div>
 
-          <div className="grid grid-cols-3 gap-12 mt-10 w-[80%]">
+          <div className="flex flex-wrap gap-12 mt-10 lg:w-[80%]">
             {filteredTeams.map((team: Team) => {
               return (
                 <TeamCard
@@ -165,7 +172,7 @@ const TeamsPage = () => {
                   team={team}
                   section="allTeams-section"
                   onClick={() => navigate(`/teams/${team._id}`)}
-                  styles={"h-[200px]"}
+                  styles={"h-[165px] w-[330px]"}
                 />
               );
             })}
