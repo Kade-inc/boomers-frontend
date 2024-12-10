@@ -1,4 +1,4 @@
-import elipse from "../assets/Ellipse 103.svg";
+import elipse from "../assets/user-image.svg";
 import TeamMember from "../entities/TeamMember";
 import Request from "../entities/Request";
 

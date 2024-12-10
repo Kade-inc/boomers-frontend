@@ -813,7 +813,7 @@ class APIClient {
         },
       );
       const { data } = response.data;
-      toast.success(`REquest sent successfully`);
+      toast.success(`Request sent successfully`);
       return data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;

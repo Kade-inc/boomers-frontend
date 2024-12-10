@@ -130,7 +130,7 @@ const TeamDetailsPage = () => {
   };
 
   return (
-    <div className="h-screen bg-base-100 py-10 px-[40px]">
+    <div className="h-screen bg-base-100 py-[8px] px-[8px] sm:py-10 sm:px-[40px]">
       <>
         {teamError && (
           <Toaster
@@ -201,7 +201,7 @@ const TeamDetailsPage = () => {
                       Specialization
                     </p>
 
-                    <div className="flex items-center mb-2 font-regular text-[14px]">
+                    <div className="flex items-center mb-2 font-regular flex-wrap text-[14px]">
                       {team.domain}{" "}
                       <div className="bg-white rounded-full w-1 h-1 mx-1"></div>{" "}
                       {team.subdomain}{" "}
@@ -348,13 +348,14 @@ const TeamDetailsPage = () => {
                   )}
 
                   {/* Challenges */}
-                  <div>
+                  <div className="flex gap-1 flex-wrap justify-center sm:justify-start">
                     {getFilteredChallenges().length > 0 ? (
                       getFilteredChallenges().map((challenge: Challenge) => (
                         <ChallengesCard
                           key={challenge._id}
                           challenge={challenge}
                           isDeleteMode={isDeleteMode}
+                          styles={"h-[140px] w-[310px] m-auto sm:mx-0"}
                           isSelected={selectedChallenges.includes(
                             challenge._id,
                           )}
@@ -410,7 +411,7 @@ const TeamDetailsPage = () => {
                 )}
             </div>
 
-            <div className="flex justify-end mt-12">
+            <div className="fixed bottom-0 right-0 m-4">
               {activeTab === "challenges" &&
                 user.user_id === team?.members[0]?._id && (
                   <button

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import UserDetailsCard from "./UserDetailsCard";
 import TeamMember from "../entities/TeamMember";
 import Request from "../entities/Request";
-import elipse from "../assets/Ellipse 103.svg";
+import userImg from "../assets/user-image.svg";
 import useRemoveTeamMember from "../hooks/useRemoveTeamMember";
 import useTeams from "../hooks/useTeams";
 import React from "react";
@@ -119,8 +119,8 @@ const MemberRequestDialog = ({
             className="mb-3 mx-auto mt-5 h-[81px] w-[81px] rounded-full"
             src={
               mode === "member"
-                ? (selectedTeamMember?.profile_picture ?? elipse)
-                : (selectedRequest?.userProfile?.profile_picture ?? elipse)
+                ? (selectedTeamMember?.profile_picture ?? userImg)
+                : (selectedRequest?.userProfile?.profile_picture ?? userImg)
             }
             alt="Profile"
           />

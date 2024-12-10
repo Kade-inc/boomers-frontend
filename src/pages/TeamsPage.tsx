@@ -184,7 +184,7 @@ const TeamsPage = () => {
               );
             })}
           </div>
-          <div className="flex justify-end mt-12">
+          <div className="fixed bottom-0 right-0 m-4">
             <button
               className="w-[98px] text-[14px] p-1 text-black bg-yellow sm:w-[143px]"
               onClick={() => navigate("/create-team")}
