@@ -11,6 +11,7 @@ const TeamsPage = () => {
     topics: "",
   });
   const [searchName, setSearchName] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
 
   const [filteredTeams, setFilteredTeams] = useState<Team[]>([]);
 
@@ -79,58 +80,64 @@ const TeamsPage = () => {
                   <span className="sm:hidden">({activeFilterCount})</span>
                 )}
               </p>
-              <button className="w-[98px] text-[14px] p-1 text-white bg-yellow sm:hidden sm:w-[143px]">
-                Show Filters
+              <button
+                className="w-[98px] text-[14px] p-1 text-white bg-yellow sm:hidden sm:w-[143px]"
+                onClick={() => {
+                  setShowFilters(!showFilters);
+                }}
+              >
+                {!showFilters ? "Show Filters" : "Hide Filters"}
               </button>
-
-              <select
-                className="max-w-xs bg-transparent border border-1 w-[143px] p-1 text-[14px]"
-                style={{ borderColor: "rgba(204, 205, 207, 1)" }}
-                value={filters.domain}
-                onChange={(e) =>
-                  setFilters({ ...filters, domain: e.target.value })
-                }
-              >
-                <option value="" disabled>
-                  Domain
-                </option>
-                <option value="Software Engineering">
-                  Software Engineering
-                </option>
-              </select>
-              <select
-                className="max-w-xs bg-transparent border p-1 border-1 w-[143px] text-[14px]"
-                style={{ borderColor: "rgba(204, 205, 207, 1)" }}
-                value={filters.subDomain}
-                onChange={(e) =>
-                  setFilters({ ...filters, subDomain: e.target.value })
-                }
-              >
-                <option value="" disabled>
-                  Sub domain
-                </option>
-                <option value="Frontend">Frontend</option>
-                <option value="Backend">Backend</option>
-                <option value="Full Stack">Full Stack</option>
-              </select>
-              <select
-                className="max-w-xs bg-transparent border p-1 border-1 w-[143px] text-[14px]"
-                style={{ borderColor: "rgba(204, 205, 207, 1)" }}
-                value={filters.topics}
-                onChange={(e) =>
-                  setFilters({ ...filters, topics: e.target.value })
-                }
-              >
-                <option value="" disabled>
-                  Topics
-                </option>
-                <option value="React JS">React JS</option>
-                <option value="Django">Django</option>
-                <option value="Flask">Flask</option>
-                <option value="AngularJS">AngularJS</option>
-                <option value="Next.Js">Next.Js</option>
-                <option value="Node.Js">Node.Js</option>
-              </select>
+              <div className={`flex gap-2 flex-wrap`}>
+                <select
+                  className={`max-w-xs bg-transparent border p-1 border-1 w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
+                  style={{ borderColor: "rgba(204, 205, 207, 1)" }}
+                  value={filters.domain}
+                  onChange={(e) =>
+                    setFilters({ ...filters, domain: e.target.value })
+                  }
+                >
+                  <option value="" disabled>
+                    Domain
+                  </option>
+                  <option value="Software Engineering">
+                    Software Engineering
+                  </option>
+                </select>
+                <select
+                  className={`max-w-xs bg-transparent border p-1 border-1 w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
+                  style={{ borderColor: "rgba(204, 205, 207, 1)" }}
+                  value={filters.subDomain}
+                  onChange={(e) =>
+                    setFilters({ ...filters, subDomain: e.target.value })
+                  }
+                >
+                  <option value="" disabled>
+                    Sub domain
+                  </option>
+                  <option value="Frontend">Frontend</option>
+                  <option value="Backend">Backend</option>
+                  <option value="Full Stack">Full Stack</option>
+                </select>
+                <select
+                  className={`max-w-xs bg-transparent border p-1 border-1 w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
+                  style={{ borderColor: "rgba(204, 205, 207, 1)" }}
+                  value={filters.topics}
+                  onChange={(e) =>
+                    setFilters({ ...filters, topics: e.target.value })
+                  }
+                >
+                  <option value="" disabled>
+                    Topics
+                  </option>
+                  <option value="React JS">React JS</option>
+                  <option value="Django">Django</option>
+                  <option value="Flask">Flask</option>
+                  <option value="AngularJS">AngularJS</option>
+                  <option value="Next.Js">Next.Js</option>
+                  <option value="Node.Js">Node.Js</option>
+                </select>
+              </div>
               <button
                 className="w-[98px] text-[14px] p-1 text-white bg-red-600 sm:w-[143px]"
                 onClick={() =>
