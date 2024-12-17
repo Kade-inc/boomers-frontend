@@ -171,7 +171,7 @@ const TeamsPage = () => {
             </label>
           </div>
 
-          <div className="flex flex-wrap gap-12 mt-10 lg:w-[80%]">
+          <div className="flex flex-wrap gap-12 mt-10 lg:w-[90%]">
             {filteredTeams.map((team: Team) => {
               return (
                 <TeamCard

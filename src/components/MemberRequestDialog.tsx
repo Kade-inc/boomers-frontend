@@ -27,6 +27,18 @@ const settings = {
   speed: 500,
   slidesToShow: 2,
   slidesToScroll: 2,
+  initialSlide: 1,
+
+  responsive: [
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        initialSlide: 1,
+      },
+    },
+  ],
 };
 
 const MemberRequestDialog = ({
@@ -107,7 +119,7 @@ const MemberRequestDialog = ({
     <dialog
       ref={dialogRef}
       id="my_modal_7"
-      className="modal modal-bottom sm:modal-middle"
+      className="modal modal-middle"
       onClose={handleDialogClose}
     >
       <div className="modal-box p-0" style={{ borderRadius: "0px" }}>
@@ -140,11 +152,13 @@ const MemberRequestDialog = ({
               ) : isError ? (
                 <p>Error loading teams.</p>
               ) : teams && teams.length > 0 ? (
-                <Slider {...settings}>
-                  {teams.map((team: Team) => (
-                    <UserDetailsCard key={team._id} team={team} />
-                  ))}
-                </Slider>
+                <div className="slider-container">
+                  <Slider {...settings}>
+                    {teams.map((team: Team) => (
+                      <UserDetailsCard key={team._id} team={team} />
+                    ))}
+                  </Slider>
+                </div>
               ) : (
                 <p>No teams found.</p>
               )}
