@@ -38,7 +38,7 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
       id="my_modal_3"
       className="modal fixed inset-0 bg-black backdrop-blur-sm bg-opacity-30 flex justify-center items-start overflow-scroll"
     >
-      <div className="mt-[90px] text-left">
+      <div className="mt-[90px] text-left w-full max-w-[80%] mx-auto px-4">
         <form method="dialog" onClick={() => setViewClicked(false)}>
           <button className="btn btn-sm btn-circle absolute border-none right-2 top-2 bg-red-600 text-white mr-4 mt-4">
             ✕
@@ -47,34 +47,36 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
 
         {!viewClicked ? (
           <>
-            <h3 className="font-bold text-lg text-white mb-4">
+            <h3 className="font-bold text-lg text-white mb-4 text-center">
               Search for a user to add to your team
             </h3>
-            <label className="input input-bordered rounded-none w-[500px] border-white bg-transparent flex items-center gap-2 h-[29px] text-white">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 16 16"
-                fill="currentColor"
-                className="h-4 w-4 opacity-70 flex-shrink-0"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-                  clipRule="evenodd"
+            <div className="w-full flex justify-center">
+              <label className="input input-bordered rounded-none w-full max-w-[500px] border-white bg-transparent flex items-center gap-2 h-[40px] text-white mb-7">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                  className="h-4 w-4 opacity-70 flex-shrink-0"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <input
+                  type="text"
+                  className="w-full"
+                  value={searchQuery}
+                  onChange={handleInputChange}
                 />
-              </svg>
-              <input
-                type="text"
-                className="w-full"
-                value={searchQuery}
-                onChange={handleInputChange}
-              />
-            </label>
+              </label>
+            </div>
 
             {isLoading && <p className="text-white">Loading...</p>}
             {error && <p className="text-white">Error: {error.message}</p>}
 
-            <div className="mt-4">
+            <div className="flex gap-4 flex-wrap justify-center">
               {users?.length === 0 ? (
                 <p className="text-white">No users found</p>
               ) : (
@@ -83,7 +85,7 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
                   .map((user) => (
                     <div
                       key={user._id}
-                      className="card w-[250px] h-[250px] bg-black font-body shadow-lg mt-8"
+                      className="card w-[250px] h-[250px] bg-black font-body shadow-lg"
                     >
                       <div className="card-body flex flex-col justify-center items-center">
                         <img
