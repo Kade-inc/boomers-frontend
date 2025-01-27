@@ -16,7 +16,9 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
   const [userName, setUserName] = useState<string>("");
 
   const { data: user, isLoading: isUserLoading } = useGetUser(userId);
-  const { data, isLoading, error } = useGetAllUsers(searchQuery);
+
+  // Only fetch users when searchQuery is not empty
+  const { data, isLoading, error } = useGetAllUsers(searchQuery || undefined);
   const users = Array.isArray(data) ? data : [];
   const { mutate: addTeamMember } = useAddTeamMember();
 
@@ -40,7 +42,15 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
     >
       <div className="mt-[90px] text-left w-full max-w-[80%] mx-auto px-4">
         <form method="dialog" onClick={() => setViewClicked(false)}>
-          <button className="btn btn-sm btn-circle absolute border-none right-2 top-2 bg-red-600 text-white mr-4 mt-4">
+          <button
+            className="btn btn-sm btn-circle absolute border-none right-2 top-2 bg-red-600 text-white mr-4 mt-4"
+            onClick={() => {
+              setViewClicked(false);
+              setSearchQuery("");
+              setUserId("");
+              setUserName("");
+            }}
+          >
             ✕
           </button>
         </form>
@@ -73,11 +83,17 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
               </label>
             </div>
 
-            {isLoading && <p className="text-white">Loading...</p>}
-            {error && <p className="text-white">Error: {error.message}</p>}
+            {isLoading && searchQuery && (
+              <p className="text-white">Loading...</p>
+            )}
+            {error && searchQuery && (
+              <p className="text-white">Error: {error.message}</p>
+            )}
 
             <div className="flex gap-4 flex-wrap justify-center">
-              {users?.length === 0 ? (
+              {!searchQuery ? (
+                <p className="text-white">Enter a search term to find users</p>
+              ) : users?.length === 0 ? (
                 <p className="text-white">No users found</p>
               ) : (
                 users
