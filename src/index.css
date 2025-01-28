@@ -10,3 +10,8 @@
     @apply bg-slate-50;
   }
 }
+
+/* Override Slick styles */
+.slick-dots {
+  position: static !important;
+}

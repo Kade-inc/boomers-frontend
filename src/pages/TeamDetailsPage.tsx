@@ -274,7 +274,7 @@ const TeamDetailsPage = () => {
 
             <div className="mt-5">
               {activeTab === "members" && (
-                <div className="flex gap-6">
+                <div className="flex gap-6 flex-wrap">
                   {team?.members.slice(1).map((member: TeamMember) => (
                     <MemberCard
                       key={member._id}
@@ -296,7 +296,7 @@ const TeamDetailsPage = () => {
                 <div>
                   {/* Only show filter buttons if the user is the team owner */}
                   {user.user_id === team?.members[0]?._id && (
-                    <div className="flex gap-2 items-center mb-4">
+                    <div className="flex gap-2 items-center mb-4 flex-wrap">
                       <p>Filter By:</p>
                       <button
                         className={`btn btn-outline ${filter === "all" ? "bg-yellow text-black" : ""}`}
@@ -381,7 +381,7 @@ const TeamDetailsPage = () => {
 
               {activeTab === "requests" &&
                 user.user_id === team?.members[0]?._id && (
-                  <div className="flex gap-6">
+                  <div className="flex gap-6 flex-wrap">
                     {requests.length > 0 ? (
                       requests
                         .filter(

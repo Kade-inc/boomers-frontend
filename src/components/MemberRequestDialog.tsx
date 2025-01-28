@@ -152,7 +152,7 @@ const MemberRequestDialog = ({
               ) : isError ? (
                 <p>Error loading teams.</p>
               ) : teams && teams.length > 0 ? (
-                <div className="slider-container">
+                <div className="slider-container pb-2">
                   <Slider {...settings}>
                     {teams.map((team: Team) => (
                       <UserDetailsCard key={team._id} team={team} />
