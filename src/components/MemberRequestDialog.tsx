@@ -122,7 +122,10 @@ const MemberRequestDialog = ({
       className="modal modal-middle"
       onClose={handleDialogClose}
     >
-      <div className="modal-box p-0" style={{ borderRadius: "0px" }}>
+      <div
+        className="modal-box !p-0 !overflow-y-auto !overflow-x-hidden"
+        style={{ borderRadius: "0px" }}
+      >
         <div className="text-center flex flex-col items-center justify-center bg-yellow">
           <form method="dialog" className="ml-[90%] mt-1">
             <button className="text-white ">X</button>

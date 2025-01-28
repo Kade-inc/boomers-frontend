@@ -163,6 +163,9 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
                   onClick={() => {
                     handleAddTeammember();
                     setViewClicked(false);
+                    setSearchQuery("");
+                    setUserId("");
+                    setUserName("");
                     const modal = document.getElementById(
                       "my_modal_3",
                     ) as HTMLDialogElement | null;
