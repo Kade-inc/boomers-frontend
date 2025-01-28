@@ -217,7 +217,7 @@ const TeamDetailsPage = () => {
                   </div>
                   <div className="text-center flex flex-col items-center justify-center">
                     <img
-                      className="mb-3 mx-auto w-[81px] h-[81px] rounded-full"
+                      className="mb-3 mx-auto w-[60px] h-[60px] sm:w-[81px] sm:h-[81px] rounded-full"
                       src={team?.members[0]?.profile_picture || userImg}
                       alt="img"
                     />
@@ -274,7 +274,7 @@ const TeamDetailsPage = () => {
 
             <div className="mt-5">
               {activeTab === "members" && (
-                <div className="flex gap-6 flex-wrap">
+                <div className="flex gap-6 flex-wrap justify-center sm:justify-start">
                   {team?.members.slice(1).map((member: TeamMember) => (
                     <MemberCard
                       key={member._id}
@@ -381,7 +381,7 @@ const TeamDetailsPage = () => {
 
               {activeTab === "requests" &&
                 user.user_id === team?.members[0]?._id && (
-                  <div className="flex gap-6 flex-wrap">
+                  <div className="flex gap-6 flex-wrap justify-center sm:justify-start">
                     {requests.length > 0 ? (
                       requests
                         .filter(
