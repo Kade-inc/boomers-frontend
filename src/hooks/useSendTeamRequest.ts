@@ -13,7 +13,7 @@ const useSendTeamRequest = () => {
       return apiClient.addTeamRequest(payload);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["team-member-requsts"] });
+      queryClient.invalidateQueries({ queryKey: ["team-member-requests"] });
     },
     onError: (error: any) => {
       console.error("Failed to update request status:", error);

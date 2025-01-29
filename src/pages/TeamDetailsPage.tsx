@@ -25,7 +25,7 @@ const TeamDetailsPage = () => {
     useState<TeamMember | null>(null);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
   const [isClicked, setIsClicked] = useState(false);
-  const { mutate: sendRequest } = useSendTeamRequest();
+  const { mutate: sendRequest, isPending } = useSendTeamRequest();
   const navigate = useNavigate();
   const [filter, setFilter] = useState<"all" | "drafts" | "completed">("all");
   const [dialogMode, setDialogMode] = useState<"request" | "member">("request");
@@ -92,12 +92,22 @@ const TeamDetailsPage = () => {
   );
 
   const handleRequestClick = () => {
-    if (teamId) {
-      sendRequest({ payload: { team_id: teamId } });
-      setIsClicked(true);
-    } else {
+    if (!teamId) {
       console.error("teamId is undefined");
+      return;
     }
+
+    sendRequest(
+      { payload: { team_id: teamId } },
+      {
+        onSuccess: () => {
+          setIsClicked(true);
+        },
+        onError: (error) => {
+          console.error("Request failed:", error);
+        },
+      },
+    );
   };
 
   if (isTeamPending || isChallengesPending || isTeamMemberRequestsPending) {
@@ -472,15 +482,21 @@ const TeamDetailsPage = () => {
                     </button>
                   ) : (
                     <button
-                      className={`w-[98px] text-[14px] p-1 text-black sm:w-[143px] font-body rounded ${
+                      className={`w-[98px] text-[14px] p-1 text-black sm:w-[143px] font-body rounded flex items-center justify-center ${
                         isClicked || userRequest
                           ? "bg-gray-400 cursor-not-allowed"
                           : "bg-yellow"
                       }`}
                       onClick={handleRequestClick}
-                      disabled={isClicked || userRequest}
+                      disabled={isClicked || userRequest || isPending}
                     >
-                      {isClicked || userRequest ? "Requested" : "Request"}
+                      {isPending ? (
+                        <span className="loading loading-spinner text-accent"></span>
+                      ) : isClicked || userRequest ? (
+                        "Requested"
+                      ) : (
+                        "Request"
+                      )}
                     </button>
                   )}
                 </>
