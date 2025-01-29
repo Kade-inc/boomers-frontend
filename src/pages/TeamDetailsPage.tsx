@@ -115,6 +115,20 @@ const TeamDetailsPage = () => {
   // Function to get filtered challenges
   const getFilteredChallenges = () => {
     if (!challenges) return [];
+
+    const isOwner = user.user_id === team?.members[0]?._id;
+    const isMember = team?.members?.some(
+      (member: TeamMember) => member._id === user.user_id,
+    );
+    const isNonMember = !isOwner && !isMember;
+
+    if (isNonMember) {
+      return challenges.filter(
+        (challenge: Challenge) => challenge.valid === true,
+      ); // Only completed for non-members
+    }
+
+    // Members and owner can filter normally
     switch (filter) {
       case "drafts":
         return challenges.filter(
