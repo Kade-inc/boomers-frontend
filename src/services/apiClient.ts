@@ -173,9 +173,9 @@ class APIClient {
   };
 
   // Function to get all users
-  getUsers(username?: string, requiresAuth = true) {
-    const url = username
-      ? `${this.endpoint}?username=${username}`
+  getUsers(searchQuery?: string, requiresAuth = true) {
+    const url = searchQuery
+      ? `${this.endpoint}?search=${searchQuery}`
       : `${this.endpoint}`;
 
     return this.axiosInstance

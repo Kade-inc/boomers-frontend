@@ -92,7 +92,7 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
 
             <div className="flex gap-4 flex-wrap justify-center">
               {!searchQuery ? (
-                <p className="text-white">Enter a search term to find users</p>
+                <p className="text-white">Enter username, first name or last name to find users</p>
               ) : users?.length === 0 ? (
                 <p className="text-white">No users found</p>
               ) : (
