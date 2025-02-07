@@ -8,11 +8,16 @@ export default interface UserProfile {
     firstName: string | null;
     lastName: string | null;
     bio: string | null;
-    interests: string | null;
+    interests: Interest;
     username: string;
     gender: string | null;
     profilePicture: string | null;
     createdAt: string;
     updatedAt: string;
   };
+}
+interface Interest {
+  domain: string[];
+  subdomain: string[];
+  subdomainTopics: string[];
 }

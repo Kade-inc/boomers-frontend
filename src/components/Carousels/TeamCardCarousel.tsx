@@ -3,7 +3,6 @@ import Slider from "react-slick";
 import { useLocation, useNavigate } from "react-router-dom";
 import Team from "../../entities/Team";
 import TeamCard from "../TeamCard";
-
 interface CarouselProps {
   slides: Team[];
 }

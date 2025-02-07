@@ -152,7 +152,7 @@ function ChallengePage() {
   if (challengePending || commentsPending || (challenge && teamPending)) {
     return (
       <>
-        <div className="h-screen flex justify-center items-center bg-base-100 h-screen">
+        <div className="h-screen flex justify-center items-center bg-base-100">
           <span className="loading loading-dots loading-lg"></span>
         </div>
       </>

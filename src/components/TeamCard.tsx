@@ -12,7 +12,7 @@ interface TeamProps {
   onClick?: () => void;
   name?: string;
   domain?: string;
-  subDomain?: string;
+  subdomain?: string;
 }
 const TeamCard = ({
   team,
@@ -21,7 +21,7 @@ const TeamCard = ({
   onClick,
   name,
   domain,
-  subDomain,
+  subdomain,
 }: TeamProps) => {
   const { user } = useAuthStore.getState();
 
@@ -57,46 +57,42 @@ const TeamCard = ({
             )}
           </div>
           <div className="flex justify-between w-full">
-            <div className="flex-grow text-[12px]">
+            <div className="flex-grow text-[10px]">
               {team && (
                 <>
                   <div className="flex items-center mb-2 font-medium">
                     {team?.domain || domain}
-                    {team?.subDomain ||
-                      (domain && (
-                        <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
-                      ))}
 
-                    {team?.subDomain || subDomain}
-                    {team.subDomainTopics &&
-                      team.subDomainTopics.length > 0 && (
+                    {(team?.subdomain || subdomain) && (
+                      <>
                         <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
-                      )}
-
-                    {team?.subDomainTopics && (
-                      <div
-                        className={`${team.subDomainTopics.length > 1 ? "tooltip tooltip-top tooltip-warning" : ""}`}
-                        data-tip={
-                          team.subDomainTopics.length > 0
-                            ? team.subDomainTopics.map((topic: string) => topic)
-                            : ""
-                        }
-                      >
-                        {team.subDomainTopics[0]}
-                        {team.subDomainTopics.length - 1 > 0 &&
-                          ` +${team.subDomainTopics.length - 1}`}
-                      </div>
+                        {team?.subdomain || subdomain}
+                      </>
                     )}
+
+                    {team?.subdomainTopics &&
+                      team.subdomainTopics.length > 0 && (
+                        <>
+                          <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
+                          <div
+                            className={`${
+                              team.subdomainTopics.length > 1
+                                ? "tooltip tooltip-top tooltip-warning"
+                                : ""
+                            }`}
+                            data-tip={team.subdomainTopics.join(", ")}
+                          >
+                            {team.subdomainTopics[0]}
+                            {team.subdomainTopics.length > 1 &&
+                              ` +${team.subdomainTopics.length - 1}`}
+                          </div>
+                        </>
+                      )}
                   </div>
                   {(team.name || name?.trim()) && <div>Active</div>}
                 </>
               )}
             </div>
-            {/* <div className="flex mt-[-20px] mr-2.5">
-                <h2 className="font-normal rotate-[-90deg] origin-top-right whitespace-nowrap">
-                  5 Members
-                </h2>
-              </div> */}
           </div>
         </div>
       </div>

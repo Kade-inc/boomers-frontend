@@ -172,6 +172,43 @@ class APIClient {
     }
   };
 
+  // Function to get all users
+  getUsers(searchQuery?: string, requiresAuth = true) {
+    const url = searchQuery
+      ? `${this.endpoint}?search=${searchQuery}`
+      : `${this.endpoint}`;
+
+    return this.axiosInstance
+      .get(url, {
+        headers: {
+          requiresAuth,
+        },
+      })
+      .then((response) => response.data)
+      .catch((error) => {
+        throw error;
+      });
+  }
+
+  // Get a user
+  getUserProfileById = async (userId: string, requiresAuth = true) => {
+    const url = `${this.endpoint}/${userId}/profile`;
+    try {
+      const response = await this.axiosInstance.get(url, {
+        headers: {
+          requiresAuth,
+        },
+      });
+      return response.data.profile;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching User profile:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
   getToken = () => {
     return Cookies.get("token");
   };
@@ -654,6 +691,136 @@ class APIClient {
         }`,
       );
       throw error; // Throw the error to allow React Query to handle it
+    }
+  };
+  // Leave Team
+  leaveTeam = async (teamId: string, requiresAuth = true) => {
+    try {
+      const response = await this.axiosInstance.delete(
+        `${this.endpoint}/${teamId}`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error leaving the team",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
+  // Remove Team Member
+  removeTeamMember = async (
+    teamId: string,
+    userId: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.delete(this.endpoint, {
+        headers: {
+          requiresAuth,
+        },
+        params: {
+          teamId,
+          userId,
+        },
+      });
+      const { data } = response.data;
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error removing the team member",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
+  // Join Team Request
+  joinTeamRequest = async (
+    requestId: string,
+    payload: { status: string; comment: string },
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.put(
+        `${this.endpoint}/${requestId}`,
+        payload,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      toast.success(`Request ${payload.status.toLowerCase()} successfully!`);
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Failed to update request.",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
+  // Add Team member
+  addTeamMember = async (
+    payload: { team_id: string; username: string },
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.post(
+        `${this.endpoint}`,
+        payload,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      toast.success(`Added successfully`);
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Failed to add member.",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
+  // Add Team Request
+  addTeamRequest = async (
+    payload: { team_id: string },
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.post(
+        `${this.endpoint}`,
+        payload,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      toast.success(`Request sent successfully`);
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Failed to send Request.",
+        axiosError.response?.data ?? axiosError.message,
+      );
     }
   };
 }
