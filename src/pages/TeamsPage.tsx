@@ -52,7 +52,11 @@ const TeamsPage = () => {
   }, [teams, filters, isPending, searchName, error]);
 
   if (isPending) {
-    return <div>Loading: </div>;
+    return (
+      <div className="flex justify-center items-center h-screen bg-base-100">
+        <span className="loading loading-dots loading-lg"></span>
+      </div>
+    );
   }
   if (error) {
     return <div>Error: </div>;
@@ -70,10 +74,10 @@ const TeamsPage = () => {
     <div className="h-screen text-base-content bg-base-100 px-10">
       {!teamId ? (
         <>
-          <p className="text-[20px] pt-3 mb-3 font-bold">Teams</p>
+          <p className="text-[20px] pt-3 mb-3 font-bold font-heading">Teams</p>
 
           <div className="flex gap-2 flex-wrap items-center justify-between">
-            <div className="flex gap-2 flex-wrap items-center">
+            <div className="flex gap-2 flex-wrap items-center font-body">
               <p>
                 Filters:{" "}
                 {activeFilterCount > 0 && (
@@ -90,7 +94,7 @@ const TeamsPage = () => {
               </button>
               <div className={`flex gap-2 flex-wrap`}>
                 <select
-                  className={`max-w-xs bg-transparent border p-1 border-1 w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
+                  className={`max-w-xs bg-transparent border p-1 border-1 rounded-sm w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
                   style={{ borderColor: "rgba(204, 205, 207, 1)" }}
                   value={filters.domain}
                   onChange={(e) =>
@@ -105,7 +109,7 @@ const TeamsPage = () => {
                   </option>
                 </select>
                 <select
-                  className={`max-w-xs bg-transparent border p-1 border-1 w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
+                  className={`max-w-xs bg-transparent border p-1 border-1 rounded-sm w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
                   style={{ borderColor: "rgba(204, 205, 207, 1)" }}
                   value={filters.subDomain}
                   onChange={(e) =>
@@ -120,7 +124,7 @@ const TeamsPage = () => {
                   <option value="Full Stack">Full Stack</option>
                 </select>
                 <select
-                  className={`max-w-xs bg-transparent border p-1 border-1 w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
+                  className={`max-w-xs bg-transparent border p-1 border-1 rounded-sm w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
                   style={{ borderColor: "rgba(204, 205, 207, 1)" }}
                   value={filters.topics}
                   onChange={(e) =>
@@ -139,7 +143,7 @@ const TeamsPage = () => {
                 </select>
               </div>
               <button
-                className="w-[98px] text-[14px] p-1 text-white bg-red-600 sm:w-[143px]"
+                className="text-white bg-red-600 px-6 py-[2px] rounded-sm bg-redishs"
                 onClick={() =>
                   setFilters({ domain: "", subDomain: "", topics: "" })
                 }
@@ -162,7 +166,7 @@ const TeamsPage = () => {
               </svg>
               <input
                 type="text"
-                className=""
+                className="font-body"
                 placeholder="Search"
                 onChange={(e) => {
                   setSearchName(e.target.value);
@@ -180,13 +184,14 @@ const TeamsPage = () => {
                   section="allTeams-section"
                   onClick={() => navigate(`/teams/${team._id}`)}
                   styles={"h-[165px] w-[330px]"}
+                  subStyles="px-4"
                 />
               );
             })}
           </div>
           <div className="fixed bottom-0 right-0 m-4">
             <button
-              className="w-[98px] text-[14px] p-1 text-black bg-yellow sm:w-[143px]"
+              className="px-8 py-1 font-body text-darkgrey bg-yellow rounded-sm"
               onClick={() => navigate("/create-team")}
             >
               Add team
