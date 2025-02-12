@@ -201,9 +201,9 @@ function CreateChallenge() {
   };
 
   useEffect(() => {
-    if (teamsData) {
+    if (teamsData && teamsData.data) {
       setOwnedTeams(
-        teamsData.filter((team: Team) => team.owner_id === user.user_id),
+        teamsData.data.filter((team: Team) => team.owner_id === user.user_id),
       );
     }
   }, [teamsData]);

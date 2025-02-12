@@ -221,18 +221,18 @@ class APIClient {
   };
 
   // Fetch Teams
-  getTeams = async (userId?: string, requiresAuth = true) => {
+  getTeams = async (userId?: string, page?: number, requiresAuth = true) => {
     try {
       const response = await this.axiosInstance.get(
-        `${this.endpoint}?userId=${userId}`,
+        `${this.endpoint}?userId=${userId}&page=${page}`,
         {
           headers: {
             requiresAuth,
           },
         },
       );
-      const { data } = response.data;
-      return data;
+
+      return response.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(

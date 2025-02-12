@@ -1,6 +1,7 @@
 import TeamCard from "../components/TeamCard";
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
+import ReactPaginate from "react-paginate";
 import useTeams from "../hooks/useTeams";
 import Team from "../entities/Team";
 
@@ -14,15 +15,15 @@ const TeamsPage = () => {
   const [showFilters, setShowFilters] = useState(false);
 
   const [filteredTeams, setFilteredTeams] = useState<Team[]>([]);
-
+  const [page, setPage] = useState(1);
   const { teamId } = useParams();
-  const { data: teams, isPending, error } = useTeams();
+  const { data: teams, isPending, error } = useTeams("", page);
   const navigate = useNavigate();
 
   // Filter teams
   useEffect(() => {
     if (teams && !isPending && !error) {
-      const filtered = teams.filter((team: Team) => {
+      const filtered = teams.data.filter((team: Team) => {
         const matchesDomain =
           !filters.domain ||
           team?.domain?.toLowerCase().includes(filters.domain.toLowerCase());
@@ -62,13 +63,24 @@ const TeamsPage = () => {
     return <div>Error: </div>;
   }
 
-  if (!Array.isArray(teams)) {
-    return <div>No teams found</div>;
+  if (!Array.isArray(teams.data)) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-base-100">
+        <p>No teams</p>
+      </div>
+    );
   }
 
   const activeFilterCount = Object.values(filters).filter(
     (value) => value,
   ).length;
+
+  // ReactPaginate's onPageChange handler.
+  const handlePageClick = (event: { selected: number }) => {
+    // react-paginate is zero-indexed so add 1
+    const selectedPage = event.selected + 1;
+    setPage(selectedPage);
+  };
 
   return (
     <div className="h-screen text-base-content bg-base-100 px-10">
@@ -188,6 +200,28 @@ const TeamsPage = () => {
                 />
               );
             })}
+          </div>
+
+          <div className="pb-12">
+            {/* Pagination UI */}
+            {teams.totalPages > 1 && (
+              <ReactPaginate
+                breakLabel="..."
+                nextLabel="next"
+                onPageChange={handlePageClick}
+                pageRangeDisplayed={5}
+                pageCount={teams.totalPages}
+                previousLabel="previous"
+                forcePage={page - 1} // This forces the active page to sync with your state
+                containerClassName="flex justify-center items-center mt-6 font-body text-darkgrey"
+                pageClassName="mx-1"
+                pageLinkClassName="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer"
+                activeClassName="bg-yellow text-darkgrey"
+                previousLinkClassName="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer"
+                nextLinkClassName="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer"
+                disabledLinkClassName="opacity-50 cursor-not-allowed"
+              />
+            )}
           </div>
           <div className="fixed bottom-0 right-0 m-4">
             <button
