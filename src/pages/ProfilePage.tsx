@@ -27,8 +27,8 @@ const ProfilePage = () => {
   }, [user]);
 
   useEffect(() => {
-    if (teamsData) {
-      const userTeam = teamsData.filter(
+    if (teamsData && teamsData.data) {
+      const userTeam = teamsData.data.filter(
         (team: Team) => team.owner_id === user.user_id,
       );
       console.log("Filtered user teams:", userTeam);

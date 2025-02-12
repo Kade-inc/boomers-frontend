@@ -154,10 +154,10 @@ const MemberRequestDialog = ({
                 <p>Loading teams...</p>
               ) : isError ? (
                 <p>Error loading teams.</p>
-              ) : teams && teams.length > 0 ? (
+              ) : teams && teams.data.length > 0 ? (
                 <div className="slider-container pb-2">
                   <Slider {...settings}>
-                    {teams.map((team: Team) => (
+                    {teams.data.map((team: Team) => (
                       <UserDetailsCard key={team._id} team={team} />
                     ))}
                   </Slider>
