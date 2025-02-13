@@ -160,7 +160,14 @@ const TeamsPage = () => {
                   onChange={setSelectedTopics}
                 />
               </div>
-              <button className="text-white bg-red-600 px-6 py-[2px] rounded-sm bg-redishs">
+              <button
+                className="text-white bg-red-600 px-6 py-[2px] rounded-sm bg-redish"
+                onClick={() => {
+                  setSelectedSubDomain("");
+                  setSelectedTopics([]);
+                  setPage(1);
+                }}
+              >
                 Clear all
               </button>
             </div>
