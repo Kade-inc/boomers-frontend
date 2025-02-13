@@ -77,18 +77,6 @@ const TeamsPage = () => {
     }
   }, [subDomains]);
 
-  // if (
-  //   isPending ||
-  //   isDomainsPending ||
-  //   isSubTopicsPending ||
-  //   isSubDomainsPending
-  // ) {
-  //   return (
-  //     <div className="flex justify-center items-center h-screen bg-base-100">
-  //       <span className="loading loading-dots loading-lg"></span>
-  //     </div>
-  //   );
-  // }
   if (error || domainsError || subTopicsError || subDomainsError) {
     return (
       <div className="flex justify-center items-center h-screen bg-base-100">
