@@ -221,16 +221,24 @@ class APIClient {
   };
 
   // Fetch Teams
-  getTeams = async (userId?: string, page?: number, requiresAuth = true) => {
+  getTeams = async (
+    params: {
+      userId?: string;
+      page?: number;
+      limit?: number;
+      domain?: string;
+      subdomain?: string;
+      subdomainTopics?: string;
+    },
+    requiresAuth = true,
+  ) => {
     try {
-      const response = await this.axiosInstance.get(
-        `${this.endpoint}?userId=${userId}&page=${page}`,
-        {
-          headers: {
-            requiresAuth,
-          },
+      const response = await this.axiosInstance.get(this.endpoint, {
+        params,
+        headers: {
+          requiresAuth,
         },
-      );
+      });
 
       return response.data;
     } catch (error: unknown) {

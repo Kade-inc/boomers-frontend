@@ -24,7 +24,16 @@ const TeamsPage = () => {
 
   const [page, setPage] = useState(1);
   const { teamId } = useParams();
-  const { data: teams, isPending, error } = useTeams("", page);
+  const {
+    data: teams,
+    isPending,
+    error,
+  } = useTeams({
+    page,
+    domain: selectedDomain,
+    subdomain: selectedSubDomain,
+    subdomainTopics: selectedTopics,
+  });
   const {
     data: domains,
     isPending: isDomainsPending,
@@ -43,7 +52,7 @@ const TeamsPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (teams && teams.data.length > 0) {
+    if (teams) {
       setCurrentTeams(teams.data);
     }
   }, [teams, isPending, error]);
@@ -84,7 +93,7 @@ const TeamsPage = () => {
 
   if (!Array.isArray(teams.data)) {
     return (
-      <div className="flex justify-center items-center h-screen bg-base-100">
+      <div className="flex justify-center items-center h-screen bg-base-100 font-body">
         <p>No teams</p>
       </div>
     );
@@ -186,6 +195,9 @@ const TeamsPage = () => {
               );
             })}
           </div>
+          {currentTeams.length === 0 && (
+            <p className="font-body flex justify-center">No teams</p>
+          )}
 
           <div className="pb-12">
             {/* Pagination UI */}
