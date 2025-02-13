@@ -229,6 +229,7 @@ class APIClient {
       domain?: string;
       subdomain?: string;
       subdomainTopics?: string;
+      name?: string;
     },
     requiresAuth = true,
   ) => {

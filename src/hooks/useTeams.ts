@@ -13,6 +13,7 @@ interface TeamFilters {
   domain?: string | { _id: string; name: string };
   subdomain?: string;
   subdomainTopics?: DomainTopic[]; // We'll convert this to a comma-separated string.
+  name?: string;
 }
 
 const useTeams = (filters: TeamFilters = {}): UseQueryResult<any, Team[]> => {
@@ -23,6 +24,7 @@ const useTeams = (filters: TeamFilters = {}): UseQueryResult<any, Team[]> => {
     domain,
     subdomain,
     subdomainTopics,
+    name,
   } = filters;
 
   const domainQuery =
@@ -35,7 +37,15 @@ const useTeams = (filters: TeamFilters = {}): UseQueryResult<any, Team[]> => {
       : undefined;
 
   return useQuery({
-    queryKey: ["teams", userId, page, domainQuery, subdomain, topicsQuery],
+    queryKey: [
+      "teams",
+      userId,
+      page,
+      domainQuery,
+      subdomain,
+      topicsQuery,
+      name,
+    ],
     queryFn: () =>
       apiClient.getTeams({
         userId,
@@ -44,6 +54,7 @@ const useTeams = (filters: TeamFilters = {}): UseQueryResult<any, Team[]> => {
         domain: domainQuery,
         subdomain,
         subdomainTopics: topicsQuery,
+        name,
       }),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
