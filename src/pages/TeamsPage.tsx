@@ -245,12 +245,12 @@ const TeamsPage = () => {
                 pageCount={teams.totalPages}
                 previousLabel="previous"
                 forcePage={page - 1} // This forces the active page to sync with your state
-                containerClassName="flex justify-center items-center mt-6 font-body text-darkgrey"
+                containerClassName="flex justify-center items-center mt-6 font-body text-darkgrey border-base-content"
                 pageClassName="mx-1"
-                pageLinkClassName="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer"
+                pageLinkClassName="px-3 py-1 border border-gray-300 rounded hover:bg-yellow cursor-pointer text-base-content hover:text-darkgrey"
                 activeClassName="bg-yellow text-darkgrey"
-                previousLinkClassName="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer"
-                nextLinkClassName="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer"
+                previousLinkClassName="px-3 py-1 border border-gray-300 rounded hover:bg-yellow cursor-pointer text-base-content hover:text-darkgrey"
+                nextLinkClassName="px-3 py-1 border border-gray-300 rounded hover:bg-yellow cursor-pointer text-base-content hover:text-darkgrey"
                 disabledLinkClassName="opacity-50 cursor-not-allowed"
               />
             )}
