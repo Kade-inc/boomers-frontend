@@ -1,9 +1,9 @@
 import { useState } from "react";
-import userImg from "../assets/user-image.svg";
 import useGetAllUsers from "../hooks/useGetAllUsers";
 import useGetUser from "../hooks/useGetUser";
 import React from "react";
 import useAddTeamMember from "../hooks/useAddTeamMember";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
 
 interface AddMemberDialogProps {
   teamId: string;
@@ -38,7 +38,7 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
   return (
     <dialog
       id="my_modal_3"
-      className="modal fixed inset-0 bg-black backdrop-blur-sm bg-opacity-30 flex justify-center items-start overflow-scroll"
+      className="modal fixed inset-0 bg-black backdrop-blur-sm bg-opacity-30 flex justify-center items-start overflow-scroll font-body"
     >
       <div className="mt-[90px] text-left w-full max-w-[80%] mx-auto px-4">
         <form method="dialog" onClick={() => setViewClicked(false)}>
@@ -57,16 +57,22 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
 
         {!viewClicked ? (
           <>
-            <h3 className="font-bold text-lg text-white mb-4 text-center">
+            <h3 className="font-normal text-lg text-white mb-4 text-center">
               Search for a user to add to your team
             </h3>
             <div className="w-full flex justify-center">
-              <label className="input input-bordered rounded-none w-full max-w-[500px] border-white bg-transparent flex items-center gap-2 h-[40px] text-white mb-7">
+              <div className="relative w-full max-w-[500px]">
+                <input
+                  type="text"
+                  className="w-full border border-white bg-transparent rounded h-[40px] pl-10 text-white focus:border-white focus:ring-0 focus:outline-none"
+                  value={searchQuery}
+                  onChange={handleInputChange}
+                />
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 16 16"
                   fill="currentColor"
-                  className="h-4 w-4 opacity-70 flex-shrink-0"
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white opacity-70"
                 >
                   <path
                     fillRule="evenodd"
@@ -74,13 +80,7 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
                     clipRule="evenodd"
                   />
                 </svg>
-                <input
-                  type="text"
-                  className="w-full"
-                  value={searchQuery}
-                  onChange={handleInputChange}
-                />
-              </label>
+              </div>
             </div>
 
             {isLoading && searchQuery && (
@@ -90,7 +90,7 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
               <p className="text-white">Error: {error.message}</p>
             )}
 
-            <div className="flex gap-4 flex-wrap justify-center">
+            <div className="flex gap-4 flex-wrap justify-center mt-5">
               {!searchQuery ? (
                 <p className="text-white">
                   Enter username, first name or last name to find users
@@ -103,17 +103,31 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
                   .map((user) => (
                     <div
                       key={user._id}
-                      className="card w-[250px] h-[250px] bg-black font-body shadow-lg"
+                      className="card w-[200px] h-[200px] bg-base-100 font-body border-base-200 shadow-md shadow-base-content/10 base-content rounded"
                     >
-                      <div className="card-body flex flex-col justify-center items-center">
-                        <img
-                          className="h-[81px] w-[81px] rounded-full bg-white"
-                          src={user.profile_picture || userImg}
-                          alt="User avatar"
-                        />
-                        <p className="text-white">{user.username}</p>
+                      <div className="flex flex-col justify-center items-center">
+                        <div className="h-[95px] flex items-center justify-center mt-6 mb-3">
+                          {user.profile.profile_picture ? (
+                            <img
+                              className="h-[81px] w-[81px] rounded-full bg-white"
+                              src={user.profile.profile_picture}
+                              alt="User avatar"
+                            />
+                          ) : (
+                            <UserCircleIcon className="h-[81px] w-[81px] text-darkgrey rounded-full" />
+                          )}
+                        </div>
+
+                        <p className="mb-3 w-full text-center">
+                          {user.profile.firstName && user.profile.lastName
+                            ? `${user.profile.firstName} ${user.profile.lastName}`
+                            : user.profile.firstName ||
+                              user.profile.lastName ||
+                              user.username}
+                        </p>
+
                         <button
-                          className="btn bg-yellow border-none w-[90px]"
+                          className=" bg-yellow w-[90px] rounded text-[14px] font-medium text-black"
                           onClick={() => {
                             setViewClicked(true);
                             if (user._id) {

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import userImg from "../assets/user-image.svg";
 import ChallengesCard from "../components/ChallengesCard";
 import MemberCard from "../components/MemberCard";
 import { useNavigate, useParams } from "react-router-dom";
@@ -17,6 +16,7 @@ import MemberRequestDialog from "../components/MemberRequestDialog";
 import React from "react";
 import useSendTeamRequest from "../hooks/useSendTeamRequest";
 import useDeleteChallenges from "../hooks/Challenges/useDeleteChallenges";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
 
 const TeamDetailsPage = () => {
   const [activeTab, setActiveTab] = useState("members");
@@ -90,6 +90,16 @@ const TeamDetailsPage = () => {
     (request: Request) =>
       request.user_id === user.user_id && request.status === "PENDING",
   );
+
+  const firstName = team?.members[0]?.firstName;
+  const lastName = team?.members[0]?.lastName;
+  const username = team?.members[0]?.username;
+
+  // Determine what to display
+  const displayName =
+    firstName && lastName
+      ? `${firstName} ${lastName}`
+      : firstName || lastName || username;
 
   const handleRequestClick = () => {
     if (!teamId) {
@@ -240,12 +250,16 @@ const TeamDetailsPage = () => {
                     </div>
                   </div>
                   <div className="text-center flex flex-col items-center justify-center">
-                    <img
-                      className="mb-3 mx-auto w-[60px] h-[60px] sm:w-[81px] sm:h-[81px] rounded-full"
-                      src={team?.members[0]?.profile_picture || userImg}
-                      alt="img"
-                    />
-                    <p>{team?.members[0]?.username}</p>
+                    {team?.members[0]?.profile_picture ? (
+                      <img
+                        className="mb-3 mx-auto w-[60px] h-[60px] sm:w-[81px] sm:h-[81px] rounded-full"
+                        src={team.members[0].profile_picture}
+                        alt="Profile"
+                      />
+                    ) : (
+                      <UserCircleIcon className="mb-3 mx-auto w-[60px] h-[60px] sm:w-[81px] sm:h-[81px] text-darkgrey" />
+                    )}
+                    <p>{displayName}</p>
                     <p className="text-center text-[12px]">Owner</p>
                   </div>
                 </div>

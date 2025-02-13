@@ -1,3 +1,5 @@
+import UserProfile from "./UserProfile";
+
 export default interface User {
   email?: string;
   phoneNumber?: string;
@@ -13,6 +15,7 @@ export default interface User {
   interests?: Interest | null;
   lastName?: string;
   profile_picture?: string;
+  profile: UserProfile;
   updatedAt?: string;
   user_id?: string;
   _v?: string;

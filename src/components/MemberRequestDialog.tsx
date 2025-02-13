@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import UserDetailsCard from "./UserDetailsCard";
 import TeamMember from "../entities/TeamMember";
 import Request from "../entities/Request";
-import userImg from "../assets/user-image.svg";
 import useRemoveTeamMember from "../hooks/useRemoveTeamMember";
 import useTeams from "../hooks/useTeams";
 import React from "react";
@@ -12,6 +11,7 @@ import useJoinTeamRequest from "../hooks/useJoinTeamRequest";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
 
 interface MemberRequestDialogProps {
   mode: "request" | "member";
@@ -130,15 +130,28 @@ const MemberRequestDialog = ({
           <form method="dialog" className="ml-[90%] mt-1">
             <button className="text-white ">X</button>
           </form>
-          <img
-            className="mb-3 mx-auto mt-5 h-[81px] w-[81px] rounded-full"
-            src={
-              mode === "member"
-                ? (selectedTeamMember?.profile_picture ?? userImg)
-                : (selectedRequest?.userProfile?.profile_picture ?? userImg)
-            }
-            alt="Profile"
-          />
+          <div className="mb-3 mx-auto mt-5 h-[81px] w-[81px] rounded-full flex items-center justify-center">
+            {mode === "member" ? (
+              selectedTeamMember?.profile_picture ? (
+                <img
+                  className="h-full w-full rounded-full"
+                  src={selectedTeamMember.profile_picture}
+                  alt="Profile"
+                />
+              ) : (
+                <UserCircleIcon className="h-full w-full text-darkgrey" />
+              )
+            ) : selectedRequest?.userProfile?.profile_picture ? (
+              <img
+                className="h-full w-full rounded-full"
+                src={selectedRequest.userProfile.profile_picture}
+                alt="Profile"
+              />
+            ) : (
+              <UserCircleIcon className="h-full w-full text-darkgrey" />
+            )}
+          </div>
+
           <h3 className="text-white mb-5 text-[18px] font-bold">
             {mode === "member"
               ? selectedTeamMember?.username
