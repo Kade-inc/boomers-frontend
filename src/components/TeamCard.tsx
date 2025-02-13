@@ -12,7 +12,7 @@ interface TeamProps {
   onClick?: () => void;
   name?: string;
   domain?: string;
-  subdomain?: string;
+  subDomain?: string;
   subStyles?: string;
 }
 const TeamCard = ({
@@ -22,7 +22,7 @@ const TeamCard = ({
   onClick,
   name,
   domain,
-  subdomain,
+  subDomain,
   subStyles,
 }: TeamProps) => {
   const { user } = useAuthStore.getState();
@@ -65,10 +65,10 @@ const TeamCard = ({
                   <div className="flex items-center mb-2 font-medium">
                     {team?.domain || domain}
 
-                    {(team?.subdomain || subdomain) && (
+                    {(team?.subDomain || subDomain) && (
                       <>
                         <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
-                        {team?.subdomain || subdomain}
+                        {team?.subDomain || subDomain}
                       </>
                     )}
 

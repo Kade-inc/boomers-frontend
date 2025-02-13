@@ -16,7 +16,9 @@ import useChallenges from "../hooks/Challenges/useChallenges";
 
 const Dashboard = () => {
   const user = useAuthStore((s) => s.user);
-  const { data: teamsData, isPending: teamsLoading } = useTeams(user.user_id);
+  const { data: teamsData, isPending: teamsLoading } = useTeams({
+    userId: user.user_id,
+  });
   const { data: teamRecommendations, isPending: recommendationsLoading } =
     useTeamRecommendations();
   const { data: challengesData, isPending: challengesLoading } = useChallenges(

@@ -57,7 +57,11 @@ const MemberRequestDialog = ({
   const activeUserId =
     mode === "member" ? selectedTeamMember?._id : selectedRequest?.user_id;
   // console.log("activeUserId:", activeUserId);
-  const { data: teams, isLoading, isError } = useTeams(activeUserId || "");
+  const {
+    data: teams,
+    isLoading,
+    isError,
+  } = useTeams({ userId: activeUserId || "" });
 
   useEffect(() => {
     if (dialogRef.current && activeUserId) {
