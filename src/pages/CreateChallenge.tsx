@@ -81,7 +81,9 @@ function CreateChallenge() {
     setSelectedTeams,
   } = useCreateChallengeStore();
 
-  const { data: teamsData, isPending: teamsLoading } = useTeams(user.user_id);
+  const { data: teamsData, isPending: teamsLoading } = useTeams({
+    userId: user.user_id,
+  });
   const { data: draftChallenges } = useChallenges(user.user_id, false);
   const createChallengeMutation = useCreateChallenge();
   const updateChallengeMutation = useUpdateChallenge();

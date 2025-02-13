@@ -15,7 +15,9 @@ const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuthStore();
   const [profileData, setProfileData] = useState(user);
-  const { data: teamsData, isPending: teamsPending } = useTeams(user.user_id);
+  const { data: teamsData, isPending: teamsPending } = useTeams({
+    userId: user.user_id,
+  });
 
   const [teams, setTeams] = useState<Team[]>([]);
 

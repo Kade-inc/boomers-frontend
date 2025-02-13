@@ -4,76 +4,94 @@ import { Outlet, useNavigate, useParams } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import useTeams from "../hooks/useTeams";
 import Team from "../entities/Team";
+import useDomains from "../hooks/useDomains";
+import useSubDomains from "../hooks/useSubDomains";
+import useDomainTopics from "../hooks/useDomainTopics";
+import Domain from "../entities/Domain";
+import SubDomain from "../entities/SubDomain";
+import MultiSelect from "../components/MultiSelect";
+import DomainTopic from "../entities/DomainTopic";
+import { useDebounce } from "../hooks/useDebounce";
 
 const TeamsPage = () => {
-  const [filters, setFilters] = useState({
-    domain: "",
-    subDomain: "",
-    topics: "",
-  });
-  const [searchName, setSearchName] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+  const [domainOptions, setDomainOptions] = useState<Domain[]>([]);
+  const [subDomainOptions, setSubDomainOptions] = useState<SubDomain[]>([]);
+  const [selectedDomain, setSelectedDomain] = useState<string>("");
+  const [selectedSubDomain, setSelectedSubDomain] = useState<string>("");
+  const [selectedDomainId, setSelectedDomainId] = useState<string | null>("");
+  const [selectedTopics, setSelectedTopics] = useState<DomainTopic[]>([]);
+  const [currentTeams, setCurrentTeams] = useState<Team[]>([]);
+  const [searchName, setSearchName] = useState("");
 
-  const [filteredTeams, setFilteredTeams] = useState<Team[]>([]);
   const [page, setPage] = useState(1);
+
+  const debouncedSearchName = useDebounce(searchName, 500);
+
   const { teamId } = useParams();
-  const { data: teams, isPending, error } = useTeams("", page);
+  const {
+    data: teams,
+    isPending,
+    error,
+  } = useTeams({
+    page,
+    domain: selectedDomain,
+    subdomain: selectedSubDomain,
+    subdomainTopics: selectedTopics,
+    name: debouncedSearchName,
+  });
+  const {
+    data: domains,
+    isPending: isDomainsPending,
+    error: domainsError,
+  } = useDomains();
+  const {
+    data: subDomains,
+    isPending: isSubDomainsPending,
+    error: subDomainsError,
+  } = useSubDomains(selectedDomainId);
+  const {
+    data: subTopics,
+    isPending: isSubTopicsPending,
+    error: subTopicsError,
+  } = useDomainTopics();
   const navigate = useNavigate();
 
-  // Filter teams
   useEffect(() => {
-    if (teams && !isPending && !error) {
-      const filtered = teams.data.filter((team: Team) => {
-        const matchesDomain =
-          !filters.domain ||
-          team?.domain?.toLowerCase().includes(filters.domain.toLowerCase());
-
-        const matchesSubDomain =
-          !filters.subDomain ||
-          (team?.subdomain &&
-            team.subdomain
-              .toLowerCase()
-              .includes(filters.subDomain.toLowerCase()));
-
-        const matchesTopics =
-          !filters.topics ||
-          (team.subdomainTopics &&
-            team.subdomainTopics.includes(filters.topics));
-
-        const matchesName = team.name
-          .toLowerCase()
-          .includes(searchName.toLowerCase());
-
-        return (
-          matchesDomain && matchesSubDomain && matchesTopics && matchesName
-        );
-      });
-      setFilteredTeams(filtered);
+    if (teams) {
+      setCurrentTeams(teams.data);
     }
-  }, [teams, filters, isPending, searchName, error]);
+  }, [teams, isPending, error]);
 
-  if (isPending) {
+  useEffect(() => {
+    if (domains && domains.length > 0) {
+      setDomainOptions(domains);
+      setSelectedDomain(domains[0]);
+      setSelectedDomainId(domains[0]?._id);
+    }
+  }, [domains]);
+
+  useEffect(() => {
+    if (subDomains && subDomains.length > 0) {
+      setSubDomainOptions(subDomains);
+    }
+  }, [subDomains]);
+
+  if (error || domainsError || subTopicsError || subDomainsError) {
     return (
       <div className="flex justify-center items-center h-screen bg-base-100">
-        <span className="loading loading-dots loading-lg"></span>
+        <div>Error</div>
       </div>
     );
   }
-  if (error) {
-    return <div>Error: </div>;
-  }
 
-  if (!Array.isArray(teams.data)) {
+  if (teams && !Array.isArray(teams.data)) {
     return (
-      <div className="flex justify-center items-center h-screen bg-base-100">
+      <div className="flex justify-center items-center h-screen bg-base-100 font-body">
         <p>No teams</p>
       </div>
     );
   }
-
-  const activeFilterCount = Object.values(filters).filter(
-    (value) => value,
-  ).length;
 
   // ReactPaginate's onPageChange handler.
   const handlePageClick = (event: { selected: number }) => {
@@ -87,124 +105,126 @@ const TeamsPage = () => {
       {!teamId ? (
         <>
           <p className="text-[20px] pt-3 mb-3 font-bold font-heading">Teams</p>
-
-          <div className="flex gap-2 flex-wrap items-center justify-between">
-            <div className="flex gap-2 flex-wrap items-center font-body">
-              <p>
-                Filters:{" "}
-                {activeFilterCount > 0 && (
-                  <span className="sm:hidden">({activeFilterCount})</span>
-                )}
+          {(isDomainsPending || isSubDomainsPending || isSubTopicsPending) && (
+            <div>
+              <p className="font-body text-[14px] flex items-center">
+                <span className="loading loading-spinner loading-xs mr-1"></span>{" "}
+                Loading filters...
               </p>
-              <button
-                className="w-[98px] text-[14px] p-1 text-white bg-yellow sm:hidden sm:w-[143px]"
-                onClick={() => {
-                  setShowFilters(!showFilters);
-                }}
-              >
-                {!showFilters ? "Show Filters" : "Hide Filters"}
-              </button>
-              <div className={`flex gap-2 flex-wrap`}>
-                <select
-                  className={`max-w-xs bg-transparent border p-1 border-1 rounded-sm w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
-                  style={{ borderColor: "rgba(204, 205, 207, 1)" }}
-                  value={filters.domain}
-                  onChange={(e) =>
-                    setFilters({ ...filters, domain: e.target.value })
-                  }
-                >
-                  <option value="" disabled>
-                    Domain
-                  </option>
-                  <option value="Software Engineering">
-                    Software Engineering
-                  </option>
-                </select>
-                <select
-                  className={`max-w-xs bg-transparent border p-1 border-1 rounded-sm w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
-                  style={{ borderColor: "rgba(204, 205, 207, 1)" }}
-                  value={filters.subDomain}
-                  onChange={(e) =>
-                    setFilters({ ...filters, subDomain: e.target.value })
-                  }
-                >
-                  <option value="" disabled>
-                    Sub domain
-                  </option>
-                  <option value="Frontend">Frontend</option>
-                  <option value="Backend">Backend</option>
-                  <option value="Full Stack">Full Stack</option>
-                </select>
-                <select
-                  className={`max-w-xs bg-transparent border p-1 border-1 rounded-sm w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
-                  style={{ borderColor: "rgba(204, 205, 207, 1)" }}
-                  value={filters.topics}
-                  onChange={(e) =>
-                    setFilters({ ...filters, topics: e.target.value })
-                  }
-                >
-                  <option value="" disabled>
-                    Topics
-                  </option>
-                  <option value="React JS">React JS</option>
-                  <option value="Django">Django</option>
-                  <option value="Flask">Flask</option>
-                  <option value="AngularJS">AngularJS</option>
-                  <option value="Next.Js">Next.Js</option>
-                  <option value="Node.Js">Node.Js</option>
-                </select>
-              </div>
-              <button
-                className="text-white bg-red-600 px-6 py-[2px] rounded-sm bg-redishs"
-                onClick={() =>
-                  setFilters({ domain: "", subDomain: "", topics: "" })
-                }
-              >
-                Clear all
-              </button>
             </div>
-            <label className="input input-bordered rounded-[50px] bg-transparent flex items-center gap-2 h-[29px] w-full sm:w-[200px]">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 16 16"
-                fill="currentColor"
-                className="h-4 w-4 opacity-70 flex-shrink-0"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-                  clipRule="evenodd"
+          )}
+          {!isDomainsPending && !isSubDomainsPending && !isSubTopicsPending && (
+            <div className="flex gap-2 flex-wrap items-center justify-between">
+              <div className="flex gap-2 flex-wrap items-center font-body">
+                <p>Filters:</p>
+                <button
+                  className="w-[98px] text-[14px] p-1 text-white bg-yellow sm:hidden sm:w-[143px]"
+                  onClick={() => {
+                    setShowFilters(!showFilters);
+                  }}
+                >
+                  {!showFilters ? "Show Filters" : "Hide Filters"}
+                </button>
+                <div className={`flex gap-2 flex-wrap`}>
+                  <select
+                    className={`max-w-xs bg-transparent border p-1 border-1 rounded w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
+                    style={{ borderColor: "rgba(204, 205, 207, 1)" }}
+                    value={selectedDomain}
+                    onChange={(e) => setSelectedDomain(e.target.value)}
+                  >
+                    <option value="" disabled>
+                      Domain
+                    </option>
+                    {domainOptions.map((domain) => (
+                      <option key={domain._id} value={domain.name}>
+                        {domain.name}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    className={`max-w-xs bg-transparent border p-1 border-1 rounded w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
+                    style={{ borderColor: "rgba(204, 205, 207, 1)" }}
+                    value={selectedSubDomain}
+                    onChange={(e) => setSelectedSubDomain(e.target.value)}
+                  >
+                    <option value="" disabled>
+                      Sub domain
+                    </option>
+                    {subDomainOptions.map((subDomain) => (
+                      <option key={subDomain._id} value={subDomain.name}>
+                        {subDomain.name}
+                      </option>
+                    ))}
+                  </select>
+                  <MultiSelect
+                    options={subTopics || []} // assuming subTopics is an array of topics
+                    selected={selectedTopics}
+                    onChange={setSelectedTopics}
+                  />
+                </div>
+                <button
+                  className="text-white bg-red-600 px-6 py-[2px] rounded-sm bg-redish"
+                  onClick={() => {
+                    setSelectedSubDomain("");
+                    setSelectedTopics([]);
+                    setSearchName("");
+                    setPage(1);
+                  }}
+                >
+                  Clear all
+                </button>
+              </div>
+              <label className="input input-bordered rounded-[50px] flex items-center gap-2 h-[29px] w-full sm:w-[200px] bg-transparent border-base-content">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                  className="h-4 w-4 opacity-70 flex-shrink-0"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <input
+                  type="text"
+                  className="font-body"
+                  placeholder="Search"
+                  value={searchName}
+                  onChange={(e) => setSearchName(e.target.value)}
                 />
-              </svg>
-              <input
-                type="text"
-                className="font-body"
-                placeholder="Search"
-                onChange={(e) => {
-                  setSearchName(e.target.value);
-                }}
-              />
-            </label>
-          </div>
-
-          <div className="flex flex-wrap gap-12 mt-10 mb-12 lg:w-[90%] pb-12">
-            {filteredTeams.map((team: Team) => {
-              return (
-                <TeamCard
-                  key={team._id}
-                  team={team}
-                  section="allTeams-section"
-                  onClick={() => navigate(`/teams/${team._id}`)}
-                  styles={"h-[165px] w-[330px]"}
-                  subStyles="px-4"
-                />
-              );
-            })}
-          </div>
+              </label>
+            </div>
+          )}
+          {isPending && (
+            <div className="flex justify-center h-1/2 items-center bg-base-100">
+              <span className="loading loading-dots loading-lg"></span>
+            </div>
+          )}
+          {!isPending && (
+            <div className="flex flex-wrap gap-12 mt-10 mb-12 lg:w-[90%] pb-12">
+              {currentTeams.map((team: Team) => {
+                return (
+                  <TeamCard
+                    key={team._id}
+                    team={team}
+                    section="allTeams-section"
+                    onClick={() => navigate(`/teams/${team._id}`)}
+                    styles={"h-[165px] w-[330px]"}
+                    subStyles="px-4"
+                  />
+                );
+              })}
+            </div>
+          )}
+          {!isPending && currentTeams.length === 0 && (
+            <p className="font-body flex justify-center">No teams</p>
+          )}
 
           <div className="pb-12">
             {/* Pagination UI */}
-            {teams.totalPages > 1 && (
+            {teams && teams.totalPages > 1 && (
               <ReactPaginate
                 breakLabel="..."
                 nextLabel="next"
@@ -213,12 +233,12 @@ const TeamsPage = () => {
                 pageCount={teams.totalPages}
                 previousLabel="previous"
                 forcePage={page - 1} // This forces the active page to sync with your state
-                containerClassName="flex justify-center items-center mt-6 font-body text-darkgrey"
+                containerClassName="flex justify-center items-center mt-6 font-body text-darkgrey border-base-content"
                 pageClassName="mx-1"
-                pageLinkClassName="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer"
+                pageLinkClassName="px-3 py-1 border border-gray-300 rounded hover:bg-yellow cursor-pointer text-base-content hover:text-darkgrey"
                 activeClassName="bg-yellow text-darkgrey"
-                previousLinkClassName="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer"
-                nextLinkClassName="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer"
+                previousLinkClassName="px-3 py-1 border border-gray-300 rounded hover:bg-yellow cursor-pointer text-base-content hover:text-darkgrey"
+                nextLinkClassName="px-3 py-1 border border-gray-300 rounded hover:bg-yellow cursor-pointer text-base-content hover:text-darkgrey"
                 disabledLinkClassName="opacity-50 cursor-not-allowed"
               />
             )}

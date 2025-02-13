@@ -15,7 +15,7 @@ interface ChallengesCardProps {
   teamsInformation?: Team[];
   isDeleteMode?: boolean;
   isSelected?: boolean;
-  onCardClick: (challengeId: string) => void;
+  onCardClick?: (challengeId: string) => void;
 }
 
 const ChallengesCard: React.FC<ChallengesCardProps> = ({
@@ -54,7 +54,7 @@ const ChallengesCard: React.FC<ChallengesCardProps> = ({
       className={`card bg-gradient-to-b from-[#313232] to-[#444c4c] text-white rounded-[3px] font-body ${styles} ${
         isSelected ? "border-2 border-red-500" : ""
       } ${isDeleteMode ? "bg-red-500" : ""} hover:cursor-pointer w-[200px]`}
-      onClick={() => onCardClick(challenge._id)}
+      onClick={() => onCardClick?.(challenge._id)}
     >
       <div className="card-body flex flex-col justify-between h-full py-5">
         <div className="flex justify-between w-full items-center">
