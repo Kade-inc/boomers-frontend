@@ -4,63 +4,82 @@ import { Outlet, useNavigate, useParams } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import useTeams from "../hooks/useTeams";
 import Team from "../entities/Team";
+import useDomains from "../hooks/useDomains";
+import useSubDomains from "../hooks/useSubDomains";
+import useDomainTopics from "../hooks/useDomainTopics";
+import Domain from "../entities/Domain";
+import SubDomain from "../entities/SubDomain";
+import MultiSelect from "../components/MultiSelect";
+import DomainTopic from "../entities/DomainTopic";
 
 const TeamsPage = () => {
-  const [filters, setFilters] = useState({
-    domain: "",
-    subDomain: "",
-    topics: "",
-  });
-  const [searchName, setSearchName] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+  const [domainOptions, setDomainOptions] = useState<Domain[]>([]);
+  const [subDomainOptions, setSubDomainOptions] = useState<SubDomain[]>([]);
+  const [selectedDomain, setSelectedDomain] = useState<string>("");
+  const [selectedSubDomain, setSelectedSubDomain] = useState<string>("");
+  const [selectedDomainId, setSelectedDomainId] = useState<string | null>("");
+  const [selectedTopics, setSelectedTopics] = useState<DomainTopic[]>([]);
+  const [currentTeams, setCurrentTeams] = useState<Team[]>([]);
 
-  const [filteredTeams, setFilteredTeams] = useState<Team[]>([]);
   const [page, setPage] = useState(1);
   const { teamId } = useParams();
   const { data: teams, isPending, error } = useTeams("", page);
+  const {
+    data: domains,
+    isPending: isDomainsPending,
+    error: domainsError,
+  } = useDomains();
+  const {
+    data: subDomains,
+    isPending: isSubDomainsPending,
+    error: subDomainsError,
+  } = useSubDomains(selectedDomainId);
+  const {
+    data: subTopics,
+    isPending: isSubTopicsPending,
+    error: subTopicsError,
+  } = useDomainTopics();
   const navigate = useNavigate();
 
-  // Filter teams
   useEffect(() => {
-    if (teams && !isPending && !error) {
-      const filtered = teams.data.filter((team: Team) => {
-        const matchesDomain =
-          !filters.domain ||
-          team?.domain?.toLowerCase().includes(filters.domain.toLowerCase());
-
-        const matchesSubDomain =
-          !filters.subDomain ||
-          (team?.subdomain &&
-            team.subdomain
-              .toLowerCase()
-              .includes(filters.subDomain.toLowerCase()));
-
-        const matchesTopics =
-          !filters.topics ||
-          (team.subdomainTopics &&
-            team.subdomainTopics.includes(filters.topics));
-
-        const matchesName = team.name
-          .toLowerCase()
-          .includes(searchName.toLowerCase());
-
-        return (
-          matchesDomain && matchesSubDomain && matchesTopics && matchesName
-        );
-      });
-      setFilteredTeams(filtered);
+    if (teams && teams.data.length > 0) {
+      setCurrentTeams(teams.data);
     }
-  }, [teams, filters, isPending, searchName, error]);
+  }, [teams, isPending, error]);
 
-  if (isPending) {
+  useEffect(() => {
+    if (domains && domains.length > 0) {
+      setDomainOptions(domains);
+      setSelectedDomain(domains[0]);
+      setSelectedDomainId(domains[0]?._id);
+    }
+  }, [domains]);
+
+  useEffect(() => {
+    if (subDomains && subDomains.length > 0) {
+      setSubDomainOptions(subDomains);
+    }
+  }, [subDomains]);
+
+  if (
+    isPending ||
+    isDomainsPending ||
+    isSubTopicsPending ||
+    isSubDomainsPending
+  ) {
     return (
       <div className="flex justify-center items-center h-screen bg-base-100">
         <span className="loading loading-dots loading-lg"></span>
       </div>
     );
   }
-  if (error) {
-    return <div>Error: </div>;
+  if (error || domainsError || subTopicsError || subDomainsError) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-base-100">
+        <div>Error</div>
+      </div>
+    );
   }
 
   if (!Array.isArray(teams.data)) {
@@ -70,10 +89,6 @@ const TeamsPage = () => {
       </div>
     );
   }
-
-  const activeFilterCount = Object.values(filters).filter(
-    (value) => value,
-  ).length;
 
   // ReactPaginate's onPageChange handler.
   const handlePageClick = (event: { selected: number }) => {
@@ -90,12 +105,7 @@ const TeamsPage = () => {
 
           <div className="flex gap-2 flex-wrap items-center justify-between">
             <div className="flex gap-2 flex-wrap items-center font-body">
-              <p>
-                Filters:{" "}
-                {activeFilterCount > 0 && (
-                  <span className="sm:hidden">({activeFilterCount})</span>
-                )}
-              </p>
+              <p>Filters:</p>
               <button
                 className="w-[98px] text-[14px] p-1 text-white bg-yellow sm:hidden sm:w-[143px]"
                 onClick={() => {
@@ -108,58 +118,40 @@ const TeamsPage = () => {
                 <select
                   className={`max-w-xs bg-transparent border p-1 border-1 rounded-sm w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
                   style={{ borderColor: "rgba(204, 205, 207, 1)" }}
-                  value={filters.domain}
-                  onChange={(e) =>
-                    setFilters({ ...filters, domain: e.target.value })
-                  }
+                  value={selectedDomain}
+                  onChange={(e) => setSelectedDomain(e.target.value)}
                 >
                   <option value="" disabled>
                     Domain
                   </option>
-                  <option value="Software Engineering">
-                    Software Engineering
-                  </option>
+                  {domainOptions.map((domain) => (
+                    <option key={domain._id} value={domain.name}>
+                      {domain.name}
+                    </option>
+                  ))}
                 </select>
                 <select
                   className={`max-w-xs bg-transparent border p-1 border-1 rounded-sm w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
                   style={{ borderColor: "rgba(204, 205, 207, 1)" }}
-                  value={filters.subDomain}
-                  onChange={(e) =>
-                    setFilters({ ...filters, subDomain: e.target.value })
-                  }
+                  value={selectedSubDomain}
+                  onChange={(e) => setSelectedSubDomain(e.target.value)}
                 >
                   <option value="" disabled>
                     Sub domain
                   </option>
-                  <option value="Frontend">Frontend</option>
-                  <option value="Backend">Backend</option>
-                  <option value="Full Stack">Full Stack</option>
+                  {subDomainOptions.map((subDomain) => (
+                    <option key={subDomain._id} value={subDomain.name}>
+                      {subDomain.name}
+                    </option>
+                  ))}
                 </select>
-                <select
-                  className={`max-w-xs bg-transparent border p-1 border-1 rounded-sm w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
-                  style={{ borderColor: "rgba(204, 205, 207, 1)" }}
-                  value={filters.topics}
-                  onChange={(e) =>
-                    setFilters({ ...filters, topics: e.target.value })
-                  }
-                >
-                  <option value="" disabled>
-                    Topics
-                  </option>
-                  <option value="React JS">React JS</option>
-                  <option value="Django">Django</option>
-                  <option value="Flask">Flask</option>
-                  <option value="AngularJS">AngularJS</option>
-                  <option value="Next.Js">Next.Js</option>
-                  <option value="Node.Js">Node.Js</option>
-                </select>
+                <MultiSelect
+                  options={subTopics || []} // assuming subTopics is an array of topics
+                  selected={selectedTopics}
+                  onChange={setSelectedTopics}
+                />
               </div>
-              <button
-                className="text-white bg-red-600 px-6 py-[2px] rounded-sm bg-redishs"
-                onClick={() =>
-                  setFilters({ domain: "", subDomain: "", topics: "" })
-                }
-              >
+              <button className="text-white bg-red-600 px-6 py-[2px] rounded-sm bg-redishs">
                 Clear all
               </button>
             </div>
@@ -176,19 +168,12 @@ const TeamsPage = () => {
                   clipRule="evenodd"
                 />
               </svg>
-              <input
-                type="text"
-                className="font-body"
-                placeholder="Search"
-                onChange={(e) => {
-                  setSearchName(e.target.value);
-                }}
-              />
+              <input type="text" className="font-body" placeholder="Search" />
             </label>
           </div>
 
           <div className="flex flex-wrap gap-12 mt-10 mb-12 lg:w-[90%] pb-12">
-            {filteredTeams.map((team: Team) => {
+            {currentTeams.map((team: Team) => {
               return (
                 <TeamCard
                   key={team._id}
