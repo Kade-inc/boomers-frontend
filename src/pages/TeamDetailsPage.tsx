@@ -334,10 +334,10 @@ const TeamDetailsPage = () => {
                 <div>
                   {/* Only show filter buttons if the user is the team owner */}
                   {user.user_id === team?.members[0]?._id && (
-                    <div className="flex gap-2 items-center mb-4 flex-wrap">
+                    <div className="flex gap-5 items-center mb-9 flex-wrap font-body">
                       <p>Filter By:</p>
                       <button
-                        className={`btn btn-outline ${filter === "all" ? "bg-yellow text-black" : ""}`}
+                        className={`w-[105px] h-[35px] border border-[#393E46] ${filter === "all" ? "bg-[#F8B500] text-black" : ""}`}
                         onClick={() => {
                           setFilter("all");
                           setIsDeleteMode(false);
@@ -346,14 +346,19 @@ const TeamDetailsPage = () => {
                       >
                         All
                       </button>
+                      {challenges?.some(
+                        (challenge: Challenge) => challenge.valid === false,
+                      ) && (
+                        <button
+                          className={`w-[105px] h-[35px] border border-[#393E46] ${filter === "drafts" ? "bg-[#F8B500] text-black" : ""}`}
+                          onClick={() => setFilter("drafts")}
+                        >
+                          Drafts
+                        </button>
+                      )}
+
                       <button
-                        className={`btn btn-outline ${filter === "drafts" ? "bg-yellow text-black" : ""}`}
-                        onClick={() => setFilter("drafts")}
-                      >
-                        Drafts
-                      </button>
-                      <button
-                        className={`btn btn-outline ${filter === "completed" ? "bg-yellow text-black" : ""}`}
+                        className={`w-[105px] h-[35px] border border-[#393E46]  ${filter === "completed" ? "bg-[#F8B500] text-black" : ""}`}
                         onClick={() => {
                           setFilter("completed");
                           setIsDeleteMode(false);
@@ -366,27 +371,30 @@ const TeamDetailsPage = () => {
                   )}
 
                   {/* Additional Buttons for Drafts */}
-                  {filter === "drafts" && (
-                    <div className="flex gap-2 mb-4">
-                      <button
-                        className={`btn ${isDeleteMode ? "bg-red-500" : "bg-yellow"}`}
-                        onClick={handleDeleteDrafts}
-                      >
-                        {isDeleteMode ? "Delete" : "Delete Drafts"}
-                      </button>
-                      {isDeleteMode && (
+                  {challenges?.some(
+                    (challenge: Challenge) => challenge.valid === false,
+                  ) &&
+                    filter === "drafts" && (
+                      <div className="flex gap-2 mb-9">
                         <button
-                          className="btn btn-outline"
-                          onClick={handleCancel}
+                          className={`w-[161px] h-[35px] border ${isDeleteMode ? "bg-[#E50000] text-white" : "border-[#E50000]"}`}
+                          onClick={handleDeleteDrafts}
                         >
-                          Cancel
+                          Delete Drafts
                         </button>
-                      )}
-                    </div>
-                  )}
+                        {isDeleteMode && (
+                          <button
+                            className="w-[161px] h-[35px] border border-[#393E46]"
+                            onClick={handleCancel}
+                          >
+                            Cancel
+                          </button>
+                        )}
+                      </div>
+                    )}
 
                   {/* Challenges */}
-                  <div className="flex gap-1 flex-wrap justify-center sm:justify-start">
+                  <div className="flex gap-6 flex-wrap justify-center sm:justify-start">
                     {getFilteredChallenges().length > 0 ? (
                       getFilteredChallenges().map((challenge: Challenge) => (
                         <ChallengesCard
@@ -453,7 +461,7 @@ const TeamDetailsPage = () => {
               {activeTab === "challenges" &&
                 user.user_id === team?.members[0]?._id && (
                   <button
-                    className="w-[98px] text-[14px] p-1 text-black bg-yellow sm:w-[143px] font-body rounded"
+                    className=" text-[14px] p-1 text-black bg-[#F8B500] sm:w-[198px] sm:h-[39px]  font-body rounded"
                     onClick={() => navigate("/create-challenge")}
                   >
                     Create Challenge

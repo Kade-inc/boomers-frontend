@@ -175,7 +175,7 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
                 </div>
 
                 <button
-                  className="btn bg-yellow text-black border-none w-[150px]"
+                  className=" bg-yellow text-black border-none w-[150px] p-2 rounded-sm"
                   onClick={() => {
                     handleAddTeammember();
                     setViewClicked(false);

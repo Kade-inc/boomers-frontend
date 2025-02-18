@@ -119,11 +119,11 @@ const MemberRequestDialog = ({
     <dialog
       ref={dialogRef}
       id="my_modal_7"
-      className="modal modal-middle"
+      className="modal modal-middle font-body"
       onClose={handleDialogClose}
     >
       <div
-        className="modal-box !p-0 !overflow-y-auto !overflow-x-hidden"
+        className="modal-box !p-0 !overflow-y-auto !overflow-x-hidden !rounded-md"
         style={{ borderRadius: "0px" }}
       >
         <div className="text-center flex flex-col items-center justify-center bg-yellow">
@@ -164,9 +164,9 @@ const MemberRequestDialog = ({
             <div className="p-4">
               <h3 className="text-[16px] font-bold mb-2">Current Teams</h3>
               {isLoading ? (
-                <p>Loading teams...</p>
+                <span className="loading loading-dots loading-xs"></span>
               ) : isError ? (
-                <p>Error loading teams.</p>
+                <span className="loading loading-dots loading-xs"></span>
               ) : teams && teams.length > 0 ? (
                 <div className="slider-container pb-2">
                   <Slider {...settings}>
@@ -237,7 +237,7 @@ const MemberRequestDialog = ({
             <div className="modal-action flex flex-col">
               {mode === "member" && !selectedMember ? (
                 <button
-                  className="btn w-full text-white bg-red-600 rounded-none hover:bg-red-700"
+                  className="btn w-full text-white bg-[#C83A3A] rounded-none hover:bg-[#C83A3A]"
                   type="button"
                   onClick={() => setSelectedMember(true)}
                 >
@@ -248,7 +248,7 @@ const MemberRequestDialog = ({
                   {mode === "request" && (
                     <div className="flex w-full flex-col">
                       <button
-                        className="btn w-full text-white bg-green-600 rounded-none hover:bg-green-700"
+                        className="btn w-full text-white bg-[#14AC91]  rounded-none hover:bg-[#14AC91]"
                         onClick={() =>
                           handleJoinRequest("APPROVED", "Looks good")
                         }
@@ -257,7 +257,7 @@ const MemberRequestDialog = ({
                       </button>
 
                       <button
-                        className="btn w-full text-white bg-red-600 rounded-none hover:bg-red-700"
+                        className="btn w-full text-white bg-[#C83A3A] rounded-none hover:bg-[#C83A3A]"
                         onClick={() =>
                           handleJoinRequest("DECLINED", "Declined")
                         }
@@ -269,12 +269,12 @@ const MemberRequestDialog = ({
                   {mode === "member" && selectedMember && (
                     <div className="flex w-full">
                       <form method="dialog" className="w-1/2 !m-0">
-                        <button className="btn w-full text-white bg-green-600 rounded-none hover:bg-green-700">
+                        <button className="btn w-full text-white bg-[#14AC91] rounded-none hover:bg-[#14AC91]">
                           Cancel
                         </button>
                       </form>
                       <button
-                        className="btn w-1/2 text-white bg-red-600 rounded-none hover:bg-red-700 !m-0"
+                        className="btn w-1/2 text-white bg-[#C83A3A] rounded-none hover:bg-[#C83A3A] !m-0"
                         onClick={handleRemoveTeamMember}
                       >
                         Remove
@@ -293,7 +293,7 @@ const MemberRequestDialog = ({
                 : "Request has been processed"}
             </p>
             <form method="dialog">
-              <button className="btn w-[150px] text-white bg-red-600 rounded-none hover:bg-red-700">
+              <button className="btn w-[150px] text-white bg-red-600 rounded hover:bg-red-700">
                 Close
               </button>
             </form>
