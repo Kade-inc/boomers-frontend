@@ -84,7 +84,9 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
             </div>
 
             {isLoading && searchQuery && (
-              <p className="text-white">Loading...</p>
+              <p className="text-white text-center mt-[60px]">
+                <span className="loading loading-dots loading-lg"></span>
+              </p>
             )}
             {error && searchQuery && (
               <p className="text-white">Error: {error.message}</p>
@@ -95,7 +97,7 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
                 <p className="text-white">
                   Enter username, first name or last name to find users
                 </p>
-              ) : users?.length === 0 ? (
+              ) : users?.length === 0 && !isLoading ? (
                 <p className="text-white">No users found</p>
               ) : (
                 users
@@ -103,7 +105,7 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
                   .map((user) => (
                     <div
                       key={user._id}
-                      className="card w-[200px] h-[200px] bg-base-100 font-body border-base-200 shadow-md shadow-base-content/10 base-content rounded"
+                      className="card w-[200px] h-[200px] bg-black font-body border-base-200 shadow-md shadow-base-content/10 base-content rounded text-white"
                     >
                       <div className="flex flex-col justify-center items-center">
                         <div className="h-[95px] flex items-center justify-center mt-6 mb-3">
@@ -114,7 +116,7 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
                               alt="User avatar"
                             />
                           ) : (
-                            <UserCircleIcon className="h-[81px] w-[81px] text-darkgrey rounded-full" />
+                            <UserCircleIcon className="h-[81px] w-[81px] text-white rounded-full" />
                           )}
                         </div>
 
@@ -162,18 +164,26 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
                     : user?.username || "Username not available"}
                 </p>
 
-                <div className="flex items-center mb-2 font-regular text-[14px] text-white">
-                  {user?.interests?.domain} {user?.interests?.subdomain}{" "}
-                  {user?.interests?.domainTopics.map(
-                    (topic: string, index: number) => (
-                      <React.Fragment key={index}>
-                        <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
-                        <p>{topic}</p>
-                      </React.Fragment>
-                    ),
-                  )}
-                </div>
-
+                {user.interests && (
+                  <div className="flex items-center mb-2 font-regular text-[14px] text-white">
+                    Interests: {user?.interests?.domain}{" "}
+                    <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
+                    {user?.interests?.subdomain}{" "}
+                    {user?.interests?.domainTopics.map(
+                      (topic: string, index: number) => (
+                        <React.Fragment key={index}>
+                          <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
+                          <p>{topic}</p>
+                        </React.Fragment>
+                      ),
+                    )}
+                  </div>
+                )}
+                {!user.interests && (
+                  <p className="flex items-center mb-2 font-regular text-[14px] text-white">
+                    No interests
+                  </p>
+                )}
                 <button
                   className=" bg-yellow text-black border-none w-[150px] p-2 rounded-sm"
                   onClick={() => {

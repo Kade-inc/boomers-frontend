@@ -122,7 +122,7 @@ const TeamDetailsPage = () => {
 
   if (isTeamPending || isChallengesPending || isTeamMemberRequestsPending) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center h-screen bg-base-100">
         <span className="loading loading-dots loading-lg text-base-content"></span>
       </div>
     );
@@ -257,7 +257,7 @@ const TeamDetailsPage = () => {
                         alt="Profile"
                       />
                     ) : (
-                      <UserCircleIcon className="mb-3 mx-auto w-[60px] h-[60px] sm:w-[81px] sm:h-[81px] text-darkgrey" />
+                      <UserCircleIcon className="mb-3 mx-auto w-[60px] h-[60px] sm:w-[81px] sm:h-[81px] text-white" />
                     )}
                     <p>{displayName}</p>
                     <p className="text-center text-[12px]">Owner</p>
@@ -337,7 +337,7 @@ const TeamDetailsPage = () => {
                     <div className="flex gap-5 items-center mb-9 flex-wrap font-body">
                       <p>Filter By:</p>
                       <button
-                        className={`w-[105px] h-[35px] border border-[#393E46] ${filter === "all" ? "bg-[#F8B500] text-black" : ""}`}
+                        className={`px-8 py-2  rounded-sm ${filter === "all" ? "bg-yellow text-darkgrey" : "border border-base-content "}`}
                         onClick={() => {
                           setFilter("all");
                           setIsDeleteMode(false);
@@ -350,7 +350,7 @@ const TeamDetailsPage = () => {
                         (challenge: Challenge) => challenge.valid === false,
                       ) && (
                         <button
-                          className={`w-[105px] h-[35px] border border-[#393E46] ${filter === "drafts" ? "bg-[#F8B500] text-black" : ""}`}
+                          className={`px-8 py-2 rounded-sm ${filter === "drafts" ? "bg-yellow text-darkgrey" : "border border-base-content"}`}
                           onClick={() => setFilter("drafts")}
                         >
                           Drafts
@@ -358,7 +358,7 @@ const TeamDetailsPage = () => {
                       )}
 
                       <button
-                        className={`w-[105px] h-[35px] border border-[#393E46]  ${filter === "completed" ? "bg-[#F8B500] text-black" : ""}`}
+                        className={`px-8 py-2 rounded-sm ${filter === "completed" ? "bg-yellow text-darkgrey" : "border border-base-content"}`}
                         onClick={() => {
                           setFilter("completed");
                           setIsDeleteMode(false);
@@ -375,22 +375,30 @@ const TeamDetailsPage = () => {
                     (challenge: Challenge) => challenge.valid === false,
                   ) &&
                     filter === "drafts" && (
-                      <div className="flex gap-2 mb-9">
-                        <button
-                          className={`w-[161px] h-[35px] border ${isDeleteMode ? "bg-[#E50000] text-white" : "border-[#E50000]"}`}
-                          onClick={handleDeleteDrafts}
-                        >
-                          Delete Drafts
-                        </button>
-                        {isDeleteMode && (
+                      <>
+                        <div className="flex gap-2 mb-9">
                           <button
-                            className="w-[161px] h-[35px] border border-[#393E46]"
-                            onClick={handleCancel}
+                            className={`px-8 py-2 rounded-sm ${isDeleteMode ? "bg-[#E50000] text-white " : " border border-[#E50000] text-[#E50000]"} `}
+                            onClick={handleDeleteDrafts}
                           >
-                            Cancel
+                            Delete Drafts
                           </button>
+                          {isDeleteMode && (
+                            <button
+                              className=" px-8 py-2 border rounded-sm border-[#393E46]"
+                              onClick={handleCancel}
+                            >
+                              Cancel
+                            </button>
+                          )}
+                        </div>
+                        {isDeleteMode && (
+                          <p className="text-base-content mb-4">
+                            Select the drafts you would like to delete and click
+                            Delete Drafts to delete.
+                          </p>
                         )}
-                      </div>
+                      </>
                     )}
 
                   {/* Challenges */}
@@ -513,7 +521,9 @@ const TeamDetailsPage = () => {
                       disabled={isClicked || userRequest || isPending}
                     >
                       {isPending ? (
-                        <span className="loading loading-spinner text-accent"></span>
+                        <div className="flex justify-center">
+                          <span className="loading loading-dots loading-xs"></span>
+                        </div>
                       ) : isClicked || userRequest ? (
                         "Requested"
                       ) : (

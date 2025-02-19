@@ -35,19 +35,15 @@ const LeaveTeamDialog = ({ teamId }: LeaveTeamDialogProps) => {
           <h3 className="py-4 text-center">
             Are you sure you want to leave this team?
           </h3>
-          <div className="modal-action">
-            <form method="dialog" className="w-full">
-              {/* if there is a button in form, it will close the modal */}
-              <button className="btn w-full text-white bg-[#14AC91] rounded-none hover:bg-[#14AC91]">
-                Go Back
-              </button>
-              <button
-                className="btn w-full text-white bg-[#C83A3A] rounded-none hover:bg-[#C83A3A]"
-                onClick={handleLeaveTeam}
-              >
-                Leave Team
-              </button>
-            </form>
+
+          <div className=" w-full text-white bg-[#14AC91] rounded-none hover:bg-[#14AC91] py-2 flex justify-center cursor-pointer">
+            Go Back
+          </div>
+          <div
+            className=" w-full text-white bg-[#C83A3A] rounded-none hover:bg-[#C83A3A] py-2 flex justify-center cursor-pointer"
+            onClick={handleLeaveTeam}
+          >
+            Leave Team
           </div>
         </div>
       </dialog>

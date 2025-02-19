@@ -37,7 +37,7 @@ const MemberCard: React.FC<MemberCardProps> = ({
             alt="Profile"
           />
         ) : (
-          <UserCircleIcon className="h-[81px] w-[81px] text-darkgrey" />
+          <UserCircleIcon className="h-[81px] w-[81px] text-base-content" />
         )}
         <p className="text-center">{displayName}</p>
       </div>
