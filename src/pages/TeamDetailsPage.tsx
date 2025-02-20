@@ -385,7 +385,7 @@ const TeamDetailsPage = () => {
                       <>
                         <div className="flex gap-2 mb-9">
                           <button
-                            className={`px-8 py-2 rounded-sm ${
+                            className={`px-8 py-2 rounded-[3px] ${
                               isDeleteMode
                                 ? "bg-[#E50000] text-white"
                                 : "border border-[#E50000] text-[#E50000]"
@@ -398,13 +398,14 @@ const TeamDetailsPage = () => {
                                 <span className="loading loading-dots loading-xs"></span>
                               </div>
                             ) : (
-                              "Delete Drafts"
+                              <span className="font-body">Delete Drafts</span>
+                              
                             )}
                           </button>
 
                           {isDeleteMode && (
                             <button
-                              className=" px-8 py-2 border rounded-sm border-[#393E46]"
+                              className=" px-8 py-2 border rounded-[3px] border-[#393E46] font-body"
                               onClick={handleCancel}
                             >
                               Cancel
@@ -412,7 +413,7 @@ const TeamDetailsPage = () => {
                           )}
                         </div>
                         {isDeleteMode && (
-                          <p className="text-base-content mb-4">
+                          <p className="text-base-content mb-4 font-body">
                             Select the drafts you would like to delete and click
                             Delete Drafts to delete.
                           </p>
