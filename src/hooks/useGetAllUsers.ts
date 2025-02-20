@@ -13,6 +13,7 @@ const useGetAllUsers = (
     queryFn: () => apiClient.getUsers(searchQuery),
     staleTime: 24 * 60 * 60 * 1000, // 24 hours
     refetchOnWindowFocus: false,
+    enabled: searchQuery !== "", // Only fetch if searchQuery is not an empty string
   });
 };
 

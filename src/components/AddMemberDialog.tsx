@@ -19,7 +19,7 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
   const { data: user, isLoading: isUserLoading } = useGetUser(userId);
 
   // Only fetch users when searchQuery is not empty
-  const { data, isLoading, error } = useGetAllUsers(searchQuery || undefined);
+  const { data, isLoading, error } = useGetAllUsers(searchQuery);
   const users = Array.isArray(data) ? data : [];
   const { mutate: addTeamMember } = useAddTeamMember();
 
@@ -80,7 +80,7 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
 
         {!viewClicked ? (
           <>
-            <h3 className="font-normal text-lg text-white mb-4 text-center">
+            <h3 className="font-medium text-lg text-white mb-4 text-center">
               Search for a user to add to your team
             </h3>
             <div className="w-full flex justify-center">
@@ -128,7 +128,7 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
                   .map((user) => (
                     <div
                       key={user._id}
-                      className="card w-[200px] h-[200px] bg-black font-body border-base-200 shadow-md shadow-base-content/10 base-content rounded text-white"
+                      className="card w-[200px] pb-4 bg-black font-body border-base-200 shadow-md shadow-base-content/10 base-content rounded text-white"
                     >
                       <div className="flex flex-col justify-center items-center">
                         <div className="h-[95px] flex items-center justify-center mt-6 mb-3">
@@ -152,7 +152,7 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
                         </p>
 
                         <button
-                          className=" bg-yellow w-[90px] rounded text-[14px] font-medium text-black"
+                          className="bg-yellow px-8 py-1 rounded-sm text-[14px] font-medium text-black"
                           onClick={() => {
                             setViewClicked(true);
                             if (user._id) {
@@ -161,7 +161,7 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
                             }
                           }}
                         >
-                          VIEW
+                        View
                         </button>
                       </div>
                     </div>

@@ -161,7 +161,7 @@ const MemberRequestDialog = ({
       >
         <div className="text-center flex flex-col items-center justify-center bg-yellow">
           <form method="dialog" className="ml-[90%] mt-1">
-            <button className="text-white ">X</button>
+            <button className="text-darkgrey font-semibold">X</button>
           </form>
           <div className="mb-3 mx-auto mt-5 h-[81px] w-[81px] rounded-full flex items-center justify-center">
             {mode === "member" ? (
@@ -185,7 +185,7 @@ const MemberRequestDialog = ({
             )}
           </div>
 
-          <h3 className="text-darkgrey mb-5 text-[18px] font-bold">
+          <h3 className="text-darkgrey mb-5 text-[18px] font-semibold">
             {mode === "member"
               ? selectedTeamMember
                 ? `${selectedTeamMember.firstName ?? ""} ${selectedTeamMember.lastName ?? ""}`.trim() ||
@@ -205,7 +205,7 @@ const MemberRequestDialog = ({
         {!acceptClicked ? (
           <>
             <div className="p-4">
-              <h3 className="text-[16px] font-bold mb-2">Current Teams</h3>
+              <h3 className="text-[16px] font-semibold mb-2">Current Teams</h3>
               {isLoading ? (
                 <div className="flex justify-center">
                   <span className="loading loading-dots loading-xs"></span>
@@ -224,7 +224,7 @@ const MemberRequestDialog = ({
                 <p>No teams found.</p>
               )}
               <div>
-                <h3 className="py-2 text-[16px] font-bold">Interests</h3>
+                <h3 className="py-2 text-[16px] font-semibold">Interests</h3>
                 <div className="flex items-center mb-2 font-regular text-[14px]">
                   {mode === "member" && selectedTeamMember?.interests ? (
                     <>
