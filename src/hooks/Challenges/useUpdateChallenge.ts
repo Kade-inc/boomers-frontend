@@ -47,7 +47,6 @@ const useUpdateChallenge = (): UseMutationResult<
         queryClient.invalidateQueries({
           queryKey: ["challenges", userId, "valid", true],
         });
-        
       }
     },
   });

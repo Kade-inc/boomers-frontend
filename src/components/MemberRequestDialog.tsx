@@ -69,6 +69,8 @@ const MemberRequestDialog = ({
     isError,
   } = useTeams({ userId: activeUserId || "" });
 
+  console.log("DATA: ", teams);
+
   //close modal
   const closeModal = () => {
     const modal = document.getElementById(

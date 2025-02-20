@@ -1,8 +1,21 @@
 import React from "react";
-import Team from "../entities/Team";
 
+// Fix this. We should use the Team entity instead of having to duplicate whatever is in the team
+// entity and just changing subdomain and subdomainTopics
 interface UserDetailsCardProps {
-  team: Team;
+  team: {
+    _id?: string;
+    owner_id?: string;
+    name: string;
+    teamUsername?: string;
+    domain?: string;
+    subdomain?: string;
+    subdomainTopics?: string[];
+    createdAt?: string;
+    updatedAt?: string;
+    _v?: number;
+    teamColor?: string;
+  };
   styles?: string;
 }
 
@@ -22,24 +35,23 @@ const UserDetailsCard: React.FC<UserDetailsCardProps> = ({ team, styles }) => {
         {team.subdomain && (
           <>
             {team.subdomain}
-            {team?.subdomainTopics &&
-                      team.subdomainTopics.length > 0 && (
-                        <>
-                          <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
-                          <div
-                            className={`${
-                              team.subdomainTopics.length > 1
-                                ? "tooltip tooltip-top tooltip-warning"
-                                : ""
-                            }`}
-                            data-tip={team.subdomainTopics.join(", ")}
-                          >
-                            {team.subdomainTopics[0]}
-                            {team.subdomainTopics.length > 1 &&
-                              ` +${team.subdomainTopics.length - 1}`}
-                          </div>
-                        </>
-                      )}
+            {team?.subdomainTopics && team.subdomainTopics.length > 0 && (
+              <>
+                <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
+                <div
+                  className={`${
+                    team.subdomainTopics.length > 1
+                      ? "tooltip tooltip-top tooltip-warning"
+                      : ""
+                  }`}
+                  data-tip={team.subdomainTopics.join(", ")}
+                >
+                  {team.subdomainTopics[0]}
+                  {team.subdomainTopics.length > 1 &&
+                    ` +${team.subdomainTopics.length - 1}`}
+                </div>
+              </>
+            )}
           </>
         )}
       </div>

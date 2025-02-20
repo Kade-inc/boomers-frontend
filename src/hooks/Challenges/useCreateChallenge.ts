@@ -1,4 +1,8 @@
-import { useMutation, UseMutationResult, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  UseMutationResult,
+  useQueryClient,
+} from "@tanstack/react-query";
 import APIClient from "../../services/apiClient";
 import Challenge from "../../entities/Challenge";
 
@@ -19,8 +23,8 @@ const useCreateChallenge = (): UseMutationResult<
 
   return useMutation({
     mutationKey: ["create-challenge"],
-    mutationFn: ({teamId}) => apiClient.createChallenge(teamId),
-    onSuccess: (data, {teamId}) => {
+    mutationFn: ({ teamId }) => apiClient.createChallenge(teamId),
+    onSuccess: (data, { teamId }) => {
       if (data._id) {
         queryClient.invalidateQueries({
           queryKey: ["team-challenges", teamId],

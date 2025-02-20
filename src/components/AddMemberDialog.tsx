@@ -161,7 +161,7 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
                             }
                           }}
                         >
-                        View
+                          View
                         </button>
                       </div>
                     </div>
