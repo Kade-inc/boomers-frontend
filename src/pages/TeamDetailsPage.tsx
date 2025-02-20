@@ -399,7 +399,6 @@ const TeamDetailsPage = () => {
                               </div>
                             ) : (
                               <span className="font-body">Delete Drafts</span>
-                              
                             )}
                           </button>
 
