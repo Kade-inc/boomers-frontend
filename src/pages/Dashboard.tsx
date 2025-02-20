@@ -16,7 +16,9 @@ import useChallenges from "../hooks/Challenges/useChallenges";
 
 const Dashboard = () => {
   const user = useAuthStore((s) => s.user);
-  const { data: teamsData, isPending: teamsLoading } = useTeams(user.user_id);
+  const { data: teamsData, isPending: teamsLoading } = useTeams({
+    userId: user.user_id,
+  });
   const { data: teamRecommendations, isPending: recommendationsLoading } =
     useTeamRecommendations();
   const { data: challengesData, isPending: challengesLoading } = useChallenges(
@@ -37,7 +39,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (teamsData) {
-      setTeams(teamsData);
+      setTeams(teamsData.data);
     }
   }, [teamsData]);
 
@@ -104,7 +106,7 @@ const Dashboard = () => {
             <p className="font-body font-medium text-[20px]">Welcome Back!</p>
           </div>
           <div className="mt-6">
-            {teamsData?.length !== 0 && (
+            {teamsData.data?.length !== 0 && (
               <div className="flex flex-col md:flex-row items-start md:items-center">
                 <div className="flex flex-row mb-5 md:mb-0">
                   <p className="font-body font-semibold text-[16px] mr-5">
@@ -165,7 +167,7 @@ const Dashboard = () => {
               </div>
             )}
 
-            {teamsData?.length == 0 && (
+            {teamsData.data?.length == 0 && (
               <>
                 <div className="flex items-center flex-col text-[16px] mt-10">
                   <p className="mb-6">
@@ -240,9 +242,14 @@ const Dashboard = () => {
                 <TeamCardCarousel slides={filteredTeams} />
               </>
             )}
+            {filteredTeams.length === 0 && (
+              <div className="flex items-center flex-col mt-10">
+                <p className="mb-6">No teams to display.</p>
+              </div>
+            )}
           </div>
           <div className="mt-12">
-            {teamsData && teamsData?.length !== 0 && (
+            {teamsData && teamsData.data?.length !== 0 && (
               <div className="flex flex-col md:flex-row items-start md:items-center">
                 <div className="flex flex-row mb-5 md:mb-0">
                   <p className="font-body font-semibold text-[16px] mr-5">
@@ -302,7 +309,7 @@ const Dashboard = () => {
                 </div>
               </div>
             )}
-            {teamsData.length > 0 && challengesData?.length == 0 && (
+            {teamsData.data.length > 0 && challengesData?.length == 0 && (
               <div className="flex items-center flex-col text-[16px] mt-10">
                 <p className="mb-6">
                   You&apos;re all caught up! No challenges to display.
@@ -314,7 +321,7 @@ const Dashboard = () => {
               <>
                 <ChallengeCardCarousel
                   slides={filteredChallenges}
-                  teamsData={teamsData}
+                  teamsData={teamsData.data}
                 />
               </>
             )}

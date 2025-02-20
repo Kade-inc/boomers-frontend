@@ -63,7 +63,11 @@ const MemberRequestDialog = ({
   const activeUserId =
     mode === "member" ? selectedTeamMember?._id : selectedRequest?.user_id;
   // console.log("activeUserId:", activeUserId);
-  const { data: teams, isLoading, isError } = useTeams(activeUserId || "");
+  const {
+    data: teams,
+    isLoading,
+    isError,
+  } = useTeams({ userId: activeUserId || "" });
 
   //close modal
   const closeModal = () => {
@@ -208,10 +212,10 @@ const MemberRequestDialog = ({
                 </div>
               ) : isError ? (
                 <span className="loading loading-dots loading-xs"></span>
-              ) : teams && teams.length > 0 ? (
+              ) : teams && teams.data.length > 0 ? (
                 <div className="slider-container pb-2">
                   <Slider {...settings}>
-                    {teams.map((team: Team) => (
+                    {teams.data.map((team: Team) => (
                       <UserDetailsCard key={team._id} team={team} />
                     ))}
                   </Slider>

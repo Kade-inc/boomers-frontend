@@ -81,7 +81,9 @@ function CreateChallenge() {
     setSelectedTeams,
   } = useCreateChallengeStore();
 
-  const { data: teamsData, isPending: teamsLoading } = useTeams(user.user_id);
+  const { data: teamsData, isPending: teamsLoading } = useTeams({
+    userId: user.user_id,
+  });
   const { data: draftChallenges } = useChallenges(user.user_id, false);
   const createChallengeMutation = useCreateChallenge();
   const updateChallengeMutation = useUpdateChallenge();
@@ -201,9 +203,9 @@ function CreateChallenge() {
   };
 
   useEffect(() => {
-    if (teamsData) {
+    if (teamsData && teamsData.data) {
       setOwnedTeams(
-        teamsData.filter((team: Team) => team.owner_id === user.user_id),
+        teamsData.data.filter((team: Team) => team.owner_id === user.user_id),
       );
     }
   }, [teamsData]);

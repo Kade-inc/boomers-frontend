@@ -12,7 +12,8 @@ interface TeamProps {
   onClick?: () => void;
   name?: string;
   domain?: string;
-  subdomain?: string;
+  subDomain?: string;
+  subStyles?: string;
 }
 const TeamCard = ({
   team,
@@ -21,7 +22,8 @@ const TeamCard = ({
   onClick,
   name,
   domain,
-  subdomain,
+  subDomain,
+  subStyles,
 }: TeamProps) => {
   const { user } = useAuthStore.getState();
 
@@ -33,7 +35,7 @@ const TeamCard = ({
         style={{ background: team?.teamColor }}
         onClick={onClick}
       >
-        <div className="card-body py-4 justify-between">
+        <div className={`card-body py-4 px-4 justify-between ${subStyles}`}>
           <div className="flex justify-between w-full">
             <h2 className="font-medium w-[65%] break-words">
               {team.name || name}
@@ -63,10 +65,10 @@ const TeamCard = ({
                   <div className="flex items-center mb-2 font-medium">
                     {team?.domain || domain}
 
-                    {(team?.subdomain || subdomain) && (
+                    {(team?.subDomain || subDomain) && (
                       <>
                         <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
-                        {team?.subdomain || subdomain}
+                        {team?.subDomain || subDomain}
                       </>
                     )}
 
