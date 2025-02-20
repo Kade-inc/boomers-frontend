@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import UserDetailsCard from "./UserDetailsCard";
 import TeamMember from "../entities/TeamMember";
 import Request from "../entities/Request";
-import userImg from "../assets/user-image.svg";
 import useRemoveTeamMember from "../hooks/useRemoveTeamMember";
 import useTeams from "../hooks/useTeams";
 import React from "react";
@@ -12,6 +11,7 @@ import useJoinTeamRequest from "../hooks/useJoinTeamRequest";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
 
 interface MemberRequestDialogProps {
   mode: "request" | "member";
@@ -52,6 +52,12 @@ const MemberRequestDialog = ({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const removeTeamMemberMutation = useRemoveTeamMember();
   const { mutate: joinRequest } = useJoinTeamRequest();
+  const [isRemoveLoading, setIsRemoveLoading] = useState(false);
+  const [isAccepting, setIsAccepting] = useState(false);
+  const [isRejecting, setIsRejecting] = useState(false);
+  const [actionStatus, setActionStatus] = useState<
+    "accepted" | "rejected" | null
+  >(null);
 
   // Fetch teams based on the selected request or member
   const activeUserId =
@@ -62,6 +68,18 @@ const MemberRequestDialog = ({
     isLoading,
     isError,
   } = useTeams({ userId: activeUserId || "" });
+
+  console.log("DATA: ", teams);
+
+  //close modal
+  const closeModal = () => {
+    const modal = document.getElementById(
+      "my_modal_7",
+    ) as HTMLDialogElement | null;
+    if (modal) {
+      modal.close();
+    }
+  };
 
   useEffect(() => {
     if (dialogRef.current && activeUserId) {
@@ -79,15 +97,15 @@ const MemberRequestDialog = ({
 
   // Handle Remove Team Member
   const queryClient = useQueryClient();
-
   const handleRemoveTeamMember = async () => {
     if (selectedTeamMember && teamId) {
+      setIsRemoveLoading(true);
+
       try {
         await removeTeamMemberMutation.mutateAsync(
           { teamId, userId: selectedTeamMember._id },
           {
             onSuccess: () => {
-              // Invalidate the query
               queryClient.invalidateQueries({
                 queryKey: ["team", teamId],
               });
@@ -97,67 +115,105 @@ const MemberRequestDialog = ({
         );
       } catch (error) {
         console.error("Error removing team member:", error);
+      } finally {
+        setIsRemoveLoading(false);
       }
     }
   };
 
-  // Handle join Request
+  // handle join request
   const handleJoinRequest = (
     status: "APPROVED" | "DECLINED",
     comment: string,
   ) => {
-    if (selectedRequest) {
-      const payload = { status, comment };
-      joinRequest(
-        { requestId: selectedRequest._id, payload },
-        {
-          onSuccess: () => {
-            setAcceptClicked(true);
-          },
+    if (!selectedRequest) return;
+
+    if (status === "APPROVED") setIsAccepting(true);
+    if (status === "DECLINED") setIsRejecting(true);
+
+    const payload = { status, comment };
+
+    joinRequest(
+      { requestId: selectedRequest._id, payload },
+      {
+        onSuccess: () => {
+          setAcceptClicked(true);
         },
-      );
-    }
+        onError: (error) => {
+          console.error("Error handling join request:", error);
+        },
+        onSettled: () => {
+          setIsAccepting(false);
+          setIsRejecting(false);
+        },
+      },
+    );
   };
 
   return (
     <dialog
       ref={dialogRef}
       id="my_modal_7"
-      className="modal modal-middle"
+      className="modal modal-middle font-body"
       onClose={handleDialogClose}
     >
       <div
-        className="modal-box !p-0 !overflow-y-auto !overflow-x-hidden"
+        className="modal-box !p-0 !overflow-y-auto !overflow-x-hidden !rounded-md"
         style={{ borderRadius: "0px" }}
       >
         <div className="text-center flex flex-col items-center justify-center bg-yellow">
           <form method="dialog" className="ml-[90%] mt-1">
-            <button className="text-white ">X</button>
+            <button className="text-darkgrey font-semibold">X</button>
           </form>
-          <img
-            className="mb-3 mx-auto mt-5 h-[81px] w-[81px] rounded-full"
-            src={
-              mode === "member"
-                ? (selectedTeamMember?.profile_picture ?? userImg)
-                : (selectedRequest?.userProfile?.profile_picture ?? userImg)
-            }
-            alt="Profile"
-          />
-          <h3 className="text-white mb-5 text-[18px] font-bold">
+          <div className="mb-3 mx-auto mt-5 h-[81px] w-[81px] rounded-full flex items-center justify-center">
+            {mode === "member" ? (
+              selectedTeamMember?.profile_picture ? (
+                <img
+                  className="h-full w-full rounded-full"
+                  src={selectedTeamMember.profile_picture}
+                  alt="Profile"
+                />
+              ) : (
+                <UserCircleIcon className="h-full w-full text-base-content" />
+              )
+            ) : selectedRequest?.userProfile?.profile_picture ? (
+              <img
+                className="h-full w-full rounded-full"
+                src={selectedRequest.userProfile.profile_picture}
+                alt="Profile"
+              />
+            ) : (
+              <UserCircleIcon className="h-full w-full text-base-content" />
+            )}
+          </div>
+
+          <h3 className="text-darkgrey mb-5 text-[18px] font-semibold">
             {mode === "member"
-              ? selectedTeamMember?.username
-              : selectedRequest?.userProfile?.username}
+              ? selectedTeamMember
+                ? `${selectedTeamMember.firstName ?? ""} ${selectedTeamMember.lastName ?? ""}`.trim() ||
+                  selectedTeamMember.firstName ||
+                  selectedTeamMember.lastName ||
+                  selectedTeamMember.username
+                : ""
+              : selectedRequest?.userProfile
+                ? `${selectedRequest.userProfile.firstName ?? ""} ${selectedRequest.userProfile.lastName ?? ""}`.trim() ||
+                  selectedRequest.userProfile.firstName ||
+                  selectedRequest.userProfile.lastName ||
+                  selectedRequest.userProfile.username
+                : ""}
           </h3>
         </div>
 
         {!acceptClicked ? (
           <>
             <div className="p-4">
-              <h3 className="text-[16px] font-bold mb-2">Current Teams</h3>
+              <h3 className="text-[16px] font-semibold mb-2">Current Teams</h3>
               {isLoading ? (
-                <p>Loading teams...</p>
+                <div className="flex justify-center">
+                  <span className="loading loading-dots loading-xs"></span>
+                </div>
               ) : isError ? (
-                <p>Error loading teams.</p>
+                <span className="loading loading-dots loading-xs"></span>
               ) : teams && teams.data.length > 0 ? (
                 <div className="slider-container pb-2">
                   <Slider {...settings}>
@@ -170,7 +226,7 @@ const MemberRequestDialog = ({
                 <p>No teams found.</p>
               )}
               <div>
-                <h3 className="py-2 text-[16px] font-bold">Interests</h3>
+                <h3 className="py-2 text-[16px] font-semibold">Interests</h3>
                 <div className="flex items-center mb-2 font-regular text-[14px]">
                   {mode === "member" && selectedTeamMember?.interests ? (
                     <>
@@ -227,49 +283,88 @@ const MemberRequestDialog = ({
             {/* Modal Action Buttons */}
             <div className="modal-action flex flex-col">
               {mode === "member" && !selectedMember ? (
-                <button
-                  className="btn w-full text-white bg-red-600 rounded-none hover:bg-red-700"
-                  type="button"
+                <div
+                  className=" w-full text-white bg-[#C83A3A] rounded-none hover:bg-[#C83A3A] py-4 flex justify-center cursor-pointer"
                   onClick={() => setSelectedMember(true)}
                 >
                   Remove Team Member
-                </button>
+                </div>
               ) : (
                 <>
                   {mode === "request" && (
                     <div className="flex w-full flex-col">
-                      <button
-                        className="btn w-full text-white bg-green-600 rounded-none hover:bg-green-700"
-                        onClick={() =>
-                          handleJoinRequest("APPROVED", "Looks good")
+                      {/* Accept Button */}
+                      <div
+                        className={`w-full text-white bg-[#14AC91] py-4 rounded-none hover:bg-[#14AC91] text-center cursor-pointer ${
+                          isAccepting ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
+                        onClick={
+                          !isAccepting
+                            ? () => {
+                                handleJoinRequest("APPROVED", "Looks good");
+                                setActionStatus("accepted");
+                              }
+                            : undefined
                         }
                       >
-                        Accept
-                      </button>
+                        {isAccepting ? (
+                          <div className="flex justify-center">
+                            <span className="loading loading-dots loading-xs"></span>
+                          </div>
+                        ) : (
+                          "Accept"
+                        )}
+                      </div>
 
-                      <button
-                        className="btn w-full text-white bg-red-600 rounded-none hover:bg-red-700"
-                        onClick={() =>
-                          handleJoinRequest("DECLINED", "Declined")
+                      {/* Reject Button */}
+                      <div
+                        className={`w-full text-white bg-[#C83A3A] py-4 rounded-none hover:bg-[#C83A3A] text-center cursor-pointer ${
+                          isRejecting ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
+                        onClick={
+                          !isRejecting
+                            ? () => {
+                                handleJoinRequest("DECLINED", "Not a good fit");
+                                setActionStatus("rejected");
+                              }
+                            : undefined
                         }
                       >
-                        Reject
-                      </button>
+                        {isRejecting ? (
+                          <div className="flex justify-center">
+                            <span className="loading loading-dots loading-xs"></span>
+                          </div>
+                        ) : (
+                          "Reject"
+                        )}
+                      </div>
                     </div>
                   )}
                   {mode === "member" && selectedMember && (
                     <div className="flex w-full">
-                      <form method="dialog" className="w-1/2 !m-0">
-                        <button className="btn w-full text-white bg-green-600 rounded-none hover:bg-green-700">
-                          Cancel
-                        </button>
-                      </form>
-                      <button
-                        className="btn w-1/2 text-white bg-red-600 rounded-none hover:bg-red-700 !m-0"
-                        onClick={handleRemoveTeamMember}
+                      <div
+                        className="w-1/2 text-white bg-[#14AC91] rounded-none hover:bg-[#14AC91] flex justify-center py-4 cursor-pointer"
+                        onClick={closeModal}
                       >
-                        Remove
-                      </button>
+                        Cancel
+                      </div>
+
+                      <div
+                        className={`w-1/2 text-white bg-[#C83A3A] rounded-none hover:bg-[#C83A3A] flex justify-center items-center py-4 cursor-pointer ${
+                          isRemoveLoading ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
+                        onClick={
+                          !isRemoveLoading ? handleRemoveTeamMember : undefined
+                        } // Prevent multiple clicks
+                      >
+                        {isRemoveLoading ? (
+                          <div className="flex justify-center">
+                            <span className="loading loading-dots loading-xs"></span>
+                          </div>
+                        ) : (
+                          "Remove"
+                        )}
+                      </div>
                     </div>
                   )}
                 </>
@@ -278,13 +373,48 @@ const MemberRequestDialog = ({
           </>
         ) : (
           <div className="p-4 text-center">
-            <p className="text-[16px] text-black mb-4">
+            <p className="text-[16px] text-base-content mb-4">
               {mode === "member"
-                ? `${selectedTeamMember?.username} has been removed from the team`
-                : "Request has been processed"}
+                ? `${
+                    selectedTeamMember
+                      ? `${selectedTeamMember.firstName ?? ""} ${selectedTeamMember.lastName ?? ""}`.trim() ||
+                        selectedTeamMember.firstName ||
+                        selectedTeamMember.lastName ||
+                        selectedTeamMember.username
+                      : ""
+                  } has been removed from the team`
+                : mode === "request"
+                  ? actionStatus === "accepted"
+                    ? `${
+                        selectedRequest?.userProfile
+                          ? `${selectedRequest.userProfile.firstName ?? ""} ${selectedRequest.userProfile.lastName ?? ""}`.trim() ||
+                            selectedRequest.userProfile.firstName ||
+                            selectedRequest.userProfile.lastName ||
+                            selectedRequest.userProfile.username
+                          : ""
+                      } has been accepted to the team`
+                    : actionStatus === "rejected"
+                      ? `${
+                          selectedRequest?.userProfile
+                            ? `${selectedRequest.userProfile.firstName ?? ""} ${selectedRequest.userProfile.lastName ?? ""}`.trim() ||
+                              selectedRequest.userProfile.firstName ||
+                              selectedRequest.userProfile.lastName ||
+                              selectedRequest.userProfile.username
+                            : ""
+                        } has been rejected from the team`
+                      : `${
+                          selectedRequest?.userProfile
+                            ? `${selectedRequest.userProfile.firstName ?? ""} ${selectedRequest.userProfile.lastName ?? ""}`.trim() ||
+                              selectedRequest.userProfile.firstName ||
+                              selectedRequest.userProfile.lastName ||
+                              selectedRequest.userProfile.username
+                            : ""
+                        } has been added to the team`
+                  : ""}
             </p>
+            ;
             <form method="dialog">
-              <button className="btn w-[150px] text-white bg-red-600 rounded-none hover:bg-red-700">
+              <button className="btn w-[150px] text-white bg-red-600 rounded hover:bg-red-700">
                 Close
               </button>
             </form>

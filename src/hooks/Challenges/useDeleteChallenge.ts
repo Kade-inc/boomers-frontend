@@ -25,7 +25,7 @@ const useDeleteChallenge = (): UseMutationResult<
     mutationFn: ({ teamId, challengeId }) =>
       apiClient.deleteChallenge(teamId, challengeId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["challenges"] });
+      queryClient.invalidateQueries({ queryKey: ["team-challenges"] });
     },
   });
 };

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import userImg from "../assets/user-image.svg";
 import ChallengesCard from "../components/ChallengesCard";
 import MemberCard from "../components/MemberCard";
 import { useNavigate, useParams } from "react-router-dom";
@@ -17,6 +16,7 @@ import MemberRequestDialog from "../components/MemberRequestDialog";
 import React from "react";
 import useSendTeamRequest from "../hooks/useSendTeamRequest";
 import useDeleteChallenges from "../hooks/Challenges/useDeleteChallenges";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
 
 const TeamDetailsPage = () => {
   const [activeTab, setActiveTab] = useState("members");
@@ -46,14 +46,21 @@ const TeamDetailsPage = () => {
   //user
   const { user } = useAuthStore.getState();
 
-  const { mutate: deleteChallenges } = useDeleteChallenges();
+  const { mutate: deleteChallenges, isPending: isDeleting } =
+    useDeleteChallenges();
 
   // Delete selected challenges
   const handleDeleteDrafts = () => {
     if (isDeleteMode && selectedChallenges.length > 0) {
-      deleteChallenges({ challengeIds: selectedChallenges });
-      setIsDeleteMode(false);
-      setSelectedChallenges([]);
+      deleteChallenges(
+        { challengeIds: selectedChallenges },
+        {
+          onSuccess: () => {
+            setIsDeleteMode(false);
+            setSelectedChallenges([]);
+          },
+        },
+      );
     } else {
       setIsDeleteMode(true);
     }
@@ -91,6 +98,16 @@ const TeamDetailsPage = () => {
       request.user_id === user.user_id && request.status === "PENDING",
   );
 
+  const firstName = team?.members[0]?.firstName;
+  const lastName = team?.members[0]?.lastName;
+  const username = team?.members[0]?.username;
+
+  // Determine what to display
+  const displayName =
+    firstName && lastName
+      ? `${firstName} ${lastName}`
+      : firstName || lastName || username;
+
   const handleRequestClick = () => {
     if (!teamId) {
       console.error("teamId is undefined");
@@ -112,7 +129,7 @@ const TeamDetailsPage = () => {
 
   if (isTeamPending || isChallengesPending || isTeamMemberRequestsPending) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center h-screen bg-base-100">
         <span className="loading loading-dots loading-lg text-base-content"></span>
       </div>
     );
@@ -240,12 +257,16 @@ const TeamDetailsPage = () => {
                     </div>
                   </div>
                   <div className="text-center flex flex-col items-center justify-center">
-                    <img
-                      className="mb-3 mx-auto w-[60px] h-[60px] sm:w-[81px] sm:h-[81px] rounded-full"
-                      src={team?.members[0]?.profile_picture || userImg}
-                      alt="img"
-                    />
-                    <p>{team?.members[0]?.username}</p>
+                    {team?.members[0]?.profile_picture ? (
+                      <img
+                        className="mb-3 mx-auto w-[60px] h-[60px] sm:w-[81px] sm:h-[81px] rounded-full"
+                        src={team.members[0].profile_picture}
+                        alt="Profile"
+                      />
+                    ) : (
+                      <UserCircleIcon className="mb-3 mx-auto w-[60px] h-[60px] sm:w-[81px] sm:h-[81px] text-white" />
+                    )}
+                    <p>{displayName}</p>
                     <p className="text-center text-[12px]">Owner</p>
                   </div>
                 </div>
@@ -320,10 +341,10 @@ const TeamDetailsPage = () => {
                 <div>
                   {/* Only show filter buttons if the user is the team owner */}
                   {user.user_id === team?.members[0]?._id && (
-                    <div className="flex gap-2 items-center mb-4 flex-wrap">
+                    <div className="flex gap-5 items-center mb-9 flex-wrap font-body">
                       <p>Filter By:</p>
                       <button
-                        className={`btn btn-outline ${filter === "all" ? "bg-yellow text-black" : ""}`}
+                        className={`px-8 py-2  rounded-sm ${filter === "all" ? "bg-yellow text-darkgrey" : "border border-base-content "}`}
                         onClick={() => {
                           setFilter("all");
                           setIsDeleteMode(false);
@@ -332,14 +353,19 @@ const TeamDetailsPage = () => {
                       >
                         All
                       </button>
+                      {challenges?.some(
+                        (challenge: Challenge) => challenge.valid === false,
+                      ) && (
+                        <button
+                          className={`px-8 py-2 rounded-sm ${filter === "drafts" ? "bg-yellow text-darkgrey" : "border border-base-content"}`}
+                          onClick={() => setFilter("drafts")}
+                        >
+                          Drafts
+                        </button>
+                      )}
+
                       <button
-                        className={`btn btn-outline ${filter === "drafts" ? "bg-yellow text-black" : ""}`}
-                        onClick={() => setFilter("drafts")}
-                      >
-                        Drafts
-                      </button>
-                      <button
-                        className={`btn btn-outline ${filter === "completed" ? "bg-yellow text-black" : ""}`}
+                        className={`px-8 py-2 rounded-sm ${filter === "completed" ? "bg-yellow text-darkgrey" : "border border-base-content"}`}
                         onClick={() => {
                           setFilter("completed");
                           setIsDeleteMode(false);
@@ -352,27 +378,50 @@ const TeamDetailsPage = () => {
                   )}
 
                   {/* Additional Buttons for Drafts */}
-                  {filter === "drafts" && (
-                    <div className="flex gap-2 mb-4">
-                      <button
-                        className={`btn ${isDeleteMode ? "bg-red-500" : "bg-yellow"}`}
-                        onClick={handleDeleteDrafts}
-                      >
-                        {isDeleteMode ? "Delete" : "Delete Drafts"}
-                      </button>
-                      {isDeleteMode && (
-                        <button
-                          className="btn btn-outline"
-                          onClick={handleCancel}
-                        >
-                          Cancel
-                        </button>
-                      )}
-                    </div>
-                  )}
+                  {challenges?.some(
+                    (challenge: Challenge) => challenge.valid === false,
+                  ) &&
+                    filter === "drafts" && (
+                      <>
+                        <div className="flex gap-2 mb-9">
+                          <button
+                            className={`px-8 py-2 rounded-[3px] ${
+                              isDeleteMode
+                                ? "bg-[#E50000] text-white"
+                                : "border border-[#E50000] text-[#E50000]"
+                            }`}
+                            onClick={handleDeleteDrafts}
+                            disabled={isDeleting}
+                          >
+                            {isDeleteMode && isDeleting ? (
+                              <div className="flex justify-center">
+                                <span className="loading loading-dots loading-xs"></span>
+                              </div>
+                            ) : (
+                              <span className="font-body">Delete Drafts</span>
+                            )}
+                          </button>
+
+                          {isDeleteMode && (
+                            <button
+                              className=" px-8 py-2 border rounded-[3px] border-[#393E46] font-body"
+                              onClick={handleCancel}
+                            >
+                              Cancel
+                            </button>
+                          )}
+                        </div>
+                        {isDeleteMode && (
+                          <p className="text-base-content mb-4 font-body">
+                            Select the drafts you would like to delete and click
+                            Delete Drafts to delete.
+                          </p>
+                        )}
+                      </>
+                    )}
 
                   {/* Challenges */}
-                  <div className="flex gap-1 flex-wrap justify-center sm:justify-start">
+                  <div className="flex gap-6 flex-wrap justify-center sm:justify-start">
                     {getFilteredChallenges().length > 0 ? (
                       getFilteredChallenges().map((challenge: Challenge) => (
                         <ChallengesCard
@@ -439,7 +488,7 @@ const TeamDetailsPage = () => {
               {activeTab === "challenges" &&
                 user.user_id === team?.members[0]?._id && (
                   <button
-                    className="w-[98px] text-[14px] p-1 text-black bg-yellow sm:w-[143px] font-body rounded"
+                    className=" text-[14px] p-1 text-black bg-[#F8B500] sm:w-[198px] sm:h-[39px]  font-body rounded"
                     onClick={() => navigate("/create-challenge")}
                   >
                     Create Challenge
@@ -491,7 +540,9 @@ const TeamDetailsPage = () => {
                       disabled={isClicked || userRequest || isPending}
                     >
                       {isPending ? (
-                        <span className="loading loading-spinner text-accent"></span>
+                        <div className="flex justify-center">
+                          <span className="loading loading-dots loading-xs"></span>
+                        </div>
                       ) : isClicked || userRequest ? (
                         "Requested"
                       ) : (

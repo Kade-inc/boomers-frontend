@@ -122,9 +122,9 @@ function CreateChallenge() {
 
       if (!teamFound) {
         try {
-          const response = await createChallengeMutation.mutateAsync(
-            team?._id || "",
-          );
+          const response = await createChallengeMutation.mutateAsync({
+            teamId: team?._id || "",
+          });
 
           if (!response) {
             return;

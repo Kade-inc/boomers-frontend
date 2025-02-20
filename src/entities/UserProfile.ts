@@ -1,5 +1,8 @@
 export default interface UserProfile {
   successful: boolean;
+  profile_picture: string | null;
+  firstName: string | null;
+  lastName: string | null;
   profile: {
     id: string;
     userId: string;

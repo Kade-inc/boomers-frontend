@@ -58,7 +58,7 @@ const ChallengesCard: React.FC<ChallengesCardProps> = ({
     >
       <div className="card-body flex flex-col justify-between h-full py-5">
         <div className="flex justify-between w-full items-center">
-          <h2 className="font-medium">{challenge_name}</h2>
+          <h2 className="font-medium">{challenge_name || "Unnamed"}</h2>
           {user.user_id === owner_id && (
             <p className="text-right text-[12px]">Owner</p>
           )}

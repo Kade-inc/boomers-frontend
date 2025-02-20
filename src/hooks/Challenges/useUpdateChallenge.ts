@@ -29,7 +29,16 @@ const useUpdateChallenge = (): UseMutationResult<
     mutationKey: ["update-challenge"],
     mutationFn: ({ teamId, challengeId, payload }) =>
       apiClient.updateChallenge(teamId, challengeId, payload),
-    onSuccess: (data, { challengeId, userId }) => {
+    onSuccess: (data, { challengeId, userId, teamId }) => {
+      queryClient.invalidateQueries({
+        queryKey: ["team-challenges"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["team-challenges", teamId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["challenges", userId, "valid", false],
+      }); // This needs to be fixed. The userId being passed in here from the challengeforms is coming in as null and doesn't invalidate the queries
       if (data.valid) {
         queryClient.invalidateQueries({
           queryKey: ["challenge", challengeId],
@@ -37,9 +46,6 @@ const useUpdateChallenge = (): UseMutationResult<
 
         queryClient.invalidateQueries({
           queryKey: ["challenges", userId, "valid", true],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["team-challenges"],
         });
       }
     },
