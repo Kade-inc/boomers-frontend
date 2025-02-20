@@ -46,14 +46,21 @@ const TeamDetailsPage = () => {
   //user
   const { user } = useAuthStore.getState();
 
-  const { mutate: deleteChallenges } = useDeleteChallenges();
+  const { mutate: deleteChallenges, isPending: isDeleting } =
+    useDeleteChallenges();
 
   // Delete selected challenges
   const handleDeleteDrafts = () => {
     if (isDeleteMode && selectedChallenges.length > 0) {
-      deleteChallenges({ challengeIds: selectedChallenges });
-      setIsDeleteMode(false);
-      setSelectedChallenges([]);
+      deleteChallenges(
+        { challengeIds: selectedChallenges },
+        {
+          onSuccess: () => {
+            setIsDeleteMode(false);
+            setSelectedChallenges([]);
+          },
+        },
+      );
     } else {
       setIsDeleteMode(true);
     }
@@ -378,11 +385,23 @@ const TeamDetailsPage = () => {
                       <>
                         <div className="flex gap-2 mb-9">
                           <button
-                            className={`px-8 py-2 rounded-sm ${isDeleteMode ? "bg-[#E50000] text-white " : " border border-[#E50000] text-[#E50000]"} `}
+                            className={`px-8 py-2 rounded-sm ${
+                              isDeleteMode
+                                ? "bg-[#E50000] text-white"
+                                : "border border-[#E50000] text-[#E50000]"
+                            }`}
                             onClick={handleDeleteDrafts}
+                            disabled={isDeleting}
                           >
-                            Delete Drafts
+                            {isDeleteMode && isDeleting ? (
+                              <div className="flex justify-center">
+                                <span className="loading loading-dots loading-xs"></span>
+                              </div>
+                            ) : (
+                              "Delete Drafts"
+                            )}
                           </button>
+
                           {isDeleteMode && (
                             <button
                               className=" px-8 py-2 border rounded-sm border-[#393E46]"

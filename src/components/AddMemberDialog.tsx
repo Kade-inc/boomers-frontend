@@ -14,6 +14,7 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [userId, setUserId] = useState<string>("");
   const [userName, setUserName] = useState<string>("");
+  const [isAdding, setIsAdding] = useState(false);
 
   const { data: user, isLoading: isUserLoading } = useGetUser(userId);
 
@@ -27,12 +28,34 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
   };
 
   const handleAddTeammember = () => {
+    setIsAdding(true);
+
     const testPayload = {
       team_id: teamId,
       username: userName,
     };
 
-    addTeamMember({ payload: testPayload });
+    addTeamMember(
+      { payload: testPayload },
+      {
+        onSuccess: () => {
+          setIsAdding(false);
+          setViewClicked(false);
+          setSearchQuery("");
+          setUserId("");
+          setUserName("");
+          const modal = document.getElementById(
+            "my_modal_3",
+          ) as HTMLDialogElement | null;
+          if (modal) {
+            modal.close();
+          }
+        },
+        onError: () => {
+          setIsAdding(false); // Ensure the button resets even if there’s an error
+        },
+      },
+    );
   };
 
   return (
@@ -185,22 +208,17 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
                   </p>
                 )}
                 <button
-                  className=" bg-yellow text-black border-none w-[150px] p-2 rounded-sm"
-                  onClick={() => {
-                    handleAddTeammember();
-                    setViewClicked(false);
-                    setSearchQuery("");
-                    setUserId("");
-                    setUserName("");
-                    const modal = document.getElementById(
-                      "my_modal_3",
-                    ) as HTMLDialogElement | null;
-                    if (modal) {
-                      modal.close();
-                    }
-                  }}
+                  className="bg-yellow text-black border-none w-[150px] p-2 rounded-sm flex justify-center items-center"
+                  onClick={handleAddTeammember}
+                  disabled={isAdding} // Prevent multiple clicks
                 >
-                  Add to team
+                  {isAdding ? (
+                    <div className="flex justify-center">
+                      <span className="loading loading-dots loading-xs"></span>
+                    </div>
+                  ) : (
+                    "Add to team"
+                  )}
                 </button>
               </>
             ) : (
