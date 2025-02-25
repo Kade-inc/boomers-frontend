@@ -456,7 +456,7 @@ function ChallengePage() {
             </span>
           </button>
           <button
-            className="flex items-center pl-4 h-[50px] w-[105px] bg-gradient-to-b from-[#00989B] to-[#005E78] bottom-10 -right-8 md:hidden z-50 rounded-full fixed "
+            className="flex items-center pl-4 h-[50px] w-[105px] bg-gradient-to-b from-[#00989B] to-[#005E78] bottom-10 -right-8 md:hidden z-30 rounded-full fixed "
             onClick={() => setShowStatsModal(!showStatsModal)}
           >
             <PresentationChartBarIcon width={30} height={30} color="white" />

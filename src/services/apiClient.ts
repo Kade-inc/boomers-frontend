@@ -832,6 +832,24 @@ class APIClient {
       );
     }
   };
+
+  getNotifications = async (requiresAuth = true) => {
+    try {
+      const response = await this.axiosInstance.get(this.endpoint, {
+        headers: {
+          requiresAuth,
+        },
+      });
+      const { data } = response.data;
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching notifications:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
 }
 
 export default APIClient;
