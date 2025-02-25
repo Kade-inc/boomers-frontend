@@ -12,13 +12,16 @@ import Notification from "../entities/Notification";
 import NotificationItem from "../components/NotificationItem";
 import { Toaster } from "react-hot-toast";
 import useMarkAllNotificationsRead from "../hooks/Notifications/useMarkAllNotificationsRead";
+import useRealtimeNotifications from "../hooks/Notifications/useRealTimeNotifications";
+import useNotificationsStore from "../stores/useNotificationsStore";
 
 function AppLayout() {
-  const { logout, checkAuth, isAuthenticated } = useAuthStore();
+  const { logout, checkAuth, isAuthenticated, user } = useAuthStore();
+  const notifications = useNotificationsStore((state) => state.notifications);
   const isLoading = useLoadingStore((state) => state.isLoading);
   const navigate = useNavigate();
-  const { data: notifications, isPending: notificationsPending } =
-    useGetNotifications(isAuthenticated);
+  // const { data: notifications, isPending: notificationsPending } =
+  //   useGetNotifications(isAuthenticated);
 
   // Instantiate the mutation hook with the notification's id so that the mutationKey includes it.
   const { mutate, status } = useMarkAllNotificationsRead();
@@ -26,6 +29,13 @@ function AppLayout() {
 
   // Local state to toggle between unread and read notifications
   const [showRead, setShowRead] = useState(false);
+
+  console.log("IS: ", user)
+  if (user) {
+    console.log("HAPA")
+    if (user._id) useRealtimeNotifications(user?._id);
+  }
+
 
   // Prepare notifications lists
   const unreadNotifications =
@@ -156,14 +166,14 @@ function AppLayout() {
                 <span className="loading loading-dots loading-xs"></span>
               )}
             </div>
-            {notificationsPending && (
+            {/* {notificationsPending && (
               <div className="flex justify-center items-center h-[70vh]">
                 <span className="loading loading-dots loading-md md:loading-lg"></span>
               </div>
-            )}
-            {!notificationsPending && displayedNotifications.length > 0 && (
+            )} */}
+            {displayedNotifications.length > 0 && (
               <div className="divide-y divide-gray-400">
-                {displayedNotifications.map((notification) => (
+                {displayedNotifications.map((notification:any) => (
                   <NotificationItem
                     key={notification._id}
                     notification={notification}
