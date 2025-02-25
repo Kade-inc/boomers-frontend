@@ -156,6 +156,11 @@ function AppLayout() {
                 <span className="loading loading-dots loading-xs"></span>
               )}
             </div>
+            {notificationsPending && (
+              <div className="flex justify-center items-center h-[70vh]">
+                <span className="loading loading-dots loading-md md:loading-lg"></span>
+              </div>
+            )}
             {!notificationsPending && displayedNotifications.length > 0 && (
               <div className="divide-y divide-gray-400">
                 {displayedNotifications.map((notification) => (
