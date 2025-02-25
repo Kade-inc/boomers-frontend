@@ -850,6 +850,35 @@ class APIClient {
       );
     }
   };
+
+  updateNotificationStatus = async (
+    notificationId: string,
+    isRead: boolean,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.patch(
+        `${this.endpoint}/${notificationId}`,
+        {
+          isRead: isRead,
+        },
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      // toast.success("Notification marked as read");
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error updating notification status: ",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
 }
 
 export default APIClient;
