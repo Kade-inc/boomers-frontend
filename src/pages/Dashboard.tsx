@@ -13,7 +13,7 @@ import RecommendationsModal from "../components/Modals/RecommendationsModal";
 import TeamCardCarousel from "../components/Carousels/TeamCardCarousel";
 import ChallengeCardCarousel from "../components/Carousels/ChallengeCardCarousel";
 import useChallenges from "../hooks/Challenges/useChallenges";
-import PendingRequests from "../components/PendingRequests";
+import PendingRequests from "../components/PendingRequest";
 
 const Dashboard = () => {
   const user = useAuthStore((s) => s.user);
