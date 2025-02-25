@@ -879,6 +879,29 @@ class APIClient {
       throw axiosError;
     }
   };
+
+  markAllNotificationsAsRead = async (requiresAuth = true) => {
+    try {
+      const response = await this.axiosInstance.patch(
+        `${this.endpoint}`,
+        {},
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      // toast.success("All notifications marked as read");
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error marking all notifications as read: ",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
 }
 
 export default APIClient;

@@ -11,6 +11,7 @@ import { IoCheckmarkDone } from "react-icons/io5";
 import Notification from "../entities/Notification";
 import NotificationItem from "../components/NotificationItem";
 import { Toaster } from "react-hot-toast";
+import useMarkAllNotificationsRead from "../hooks/Notifications/useMarkAllNotificationsRead";
 
 function AppLayout() {
   const { logout, checkAuth, isAuthenticated } = useAuthStore();
@@ -18,6 +19,14 @@ function AppLayout() {
   const navigate = useNavigate();
   const { data: notifications, isPending: notificationsPending } =
     useGetNotifications(isAuthenticated);
+
+  // Instantiate the mutation hook with the notification's id so that the mutationKey includes it.
+  const { mutate, status } = useMarkAllNotificationsRead();
+  const markAllReadLoading = status === "pending";
+
+  const handleMarkAllAsRead = () => {
+    mutate({});
+  };
 
   // Filter notifications to get only the unread ones
   const unreadNotifications =
@@ -112,8 +121,14 @@ function AppLayout() {
                 <div
                   className="tooltip tooltip-left tooltip-success cursor-pointer hover:"
                   data-tip="Mark all as read"
+                  onClick={() => handleMarkAllAsRead()}
                 >
-                  <IoCheckmarkDone size={24} className="text-[#00989B]" />
+                  {!markAllReadLoading && (
+                    <IoCheckmarkDone size={24} className="text-[#00989B]" />
+                  )}
+                  {markAllReadLoading && (
+                    <span className="loading loading-dots loading-xs "></span>
+                  )}
                 </div>
               )}
             </div>
