@@ -832,6 +832,76 @@ class APIClient {
       );
     }
   };
+
+  getNotifications = async (requiresAuth = true) => {
+    try {
+      const response = await this.axiosInstance.get(this.endpoint, {
+        headers: {
+          requiresAuth,
+        },
+      });
+      const { data } = response.data;
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching notifications:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
+  updateNotificationStatus = async (
+    notificationId: string,
+    isRead: boolean,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.patch(
+        `${this.endpoint}/${notificationId}`,
+        {
+          isRead: isRead,
+        },
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      // toast.success("Notification marked as read");
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error updating notification status: ",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  markAllNotificationsAsRead = async (requiresAuth = true) => {
+    try {
+      const response = await this.axiosInstance.patch(
+        `${this.endpoint}`,
+        {},
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      // toast.success("All notifications marked as read");
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error marking all notifications as read: ",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
 }
 
 export default APIClient;
