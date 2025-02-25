@@ -62,17 +62,19 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         >
           View
         </button>
-        <button
-          className="bg-[#00989B] px-4 py-2 ml-4 font-medium text-white rounded-[3px] "
-          onClick={handleToggle}
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <span className="loading loading-dots loading-xs "></span>
-          ) : (
-            "Mark as read"
-          )}
-        </button>
+        {!notification.isRead && (
+          <button
+            className="bg-[#00989B] px-4 py-2 ml-4 font-medium text-white rounded-[3px] "
+            onClick={handleToggle}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <span className="loading loading-dots loading-xs "></span>
+            ) : (
+              "Mark as read"
+            )}
+          </button>
+        )}
       </div>
       <p className="text-[12px] content-end font-semibold mt-4">
         {formatDistanceToNow(new Date(notification.createdAt), {

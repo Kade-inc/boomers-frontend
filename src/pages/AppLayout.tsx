@@ -1,13 +1,13 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import NavigationBar from "../components/NavigationBar";
 import useAuthStore from "../stores/useAuthStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import useLoadingStore from "../stores/useLoadingStore";
 import Loader from "../components/Loader/Loader";
 import { BellIcon } from "@heroicons/react/24/solid";
 import useGetNotifications from "../hooks/useGetNotifications";
-import { IoCheckmarkDone } from "react-icons/io5";
+import { IoCheckmarkDone, IoMail, IoMailOpen } from "react-icons/io5";
 import Notification from "../entities/Notification";
 import NotificationItem from "../components/NotificationItem";
 import { Toaster } from "react-hot-toast";
@@ -24,13 +24,21 @@ function AppLayout() {
   const { mutate, status } = useMarkAllNotificationsRead();
   const markAllReadLoading = status === "pending";
 
+  // Local state to toggle between unread and read notifications
+  const [showRead, setShowRead] = useState(false);
+
+  // Prepare notifications lists
+  const unreadNotifications =
+    notifications?.filter((notification) => !notification.isRead) || [];
+  const readNotifications =
+    notifications?.filter((notification) => notification.isRead) || [];
+  const displayedNotifications = showRead
+    ? readNotifications
+    : unreadNotifications;
+
   const handleMarkAllAsRead = () => {
     mutate({});
   };
-
-  // Filter notifications to get only the unread ones
-  const unreadNotifications =
-    notifications?.filter((notification) => !notification.isRead) || [];
 
   useEffect(() => {
     checkAuth();
@@ -91,7 +99,6 @@ function AppLayout() {
           className="drawer-toggle"
         />
         <div className="drawer-content">
-          {/* Page content here */}
           <label
             htmlFor="notifications-drawer"
             className="drawer-button btn btn-primary"
@@ -112,29 +119,46 @@ function AppLayout() {
                 {notifications && (
                   <div className="h-8 w-8 rounded-full bg-gray-200 ml-2 flex justify-center items-center">
                     <span className="text-sm font-bold text-darkgrey">
-                      {unreadNotifications.length}
+                      {displayedNotifications.length}
                     </span>
                   </div>
                 )}
               </div>
-              {unreadNotifications.length > 0 && (
+              {showRead && (
                 <div
-                  className="tooltip tooltip-left tooltip-success cursor-pointer hover:"
-                  data-tip="Mark all as read"
-                  onClick={() => handleMarkAllAsRead()}
+                  className="cursor-pointer tooltip tooltip-left tooltip-warning"
+                  data-tip="Show Unread"
+                  onClick={() => setShowRead(false)}
                 >
-                  {!markAllReadLoading && (
-                    <IoCheckmarkDone size={24} className="text-[#00989B]" />
-                  )}
-                  {markAllReadLoading && (
-                    <span className="loading loading-dots loading-xs "></span>
-                  )}
+                  <IoMail size={24} />
                 </div>
               )}
+              {!showRead && (
+                <div
+                  className="cursor-pointer tooltip tooltip-left tooltip-warning"
+                  data-tip="Show Read"
+                  onClick={() => setShowRead(true)}
+                >
+                  <IoMailOpen size={24} />
+                </div>
+              )}
+
+              {!markAllReadLoading && unreadNotifications.length > 0 && (
+                <div
+                  className="tooltip tooltip-left tooltip-success cursor-pointer"
+                  data-tip="Mark all as read"
+                  onClick={handleMarkAllAsRead}
+                >
+                  <IoCheckmarkDone size={24} className="text-[#00989B]" />
+                </div>
+              )}
+              {markAllReadLoading && (
+                <span className="loading loading-dots loading-xs"></span>
+              )}
             </div>
-            {!notificationsPending && unreadNotifications.length > 0 && (
+            {!notificationsPending && displayedNotifications.length > 0 && (
               <div className="divide-y divide-gray-400">
-                {unreadNotifications.map((notification) => (
+                {displayedNotifications.map((notification) => (
                   <NotificationItem
                     key={notification._id}
                     notification={notification}
@@ -143,7 +167,7 @@ function AppLayout() {
                 ))}
               </div>
             )}
-            {notifications && unreadNotifications.length === 0 && (
+            {notifications && displayedNotifications.length === 0 && (
               <div className="flex items-center justify-center flex-col h-[70vh]">
                 <BellIcon height={60} width={60} />
                 <p className="font-semibold">Nothing to see here</p>
