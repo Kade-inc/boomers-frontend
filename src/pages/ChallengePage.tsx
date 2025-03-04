@@ -276,38 +276,55 @@ function ChallengePage() {
                 </div>
               ) : (
                 <div className="grid grid-flow-col gap-5 text-center auto-cols-max">
+                  {/* Days - only show if > 0 */}
+                  {timeLeft.days > 0 && (
+                    <div className="flex flex-col p-2 bg-gradient-to-b from-[#D9436D] to-[#F26A4B] rounded-box text-neutral-content text-white">
+                      <span className="countdown text-4xl md:text-5xl font-heading">
+                        <span
+                          style={
+                            { "--value": timeLeft.days } as React.CSSProperties
+                          }
+                        ></span>
+                      </span>
+                      days
+                    </div>
+                  )}
+
+                  {/* Hours - show if days > 0 OR hours > 0 */}
+                  {(timeLeft.days > 0 || timeLeft.hours > 0) && (
+                    <div className="flex flex-col p-2 bg-gradient-to-b from-[#D9436D] to-[#F26A4B] rounded-box text-neutral-content text-white">
+                      <span className="countdown text-4xl md:text-5xl font-heading">
+                        <span
+                          style={
+                            { "--value": timeLeft.hours } as React.CSSProperties
+                          }
+                        ></span>
+                      </span>
+                      hours
+                    </div>
+                  )}
+
+                  {/* Minutes - show if days > 0 OR hours > 0 OR minutes > 0 */}
+                  {(timeLeft.days > 0 ||
+                    timeLeft.hours > 0 ||
+                    timeLeft.minutes > 0) && (
+                    <div className="flex flex-col p-2 bg-gradient-to-b from-[#D9436D] to-[#F26A4B] rounded-box text-neutral-content text-white">
+                      <span className="countdown text-4xl md:text-5xl font-heading">
+                        <span
+                          style={
+                            {
+                              "--value": timeLeft.minutes,
+                            } as React.CSSProperties
+                          }
+                        ></span>
+                      </span>
+                      min
+                    </div>
+                  )}
+
+                  {/* Seconds - always show */}
                   <div className="flex flex-col p-2 bg-gradient-to-b from-[#D9436D] to-[#F26A4B] rounded-box text-neutral-content text-white">
                     <span className="countdown text-4xl md:text-5xl font-heading">
-                      <span
-                        style={
-                          { "--value": timeLeft.days } as React.CSSProperties
-                        }
-                      ></span>
-                    </span>
-                    days
-                  </div>
-                  <div className="flex flex-col p-2 bg-gradient-to-b from-[#D9436D] to-[#F26A4B] rounded-box text-neutral-content text-white">
-                    <span className="countdown text-4xl  md:text-5xl font-heading">
-                      <span
-                        style={
-                          { "--value": timeLeft.hours } as React.CSSProperties
-                        }
-                      ></span>
-                    </span>
-                    hours
-                  </div>
-                  <div className="flex flex-col p-2 bg-gradient-to-b from-[#D9436D] to-[#F26A4B] rounded-box text-neutral-content text-white">
-                    <span className="countdown text-4xl  md:text-5xl font-heading">
-                      <span
-                        style={
-                          { "--value": timeLeft.minutes } as React.CSSProperties
-                        }
-                      ></span>
-                    </span>
-                    min
-                  </div>
-                  <div className="flex flex-col p-2 bg-gradient-to-b from-[#D9436D] to-[#F26A4B] rounded-box text-neutral-content text-white">
-                    <span className="countdown text-4xl  md:text-5xl font-heading">
                       <span
                         style={
                           { "--value": timeLeft.seconds } as React.CSSProperties
