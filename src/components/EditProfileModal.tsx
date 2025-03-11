@@ -7,6 +7,7 @@ import useUpdateUser from "../hooks/useUpdateUser";
 import useAuthStore from "../stores/useAuthStore";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import { useRef, useState } from "react";
+import useDeleteProfilePicture from "../hooks/useDeleteProfilePicture";
 
 type ModalTriggerProps = {
   isOpen: boolean;
@@ -47,6 +48,8 @@ type FormData = z.infer<typeof schema>;
 
 const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
   const mutation = useUpdateUser(user.user_id!);
+  const { setUser } = useAuthStore();
+  const deletePictureMutation = useDeleteProfilePicture();
   const [imageFile, setImageFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewImage, setPreviewImage] = useState<File | null>(null);
@@ -66,13 +69,22 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
       setPreviewImage(null); // Reset if no file selected
     }
   };
+  console.log("Preview Image: ", previewImage);
+  console.log("User Profile: ", user.profile_picture);
 
   const handleButtonClick = () => {
     // Trigger the hidden file input click using the ref
     fileInputRef.current?.click();
   };
 
-  const { setUser } = useAuthStore();
+  const handleDeletePicture = async () => {
+    await deletePictureMutation.mutateAsync({
+      userId: user.user_id || "",
+    });
+    user.profile_picture = null;
+    setUser(user);
+    console.log(user);
+  };
 
   const {
     register,
@@ -106,11 +118,13 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
     setUser(updateData);
     onClose();
     setImageFile(null);
+    setPreviewImage(null);
   };
 
   const handleClose = () => {
     onClose();
     setImageFile(null);
+    setPreviewImage(null);
   };
 
   return (
@@ -194,13 +208,20 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                     accept="image/*"
                     onChange={handleFileChange}
                   />
-
-                  {/* <button
-                    type="button"
-                    className="h-[26px] md:h-[33px] w-[135px] md:w-[155px]  rounded-[3px] border-[1px] bg-[#BEBEBE] font-body font-semibold text-[11px] md:text-sm text-[#E02828] "
-                  >
-                    Delete picture
-                  </button> */}
+                  {user.profile_picture && (
+                    <button
+                      type="button"
+                      className="flex justify-evenly items-center btn rounded-[3px] border-[1px] border-red-500 font-body font-semibold text-[11px] md:text-sm text-nowrap mb-2  text-[#E02828] hover:bg-white"
+                      onClick={handleDeletePicture}
+                      disabled={deletePictureMutation.isPending}
+                    >
+                      {deletePictureMutation.isPending ? (
+                        <span className="loading loading-spinner loading-xs"></span>
+                      ) : (
+                        "Delete picture"
+                      )}
+                    </button>
+                  )}
                 </div>
               </div>
 

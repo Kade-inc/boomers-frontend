@@ -902,6 +902,35 @@ class APIClient {
       throw axiosError;
     }
   };
+
+  deleteProfilePicture = async (
+    userId: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.delete(
+       
+        `${this.endpoint}/${userId}/profile-picture`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      
+      return response;
+    } catch (error: any) {
+      let errorMessage =
+        "An unexpected error occurred. Please try again later.";
+
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+
+      toast.error(`${errorMessage}`);
+      throw new Error(errorMessage);
+    }
+  };
 }
 
 export default APIClient;
