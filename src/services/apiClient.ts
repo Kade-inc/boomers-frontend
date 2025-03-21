@@ -903,13 +903,9 @@ class APIClient {
     }
   };
 
-  deleteProfilePicture = async (
-    userId: string,
-    requiresAuth = true,
-  ) => {
+  deleteProfilePicture = async (userId: string, requiresAuth = true) => {
     try {
       const response = await this.axiosInstance.delete(
-       
         `${this.endpoint}/${userId}/profile-picture`,
         {
           headers: {
@@ -917,7 +913,7 @@ class APIClient {
           },
         },
       );
-      
+
       return response;
     } catch (error: any) {
       let errorMessage =

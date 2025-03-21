@@ -1,8 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  useMutation,
-  UseMutationResult,
-} from "@tanstack/react-query";
+import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import APIClient from "../services/apiClient";
 
 const apiClient = new APIClient("/api/users");
@@ -16,12 +13,11 @@ const useDeleteProfilePicture = (): UseMutationResult<
   },
   unknown
 > => {
-//   const queryClient = useQueryClient();
+  //   const queryClient = useQueryClient();
 
   return useMutation({
     mutationKey: ["deleteProfilePicture"],
-    mutationFn: ({ userId }) =>
-      apiClient.deleteProfilePicture(userId),
+    mutationFn: ({ userId }) => apiClient.deleteProfilePicture(userId),
     // onSuccess: () => {
     //   queryClient.invalidateQueries({ queryKey: ["team-challenges"] });
     // },
