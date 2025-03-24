@@ -58,6 +58,8 @@ const MemberRequestDialog = ({
   const [actionStatus, setActionStatus] = useState<
     "accepted" | "rejected" | null
   >(null);
+  const [showRejectionInput, setShowRejectionInput] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState("");
 
   // Fetch teams based on the selected request or member
   const activeUserId =
@@ -110,6 +112,7 @@ const MemberRequestDialog = ({
                 queryKey: ["team", teamId],
               });
               setAcceptClicked(true);
+              setShowRejectionInput(false);
             },
           },
         );
@@ -121,7 +124,6 @@ const MemberRequestDialog = ({
     }
   };
 
-  // handle join request
   const handleJoinRequest = (
     status: "APPROVED" | "DECLINED",
     comment: string,
@@ -138,6 +140,7 @@ const MemberRequestDialog = ({
       {
         onSuccess: () => {
           setAcceptClicked(true);
+          setShowRejectionInput(false); // Hide rejection input AFTER success
         },
         onError: (error) => {
           console.error("Error handling join request:", error);
@@ -161,7 +164,10 @@ const MemberRequestDialog = ({
         className="modal-box !p-0 !overflow-y-auto !overflow-x-hidden !rounded-md"
         style={{ borderRadius: "0px" }}
       >
-        <div className="text-center flex flex-col items-center justify-center bg-yellow">
+        <div
+          className={`text-center flex flex-col items-center justify-center bg-yellow ${showRejectionInput ? "hidden" : ""}`}
+          style={{ opacity: showRejectionInput ? 0 : 1 }}
+        >
           <form method="dialog" className="ml-[90%] mt-1">
             <button className="text-darkgrey font-semibold">X</button>
           </form>
@@ -206,79 +212,96 @@ const MemberRequestDialog = ({
 
         {!acceptClicked ? (
           <>
-            <div className="p-4">
-              <h3 className="text-[16px] font-semibold mb-2">Current Teams</h3>
-              {isLoading ? (
-                <div className="flex justify-center">
+            {!showRejectionInput && (
+              <div className="p-4">
+                <h3 className="text-[16px] font-semibold mb-2">
+                  Current Teams
+                </h3>
+                {isLoading ? (
+                  <div className="flex justify-center">
+                    <span className="loading loading-dots loading-xs"></span>
+                  </div>
+                ) : isError ? (
                   <span className="loading loading-dots loading-xs"></span>
-                </div>
-              ) : isError ? (
-                <span className="loading loading-dots loading-xs"></span>
-              ) : teams && teams.data.length > 0 ? (
-                <div className="slider-container pb-2">
-                  <Slider {...settings}>
-                    {teams.data.map((team: Team) => (
-                      <UserDetailsCard key={team._id} team={team} />
-                    ))}
-                  </Slider>
-                </div>
-              ) : (
-                <p>No teams found.</p>
-              )}
-              <div>
-                <h3 className="py-2 text-[16px] font-semibold">Interests</h3>
-                <div className="flex items-center mb-2 font-regular text-[14px]">
-                  {mode === "member" && selectedTeamMember?.interests ? (
-                    <>
-                      {selectedTeamMember.interests.domain ||
-                      selectedTeamMember.interests.subdomain ||
-                      selectedTeamMember.interests.subdomainTopics?.length >
-                        0 ? (
-                        <>
-                          {selectedTeamMember.interests.domain}{" "}
-                          {selectedTeamMember.interests.subdomain}{" "}
-                          {selectedTeamMember.interests.subdomainTopics?.map(
-                            (topic: string, index: number) => (
-                              <React.Fragment key={index}>
-                                <div className="bg-black rounded-full w-1 h-1 mx-1"></div>
-                                <p>{topic}</p>
-                              </React.Fragment>
-                            ),
-                          )}
-                        </>
-                      ) : (
-                        <p>No interests found.</p>
-                      )}
-                    </>
-                  ) : mode === "request" &&
-                    selectedRequest?.userProfile.interests ? (
-                    <>
-                      {selectedRequest.userProfile.interests.domain ||
-                      selectedRequest.userProfile.interests.subdomain ||
-                      selectedRequest.userProfile.interests.subdomainTopics
-                        ?.length > 0 ? (
-                        <>
-                          {selectedRequest.userProfile.interests.domain}{" "}
-                          {selectedRequest.userProfile.interests.subdomain}{" "}
-                          {selectedRequest.userProfile.interests.subdomainTopics?.map(
-                            (topic: string, index: number) => (
-                              <React.Fragment key={index}>
-                                <div className="bg-black rounded-full w-1 h-1 mx-1"></div>
-                                <p>{topic}</p>
-                              </React.Fragment>
-                            ),
-                          )}
-                        </>
-                      ) : (
-                        <p>No interests found.</p>
-                      )}
-                    </>
-                  ) : (
-                    <p>No interests found.</p>
-                  )}
+                ) : teams && teams.data.length > 0 ? (
+                  <div className="slider-container pb-2">
+                    <Slider {...settings}>
+                      {teams.data.map((team: Team) => (
+                        <UserDetailsCard key={team._id} team={team} />
+                      ))}
+                    </Slider>
+                  </div>
+                ) : (
+                  <p>No teams found.</p>
+                )}
+                <div>
+                  <h3 className="py-2 text-[16px] font-semibold">Interests</h3>
+                  <div className="flex items-center mb-2 font-regular text-[14px]">
+                    {mode === "member" && selectedTeamMember?.interests ? (
+                      <>
+                        {selectedTeamMember.interests.domain ||
+                        selectedTeamMember.interests.subdomain ||
+                        selectedTeamMember.interests.subdomainTopics?.length >
+                          0 ? (
+                          <>
+                            {selectedTeamMember.interests.domain}{" "}
+                            {selectedTeamMember.interests.subdomain}{" "}
+                            {selectedTeamMember.interests.subdomainTopics?.map(
+                              (topic: string, index: number) => (
+                                <React.Fragment key={index}>
+                                  <div className="bg-black rounded-full w-1 h-1 mx-1"></div>
+                                  <p>{topic}</p>
+                                </React.Fragment>
+                              ),
+                            )}
+                          </>
+                        ) : (
+                          <p>No interests found.</p>
+                        )}
+                      </>
+                    ) : mode === "request" &&
+                      selectedRequest?.userProfile.interests ? (
+                      <>
+                        {selectedRequest.userProfile.interests.domain ||
+                        selectedRequest.userProfile.interests.subdomain ||
+                        selectedRequest.userProfile.interests.subdomainTopics
+                          ?.length > 0 ? (
+                          <>
+                            {selectedRequest.userProfile.interests.domain}{" "}
+                            {selectedRequest.userProfile.interests.subdomain}{" "}
+                            {selectedRequest.userProfile.interests.subdomainTopics?.map(
+                              (topic: string, index: number) => (
+                                <React.Fragment key={index}>
+                                  <div className="bg-black rounded-full w-1 h-1 mx-1"></div>
+                                  <p>{topic}</p>
+                                </React.Fragment>
+                              ),
+                            )}
+                          </>
+                        ) : (
+                          <p>No interests found.</p>
+                        )}
+                      </>
+                    ) : (
+                      <p>No interests found.</p>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
+            {showRejectionInput && (
+              <div className="p-10">
+                <p className="text-center font-medium text-[16px] mb-4">
+                  Kindly give a reason to let <span>Paul Otieno</span> know why
+                  you have rejected their request
+                </p>
+                <textarea
+                  className="w-full h-32 border border-black overflow-auto resize-none"
+                  value={rejectionReason}
+                  onChange={(e) => setRejectionReason(e.target.value)}
+                />
+              </div>
+            )}
 
             {/* Modal Action Buttons */}
             <div className="modal-action flex flex-col">
@@ -293,53 +316,75 @@ const MemberRequestDialog = ({
                 <>
                   {mode === "request" && (
                     <div className="flex w-full flex-col">
-                      {/* Accept Button */}
-                      <div
-                        className={`w-full text-white bg-[#14AC91] py-4 rounded-none hover:bg-[#14AC91] text-center cursor-pointer ${
-                          isAccepting ? "opacity-50 cursor-not-allowed" : ""
-                        }`}
-                        onClick={
-                          !isAccepting
-                            ? () => {
-                                handleJoinRequest("APPROVED", "Looks good");
-                                setActionStatus("accepted");
-                              }
-                            : undefined
-                        }
-                      >
-                        {isAccepting ? (
-                          <div className="flex justify-center">
-                            <span className="loading loading-dots loading-xs"></span>
-                          </div>
-                        ) : (
-                          "Accept"
-                        )}
-                      </div>
+                      {/* Accept or Cancel Button */}
+                      {!showRejectionInput ? (
+                        <div
+                          className={`w-full text-white bg-[#14AC91] py-4 rounded-none hover:bg-[#14AC91] text-center cursor-pointer ${
+                            isAccepting ? "opacity-50 cursor-not-allowed" : ""
+                          }`}
+                          onClick={
+                            !isAccepting
+                              ? () => {
+                                  handleJoinRequest("APPROVED", "Looks good");
+                                  setActionStatus("accepted");
+                                }
+                              : undefined
+                          }
+                        >
+                          {isAccepting ? (
+                            <div className="flex justify-center">
+                              <span className="loading loading-dots loading-xs"></span>
+                            </div>
+                          ) : (
+                            "Accept"
+                          )}
+                        </div>
+                      ) : (
+                        <div
+                          className="w-full text-white bg-[#14AC91] py-4 rounded-none hover:bg-[#14AC91] text-center cursor-pointer"
+                          onClick={() => setShowRejectionInput(false)}
+                        >
+                          Cancel
+                        </div>
+                      )}
 
                       {/* Reject Button */}
-                      <div
-                        className={`w-full text-white bg-[#C83A3A] py-4 rounded-none hover:bg-[#C83A3A] text-center cursor-pointer ${
-                          isRejecting ? "opacity-50 cursor-not-allowed" : ""
-                        }`}
-                        onClick={
-                          !isRejecting
-                            ? () => {
-                                handleJoinRequest("DECLINED", "Not a good fit");
-                                setActionStatus("rejected");
-                              }
-                            : undefined
-                        }
-                      >
-                        {isRejecting ? (
-                          <div className="flex justify-center">
-                            <span className="loading loading-dots loading-xs"></span>
-                          </div>
-                        ) : (
-                          "Reject"
-                        )}
-                      </div>
+                      {!showRejectionInput ? (
+                        <div
+                          className="w-full text-white bg-[#C83A3A] py-4 rounded-none hover:bg-[#C83A3A] text-center cursor-pointer"
+                          onClick={() => setShowRejectionInput(true)}
+                        >
+                          Reject
+                        </div>
+                      ) : (
+                        <div
+                          className={`w-full text-white bg-[#C83A3A] py-4 rounded-none hover:bg-[#C83A3A] text-center cursor-pointer ${
+                            isRejecting ? "opacity-50 cursor-not-allowed" : ""
+                          }`}
+                          onClick={
+                            !isRejecting
+                              ? () => {
+                                  setActionStatus("rejected");
+                                  handleJoinRequest(
+                                    "DECLINED",
+                                    rejectionReason || "No reason provided",
+                                  );
+                                }
+                              : undefined
+                          }
+                        >
+                          {isRejecting ? (
+                            <div className="flex justify-center">
+                              <span className="loading loading-dots loading-xs"></span>
+                            </div>
+                          ) : (
+                            "Reject With Reason"
+                          )}
+                        </div>
+                      )}
                     </div>
                   )}
+
                   {mode === "member" && selectedMember && (
                     <div className="flex w-full">
                       <div
@@ -413,11 +458,12 @@ const MemberRequestDialog = ({
                   : ""}
             </p>
             ;
-            <form method="dialog">
-              <button className="btn w-[150px] text-white bg-red-600 rounded hover:bg-red-700">
-                Close
-              </button>
-            </form>
+            <button
+              className="btn w-[150px] text-white bg-red-600 rounded hover:bg-red-700"
+              onClick={closeModal}
+            >
+              Close
+            </button>
           </div>
         )}
       </div>
