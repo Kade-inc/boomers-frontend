@@ -71,7 +71,7 @@ const MemberRequestDialog = ({
     isError,
   } = useTeams({ userId: activeUserId || "" });
 
-  console.log("DATA: ", teams);
+  // console.log("DATA: ", teams);
 
   //close modal
   const closeModal = () => {
@@ -378,7 +378,7 @@ const MemberRequestDialog = ({
                               <span className="loading loading-dots loading-xs"></span>
                             </div>
                           ) : (
-                            "Reject With Reason"
+                            "Reject"
                           )}
                         </div>
                       )}

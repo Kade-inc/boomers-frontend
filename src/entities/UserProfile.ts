@@ -3,6 +3,7 @@ export default interface UserProfile {
   profile_picture: string | null;
   firstName: string | null;
   lastName: string | null;
+  _id?: string;
   profile: {
     id: string;
     userId: string;

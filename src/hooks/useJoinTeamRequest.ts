@@ -21,6 +21,7 @@ const useJoinTeamRequest = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["team-member-requests"] });
       queryClient.invalidateQueries({ queryKey: ["team"] });
+      queryClient.invalidateQueries({ queryKey: ["joinRequests"] });
     },
     onError: (error: any) => {
       console.error("Failed to update request status:", error);
