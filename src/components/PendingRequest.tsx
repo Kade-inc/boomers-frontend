@@ -1,12 +1,10 @@
 import { Link } from "react-router-dom";
 import useGetJoinRequests from "../hooks/useGetJoinRequests";
 import useAuthStore from "../stores/useAuthStore";
-import { useEffect } from "react";
 
 const PendingRequest = () => {
   const { data: requests = { data: [] } } = useGetJoinRequests();
   const user = useAuthStore((s) => s.user);
-  console.log(user._id);
 
   const pendingRequests = (
     Array.isArray(requests) ? requests : requests?.data || []
@@ -14,9 +12,6 @@ const PendingRequest = () => {
     (req) =>
       req.status === "PENDING" && req.owner_id?.profile?._id === user._id,
   );
-  useEffect(() => {
-    console.log("Filtered Pending Requests:", pendingRequests);
-  }, [pendingRequests]);
 
   return (
     <Link to="/pending-requests">

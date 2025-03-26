@@ -4,6 +4,7 @@ export default interface UserProfile {
   firstName: string | null;
   lastName: string | null;
   _id?: string;
+  username?: string;
   profile: {
     id: string;
     userId: string;

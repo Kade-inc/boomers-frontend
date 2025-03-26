@@ -4,11 +4,40 @@ import {
   MdOutlineKeyboardArrowUp,
 } from "react-icons/md";
 import { Link } from "react-router-dom";
+import useGetJoinRequests from "../hooks/useGetJoinRequests";
+import useAuthStore from "../stores/useAuthStore";
 
 const PendingRequestsPage = () => {
   const [expandAction, setExpandAction] = useState(true);
   const [expandApproval, setExpandApproval] = useState(true);
   const [expandRequest, setExpandRequest] = useState(true);
+  const { data: requests = { data: [] } } = useGetJoinRequests();
+  const user = useAuthStore((s) => s.user);
+
+  const pendingRequests = (
+    Array.isArray(requests) ? requests : requests?.data || []
+  ).filter(
+    (req) =>
+      req.status === "PENDING" && req.owner_id?.profile?._id === user._id,
+  );
+  console.log(pendingRequests);
+
+  // Requests I have sent
+  const sentPendingRequests = (
+    Array.isArray(requests) ? requests : requests?.data || []
+  ).filter(
+    (req) => req.status === "PENDING" && req.user_id?.profile._id === user._id,
+  );
+  console.log(sentPendingRequests);
+
+  // Requests I have sent
+  const declinedRequests = (
+    Array.isArray(requests) ? requests : requests?.data || []
+  ).filter(
+    (req) => req.status === "DECLINED" && req.user_id?.profile._id === user._id,
+  );
+  console.log(declinedRequests);
+
   return (
     <div className=" h-screen bg-base-100 px-10 pt-10 font-body">
       <div className="text-[20px] font-semibold mb-[50px]">
@@ -31,28 +60,34 @@ const PendingRequestsPage = () => {
           )}
         </div>
       </div>
-      {expandAction && (
-        <div className="flex gap-8 mb-[50px]">
-          <div className="w-[270px] bg-[#D9436D] h-[90px] rounded-[3px] pl-3 pt-3 text-white">
-            <p className="font-semibold text-[14px] mb-6">Album cover</p>
-            <div className="text-[12px] font-medium flex gap-24">
-              <p>Paul Dreamer</p>
-              <button className="bg-yellow text-black w-[62px] h-[25px] rounded-[3px]">
-                Action
-              </button>
+      <div className="flex gap-6 mb-[50px] flex-wrap">
+        {expandAction &&
+          pendingRequests.map((request) => (
+            <div
+              key={request._id}
+              className="w-[270px] bg-[#D9436D] h-[90px] rounded-[3px] pl-3 pt-3 text-white"
+            >
+              <p className="font-semibold text-[14px] mb-6">
+                {request.team_id?.name || "Unknown Team"}
+              </p>
+              <div className="text-[12px] font-medium flex justify-between pr-3">
+                <p>
+                  {request.user_id?.profile?.firstName &&
+                  request.user_id?.profile?.lastName
+                    ? `${request.user_id.profile.firstName} ${request.user_id.profile.lastName}`
+                    : request.user_id?.profile?.firstName ||
+                      request.user_id?.profile?.lastName ||
+                      request.user_id?.username ||
+                      "Unknown User"}
+                </p>
+
+                <button className="bg-yellow text-black w-[62px] h-[25px] rounded-[3px]">
+                  Action
+                </button>
+              </div>
             </div>
-          </div>
-          <div className="w-[270px] bg-[#D9436D] h-[90px] rounded-[3px] pl-3 pt-3 text-white">
-            <p className="font-semibold text-[14px] mb-6">Album cover</p>
-            <div className="text-[12px] font-medium flex gap-24">
-              <p>Paul Dreamer</p>
-              <button className="bg-yellow text-black w-[62px] h-[25px] rounded-[3px]">
-                Action
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+          ))}
+      </div>
 
       <div className="flex gap-8 mb-[30px] ">
         <p className="text-[18px] font-semibold">Pending approvals</p>
@@ -68,22 +103,32 @@ const PendingRequestsPage = () => {
           )}
         </div>
       </div>
-      {expandApproval && (
-        <div className="flex gap-8 text-white mb-[50px]">
-          <div className="w-[270px] bg-yellow h-[90px] rounded-[3px] pl-3 pt-3">
-            <p className="font-semibold text-[14px] mb-7">Album cover</p>
-            <div className="text-[12px] font-medium flex gap-28">
-              <p className="ml-[60%]">Paul Dreamer</p>
+      <div className="flex gap-6 text-white mb-[50px] flex-wrap">
+        {expandApproval &&
+          sentPendingRequests.map((request) => (
+            <div
+              key={request._id}
+              className="w-[270px] bg-yellow h-[90px] rounded-[3px] pl-3 pt-3"
+            >
+              <p className="font-semibold text-[14px] mb-7">
+                {" "}
+                {request.team_id?.name || "Unknown Team"}{" "}
+              </p>
+              <div className="text-[12px] font-medium flex gap-28">
+                <p className="pr-3 text-right w-full">
+                  {" "}
+                  {request.owner_id.profile?.firstName &&
+                  request.owner_id.profile?.lastName
+                    ? `${request.owner_id.profile?.firstName} ${request.owner_id.profile.lastName}`
+                    : request.owner_id.profile?.firstName ||
+                      request.owner_id.profile?.lastName ||
+                      request.owner_id.profile.username ||
+                      "Unknown User"}
+                </p>
+              </div>
             </div>
-          </div>
-          <div className="w-[270px] bg-yellow h-[90px] rounded-[3px] pl-3 pt-3">
-            <p className="font-semibold text-[14px] mb-7">Album cover</p>
-            <div className="text-[12px] font-medium flex gap-28">
-              <p className="ml-[60%]">Paul Dreamer</p>
-            </div>
-          </div>
-        </div>
-      )}
+          ))}
+      </div>
 
       <div className="flex gap-8 mb-[30px]">
         <p className="text-[18px] font-semibold">Rejected Requests</p>
@@ -102,28 +147,35 @@ const PendingRequestsPage = () => {
           Clear
         </button>
       </div>
-      {expandRequest && (
-        <div className="flex gap-8">
-          <div className="w-[270px] bg-[#D9436D] h-[90px] rounded-[3px] pl-3 pt-3 text-white">
-            <p className="font-semibold text-[14px] mb-6">Album cover</p>
-            <div className="text-[12px] font-medium flex gap-24">
-              <p>Paul Dreamer</p>
-              <button className="bg-yellow text-black w-[62px] h-[25px] rounded-[3px]">
-                Action
-              </button>
+      <div className="flex gap-6 pb-[50px] flex-wrap">
+        {expandRequest &&
+          declinedRequests.map((request) => (
+            <div
+              key={request._id}
+              className="w-[270px] bg-[#D9436D] h-[90px] rounded-[3px] pl-3 pt-3 text-white"
+            >
+              <p className="font-semibold text-[14px] mb-6">
+                {" "}
+                {request.team_id?.name || "Unknown Team"}{" "}
+              </p>
+              <div className="text-[12px] font-medium flex justify-between pr-3">
+                <p>
+                  {" "}
+                  {request.owner_id.profile?.firstName &&
+                  request.owner_id.profile?.lastName
+                    ? `${request.owner_id.profile?.firstName} ${request.owner_id.profile.lastName}`
+                    : request.owner_id.profile?.firstName ||
+                      request.owner_id.profile?.lastName ||
+                      request.owner_id.profile.username ||
+                      "Unknown User"}
+                </p>
+                <button className="bg-yellow text-black w-[62px] h-[25px] rounded-[3px]">
+                  Action
+                </button>
+              </div>
             </div>
-          </div>
-          <div className="w-[270px] bg-[#D9436D] h-[90px] rounded-[3px] pl-3 pt-3 text-white">
-            <p className="font-semibold text-[14px] mb-6">Album cover</p>
-            <div className="text-[12px] font-medium flex gap-24">
-              <p>Paul Dreamer</p>
-              <button className="bg-yellow text-black w-[62px] h-[25px] rounded-[3px]">
-                Action
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+          ))}
+      </div>
     </div>
   );
 };
