@@ -61,6 +61,17 @@ const MemberRequestDialog = ({
   const [showRejectionInput, setShowRejectionInput] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
 
+  const resetDialog = () => {
+    setSelectedMember(false);
+    setIsRemoveLoading(false);
+    setAcceptClicked(false);
+    setIsAccepting(false);
+    setIsRejecting(false);
+    setActionStatus(null);
+    setShowRejectionInput(false);
+    setRejectionReason("");
+  };
+
   // Fetch teams based on the selected request or member
   const activeUserId =
     mode === "member" ? selectedTeamMember?._id : selectedRequest?.user_id;
@@ -81,6 +92,7 @@ const MemberRequestDialog = ({
     if (modal) {
       modal.close();
     }
+    resetDialog();
   };
 
   useEffect(() => {
@@ -292,8 +304,24 @@ const MemberRequestDialog = ({
             {showRejectionInput && (
               <div className="p-10">
                 <p className="text-center font-medium text-[16px] mb-4">
-                  Kindly give a reason to let <span>Paul Otieno</span> know why
-                  you have rejected their request
+                  Kindly give a reason to let{" "}
+                  <span>
+                    {" "}
+                    {mode === "member"
+                      ? selectedTeamMember
+                        ? `${selectedTeamMember.firstName ?? ""} ${selectedTeamMember.lastName ?? ""}`.trim() ||
+                          selectedTeamMember.firstName ||
+                          selectedTeamMember.lastName ||
+                          selectedTeamMember.username
+                        : ""
+                      : selectedRequest?.userProfile
+                        ? `${selectedRequest.userProfile.firstName ?? ""} ${selectedRequest.userProfile.lastName ?? ""}`.trim() ||
+                          selectedRequest.userProfile.firstName ||
+                          selectedRequest.userProfile.lastName ||
+                          selectedRequest.userProfile.username
+                        : ""}
+                  </span>{" "}
+                  know why you have rejected their request
                 </p>
                 <textarea
                   className="w-full h-32 border border-black overflow-auto resize-none"

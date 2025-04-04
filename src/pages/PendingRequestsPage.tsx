@@ -6,12 +6,19 @@ import {
 import { Link } from "react-router-dom";
 import useGetJoinRequests from "../hooks/useGetJoinRequests";
 import useAuthStore from "../stores/useAuthStore";
+import ActionModal from "../components/ActionModal";
+import JoinRequest from "../entities/JoinRequest";
+import RejectedModal from "../components/RejectedModal";
 
 const PendingRequestsPage = () => {
   const [expandAction, setExpandAction] = useState(true);
   const [expandApproval, setExpandApproval] = useState(true);
   const [expandRequest, setExpandRequest] = useState(true);
   const { data: requests = { data: [] } } = useGetJoinRequests();
+  const [selectedPendingMemberAction, setSelectedPendingMemberAction] =
+    useState<JoinRequest | null>(null);
+  const [selectedRejectRequest, setSelectedRejectRequest] =
+    useState<JoinRequest | null>(null);
   const user = useAuthStore((s) => s.user);
 
   const pendingRequests = (
@@ -20,7 +27,6 @@ const PendingRequestsPage = () => {
     (req) =>
       req.status === "PENDING" && req.owner_id?.profile?._id === user._id,
   );
-  console.log(pendingRequests);
 
   // Requests I have sent
   const sentPendingRequests = (
@@ -28,7 +34,6 @@ const PendingRequestsPage = () => {
   ).filter(
     (req) => req.status === "PENDING" && req.user_id?.profile._id === user._id,
   );
-  console.log(sentPendingRequests);
 
   // Requests I have sent
   const declinedRequests = (
@@ -36,7 +41,8 @@ const PendingRequestsPage = () => {
   ).filter(
     (req) => req.status === "DECLINED" && req.user_id?.profile._id === user._id,
   );
-  console.log(declinedRequests);
+
+  // Join Request
 
   return (
     <div className=" h-screen bg-base-100 px-10 pt-10 font-body">
@@ -81,7 +87,18 @@ const PendingRequestsPage = () => {
                       "Unknown User"}
                 </p>
 
-                <button className="bg-yellow text-black w-[62px] h-[25px] rounded-[3px]">
+                <button
+                  className="bg-yellow text-black w-[62px] h-[25px] rounded-[3px]"
+                  onClick={() => {
+                    const modal = document.getElementById(
+                      "my_modal_9",
+                    ) as HTMLDialogElement | null;
+                    if (modal) {
+                      modal.showModal();
+                    }
+                    setSelectedPendingMemberAction(request);
+                  }}
+                >
                   Action
                 </button>
               </div>
@@ -149,33 +166,46 @@ const PendingRequestsPage = () => {
       </div>
       <div className="flex gap-6 pb-[50px] flex-wrap">
         {expandRequest &&
-          declinedRequests.map((request) => (
+          declinedRequests.map((reject) => (
             <div
-              key={request._id}
+              key={reject._id}
               className="w-[270px] bg-[#D9436D] h-[90px] rounded-[3px] pl-3 pt-3 text-white"
             >
               <p className="font-semibold text-[14px] mb-6">
                 {" "}
-                {request.team_id?.name || "Unknown Team"}{" "}
+                {reject.team_id?.name || "Unknown Team"}{" "}
               </p>
               <div className="text-[12px] font-medium flex justify-between pr-3">
                 <p>
                   {" "}
-                  {request.owner_id.profile?.firstName &&
-                  request.owner_id.profile?.lastName
-                    ? `${request.owner_id.profile?.firstName} ${request.owner_id.profile.lastName}`
-                    : request.owner_id.profile?.firstName ||
-                      request.owner_id.profile?.lastName ||
-                      request.owner_id.profile.username ||
+                  {reject.owner_id.profile?.firstName &&
+                  reject.owner_id.profile?.lastName
+                    ? `${reject.owner_id.profile?.firstName} ${reject.owner_id.profile.lastName}`
+                    : reject.owner_id.profile?.firstName ||
+                      reject.owner_id.profile?.lastName ||
+                      reject.owner_id.profile.username ||
                       "Unknown User"}
                 </p>
-                <button className="bg-yellow text-black w-[62px] h-[25px] rounded-[3px]">
-                  Action
+                <button
+                  className="bg-yellow text-black w-[62px] h-[25px] rounded-[3px]"
+                  onClick={() => {
+                    const modal = document.getElementById(
+                      "my_modal_15",
+                    ) as HTMLDialogElement | null;
+                    if (modal) {
+                      modal.showModal();
+                    }
+                    setSelectedRejectRequest(reject);
+                  }}
+                >
+                  Details
                 </button>
               </div>
             </div>
           ))}
       </div>
+      <ActionModal selectedPendingMemberAction={selectedPendingMemberAction} />
+      <RejectedModal selectedRejectRequest={selectedRejectRequest} />
     </div>
   );
 };

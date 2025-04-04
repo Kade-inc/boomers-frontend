@@ -10,4 +10,5 @@ export default interface JoinRequest {
   createdAt: string;
   updatedAt: string;
   __v: number;
+  comment: string;
 }
