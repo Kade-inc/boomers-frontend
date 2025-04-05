@@ -4,21 +4,20 @@ import React from "react";
 import useGetUser from "../hooks/useGetUser";
 interface ApprovalDialogProps {
   selectedPendingMemberApproval: JoinRequest | null;
+  mode?: "action" | "approval";
 }
 
 const ApprovalModal = ({
   selectedPendingMemberApproval,
+  mode = "action",
 }: ApprovalDialogProps) => {
-  // Pending action
-  const id = selectedPendingMemberApproval?.user_id._id ?? "";
-  console.log(id);
-
-  // Pending approval
-  const userId = selectedPendingMemberApproval?.owner_id._id ?? "";
-  console.log(userId);
+  const id =
+    mode === "action"
+      ? (selectedPendingMemberApproval?.user_id._id ?? "")
+      : (selectedPendingMemberApproval?.owner_id._id ?? "");
 
   const { data: user } = useGetUser(id);
-  console.log(user);
+
   return (
     <dialog id="my_modal_17" className="modal modal-middle font-body">
       <div

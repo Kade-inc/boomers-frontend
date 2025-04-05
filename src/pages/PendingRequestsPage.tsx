@@ -23,6 +23,10 @@ const PendingRequestsPage = () => {
   const [selectedPendingMemberApproval, setSelectedPendingMemberApproval] =
     useState<JoinRequest | null>(null);
   const user = useAuthStore((s) => s.user);
+  // Add a state to track the mode
+  const [approvalModalMode, setApprovalModalMode] = useState<
+    "action" | "approval"
+  >("action");
 
   const pendingRequests = (
     Array.isArray(requests) ? requests : requests?.data || []
@@ -88,6 +92,7 @@ const PendingRequestsPage = () => {
                       modal.showModal();
                     }
                     setSelectedPendingMemberApproval(request);
+                    setApprovalModalMode("action");
                   }}
                 >
                   {request.user_id?.profile?.firstName &&
@@ -154,7 +159,7 @@ const PendingRequestsPage = () => {
                       modal.showModal();
                     }
                     setSelectedPendingMemberApproval(request);
-                    // console.log(request.owner_id);
+                    setApprovalModalMode("approval");
                   }}
                 >
                   {" "}
@@ -232,6 +237,7 @@ const PendingRequestsPage = () => {
       <RejectedModal selectedRejectRequest={selectedRejectRequest} />
       <ApprovalModal
         selectedPendingMemberApproval={selectedPendingMemberApproval}
+        mode={approvalModalMode}
       />
     </div>
   );

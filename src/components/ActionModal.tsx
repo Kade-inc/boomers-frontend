@@ -69,7 +69,7 @@ const MemberRequestDialog = ({
         onSuccess: () => {
           setAcceptClicked(true);
           setShowRejectionInput(false);
-          setActionStatus(status === "APPROVED" ? "accepted" : "rejected"); // ✅ move here
+          setActionStatus(status === "APPROVED" ? "accepted" : "rejected");
         },
         onError: (error) => {
           console.error("Error handling join request:", error);
