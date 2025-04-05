@@ -45,8 +45,6 @@ const PendingRequestsPage = () => {
     (req) => req.status === "DECLINED" && req.user_id?.profile._id === user._id,
   );
 
-  // Join Request
-
   return (
     <div className=" h-screen bg-base-100 px-10 pt-10 font-body">
       <div className="text-[20px] font-semibold mb-[50px]">
@@ -80,7 +78,18 @@ const PendingRequestsPage = () => {
                 {request.team_id?.name || "Unknown Team"}
               </p>
               <div className="text-[12px] font-medium flex justify-between pr-3">
-                <p>
+                <p
+                  className="cursor-pointer"
+                  onClick={() => {
+                    const modal = document.getElementById(
+                      "my_modal_17",
+                    ) as HTMLDialogElement | null;
+                    if (modal) {
+                      modal.showModal();
+                    }
+                    setSelectedPendingMemberApproval(request);
+                  }}
+                >
                   {request.user_id?.profile?.firstName &&
                   request.user_id?.profile?.lastName
                     ? `${request.user_id.profile.firstName} ${request.user_id.profile.lastName}`

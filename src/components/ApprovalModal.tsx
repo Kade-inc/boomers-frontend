@@ -9,10 +9,15 @@ interface ApprovalDialogProps {
 const ApprovalModal = ({
   selectedPendingMemberApproval,
 }: ApprovalDialogProps) => {
+  // Pending action
+  const id = selectedPendingMemberApproval?.user_id._id ?? "";
+  console.log(id);
+
+  // Pending approval
   const userId = selectedPendingMemberApproval?.owner_id._id ?? "";
   console.log(userId);
 
-  const { data: user } = useGetUser(userId);
+  const { data: user } = useGetUser(id);
   console.log(user);
   return (
     <dialog id="my_modal_17" className="modal modal-middle font-body">
