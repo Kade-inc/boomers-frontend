@@ -119,6 +119,7 @@ const TeamDetailsPage = () => {
       {
         onSuccess: () => {
           setIsClicked(true);
+          //invalidate
         },
         onError: (error) => {
           console.error("Request failed:", error);

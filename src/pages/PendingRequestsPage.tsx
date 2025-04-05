@@ -9,6 +9,7 @@ import useAuthStore from "../stores/useAuthStore";
 import ActionModal from "../components/ActionModal";
 import JoinRequest from "../entities/JoinRequest";
 import RejectedModal from "../components/RejectedModal";
+import ApprovalModal from "../components/ApprovalModal";
 
 const PendingRequestsPage = () => {
   const [expandAction, setExpandAction] = useState(true);
@@ -18,6 +19,8 @@ const PendingRequestsPage = () => {
   const [selectedPendingMemberAction, setSelectedPendingMemberAction] =
     useState<JoinRequest | null>(null);
   const [selectedRejectRequest, setSelectedRejectRequest] =
+    useState<JoinRequest | null>(null);
+  const [selectedPendingMemberApproval, setSelectedPendingMemberApproval] =
     useState<JoinRequest | null>(null);
   const user = useAuthStore((s) => s.user);
 
@@ -132,7 +135,19 @@ const PendingRequestsPage = () => {
                 {request.team_id?.name || "Unknown Team"}{" "}
               </p>
               <div className="text-[12px] font-medium flex gap-28">
-                <p className="pr-3 text-right w-full">
+                <p
+                  className="pr-3 text-right w-full cursor-pointer"
+                  onClick={() => {
+                    const modal = document.getElementById(
+                      "my_modal_17",
+                    ) as HTMLDialogElement | null;
+                    if (modal) {
+                      modal.showModal();
+                    }
+                    setSelectedPendingMemberApproval(request);
+                    // console.log(request.owner_id);
+                  }}
+                >
                   {" "}
                   {request.owner_id.profile?.firstName &&
                   request.owner_id.profile?.lastName
@@ -206,6 +221,9 @@ const PendingRequestsPage = () => {
       </div>
       <ActionModal selectedPendingMemberAction={selectedPendingMemberAction} />
       <RejectedModal selectedRejectRequest={selectedRejectRequest} />
+      <ApprovalModal
+        selectedPendingMemberApproval={selectedPendingMemberApproval}
+      />
     </div>
   );
 };
