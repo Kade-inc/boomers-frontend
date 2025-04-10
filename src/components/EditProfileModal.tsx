@@ -7,6 +7,7 @@ import useUpdateUser from "../hooks/useUpdateUser";
 import useAuthStore from "../stores/useAuthStore";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import { useRef, useState } from "react";
+import useDeleteProfilePicture from "../hooks/useDeleteProfilePicture";
 
 type ModalTriggerProps = {
   isOpen: boolean;
@@ -47,9 +48,21 @@ type FormData = z.infer<typeof schema>;
 
 const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
   const mutation = useUpdateUser(user.user_id!);
+  const { setUser } = useAuthStore();
+  const deletePictureMutation = useDeleteProfilePicture();
   const [imageFile, setImageFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewImage, setPreviewImage] = useState<File | null>(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
+
+  const handleDelete = () => {
+    setShowPopup(true); //Show confirmation popup
+  };
+
+  const handleCloseConfirmModal = () => {
+    setShowPopup(false);
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
@@ -72,7 +85,15 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
     fileInputRef.current?.click();
   };
 
-  const { setUser } = useAuthStore();
+  const handleDeletePicture = async () => {
+    await deletePictureMutation.mutateAsync({
+      userId: user.user_id || "",
+    });
+    user.profile_picture = null;
+    setUser(user);
+
+    setShowPopup(false);
+  };
 
   const {
     register,
@@ -106,22 +127,33 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
     setUser(updateData);
     onClose();
     setImageFile(null);
+    setPreviewImage(null);
   };
 
   const handleClose = () => {
     onClose();
     setImageFile(null);
+    setPreviewImage(null);
+  };
+
+  const handleCancelImage = () => {
+    setIsCancelling(true); //Start loading
+    setTimeout(() => {
+      setImageFile(null);
+      setPreviewImage(null);
+      setIsCancelling(false); //Stop loading after action is done
+    }, 500); //Simulate a short delay
   };
 
   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
-      className="flex items-center justify-center "
+      className="flex items-center justify-center fixed inset-0"
       overlayClassName="fixed inset-0 z-50 backdrop-blur-sm bg-[#00000033] bg-opacity-30"
     >
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="bg-base-100 text-base-content rounded-lg shadow-lg px-10 mx-auto h-[90vh] top-[5vh] overflow-y-auto relative mb-14 ">
+        <div className="bg-base-100 text-base-content rounded-lg shadow-lg px-10 mx-auto w-[95%] h-[90vh] top-[5vh] overflow-y-auto relative mb-14 ">
           <div className="flex justify-center items-center flex-col">
             <div className="flex justify-end w-full mt-6">
               <svg
@@ -145,7 +177,7 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                 </label>
               </div>
               <div className="flex flex-row items-center">
-                <div className="rounded-full overflow-hidden">
+                <div className="rounded-full overflow-hidden w-2/6">
                   {previewImage || user.profile_picture ? (
                     <img
                       src={
@@ -153,38 +185,41 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                         user.profile_picture
                       }
                       alt="Profile picture"
-                      className="rounded-full w-[90px] h-[90px] object-cover mr-4"
+                      className="rounded-full w-[80px] h-[80px] object-cover"
                     />
                   ) : (
-                    <UserCircleIcon className="rounded-full w-[90px] h-[90px] object-cover mr-4 text-darkgrey" />
+                    <UserCircleIcon className="rounded-full w-[90px] h-[90px] object-cover text-darkgrey" />
                   )}
                 </div>
-                <div className="flex flex-col md:flex-row items-center md:space-x-4">
+                <div className="flex flex-col md:flex-row items-center md:space-x-4 w-4/6">
                   <button
                     type="button"
                     onClick={handleButtonClick}
-                    className="flex justify-evenly items-center btn rounded-[3px]  bg-yellow font-body font-semibold text-[11px] md:text-sm  text-nowrap mb-2 border-none text-darkgrey hover:bg-yellow"
+                    className="rounded-[3px] w-full bg-yellow font-body font-semibold text-[11px] md:text-sm mb-2 border-none text-darkgrey hover:bg-yellow p-3 truncate"
                   >
                     {imageFile ? (
                       imageFile.name
                     ) : (
-                      <>
-                        Change picture{" "}
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.5}
-                          stroke="currentColor"
-                          className="size-4 ml-2"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"
-                          />
-                        </svg>
-                      </>
+                      <div className="flex items-center justify-center">
+                        <p>Change</p>
+
+                        <p>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="size-4 ml-2"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"
+                            />
+                          </svg>
+                        </p>
+                      </div>
                     )}
                   </button>
                   <input
@@ -194,15 +229,101 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                     accept="image/*"
                     onChange={handleFileChange}
                   />
-
-                  {/* <button
-                    type="button"
-                    className="h-[26px] md:h-[33px] w-[135px] md:w-[155px]  rounded-[3px] border-[1px] bg-[#BEBEBE] font-body font-semibold text-[11px] md:text-sm text-[#E02828] "
-                  >
-                    Delete picture
-                  </button> */}
+                  {user.profile_picture && !previewImage && (
+                    <button
+                      type="button"
+                      className="w-full rounded-[3px] border-[1px] border-red-500 font-body font-semibold text-[11px] md:text-sm text-nowrap mb-2  text-[#E02828] hover:bg-white px-3 py-2.5"
+                      onClick={handleDelete}
+                      disabled={deletePictureMutation.isPending}
+                    >
+                      Delete picture
+                    </button>
+                  )}
+                  {previewImage && (
+                    <button
+                      type="button"
+                      className="w-full p-3 rounded-[3px] font-body font-semibold text-[11px] md:text-sm  mb-2  text-white bg-[#EB4335] hover:bg-[#EB4335]"
+                      onClick={handleCancelImage}
+                    >
+                      {isCancelling ? (
+                        <span className="loading loading-spinner loading-xs"></span>
+                      ) : (
+                        "Cancel"
+                      )}
+                    </button>
+                  )}
                 </div>
               </div>
+              {showPopup && (
+                <Modal
+                  isOpen={showPopup}
+                  onRequestClose={onClose}
+                  className="flex items-center justify-center"
+                  overlayClassName="fixed inset-0 z-50 backdrop-blur-sm bg-[#00000033]"
+                >
+                  <div className="flex items-center justify-center pt-32">
+                    <div className="flex flex-col bg-white w-full max-w-[90%] md:w-[600px] rounded-md ">
+                      <div className="flex justify-end w-full mr-10">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="#D92D2D"
+                          className="size-8 cursor-pointer m-4"
+                          onClick={handleCloseConfirmModal}
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <p className=" text-[#5C636E] font-body font-semibold text-base">
+                          Confirmation
+                        </p>
+                        <div className="rounded-full overflow-hidden mt-6">
+                          {previewImage || user.profile_picture ? (
+                            <img
+                              src={
+                                (previewImage &&
+                                  URL.createObjectURL(previewImage)) ||
+                                user.profile_picture
+                              }
+                              alt="Profile picture"
+                              className="rounded-full w-[90px] h-[90px] object-cover"
+                            />
+                          ) : (
+                            <UserCircleIcon className="rounded-full w-[90px] h-[90px] object-cover text-darkgrey" />
+                          )}
+                        </div>
+                      </div>
+
+                      <p className="py-4 font-body font-semibold text-base text-[#393E46] text-center px-4">
+                        Are you sure you want delete your profile picture?
+                      </p>
+                      <div className="flex flex-col md:flex-row">
+                        <div
+                          onClick={handleCloseConfirmModal}
+                          className="flex items-center justify-center py-3 w-full md:w-1/2 font-body font-semibold text-[13px] md:text-sm text-nowrap text-white bg-[#34A853] cursor-pointer"
+                        >
+                          CANCEL
+                        </div>
+                        <div
+                          className="flex items-center justify-center py-3 bg-[#EB4335] font-body font-semibold text-[13px] md:text-sm  text-nowrap text-white w-full md:w-1/2 cursor-pointer"
+                          onClick={handleDeletePicture}
+                        >
+                          {deletePictureMutation.isPending ? (
+                            <span className="loading loading-spinner loading-xs"></span>
+                          ) : (
+                            "DELETE"
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Modal>
+              )}
 
               <div className="space-y-2">
                 <label className="block font-body font-semibold text-[13px] md:text-base  ">
