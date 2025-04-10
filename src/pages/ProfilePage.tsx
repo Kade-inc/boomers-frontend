@@ -19,7 +19,6 @@ const ProfilePage = () => {
     userId: user.user_id,
   });
 
-  // test push
   const [teams, setTeams] = useState<Team[]>([]);
 
   useEffect(() => {

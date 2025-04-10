@@ -79,8 +79,6 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
       setPreviewImage(null); // Reset if no file selected
     }
   };
-  console.log("Preview Image: ", previewImage);
-  console.log("User Profile: ", user.profile_picture);
 
   const handleButtonClick = () => {
     // Trigger the hidden file input click using the ref
@@ -93,7 +91,6 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
     });
     user.profile_picture = null;
     setUser(user);
-    console.log(user);
 
     setShowPopup(false);
   };

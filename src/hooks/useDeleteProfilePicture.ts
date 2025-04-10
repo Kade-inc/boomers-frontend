@@ -13,14 +13,9 @@ const useDeleteProfilePicture = (): UseMutationResult<
   },
   unknown
 > => {
-  //   const queryClient = useQueryClient();
-
   return useMutation({
     mutationKey: ["deleteProfilePicture"],
     mutationFn: ({ userId }) => apiClient.deleteProfilePicture(userId),
-    // onSuccess: () => {
-    //   queryClient.invalidateQueries({ queryKey: ["team-challenges"] });
-    // },
   });
 };
 
