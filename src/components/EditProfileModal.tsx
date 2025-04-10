@@ -180,7 +180,7 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                 </label>
               </div>
               <div className="flex flex-row items-center">
-                <div className="rounded-full overflow-hidden mr-3">
+                <div className="rounded-full overflow-hidden w-2/6">
                   {previewImage || user.profile_picture ? (
                     <img
                       src={
@@ -194,11 +194,11 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                     <UserCircleIcon className="rounded-full w-[90px] h-[90px] object-cover text-darkgrey" />
                   )}
                 </div>
-                <div className="flex flex-col md:flex-row items-center md:space-x-4">
+                <div className="flex flex-col md:flex-row items-center md:space-x-4 w-4/6">
                   <button
                     type="button"
                     onClick={handleButtonClick}
-                    className="rounded-[3px] w-full md:w-[150px] bg-yellow font-body font-semibold text-[11px] md:text-sm mb-2 border-none text-darkgrey hover:bg-yellow p-3"
+                    className="rounded-[3px] w-full bg-yellow font-body font-semibold text-[11px] md:text-sm mb-2 border-none text-darkgrey hover:bg-yellow p-3 truncate"
                   >
                     {imageFile ? (
                       imageFile.name
@@ -235,7 +235,7 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                   {user.profile_picture && !previewImage && (
                     <button
                       type="button"
-                      className="w-full md:w-[150px] rounded-[3px] border-[1px] border-red-500 font-body font-semibold text-[11px] md:text-sm text-nowrap mb-2  text-[#E02828] hover:bg-white p-3"
+                      className="w-full rounded-[3px] border-[1px] border-red-500 font-body font-semibold text-[11px] md:text-sm text-nowrap mb-2  text-[#E02828] hover:bg-white px-3 py-2.5"
                       onClick={handleDelete}
                       disabled={deletePictureMutation.isPending}
                     >
@@ -245,7 +245,7 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                   {previewImage && (
                     <button
                       type="button"
-                      className="w-full md:w-[150px] p-2 rounded-[3px] border-[1px] border-red-500 font-body font-semibold text-[11px] md:text-sm  mb-2  text-white bg-[#EB4335] hover:bg-[#EB4335]"
+                      className="w-full p-3 rounded-[3px] font-body font-semibold text-[11px] md:text-sm  mb-2  text-white bg-[#EB4335] hover:bg-[#EB4335]"
                       onClick={handleCancelImage}
                     >
                       {isCancelling ? (
