@@ -15,9 +15,9 @@ const PendingRequest = () => {
 
   return (
     <Link to="/pending-requests">
-      <div className="border-[1px] w-[90%] mr-auto ml-auto border-yellow mt-20 h-[44px] flex items-center">
-        <div className="flex gap-[20%] justify-center items-center w-full">
-          <div className=" text-[12px] font-bold text-base-content">
+      <div className="border-[1px] w-[90%] mr-auto ml-auto border-yellow mt-8 py-2 flex items-center rounded-sm hover:bg-yellow">
+        <div className="flex justify-between items-center w-full px-4">
+          <div className=" text-[12px] font-bold text-base-content hover:text-darkgrey">
             Pending Requests
           </div>
           <div className="w-[30px] h-[30px] bg-yellow rounded-full flex items-center justify-center text-darkgrey font-bold text-[12px]">

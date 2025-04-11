@@ -15,7 +15,11 @@ const PendingRequestsPage = () => {
   const [expandAction, setExpandAction] = useState(true);
   const [expandApproval, setExpandApproval] = useState(true);
   const [expandRequest, setExpandRequest] = useState(true);
-  const { data: requests = { data: [] } } = useGetJoinRequests();
+  const {
+    data: requests = { data: [] },
+    isPending,
+    isError,
+  } = useGetJoinRequests();
   const [selectedPendingMemberAction, setSelectedPendingMemberAction] =
     useState<JoinRequest | null>(null);
   const [selectedRejectRequest, setSelectedRejectRequest] =
@@ -49,6 +53,21 @@ const PendingRequestsPage = () => {
     (req) => req.status === "DECLINED" && req.user_id?.profile._id === user._id,
   );
 
+  if (isPending) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-base-100">
+        <span className="loading loading-dots loading-lg"></span>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-base-100 font-body text-base-content">
+        <p>Error Fetching requests.</p>
+      </div>
+    );
+  }
   return (
     <div className=" h-screen bg-base-100 px-10 pt-10 font-body">
       <div className="text-[20px] font-semibold mb-[50px]">
@@ -57,7 +76,7 @@ const PendingRequestsPage = () => {
         </p>
       </div>
       <p className="text-[30px] font-medium mb-[40px]">Pending Requests</p>
-      <div className="flex gap-8 mb-[30px]">
+      <div className="flex gap-8 mb-[30px] justify-between md:justify-start">
         <p className="text-[18px] font-semibold">Pending your action</p>
         <div
           className="border-[1px] border-yellow w-[100px] flex items-center gap-3 text-[12px] justify-center rounded-[1px] cursor-pointer"
@@ -76,9 +95,10 @@ const PendingRequestsPage = () => {
           pendingRequests.map((request) => (
             <div
               key={request._id}
-              className="w-[270px] bg-[#D9436D] h-[90px] rounded-[3px] pl-3 pt-3 text-white"
+              className={`w-full md:w-[270px] h-[100px] rounded-[3px] pl-3 pt-3 text-white`}
+              style={{ background: request.team_id?.teamColor }}
             >
-              <p className="font-semibold text-[14px] mb-6">
+              <p className="font-semibold text-[14px] mb-8">
                 {request.team_id?.name || "Unknown Team"}
               </p>
               <div className="text-[12px] font-medium flex justify-between pr-3">
@@ -105,7 +125,7 @@ const PendingRequestsPage = () => {
                 </p>
 
                 <button
-                  className="bg-yellow text-black w-[62px] h-[25px] rounded-[3px]"
+                  className="bg-yellow text-darkgrey w-[62px] h-[25px] rounded-[3px]"
                   onClick={() => {
                     const modal = document.getElementById(
                       "my_modal_9",
@@ -123,7 +143,7 @@ const PendingRequestsPage = () => {
           ))}
       </div>
 
-      <div className="flex gap-8 mb-[30px] ">
+      <div className="flex gap-8 mb-[30px] justify-between md:justify-start ">
         <p className="text-[18px] font-semibold">Pending approvals</p>
         <div
           className="border-[1px] border-yellow w-[100px] flex items-center gap-3 text-[12px] justify-center rounded-[1px] cursor-pointer"
@@ -142,9 +162,10 @@ const PendingRequestsPage = () => {
           sentPendingRequests.map((request) => (
             <div
               key={request._id}
-              className="w-[270px] bg-yellow h-[90px] rounded-[3px] pl-3 pt-3"
+              className="w-full md:w-[270px] bg-yellow h-[100px] rounded-[3px] pl-3 pt-3"
+              style={{ background: request.team_id?.teamColor }}
             >
-              <p className="font-semibold text-[14px] mb-7">
+              <p className="font-semibold text-[14px] mb-10">
                 {" "}
                 {request.team_id?.name || "Unknown Team"}{" "}
               </p>
@@ -176,10 +197,12 @@ const PendingRequestsPage = () => {
           ))}
       </div>
 
-      <div className="flex gap-8 mb-[30px]">
-        <p className="text-[18px] font-semibold">Rejected Requests</p>
+      <div className="flex gap-8 mb-[30px] justify-between items-center md:justify-start">
+        <p className="text-[18px] font-semibold w-2/6 md:w-auto">
+          Rejected Requests
+        </p>
         <div
-          className="border-[1px] border-yellow w-[100px] flex items-center gap-3 text-[12px] justify-center rounded-[1px] cursor-pointer"
+          className="border-[1px] border-yellow flex items-center gap-3 text-[12px] justify-center rounded-[1px] cursor-pointer w-2/6 md:w-[100px] py-1"
           onClick={() => setExpandRequest(!expandRequest)}
         >
           {expandRequest ? "Collapse" : "Expand"}
@@ -189,7 +212,7 @@ const PendingRequestsPage = () => {
             <MdOutlineKeyboardArrowDown className="size-4" />
           )}
         </div>
-        <button className="bg-red-600 text-white text-[14px] w-[100px] h-[25px] rounded-[3px]">
+        <button className="bg-red-600 text-white text-[14px] px-4 py-1 rounded-[3px] ">
           Clear
         </button>
       </div>
@@ -198,9 +221,10 @@ const PendingRequestsPage = () => {
           declinedRequests.map((reject) => (
             <div
               key={reject._id}
-              className="w-[270px] bg-[#D9436D] h-[90px] rounded-[3px] pl-3 pt-3 text-white"
+              className="w-full md:w-[270px] bg-[#D9436D] h-[100px] rounded-[3px] pl-3 pt-3 text-white"
+              style={{ background: reject.team_id?.teamColor }}
             >
-              <p className="font-semibold text-[14px] mb-6">
+              <p className="font-semibold text-[14px] mb-8">
                 {" "}
                 {reject.team_id?.name || "Unknown Team"}{" "}
               </p>
@@ -216,7 +240,7 @@ const PendingRequestsPage = () => {
                       "Unknown User"}
                 </p>
                 <button
-                  className="bg-yellow text-black w-[62px] h-[25px] rounded-[3px]"
+                  className="bg-yellow text-darkgrey w-[62px] h-[25px] rounded-[3px]"
                   onClick={() => {
                     const modal = document.getElementById(
                       "my_modal_15",
