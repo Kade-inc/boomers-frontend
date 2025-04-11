@@ -8,6 +8,7 @@ import { jwtDecode } from "jwt-decode";
 import useAuthStore from "../stores/useAuthStore";
 import Team from "../entities/Team";
 import { ExtendedChallengeInterface } from "../entities/Challenge";
+import JoinRequest from "../entities/JoinRequest";
 
 interface ErrorResponse {
   message: string;
@@ -206,6 +207,25 @@ class APIClient {
         "Error fetching User profile:",
         axiosError.response?.data ?? axiosError.message,
       );
+    }
+  };
+
+  // Get all join requests
+  getAllJoinRequests = async (requiresAuth = true): Promise<JoinRequest[]> => {
+    try {
+      const response = await this.axiosInstance.get(`${this.endpoint}`, {
+        headers: {
+          requiresAuth,
+        },
+      });
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching join requests:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
     }
   };
 

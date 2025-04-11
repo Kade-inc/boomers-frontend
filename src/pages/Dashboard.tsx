@@ -13,9 +13,11 @@ import RecommendationsModal from "../components/Modals/RecommendationsModal";
 import TeamCardCarousel from "../components/Carousels/TeamCardCarousel";
 import ChallengeCardCarousel from "../components/Carousels/ChallengeCardCarousel";
 import useChallenges from "../hooks/Challenges/useChallenges";
+import PendingRequests from "../components/PendingRequest";
 
 const Dashboard = () => {
   const user = useAuthStore((s) => s.user);
+
   const { data: teamsData, isPending: teamsLoading } = useTeams({
     userId: user.user_id,
   });
@@ -328,10 +330,11 @@ const Dashboard = () => {
           </div>
         </div>
         <div
-          className={`shadow-slate-300 rounded h-5/6 xl:w-[300px] xl:w-1/5 xl:flex xl:flex xl:right-3 xl:top-15 hidden py-5 flex-col bg-base-200 shadow-sm`}
+          className={`shadow-slate-300 rounded h-5/6 xl:w-[300px] xl:flex xl:right-3 xl:top-15 hidden py-5 flex-col bg-base-200 shadow-sm`}
         >
           <ProfileCard user={user} className="mb-5" />
           <AdviceCard className="" />
+          <PendingRequests />
         </div>
       </div>
     </>
