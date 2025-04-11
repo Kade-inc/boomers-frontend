@@ -70,12 +70,19 @@ const PendingRequestsPage = () => {
   }
   return (
     <div className=" h-screen bg-base-100 px-10 pt-10 font-body">
-      <div className="text-[20px] font-semibold mb-[50px]">
-        <p>
-          <Link to="/">Dashboard</Link> &gt; Requests
-        </p>
+      <div className="breadcrumbs text-md">
+        <ul>
+          <li>
+            <Link to="/" className="hover:text-underline">
+              Dashboard
+            </Link>
+          </li>
+          <li>Recommendations</li>
+        </ul>
       </div>
-      <p className="text-[30px] font-medium mb-[40px]">Pending Requests</p>
+      <p className="text-[30px] font-semibold mb-[30px] mt-4">
+        Pending Requests
+      </p>
       <div className="flex gap-8 mb-[30px] justify-between md:justify-start">
         <p className="text-[18px] font-semibold">Pending your action</p>
         <div
