@@ -45,7 +45,13 @@ const useAuthStore = create<AuthStore>(
       logout: () => {
         Cookies.remove("token");
         Cookies.remove("refreshToken");
-        set({ isAuthenticated: false, user: {}, userId: "", token: null });
+        set({
+          isAuthenticated: false,
+          user: {},
+          userId: "",
+          token: null,
+          userTeams: [],
+        });
       },
       setUserId: (userId: string) => set(() => ({ userId })),
       setUser: (user: User) => set(() => ({ user })),
