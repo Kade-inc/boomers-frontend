@@ -12,22 +12,70 @@ import Notification from "../entities/Notification";
 import NotificationItem from "../components/NotificationItem";
 import { Toaster } from "react-hot-toast";
 import useMarkAllNotificationsRead from "../hooks/Notifications/useMarkAllNotificationsRead";
+import useNotificationsStore from "../stores/useNotificationsStore";
+import { io, Socket } from "socket.io-client";
+import Team from "../entities/Team";
+
+const serverUrl = "http://localhost:5001";
+const socket: Socket = io(serverUrl);
 
 function AppLayout() {
-  const { logout, checkAuth, isAuthenticated } = useAuthStore();
+  const { logout, checkAuth, userTeams, user } = useAuthStore();
+  const notifications = useNotificationsStore((state) => state.notifications);
+  const setNotifications = useNotificationsStore(
+    (state) => state.setNotifications,
+  );
   const isLoading = useLoadingStore((state) => state.isLoading);
   const navigate = useNavigate();
-  const { data: notifications, isPending: notificationsPending } =
-    useGetNotifications(isAuthenticated);
 
-  // Instantiate the mutation hook with the notification's id so that the mutationKey includes it.
+  // Fetch initial notifications.
+  // Here we assume that the user is authenticated if `user` exists.
+  const { data: fetchedNotifications, isSuccess } = useGetNotifications(!!user);
+
+  // Mutation hook for marking notifications as read.
   const { mutate, status } = useMarkAllNotificationsRead();
   const markAllReadLoading = status === "pending";
 
-  // Local state to toggle between unread and read notifications
+  // Local state to toggle between unread and read notifications.
   const [showRead, setShowRead] = useState(false);
 
-  // Prepare notifications lists
+  // When initial notifications are fetched, set them in the notifications store.
+  useEffect(() => {
+    if (isSuccess && fetchedNotifications) {
+      setNotifications(fetchedNotifications);
+    }
+  }, [fetchedNotifications, isSuccess, setNotifications]);
+
+  // Join personal room on mount (when user data is available).
+  useEffect(() => {
+    if (user && user.user_id) {
+      socket.emit("joinUser", { userId: user.user_id });
+      console.log("Joined personal room for user:", user.user_id);
+    }
+  }, [user]);
+
+  // Join all team rooms once userTeams are available.
+  useEffect(() => {
+    if (userTeams && userTeams.length > 0) {
+      userTeams.forEach((team: Team) => {
+        socket.emit("joinTeam", { teamId: team._id });
+      });
+    }
+  }, [userTeams]);
+
+  // Listen for new notifications.
+  useEffect(() => {
+    socket.on("pushNotification", (notification) => {
+      console.log("Received pushNotification:", notification);
+      useNotificationsStore.getState().addNotification(notification);
+    });
+
+    return () => {
+      socket.off("pushNotification");
+    };
+  }, []);
+
+  // Prepare notifications lists.
   const unreadNotifications =
     notifications?.filter((notification) => !notification.isRead) || [];
   const readNotifications =
@@ -51,9 +99,9 @@ function AppLayout() {
 
     const interval = setInterval(() => {
       checkToken();
-    }, 5000); // 5 seconds
+    }, 5000);
 
-    return () => clearInterval(interval); // Clean up the interval on unmount
+    return () => clearInterval(interval);
   }, [logout, checkAuth]);
 
   const handleNotificationRedirect = (notification: Notification) => {
@@ -65,7 +113,7 @@ function AppLayout() {
       "notifications-drawer",
     ) as HTMLInputElement | null;
     if (drawer) {
-      drawer.checked = !drawer.checked; // Toggle drawer
+      drawer.checked = !drawer.checked;
     }
   };
 
@@ -124,7 +172,7 @@ function AppLayout() {
                   </div>
                 )}
               </div>
-              {showRead && (
+              {showRead ? (
                 <div
                   className="cursor-pointer tooltip tooltip-left tooltip-warning"
                   data-tip="Show Unread"
@@ -132,8 +180,7 @@ function AppLayout() {
                 >
                   <IoMail size={24} />
                 </div>
-              )}
-              {!showRead && (
+              ) : (
                 <div
                   className="cursor-pointer tooltip tooltip-left tooltip-warning"
                   data-tip="Show Read"
@@ -156,12 +203,7 @@ function AppLayout() {
                 <span className="loading loading-dots loading-xs"></span>
               )}
             </div>
-            {notificationsPending && (
-              <div className="flex justify-center items-center h-[70vh]">
-                <span className="loading loading-dots loading-md md:loading-lg"></span>
-              </div>
-            )}
-            {!notificationsPending && displayedNotifications.length > 0 && (
+            {displayedNotifications.length > 0 && (
               <div className="divide-y divide-gray-400">
                 {displayedNotifications.map((notification) => (
                   <NotificationItem

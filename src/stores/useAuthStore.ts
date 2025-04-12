@@ -4,6 +4,7 @@ import { mountStoreDevtool } from "simple-zustand-devtools";
 import { persist, PersistOptions } from "zustand/middleware";
 import { jwtDecode } from "jwt-decode";
 import User from "../entities/User";
+import Team from "../entities/Team";
 
 interface AuthStore {
   isAuthenticated: boolean;
@@ -12,6 +13,7 @@ interface AuthStore {
   userId: string;
   setUserId: (userId: string) => void;
   user: User;
+  userTeams: Team[];
   setUser: (user: User) => void;
   checkAuth: () => void;
   token: string | null;
@@ -29,6 +31,7 @@ const useAuthStore = create<AuthStore>(
       user: {},
       userId: "",
       token: null,
+      userTeams: [],
       login: (token: string) => {
         Cookies.set("token", token, {
           expires: 365 * 24 * 60 * 60 * 1000,
@@ -42,7 +45,13 @@ const useAuthStore = create<AuthStore>(
       logout: () => {
         Cookies.remove("token");
         Cookies.remove("refreshToken");
-        set({ isAuthenticated: false, user: {}, userId: "", token: null });
+        set({
+          isAuthenticated: false,
+          user: {},
+          userId: "",
+          token: null,
+          userTeams: [],
+        });
       },
       setUserId: (userId: string) => set(() => ({ userId })),
       setUser: (user: User) => set(() => ({ user })),
@@ -61,6 +70,7 @@ const useAuthStore = create<AuthStore>(
           set({ token: null, isAuthenticated: false });
         }
       },
+      setUserTeams: (teams: Team[]) => set(() => ({ userTeams: teams })),
     }),
     {
       name: "auth-storage", // This persists the store's state

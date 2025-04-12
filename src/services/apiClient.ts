@@ -89,17 +89,28 @@ class APIClient {
   };
 
   signin = async (data: User): Promise<any> => {
-    const { login, setUserId } = useAuthStore.getState();
+    const { login, setUserId, setUserTeams } = useAuthStore.getState();
 
     try {
       const response = await this.axiosInstance.post(this.endpoint, data);
       const { accessToken } = response.data;
 
+      // Set token in cookie and update auth state
       Cookies.set("token", accessToken, { expires: 365 * 24 * 60 * 60 * 1000 });
       login(accessToken);
-      setUserId(this.decodeToken().aud);
-      toast.success("Login successful");
+
+      // Decode token to extract userId and set in auth state
+      const userId = this.decodeToken().aud;
+      setUserId(userId);
+
+      // Fetch teams by passing userId and update global state
+      const teamsResponse = await this.getTeams({ userId });
+      if (teamsResponse.data) {
+        const teams = teamsResponse.data || teamsResponse;
+        setUserTeams(teams);
+      }
       this.getUserProfile();
+      toast.success("Login successful");
       return response.data;
     } catch (error: any) {
       const axiosError = error as AxiosError;
@@ -253,8 +264,13 @@ class APIClient {
     },
     requiresAuth = true,
   ) => {
+    //TODO: FIX THIS. It should follow the structure of all other methods
+    // The issue is occuring since we have to call the endpoint in the
+    // login method
+    const prefix = "api/teams";
+
     try {
-      const response = await this.axiosInstance.get(this.endpoint, {
+      const response = await this.axiosInstance.get(`${prefix}`, {
         params,
         headers: {
           requiresAuth,
