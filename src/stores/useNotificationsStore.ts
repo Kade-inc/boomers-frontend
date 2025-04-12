@@ -22,19 +22,25 @@ const useNotificationsStore = create<NotificationsStore>((set) => ({
   notifications: [],
   setNotifications: (notifications) => set({ notifications }),
   addNotification: (notification) =>
-    set((state) => ({ notifications: [notification, ...state.notifications] })),
+    set((state) => {
+      // Check if the notification is already present
+      if (state.notifications.some((n) => n._id === notification._id)) {
+        return {}; // No update if duplicate
+      }
+      return { notifications: [notification, ...state.notifications] };
+    }),
+
   markAsRead: (notificationId) =>
     set((state) => ({
       notifications: state.notifications.map((n) =>
-        n._id === notificationId ? { ...n, isRead: true } : n
+        n._id === notificationId ? { ...n, isRead: true } : n,
       ),
     })),
   clearNotifications: () => set({ notifications: [] }),
 }));
 
 if (process.env.NODE_ENV === "development") {
-    mountStoreDevtool("Notifications Store", useNotificationsStore);
-  }
+  mountStoreDevtool("Notifications Store", useNotificationsStore);
+}
 
-  
 export default useNotificationsStore;

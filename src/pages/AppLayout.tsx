@@ -12,20 +12,25 @@ import Notification from "../entities/Notification";
 import NotificationItem from "../components/NotificationItem";
 import { Toaster } from "react-hot-toast";
 import useMarkAllNotificationsRead from "../hooks/Notifications/useMarkAllNotificationsRead";
-import useRealtimeNotifications from "../hooks/Notifications/useRealTimeNotifications";
 import useNotificationsStore from "../stores/useNotificationsStore";
 import { io, Socket } from "socket.io-client";
 import Team from "../entities/Team";
 
-let socket: Socket;
-const serverUrl = 'http://localhost:5001';
-socket = io(serverUrl);
+const serverUrl = "http://localhost:5001";
+const socket: Socket = io(serverUrl);
 
 function AppLayout() {
   const { logout, checkAuth, userTeams, user } = useAuthStore();
   const notifications = useNotificationsStore((state) => state.notifications);
+  const setNotifications = useNotificationsStore(
+    (state) => state.setNotifications,
+  );
   const isLoading = useLoadingStore((state) => state.isLoading);
   const navigate = useNavigate();
+
+  // Fetch initial notifications.
+  // Here we assume that the user is authenticated if `user` exists.
+  const { data: fetchedNotifications, isSuccess } = useGetNotifications(!!user);
 
   // Mutation hook for marking notifications as read.
   const { mutate, status } = useMarkAllNotificationsRead();
@@ -33,6 +38,13 @@ function AppLayout() {
 
   // Local state to toggle between unread and read notifications.
   const [showRead, setShowRead] = useState(false);
+
+  // When initial notifications are fetched, set them in the notifications store.
+  useEffect(() => {
+    if (isSuccess && fetchedNotifications) {
+      setNotifications(fetchedNotifications);
+    }
+  }, [fetchedNotifications, isSuccess, setNotifications]);
 
   // Join personal room on mount (when user data is available).
   useEffect(() => {
@@ -68,7 +80,9 @@ function AppLayout() {
     notifications?.filter((notification) => !notification.isRead) || [];
   const readNotifications =
     notifications?.filter((notification) => notification.isRead) || [];
-  const displayedNotifications = showRead ? readNotifications : unreadNotifications;
+  const displayedNotifications = showRead
+    ? readNotifications
+    : unreadNotifications;
 
   const handleMarkAllAsRead = () => {
     mutate({});
@@ -95,7 +109,9 @@ function AppLayout() {
       navigate(`/challenge/${notification.reference}`);
     }
 
-    const drawer = document.getElementById("notifications-drawer") as HTMLInputElement | null;
+    const drawer = document.getElementById(
+      "notifications-drawer",
+    ) as HTMLInputElement | null;
     if (drawer) {
       drawer.checked = !drawer.checked;
     }
@@ -189,7 +205,7 @@ function AppLayout() {
             </div>
             {displayedNotifications.length > 0 && (
               <div className="divide-y divide-gray-400">
-                {displayedNotifications.map((notification: any) => (
+                {displayedNotifications.map((notification) => (
                   <NotificationItem
                     key={notification._id}
                     notification={notification}

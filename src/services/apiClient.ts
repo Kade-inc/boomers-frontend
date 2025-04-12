@@ -95,7 +95,7 @@ class APIClient {
       const response = await this.axiosInstance.post(this.endpoint, data);
       const { accessToken } = response.data;
 
-       // Set token in cookie and update auth state
+      // Set token in cookie and update auth state
       Cookies.set("token", accessToken, { expires: 365 * 24 * 60 * 60 * 1000 });
       login(accessToken);
 
@@ -275,15 +275,12 @@ class APIClient {
     const prefix = "api/teams";
 
     try {
-      const response = await this.axiosInstance.get(
-        `${prefix}`,
-        {
-          params,
-          headers: {
-            requiresAuth,
-          }
-        }
-      );
+      const response = await this.axiosInstance.get(`${prefix}`, {
+        params,
+        headers: {
+          requiresAuth,
+        },
+      });
 
       // const response = await this.axiosInstance.get(this.endpoint, {
       //   params,

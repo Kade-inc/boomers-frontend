@@ -64,7 +64,7 @@ const useAuthStore = create<AuthStore>(
           set({ token: null, isAuthenticated: false });
         }
       },
-      setUserTeams: (teams: Team[]) => set(() => ({userTeams: teams}))
+      setUserTeams: (teams: Team[]) => set(() => ({ userTeams: teams })),
     }),
     {
       name: "auth-storage", // This persists the store's state
