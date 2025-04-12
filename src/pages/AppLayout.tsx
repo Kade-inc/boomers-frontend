@@ -36,9 +36,9 @@ function AppLayout() {
 
   // Join personal room on mount (when user data is available).
   useEffect(() => {
-    if (user && user._id) {
-      socket.emit("joinUser", { userId: user._id });
-      console.log("Joined personal room for user:", user._id);
+    if (user && user.user_id) {
+      socket.emit("joinUser", { userId: user.user_id });
+      console.log("Joined personal room for user:", user.user_id);
     }
   }, [user]);
 
