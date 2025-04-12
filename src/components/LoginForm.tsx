@@ -113,8 +113,13 @@ const LoginForm = () => {
         <button
           className="btn w-full bg-[#393E46] text-[17px] mb-[3%] text-white border-none disabled:text-gray-500 font-body hover:bg-black"
           type="submit"
+          disabled={mutation.isPending}
         >
-          Sign In
+          {mutation.isPending ? (
+            <span className="loading loading-dots loading-xs"></span>
+          ) : (
+            "Sign In"
+          )}
         </button>
 
         <div className="flex items-center gap-5 justify-center text-center mb-[3%]">
