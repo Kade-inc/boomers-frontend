@@ -88,15 +88,29 @@ class APIClient {
   };
 
   signin = async (data: User): Promise<any> => {
-    const { login, setUserId } = useAuthStore.getState();
+    const { login, setUserId, setUserTeams } = useAuthStore.getState();
 
     try {
       const response = await this.axiosInstance.post(this.endpoint, data);
       const { accessToken } = response.data;
 
+       // Set token in cookie and update auth state
       Cookies.set("token", accessToken, { expires: 365 * 24 * 60 * 60 * 1000 });
       login(accessToken);
-      setUserId(this.decodeToken().aud);
+
+      // Decode token to extract userId and set in auth state
+      const userId = this.decodeToken().aud;
+      setUserId(userId);
+
+      // Fetch teams by passing userId and update global state
+      const teamsResponse = await this.getTeams({ userId });
+      // Adjust based on how your API returns the data.
+      // For example, if teams are inside a property called "teams" in the response:
+      if (teamsResponse.data) {
+        const teams = teamsResponse.data || teamsResponse;
+        setUserTeams(teams);
+      }
+
       toast.success("Login successful");
       this.getUserProfile();
       return response.data;
@@ -233,13 +247,30 @@ class APIClient {
     },
     requiresAuth = true,
   ) => {
+    // const { userId } = useAuthStore.getState();
+
+    //TODO: FIX THIS. It should follow the structure of all other methods
+    // The issue is occuring since we have to call the endpoint in the
+    // login method
+    const prefix = "api/teams";
+
     try {
-      const response = await this.axiosInstance.get(this.endpoint, {
-        params,
-        headers: {
-          requiresAuth,
-        },
-      });
+      const response = await this.axiosInstance.get(
+        `${prefix}`,
+        {
+          params,
+          headers: {
+            requiresAuth,
+          }
+        }
+      );
+
+      // const response = await this.axiosInstance.get(this.endpoint, {
+      //   params,
+      //   headers: {
+      //     requiresAuth,
+      //   },
+      // });
 
       return response.data;
     } catch (error: unknown) {
