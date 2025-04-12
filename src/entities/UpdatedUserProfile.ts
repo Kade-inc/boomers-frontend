@@ -9,7 +9,7 @@ export default interface UpdatedUserProfile {
   interests: Interests | null;
   username: string;
   gender: string | null;
-  profilePicture: string | null;
+  profile_picture: string | null;
   createdAt: string;
   updatedAt: string;
 }
