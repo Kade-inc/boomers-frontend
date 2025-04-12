@@ -146,14 +146,6 @@ function AppLayout() {
           type="checkbox"
           className="drawer-toggle"
         />
-        <div className="drawer-content">
-          <label
-            htmlFor="notifications-drawer"
-            className="drawer-button btn btn-primary"
-          >
-            Open drawer
-          </label>
-        </div>
         <div className="drawer-side font-body text-darkgrey">
           <label
             htmlFor="notifications-drawer"

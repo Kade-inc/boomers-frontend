@@ -47,7 +47,20 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (challengesData) {
-      setChallenges(challengesData);
+      const freshChallenges = challengesData
+        .filter((challenge) => {
+          if (!challenge.due_date) return false;
+          const dueDate = new Date(challenge.due_date);
+          const now = new Date();
+          return dueDate > now;
+        })
+        // Sort challenges by expiry date
+        .sort((a, b) => {
+          const dateA = new Date(a.due_date!);
+          const dateB = new Date(b.due_date!);
+          return dateA.getTime() - dateB.getTime();
+        });
+      setChallenges(freshChallenges);
     }
   }, [challengesData]);
 
