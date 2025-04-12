@@ -105,15 +105,12 @@ class APIClient {
 
       // Fetch teams by passing userId and update global state
       const teamsResponse = await this.getTeams({ userId });
-      // Adjust based on how your API returns the data.
-      // For example, if teams are inside a property called "teams" in the response:
       if (teamsResponse.data) {
         const teams = teamsResponse.data || teamsResponse;
         setUserTeams(teams);
       }
-
-      toast.success("Login successful");
       this.getUserProfile();
+      toast.success("Login successful");
       return response.data;
     } catch (error: any) {
       const axiosError = error as AxiosError;
@@ -267,8 +264,6 @@ class APIClient {
     },
     requiresAuth = true,
   ) => {
-    // const { userId } = useAuthStore.getState();
-
     //TODO: FIX THIS. It should follow the structure of all other methods
     // The issue is occuring since we have to call the endpoint in the
     // login method
@@ -281,13 +276,6 @@ class APIClient {
           requiresAuth,
         },
       });
-
-      // const response = await this.axiosInstance.get(this.endpoint, {
-      //   params,
-      //   headers: {
-      //     requiresAuth,
-      //   },
-      // });
 
       return response.data;
     } catch (error: unknown) {
