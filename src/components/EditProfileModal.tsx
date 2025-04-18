@@ -188,7 +188,7 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                       className="rounded-full w-[80px] h-[80px] object-cover"
                     />
                   ) : (
-                    <UserCircleIcon className="rounded-full w-[90px] h-[90px] object-cover text-darkgrey" />
+                    <UserCircleIcon className="rounded-full w-[90px] h-[90px] object-cover text-base-content" />
                   )}
                 </div>
                 <div className="flex flex-col md:flex-row items-center md:space-x-4 w-4/6">
@@ -294,7 +294,7 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                               className="rounded-full w-[90px] h-[90px] object-cover"
                             />
                           ) : (
-                            <UserCircleIcon className="rounded-full w-[90px] h-[90px] object-cover text-darkgrey" />
+                            <UserCircleIcon className="rounded-full w-[90px] h-[90px] object-cover text-base-content" />
                           )}
                         </div>
                       </div>
