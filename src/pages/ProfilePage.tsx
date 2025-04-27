@@ -12,9 +12,8 @@ const ProfilePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-  const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuthStore();
-  const [profileData, setProfileData] = useState(user);
+  const [profileData, setProfileData] = useState({});
   const { data: teamsData, isPending: teamsPending } = useTeams({
     userId: user.user_id,
   });
@@ -22,10 +21,7 @@ const ProfilePage = () => {
   const [teams, setTeams] = useState<Team[]>([]);
 
   useEffect(() => {
-    if (user) {
-      setProfileData(user);
-      setIsLoading(false);
-    }
+    if (user) setProfileData(user);
   }, [user]);
 
   useEffect(() => {
@@ -37,14 +33,6 @@ const ProfilePage = () => {
       setTeams(userTeam);
     }
   }, [teamsData, user.user_id]);
-
-  if (teamsPending || isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen bg-base-100">
-        <span className="loading loading-dots loading-lg"></span>
-      </div>
-    );
-  }
 
   return (
     <div className="flex justify-center min-h-screen w-full bg-base-100 pb-8">
@@ -137,7 +125,11 @@ const ProfilePage = () => {
             <h1 className="font-body font-semibold text-base md:text-lg ">
               Your Houses
             </h1>
-            {teams && teams.length > 0 ? (
+            {teamsPending ? (
+              <div className="flex justify-center items-center">
+                <span className="loading loading-dots loading-lg"></span>
+              </div>
+            ) : teams && teams.length > 0 ? (
               <TeamCardCarousel slides={teams} />
             ) : (
               <p className="my-6">You do not belong to any team currently.</p>

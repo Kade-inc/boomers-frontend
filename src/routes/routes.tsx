@@ -27,52 +27,17 @@ const router = createBrowserRouter([
     element: <ProtectedRoute element={<AppLayout />} fallback={<HomePage />} />,
     errorElement: <ErrorPage />,
     children: [
-      {
-        index: true,
-        element: (
-          <ProtectedRoute element={<Dashboard />} fallback={<HomePage />} />
-        ),
-      },
-      {
-        path: "dashboard",
-        element: <ProtectedRoute element={<Dashboard />} />,
-      },
-      {
-        path: "teams",
-        element: <ProtectedRoute element={<TeamsPage />} />,
-      },
-      {
-        path: "teams/:teamId",
-        element: <ProtectedRoute element={<TeamDetailsPage />} />,
-      },
-      {
-        path: "/profile",
-        element: <ProtectedRoute element={<ProfilePage />} />,
-      },
-      {
-        path: "/recommendations",
-        element: <ProtectedRoute element={<RecommendationsPage />} />,
-      },
-      {
-        path: "/create-team",
-        element: <ProtectedRoute element={<CreateTeam />} />,
-      },
-      {
-        path: "create-challenge",
-        element: <ProtectedRoute element={<CreateChallenge />} />,
-      },
-      {
-        path: "/challenge/:challengeId",
-        element: <ProtectedRoute element={<ChallengePage />} />,
-      },
-      {
-        path: "/edit-challenge/:challengeId",
-        element: <ProtectedRoute element={<EditChallengePage />} />,
-      },
-      {
-        path: "/pending-requests",
-        element: <ProtectedRoute element={<PendingRequestsPage />} />,
-      },
+      { index: true, element: <Dashboard /> },
+      { path: "dashboard", element: <Dashboard /> },
+      { path: "teams", element: <TeamsPage /> },
+      { path: "teams/:teamId", element: <TeamDetailsPage /> },
+      { path: "profile", element: <ProfilePage /> },
+      { path: "recommendations", element: <RecommendationsPage /> },
+      { path: "create-team", element: <CreateTeam /> },
+      { path: "create-challenge", element: <CreateChallenge /> },
+      { path: "challenge/:challengeId", element: <ChallengePage /> },
+      { path: "edit-challenge/:challengeId", element: <EditChallengePage /> },
+      { path: "pending-requests", element: <PendingRequestsPage /> },
     ],
   },
   {
