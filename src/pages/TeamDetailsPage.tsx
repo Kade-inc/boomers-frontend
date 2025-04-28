@@ -171,6 +171,8 @@ const TeamDetailsPage = () => {
     }
   };
 
+  const filteredChallenges = getFilteredChallenges();
+
   return (
     <div className="h-screen bg-base-100 py-[8px] px-[8px] sm:py-10 sm:px-[40px]">
       <>
@@ -354,16 +356,12 @@ const TeamDetailsPage = () => {
                       >
                         All
                       </button>
-                      {challenges?.some(
-                        (challenge: Challenge) => challenge.valid === false,
-                      ) && (
-                        <button
-                          className={`px-8 py-2 rounded-sm ${filter === "drafts" ? "bg-yellow text-darkgrey" : "border border-base-content"}`}
-                          onClick={() => setFilter("drafts")}
-                        >
-                          Drafts
-                        </button>
-                      )}
+                      <button
+                        className={`px-8 py-2 rounded-sm ${filter === "drafts" ? "bg-yellow text-darkgrey" : "border border-base-content"}`}
+                        onClick={() => setFilter("drafts")}
+                      >
+                        Drafts
+                      </button>
 
                       <button
                         className={`px-8 py-2 rounded-sm ${filter === "completed" ? "bg-yellow text-darkgrey" : "border border-base-content"}`}
@@ -373,20 +371,18 @@ const TeamDetailsPage = () => {
                           setSelectedChallenges([]);
                         }}
                       >
-                        Completed
+                        Fully Created
                       </button>
                     </div>
                   )}
 
                   {/* Additional Buttons for Drafts */}
-                  {challenges?.some(
-                    (challenge: Challenge) => challenge.valid === false,
-                  ) &&
-                    filter === "drafts" && (
+                  {user.user_id === team?.members[0]?._id &&
+                    filteredChallenges.length > 0 && (
                       <>
                         <div className="flex gap-2 mb-9">
                           <button
-                            className={`px-8 py-2 rounded-[3px] ${
+                            className={`px-8 py-2 rounded-[3px] hover:bg-[#E50000] hover:text-white ${
                               isDeleteMode
                                 ? "bg-[#E50000] text-white"
                                 : "border border-[#E50000] text-[#E50000]"
@@ -399,7 +395,13 @@ const TeamDetailsPage = () => {
                                 <span className="loading loading-dots loading-xs"></span>
                               </div>
                             ) : (
-                              <span className="font-body">Delete Drafts</span>
+                              <span className="font-body">
+                                Delete{" "}
+                                {isDeleteMode && (
+                                  <>({selectedChallenges.length})</>
+                                )}{" "}
+                                {!isDeleteMode && <span>Challenges</span>}
+                              </span>
                             )}
                           </button>
 
@@ -414,8 +416,9 @@ const TeamDetailsPage = () => {
                         </div>
                         {isDeleteMode && (
                           <p className="text-base-content mb-4 font-body">
-                            Select the drafts you would like to delete and click
-                            Delete Drafts to delete.
+                            Click on a challenge to select it for deletion and
+                            click <strong>Delete</strong> to confirm your
+                            selection.
                           </p>
                         )}
                       </>
@@ -423,8 +426,8 @@ const TeamDetailsPage = () => {
 
                   {/* Challenges */}
                   <div className="flex gap-6 flex-wrap justify-center sm:justify-start">
-                    {getFilteredChallenges().length > 0 ? (
-                      getFilteredChallenges().map((challenge: Challenge) => (
+                    {filteredChallenges.length > 0 ? (
+                      filteredChallenges.map((challenge: Challenge) => (
                         <ChallengesCard
                           key={challenge._id}
                           challenge={challenge}
@@ -433,6 +436,7 @@ const TeamDetailsPage = () => {
                           isSelected={selectedChallenges.includes(
                             challenge._id,
                           )}
+                          section="team-details"
                           onCardClick={() => {
                             if (isDeleteMode) {
                               setSelectedChallenges((prev) =>

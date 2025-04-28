@@ -229,7 +229,7 @@ class APIClient {
           requiresAuth,
         },
       });
-      return response.data;
+      return response.data.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(
@@ -429,10 +429,7 @@ class APIClient {
       return data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
-      toast.error(
-        "Error fetching Advice",
-        axiosError.response?.data ?? axiosError.message,
-      );
+      throw new Error(axiosError.message);
     }
   };
 
@@ -537,6 +534,7 @@ class APIClient {
         data: payload,
       });
       const { data } = response.data;
+      toast.success(`Challenges deleted successfully!`);
       return data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
@@ -975,10 +973,11 @@ class APIClient {
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(
- "Error fetching team spotlight:",
+        "Error fetching team spotlight:",
         axiosError.response?.data ?? axiosError.message,
       );
     }
+  };
 }
 
 export default APIClient;

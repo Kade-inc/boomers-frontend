@@ -16,6 +16,10 @@ import useChallenges from "../hooks/Challenges/useChallenges";
 import PendingRequests from "../components/PendingRequest";
 import useTeamSpotlight from "../hooks/useTeamSpotlight";
 import SpotlightCard from "../components/Cards/SpotlightCard";
+import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
+import ActionCenterModal from "../components/Modals/ActionCenterModal";
+import useAdvice from "../hooks/useAdvice";
+import useGetJoinRequests from "../hooks/useGetJoinRequests";
 
 const Dashboard = () => {
   const user = useAuthStore((s) => s.user);
@@ -32,10 +36,23 @@ const Dashboard = () => {
     useTeamSpotlight();
 
   console.log("TEST: ", teamSpotlight);
+  const {
+    data: advice,
+    isPending: adviceLoading,
+    error: adviceError,
+  } = useAdvice();
+
+  const {
+    data: requests,
+    isPending: requestsLoading,
+    error: requestsError,
+  } = useGetJoinRequests();
   const [teams, setTeams] = useState<Team[]>([]);
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [teamsFilter, setTeamsFilter] = useState("AllTeams");
   const [challengesFilter, setChallengesFilter] = useState("AllChallenges");
+  const [showActionCenterModal, setShowActionCenterModal] = useState(false);
+  const closeActionCenterModal = () => setShowActionCenterModal(false);
   const navigate = useNavigate();
   const setRecommendations = useRecommendationStore(
     (s) => s.setRecommendations,
@@ -349,10 +366,14 @@ const Dashboard = () => {
           </div>
         </div>
         <div
-          className={`shadow-slate-300 rounded h-5/6 xl:w-[300px] xl:w-1/5 xl:flex xl:flex xl:right-3 xl:top-15 hidden py-5 flex-col bg-base-200 shadow-sm items-center min-h-max`}
+          className={`shadow-slate-300 rounded h-5/6 xl:w-[300px] xl:w-1/5 xl:flex xl:flex xl:right-3 xl:top-15 hidden py-5 flex-col bg-base-200 shadow-sm  min-h-max`}
         >
           <ProfileCard user={user} className="mb-5" />
-          <AdviceCard className="mb-4" />
+          <AdviceCard
+            advice={advice}
+            isPending={adviceLoading}
+            error={adviceError}
+          />
           {!pendingSpotlight && teamSpotlight && (
             <>
               <p className="font-bold text-base-content flex justify-center mb-2">
@@ -365,8 +386,46 @@ const Dashboard = () => {
               />
             </>
           )}
+
+          {!requestsLoading ? (
+            <PendingRequests
+              requests={requests}
+              user={user}
+              error={requestsError}
+            />
+          ) : (
+            <div className="flex justify-center mt-4">
+              {" "}
+              <span className="loading loading-dots loading-lg"></span>
+            </div>
+          )}
+        </div>
+        <div
+          className="flex justify-center h-[55px] w-[55px] bg-gradient-to-b from-[#00989B] to-[#005E78] bottom-16  md:hidden z-30 right-3 rounded-full fixed"
+          onClick={() => setShowActionCenterModal(!showActionCenterModal)}
+        >
+          <button className="">
+            <PresentationChartBarIcon width={30} height={30} color="white" />
+          </button>
         </div>
       </div>
+      {showActionCenterModal && (
+        <ActionCenterModal
+          isOpen={showActionCenterModal}
+          onClose={closeActionCenterModal}
+        >
+          <AdviceCard
+            advice={advice}
+            isPending={adviceLoading}
+            error={adviceError}
+          />
+          <PendingRequests
+            requests={requests}
+            user={user}
+            error={requestsError}
+          />
+        </ActionCenterModal>
+      )}
     </>
   );
 };
