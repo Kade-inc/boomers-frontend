@@ -14,6 +14,10 @@ import TeamCardCarousel from "../components/Carousels/TeamCardCarousel";
 import ChallengeCardCarousel from "../components/Carousels/ChallengeCardCarousel";
 import useChallenges from "../hooks/Challenges/useChallenges";
 import PendingRequests from "../components/PendingRequest";
+import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
+import ActionCenterModal from "../components/Modals/ActionCenterModal";
+import useAdvice from "../hooks/useAdvice";
+import useGetJoinRequests from "../hooks/useGetJoinRequests";
 
 const Dashboard = () => {
   const user = useAuthStore((s) => s.user);
@@ -26,10 +30,18 @@ const Dashboard = () => {
   const { data: challengesData, isPending: challengesLoading } = useChallenges(
     user.user_id || "",
   );
+  const {
+    data: advice,
+    isPending: adviceLoading,
+    error: adviceError,
+  } = useAdvice();
+  const { data: requests, isPending: requestsLoading } = useGetJoinRequests();
   const [teams, setTeams] = useState<Team[]>([]);
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [teamsFilter, setTeamsFilter] = useState("AllTeams");
   const [challengesFilter, setChallengesFilter] = useState("AllChallenges");
+  const [showActionCenterModal, setShowActionCenterModal] = useState(false);
+  const closeActionCenterModal = () => setShowActionCenterModal(false);
   const navigate = useNavigate();
   const setRecommendations = useRecommendationStore(
     (s) => s.setRecommendations,
@@ -346,10 +358,47 @@ const Dashboard = () => {
           className={`shadow-slate-300 rounded h-5/6 xl:w-[300px] xl:flex xl:right-3 xl:top-15 hidden py-5 flex-col bg-base-200 shadow-sm`}
         >
           <ProfileCard user={user} className="mb-5" />
-          <AdviceCard className="" />
-          <PendingRequests />
+          <AdviceCard
+            advice={advice}
+            isPending={adviceLoading}
+            error={adviceError}
+          />
+          {!requestsLoading ? (
+            <PendingRequests requests={requests} user={user} />
+          ) : (
+            <div className="flex justify-center mt-4">
+              {" "}
+              <span className="loading loading-dots loading-lg"></span>
+            </div>
+          )}
+        </div>
+        <div
+          className="flex justify-center h-[55px] w-[55px] bg-gradient-to-b from-[#00989B] to-[#005E78] bottom-16  md:hidden z-30 right-3 rounded-full fixed"
+          onClick={() => setShowActionCenterModal(!showActionCenterModal)}
+        >
+          <button className="">
+            <PresentationChartBarIcon width={30} height={30} color="white" />
+          </button>
         </div>
       </div>
+      <AdviceCard
+        advice={advice}
+        isPending={adviceLoading}
+        error={adviceError}
+      />
+      {showActionCenterModal && (
+        <ActionCenterModal
+          isOpen={showActionCenterModal}
+          onClose={closeActionCenterModal}
+        >
+          <AdviceCard
+            advice={advice}
+            isPending={adviceLoading}
+            error={adviceError}
+          />
+          <PendingRequests requests={requests} user={user} />
+        </ActionCenterModal>
+      )}
     </>
   );
 };
