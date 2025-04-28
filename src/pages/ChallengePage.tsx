@@ -35,6 +35,8 @@ function ChallengePage() {
   const [showCommentsModal, setShowCommentsModal] = useState(false);
   const [challengeDeleted, setchallengeDeleted] = useState(false);
   const [timeLeft, setTimeLeft] = useState({
+    years: 0,
+    months: 0,
     days: 0,
     hours: 0,
     minutes: 0,
@@ -132,12 +134,18 @@ function ChallengePage() {
       const timeDifference = dueDate - now;
 
       if (timeDifference > 0) {
-        const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+        const years = Math.floor(
+          timeDifference / (1000 * 60 * 60 * 24 * 365.25),
+        ); // Approximating 365.25 days per year (accounting for leap years)
+        const months = Math.floor(
+          (timeDifference / (1000 * 60 * 60 * 24 * 30)) % 12,
+        ); // Remaining months after extracting years
+        const days = Math.floor((timeDifference / (1000 * 60 * 60 * 24)) % 30); // Remaining days after extracting months
         const hours = Math.floor((timeDifference / (1000 * 60 * 60)) % 24);
         const minutes = Math.floor((timeDifference / (1000 * 60)) % 60);
         const seconds = Math.floor((timeDifference / 1000) % 60);
 
-        setTimeLeft({ days, hours, minutes, seconds });
+        setTimeLeft({ years, months, days, hours, minutes, seconds });
       } else {
         setIsDue(true); // Mark as due
         clearInterval(timer);
@@ -276,6 +284,35 @@ function ChallengePage() {
                 </div>
               ) : (
                 <div className="grid grid-flow-col gap-5 text-center auto-cols-max">
+                  {/* Years - only show if > 0 */}
+                  {timeLeft.years > 0 && (
+                    <div className="flex flex-col p-2 bg-gradient-to-b from-[#D9436D] to-[#F26A4B] rounded-box text-neutral-content text-white">
+                      <span className="countdown text-4xl md:text-5xl font-heading">
+                        <span
+                          style={
+                            { "--value": timeLeft.years } as React.CSSProperties
+                          }
+                        ></span>
+                      </span>
+                      years
+                    </div>
+                  )}
+                  {/* Months - only show if > 0 */}
+                  {timeLeft.months > 0 && (
+                    <div className="flex flex-col p-2 bg-gradient-to-b from-[#D9436D] to-[#F26A4B] rounded-box text-neutral-content text-white">
+                      <span className="countdown text-4xl md:text-5xl font-heading">
+                        <span
+                          style={
+                            {
+                              "--value": timeLeft.months,
+                            } as React.CSSProperties
+                          }
+                        ></span>
+                      </span>
+                      months
+                    </div>
+                  )}
+
                   {/* Days - only show if > 0 */}
                   {timeLeft.days > 0 && (
                     <div className="flex flex-col p-2 bg-gradient-to-b from-[#D9436D] to-[#F26A4B] rounded-box text-neutral-content text-white">
