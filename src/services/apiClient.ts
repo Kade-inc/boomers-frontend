@@ -229,7 +229,7 @@ class APIClient {
           requiresAuth,
         },
       });
-      return response.data;
+      return response.data.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(
@@ -429,10 +429,7 @@ class APIClient {
       return data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
-      toast.error(
-        "Error fetching Advice",
-        axiosError.response?.data ?? axiosError.message,
-      );
+      throw new Error(axiosError.message);
     }
   };
 
