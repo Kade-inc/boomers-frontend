@@ -7,32 +7,67 @@ import useTeams from "../hooks/useTeams";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import Team from "../entities/Team";
 import TeamCardCarousel from "../components/Carousels/TeamCardCarousel";
+import { useNavigate, useParams } from "react-router-dom";
+import useGetUser from "../hooks/useGetUser";
+import User from "../entities/User";
+import UpdatedUserProfile from "../entities/UpdatedUserProfile";
 
 const ProfilePage = () => {
+  const { userId } = useParams();
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
   const { user } = useAuthStore();
-  const [profileData, setProfileData] = useState({});
+  const [profileData, setProfileData] = useState<
+    User | UpdatedUserProfile | null
+  >(null);
   const { data: teamsData, isPending: teamsPending } = useTeams({
-    userId: user.user_id,
+    userId: userId || user.user_id,
   });
+  const {
+    data: userProfile,
+    isPending: userProfilePending,
+    error: userProfileError,
+  } = useGetUser(userId!);
 
   const [teams, setTeams] = useState<Team[]>([]);
 
   useEffect(() => {
-    if (user) setProfileData(user);
-  }, [user]);
+    if (userId && userProfile) {
+      setProfileData(userProfile);
+    } else {
+      setProfileData(user);
+    }
+  }, [userId, userProfile, user]);
 
   useEffect(() => {
-    if (teamsData && teamsData.data) {
-      const userTeam = teamsData.data.filter(
-        (team: Team) => team.owner_id === user.user_id,
+    if (teamsData?.data) {
+      const userTeams = teamsData.data.filter(
+        (team: Team) => team.owner_id === (userId || user.user_id),
       );
-      console.log("Filtered user teams:", userTeam);
-      setTeams(userTeam);
+      setTeams(userTeams);
     }
-  }, [teamsData, user.user_id]);
+  }, [teamsData, userId, user.user_id]);
+
+  if (userId && userProfilePending)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <span className="loading loading-dots loading-lg"></span>
+      </div>
+    );
+  if (userId && userProfileError)
+    return (
+      <div className="flex justify-center items-center h-screen flex-col">
+        <p className="text-base-content font-body">Error Loading Profile</p>
+        <button
+          className="btn bg-yellow font-medium mt-5 hover:bg-yellow text-darkgrey font-body"
+          onClick={() => navigate("/")}
+        >
+          Home
+        </button>
+      </div>
+    );
 
   return (
     <div className="flex justify-center min-h-screen w-full bg-base-100 pb-8">
@@ -41,9 +76,9 @@ const ProfilePage = () => {
           <div className="bg-custom-gradient w-full h-[70px] md:h-[157px]"></div>
           <div className="pl-6">
             <div className="rounded-full overflow-hidden absolute top-[40px] md:top-[110px] w-24 h-24">
-              {user?.profile_picture ? (
+              {profileData?.profile_picture ? (
                 <img
-                  src={user.profile_picture}
+                  src={profileData.profile_picture}
                   alt="Profile picture"
                   className="w-full h-full object-cover"
                 />
@@ -54,37 +89,39 @@ const ProfilePage = () => {
             <div className="flex justify-between mt-16">
               <div>
                 <h1 className="font-body font-bold text-base md:text-lg my-2 md:mt-0">
-                  {profileData.firstName} {profileData.lastName}
+                  {profileData?.firstName} {profileData?.lastName}
                 </h1>
-                {profileData.location && (
+                {profileData?.location && (
                   <>
                     <p className="flex items-center font-body font-normal text-[13px] md:text-base mb-2">
                       <img src={location} className="w-[11px] h-[11px] mr-2" />
-                      <p>{profileData.location}</p>
+                      <p>{profileData?.location}</p>
                     </p>
                   </>
                 )}
 
                 <div className="flex flex-col md:flex-row items-start md:items-center font-body font-normal text-[13px] md:text-base mb-2">
-                  @{profileData.username}
-                  {profileData.job && (
+                  @{profileData?.username}
+                  {profileData?.job && (
                     <>
                       <img src={ellipse} className="mx-2 hidden md:block" />
                       <p className="font-semibold font-body text-[13px] md:text-base text-nowrap mt-3 md:mt-0">
-                        {profileData.job}
+                        {profileData?.job}
                       </p>
                     </>
                   )}
                 </div>
               </div>
               <div>
-                <button
-                  className="px-4 md:px-6 h-[32px] max-w-full rounded-[5px] bg-yellow font-body font-semibold text-[11px] md:text-sm  text-nowrap text-darkgrey hover:bg-yellow mr-5"
-                  onClick={openModal}
-                >
-                  <span className="block md:hidden">Edit</span>
-                  <span className="hidden md:block">Edit Profile</span>
-                </button>
+                {!userId && (
+                  <button
+                    className="px-4 md:px-6 h-[32px] max-w-full rounded-[5px] bg-yellow font-body font-semibold text-[11px] md:text-sm  text-nowrap text-darkgrey hover:bg-yellow mr-5"
+                    onClick={openModal}
+                  >
+                    <span className="block md:hidden">Edit</span>
+                    <span className="hidden md:block">Edit Profile</span>
+                  </button>
+                )}
                 <EditProfileModal
                   isOpen={isModalOpen}
                   onClose={closeModal}
@@ -98,7 +135,7 @@ const ProfilePage = () => {
           <div className="font-body  ml-6 my-4">
             <h1 className=" font-semibold text-base md:text-lg ">Bio</h1>
             <p className="font-medium text-[13px] md:text-base  mt-2">
-              {profileData.bio || null}
+              {profileData?.bio || null}
             </p>
           </div>
         </div>
@@ -109,13 +146,13 @@ const ProfilePage = () => {
             </h1>
             <div className="flex flex-wrap gap-2 justify-start mt-2">
               <button className="px-4 border-[1px] rounded-[3px] h-[29px] border-lightgrey font-body font-medium text-sm  mr-7">
-                {profileData.interests?.domain}
+                {profileData?.interests?.domain}
               </button>
               <button className="px-4 border-[1px] rounded-[3px] h-[29px] border-lightgrey font-body font-medium text-sm  mr-7">
-                {profileData.interests?.domainTopics}
+                {profileData?.interests?.domainTopics}
               </button>
               <button className="px-4 border-[1px] rounded-[3px] h-[29px] border-lightgrey font-body font-medium text-sm ">
-                {profileData.interests?.subdomain}
+                {profileData?.interests?.subdomain}
               </button>
             </div>
           </div>

@@ -12,6 +12,8 @@ export default interface UpdatedUserProfile {
   profile_picture: string | null;
   createdAt: string;
   updatedAt: string;
+  location?: string | null;
+  job?: string | null;
 }
 
 interface Interests {

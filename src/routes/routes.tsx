@@ -31,7 +31,7 @@ const router = createBrowserRouter([
       { path: "dashboard", element: <Dashboard /> },
       { path: "teams", element: <TeamsPage /> },
       { path: "teams/:teamId", element: <TeamDetailsPage /> },
-      { path: "profile", element: <ProfilePage /> },
+      { path: "profile/:userId?", element: <ProfilePage /> },
       { path: "recommendations", element: <RecommendationsPage /> },
       { path: "create-team", element: <CreateTeam /> },
       { path: "create-challenge", element: <CreateChallenge /> },
