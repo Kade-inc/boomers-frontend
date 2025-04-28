@@ -1,5 +1,5 @@
 interface AdviceCardProps {
-  advice: string;
+  advice: string | undefined;
   isPending: boolean;
   error: Error | null;
   className?: string;

@@ -14,6 +14,8 @@ import TeamCardCarousel from "../components/Carousels/TeamCardCarousel";
 import ChallengeCardCarousel from "../components/Carousels/ChallengeCardCarousel";
 import useChallenges from "../hooks/Challenges/useChallenges";
 import PendingRequests from "../components/PendingRequest";
+import useTeamSpotlight from "../hooks/useTeamSpotlight";
+import SpotlightCard from "../components/Cards/SpotlightCard";
 import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
 import ActionCenterModal from "../components/Modals/ActionCenterModal";
 import useAdvice from "../hooks/useAdvice";
@@ -30,12 +32,21 @@ const Dashboard = () => {
   const { data: challengesData, isPending: challengesLoading } = useChallenges(
     user.user_id || "",
   );
+  const { data: teamSpotlight, isPending: pendingSpotlight } =
+    useTeamSpotlight();
+
+  console.log("TEST: ", teamSpotlight);
   const {
     data: advice,
     isPending: adviceLoading,
     error: adviceError,
   } = useAdvice();
-  const { data: requests, isPending: requestsLoading } = useGetJoinRequests();
+
+  const {
+    data: requests,
+    isPending: requestsLoading,
+    error: requestsError,
+  } = useGetJoinRequests();
   const [teams, setTeams] = useState<Team[]>([]);
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [teamsFilter, setTeamsFilter] = useState("AllTeams");
@@ -355,7 +366,7 @@ const Dashboard = () => {
           </div>
         </div>
         <div
-          className={`shadow-slate-300 rounded h-5/6 xl:w-[300px] xl:flex xl:right-3 xl:top-15 hidden py-5 flex-col bg-base-200 shadow-sm`}
+          className={`shadow-slate-300 rounded h-5/6 xl:w-[300px] xl:w-1/5 xl:flex xl:flex xl:right-3 xl:top-15 hidden py-5 flex-col bg-base-200 shadow-sm  min-h-max`}
         >
           <ProfileCard user={user} className="mb-5" />
           <AdviceCard
@@ -363,8 +374,25 @@ const Dashboard = () => {
             isPending={adviceLoading}
             error={adviceError}
           />
+          {!pendingSpotlight && teamSpotlight && (
+            <>
+              <p className="font-bold text-base-content flex justify-center mb-2">
+                Team Spotlight
+              </p>
+              <SpotlightCard
+                team={teamSpotlight}
+                styles={`w-[90%] h-[150px]`}
+                onClick={() => navigate(`/teams/${teamSpotlight._id}`)}
+              />
+            </>
+          )}
+
           {!requestsLoading ? (
-            <PendingRequests requests={requests} user={user} />
+            <PendingRequests
+              requests={requests}
+              user={user}
+              error={requestsError}
+            />
           ) : (
             <div className="flex justify-center mt-4">
               {" "}
@@ -381,11 +409,6 @@ const Dashboard = () => {
           </button>
         </div>
       </div>
-      <AdviceCard
-        advice={advice}
-        isPending={adviceLoading}
-        error={adviceError}
-      />
       {showActionCenterModal && (
         <ActionCenterModal
           isOpen={showActionCenterModal}
@@ -396,7 +419,11 @@ const Dashboard = () => {
             isPending={adviceLoading}
             error={adviceError}
           />
-          <PendingRequests requests={requests} user={user} />
+          <PendingRequests
+            requests={requests}
+            user={user}
+            error={requestsError}
+          />
         </ActionCenterModal>
       )}
     </>

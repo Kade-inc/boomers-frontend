@@ -961,6 +961,23 @@ class APIClient {
       throw new Error(errorMessage);
     }
   };
+
+  getTeamSpotlight = async (requiresAuth = true) => {
+    try {
+      const response = await this.axiosInstance.get(this.endpoint, {
+        headers: {
+          requiresAuth,
+        },
+      });
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching team spotlight:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
 }
 
 export default APIClient;
