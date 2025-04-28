@@ -24,6 +24,7 @@ const ChallengesCard: React.FC<ChallengesCardProps> = ({
   styles,
   isDeleteMode,
   isSelected,
+  section,
   onCardClick,
 }) => {
   const { challenge_name, owner_id, difficulty, due_date } = challenge;
@@ -52,14 +53,14 @@ const ChallengesCard: React.FC<ChallengesCardProps> = ({
   return (
     <div
       className={`card bg-gradient-to-b from-[#313232] to-[#444c4c] text-white rounded-[3px] font-body ${styles} ${
-        isSelected ? "border-2 border-red-500" : ""
+        isSelected ? "border-4 border-[#E50000]" : ""
       } ${isDeleteMode ? "bg-red-500" : ""} hover:cursor-pointer w-[200px]`}
       onClick={() => onCardClick?.(challenge._id)}
     >
       <div className="card-body flex flex-col justify-between h-full py-5">
         <div className="flex justify-between w-full items-center">
           <h2 className="font-medium">{challenge_name || "Unnamed"}</h2>
-          {user.user_id === owner_id && (
+          {user.user_id === owner_id && section !== "team-details" && (
             <p className="text-right text-[12px]">Owner</p>
           )}
         </div>

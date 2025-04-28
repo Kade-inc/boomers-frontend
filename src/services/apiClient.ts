@@ -537,6 +537,7 @@ class APIClient {
         data: payload,
       });
       const { data } = response.data;
+      toast.success(`Challenges deleted successfully!`);
       return data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
