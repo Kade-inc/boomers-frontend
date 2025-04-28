@@ -69,7 +69,7 @@ function ChallengeCardCarousel({ slides, teamsData }: CarouselProps) {
                 key={slide._id}
                 challenge={slide}
                 teamsInformation={teamsData}
-                styles={`w-full md:w-[350px] h-[180px]`}
+                styles={`w-full h-[150px] md:w-[220px] md:h-[150px] xl:w-[320px] xl:h-[160px]`}
                 section="dashboard-section"
                 onCardClick={() => {
                   navigate(`/challenge/${slide._id}`);

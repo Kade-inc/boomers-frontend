@@ -45,10 +45,10 @@ const AdviceCard = ({
       </div>
       {advice && (
         <>
-          <div className="text-center text-white text-[16px] font-regular font-body px-6">
+          <div className="text-center text-white text-[14px] xl:text-[15px] font-regular font-body px-6">
             {advice}
           </div>
-          <div className="flex justify-center bg-yellow rounded-[50px] text-center px-4 py-1 text-darkgrey text-[12px] font-medium font-body hover:underline">
+          <div className="flex justify-center w-[90%] bg-yellow rounded-[50px] text-center px-4 py-1 text-darkgrey text-[12px] font-medium font-body hover:underline">
             <a
               href="https://api.adviceslip.com/"
               target="_blank"

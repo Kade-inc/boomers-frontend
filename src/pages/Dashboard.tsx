@@ -136,7 +136,7 @@ const Dashboard = () => {
   return (
     <>
       <div className="h-screen w-full px-5 md:px-10 pt-10 lg:flex lg:justify-between font-body bg-base-100 text-base-content">
-        <div className="min-h-80 xl:w-4/5 lg:w-full md:w-full">
+        <div className="min-h-80 xl:w-[75%] lg:w-4/5 md:w-full">
           <div>
             <p className="font-body text-[16px]">
               Hi, {user.firstName ? <>{user.firstName}</> : user.username}
@@ -366,7 +366,7 @@ const Dashboard = () => {
           </div>
         </div>
         <div
-          className={`shadow-slate-300 rounded h-5/6 xl:w-[300px] xl:w-1/5 xl:flex xl:flex xl:right-3 xl:top-15 hidden py-5 flex-col bg-base-200 shadow-sm  min-h-max`}
+          className={`shadow-slate-300 rounded h-5/6 xl:w-[260px] xl:flex xl:flex xl:right-3 xl:top-15 hidden py-5 flex-col bg-base-200 shadow-sm  min-h-max`}
         >
           <ProfileCard user={user} className="mb-5" />
           <AdviceCard

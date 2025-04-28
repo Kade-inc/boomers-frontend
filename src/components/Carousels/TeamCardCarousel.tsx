@@ -69,7 +69,7 @@ function TeamCardCarousel({ slides }: CarouselProps) {
               <TeamCard
                 key={slide._id}
                 team={slide}
-                styles={`w-full md:w-[330px] h-[180px] md:h-[180px] 2xl:w-[400px] 2xl:h-[200px]`}
+                styles={`w-full h-[180px] md:w-[260px] md:h-[150px] 2xl:w-[360px] 2xl:h-[180px]`}
                 section="dashboard-section"
                 onClick={() => {
                   navigate(`/teams/${slide._id}`);

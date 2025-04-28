@@ -26,14 +26,14 @@ const PendingRequest = ({ requests, user, error }: Props) => {
     <Link to="/pending-requests">
       <div className="border-[1px] w-[90%] mr-auto ml-auto border-yellow mt-8 py-2 flex items-center rounded-sm hover:bg-yellow bg-yellow md:bg-transparent">
         <div className="flex justify-between items-center w-full px-4">
-          <div className="font-body font-semibold text-[14px] text-base-content hover:text-darkgrey">
+          <div className="font-body font-semibold text-[14px] xl:text-[15px] text-base-content hover:text-darkgrey">
             Pending Requests{" "}
             <span className="md:hidden">({pendingRequests.length})</span>
           </div>
           <div className="hidden md:flex w-[30px] h-[30px] bg-yellow rounded-full flex items-center justify-center text-darkgrey font-body font-semibold text-[16px] md:text-[14px]">
             {pendingRequests.length}
           </div>
-          <button className="md:hidden bg-darkgrey text-white px-4 text-[14px] py-1 rounded-sm font-body font-medium">
+          <button className="md:hidden bg-darkgrey text-white px-4 text-[14px] xl:text-[15px] py-1 rounded-sm font-body font-medium">
             View
           </button>
         </div>
