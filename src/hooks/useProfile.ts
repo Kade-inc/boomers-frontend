@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import APIClient from "../services/apiClient";
-import Team from "../entities/Team";
+import UpdatedUserProfile from "../entities/UpdatedUserProfile";
 
 const apiClient = new APIClient("/api/users");
 
-const useProfile = (): UseQueryResult<Error, Team[]> => {
+const useProfile = (): UseQueryResult<UpdatedUserProfile, Error> => {
   return useQuery({
     queryKey: ["profile"],
     queryFn: () => apiClient.getUserProfile(),

@@ -11,7 +11,8 @@ const useGetUser = (
     queryKey: ["userProfileById", userId],
     queryFn: () => apiClient.getUserProfileById(userId),
     enabled: !!userId,
-    staleTime: 24 * 60 * 60 * 10000, // 24h
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    refetchOnWindowFocus: false,
   });
 };
 

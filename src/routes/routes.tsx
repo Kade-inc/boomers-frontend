@@ -1,100 +1,98 @@
 import { createBrowserRouter } from "react-router-dom";
+import { lazy, Suspense } from "react";
+
 import Layout from "../pages/Layout";
-import SignupForm from "../components/SignupForm";
-import LoginForm from "../components/LoginForm";
-import SignupSuccess from "../components/SignupSuccess";
-import SignupVerificationSuccess from "../pages/SignupVerificationSuccess";
-import ForgotPassword from "../pages/ForgotPasswordPage";
-import HomePage from "../pages/HomePage";
-import Dashboard from "../pages/Dashboard";
-import TeamsPage from "../pages/TeamsPage";
-import AppLayout from "../pages/AppLayout";
-import ProfilePage from "../pages/ProfilePage";
 import ProtectedRoute from "./ProtectedRoute";
-import TeamDetailsPage from "../pages/TeamDetailsPage";
-import ResetPassword from "../pages/ResetPasswordPage";
-import RecommendationsPage from "../pages/RecommendationsPage";
+import HomePage from "../pages/HomePage";
 import ErrorPage from "../pages/ErrorPage";
-import CreateTeam from "../pages/CreateTeam";
-import CreateChallenge from "../pages/CreateChallenge";
-import ChallengePage from "../pages/ChallengePage";
-import EditChallengePage from "../pages/EditChallengePage";
-import PendingRequestsPage from "../pages/PendingRequestsPage";
+
+// Lazy loaded pages
+const SignupForm = lazy(() => import("../components/SignupForm"));
+const LoginForm = lazy(() => import("../components/LoginForm"));
+const SignupSuccess = lazy(() => import("../components/SignupSuccess"));
+const SignupVerificationSuccess = lazy(
+  () => import("../pages/SignupVerificationSuccess"),
+);
+const ForgotPassword = lazy(() => import("../pages/ForgotPasswordPage"));
+const Dashboard = lazy(() => import("../pages/Dashboard"));
+const TeamsPage = lazy(() => import("../pages/TeamsPage"));
+const AppLayout = lazy(() => import("../pages/AppLayout"));
+const ProfilePage = lazy(() => import("../pages/ProfilePage"));
+const TeamDetailsPage = lazy(() => import("../pages/TeamDetailsPage"));
+const ResetPassword = lazy(() => import("../pages/ResetPasswordPage"));
+const RecommendationsPage = lazy(() => import("../pages/RecommendationsPage"));
+const CreateTeam = lazy(() => import("../pages/CreateTeam"));
+const CreateChallenge = lazy(() => import("../pages/CreateChallenge"));
+const ChallengePage = lazy(() => import("../pages/ChallengePage"));
+const EditChallengePage = lazy(() => import("../pages/EditChallengePage"));
+const PendingRequestsPage = lazy(() => import("../pages/PendingRequestsPage"));
+
+const loadingDots = (
+  <div className="flex justify-center items-center h-screen bg-base-100">
+    <span className="loading loading-dots loading-lg"></span>
+  </div>
+);
+
+const withSuspense = (component: React.ReactNode) => (
+  <Suspense fallback={loadingDots}>{component}</Suspense>
+);
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <ProtectedRoute element={<AppLayout />} fallback={<HomePage />} />,
+    element: (
+      <ProtectedRoute
+        element={withSuspense(<AppLayout />)}
+        fallback={<HomePage />}
+      />
+    ),
     errorElement: <ErrorPage />,
     children: [
+      { index: true, element: withSuspense(<Dashboard />) },
+      { path: "dashboard", element: withSuspense(<Dashboard />) },
+      { path: "teams", element: withSuspense(<TeamsPage />) },
+      { path: "teams/:teamId", element: withSuspense(<TeamDetailsPage />) },
+      { path: "profile/:userId?", element: withSuspense(<ProfilePage />) },
       {
-        index: true,
-        element: (
-          <ProtectedRoute element={<Dashboard />} fallback={<HomePage />} />
-        ),
+        path: "recommendations",
+        element: withSuspense(<RecommendationsPage />),
+      },
+      { path: "create-team", element: withSuspense(<CreateTeam />) },
+      { path: "create-challenge", element: withSuspense(<CreateChallenge />) },
+      {
+        path: "challenge/:challengeId",
+        element: withSuspense(<ChallengePage />),
       },
       {
-        path: "dashboard",
-        element: <ProtectedRoute element={<Dashboard />} />,
+        path: "edit-challenge/:challengeId",
+        element: withSuspense(<EditChallengePage />),
       },
       {
-        path: "teams",
-        element: <ProtectedRoute element={<TeamsPage />} />,
-      },
-      {
-        path: "teams/:teamId",
-        element: <ProtectedRoute element={<TeamDetailsPage />} />,
-      },
-      {
-        path: "/profile",
-        element: <ProtectedRoute element={<ProfilePage />} />,
-      },
-      {
-        path: "/recommendations",
-        element: <ProtectedRoute element={<RecommendationsPage />} />,
-      },
-      {
-        path: "/create-team",
-        element: <ProtectedRoute element={<CreateTeam />} />,
-      },
-      {
-        path: "create-challenge",
-        element: <ProtectedRoute element={<CreateChallenge />} />,
-      },
-      {
-        path: "/challenge/:challengeId",
-        element: <ProtectedRoute element={<ChallengePage />} />,
-      },
-      {
-        path: "/edit-challenge/:challengeId",
-        element: <ProtectedRoute element={<EditChallengePage />} />,
-      },
-      {
-        path: "/pending-requests",
-        element: <ProtectedRoute element={<PendingRequestsPage />} />,
+        path: "pending-requests",
+        element: withSuspense(<PendingRequestsPage />),
       },
     ],
   },
   {
     path: "/auth",
-    element: <Layout />,
+    element: withSuspense(<Layout />),
     errorElement: <ErrorPage />,
     children: [
-      { index: true, element: <SignupForm /> },
-      { path: "login", element: <LoginForm /> },
-      { path: "forgot-password", element: <ForgotPassword /> },
-      { path: "signup-success", element: <SignupSuccess /> },
+      { index: true, element: withSuspense(<SignupForm />) },
+      { path: "login", element: withSuspense(<LoginForm />) },
+      { path: "forgot-password", element: withSuspense(<ForgotPassword />) },
+      { path: "signup-success", element: withSuspense(<SignupSuccess />) },
     ],
   },
   {
     path: "/reset-password",
+    element: withSuspense(<ResetPassword />),
     errorElement: <ErrorPage />,
-    element: <ResetPassword />,
   },
   {
     path: "/signup-verification",
+    element: withSuspense(<SignupVerificationSuccess />),
     errorElement: <ErrorPage />,
-    element: <SignupVerificationSuccess />,
   },
 ]);
 
