@@ -185,14 +185,14 @@ function ChallengePage() {
     tooltip: {
       trigger: "item",
     },
-    legend: {
-      top: "5%",
-      left: "center",
-      textStyle: {
-        color: "#fffff", // Set the legend text color
-        fontSize: 14, // Optionally, adjust the font size
-      },
-    },
+    // legend: {
+    //   top: "5%",
+    //   left: "center",
+    //   textStyle: {
+    //     color: "#fffff", // Set the legend text color
+    //     fontSize: 14, // Optionally, adjust the font size
+    //   },
+    // },
     series: [
       {
         name: "",
@@ -435,7 +435,7 @@ function ChallengePage() {
                   )}
                 </div>
               </div>
-              <div className="bg-darkgrey w-[40%] xl:w-1/4 h-[450px] rounded-lg pt-8 px-8 space-y-4 relative mt-8 hidden md:block">
+              <div className="bg-darkgrey w-[40%] xl:w-1/4 min-h-[450px] rounded-lg pt-8 px-8 space-y-4 relative mt-8 hidden md:block">
                 <p className="text-white font-normal">
                   {challenge?.difficulty === 1 && "Easy"}
                   {challenge?.difficulty === 2 && "Medium"}
@@ -467,7 +467,7 @@ function ChallengePage() {
                     View
                   </button>
                 </div>
-                <div className="w-[60%] mx-auto my-0">
+                <div className=" mx-auto my-0">
                   <ReactECharts option={option} />
                 </div>
                 {isOwner() && (
