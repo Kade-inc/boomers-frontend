@@ -25,7 +25,7 @@ export default interface User {
 }
 
 interface Interest {
-  domain: string;
-  subdomain: string;
+  domain: string[];
+  subdomain: string[];
   domainTopics: string[];
 }

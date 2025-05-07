@@ -6,8 +6,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import useUpdateUser from "../hooks/useUpdateUser";
 import useAuthStore from "../stores/useAuthStore";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useDeleteProfilePicture from "../hooks/useDeleteProfilePicture";
+import useDomains from "../hooks/useDomains";
+import useSubDomains from "../hooks/useSubDomains";
+import Domain from "../entities/Domain";
+import MultiSelect from "./MultiSelect";
+import DomainTopic from "../entities/DomainTopic";
 
 type ModalTriggerProps = {
   isOpen: boolean;
@@ -42,6 +47,13 @@ const schema = z.object({
     message:
       "Phone number must be between 10 and 15 digits, and can start with +",
   }),
+  interests: z
+    .object({
+      domain: z.array(z.string()).min(1, "Pick a domain"),
+      subdomain: z.array(z.string()).min(1, "Pick a sub‑domain"),
+      domainTopics: z.array(z.string()).min(1, "Pick at least one topic"),
+    })
+    .optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -49,12 +61,20 @@ type FormData = z.infer<typeof schema>;
 const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
   const mutation = useUpdateUser(user.user_id!);
   const { setUser } = useAuthStore();
+  // const { domain = [], subdomain = [], domainTopics = [] } =
+  // useAuthStore((s) => s.user.interests) ?? { domain: [], subdomain: [], domainTopics: [] };
+
   const deletePictureMutation = useDeleteProfilePicture();
   const [imageFile, setImageFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewImage, setPreviewImage] = useState<File | null>(null);
   const [showPopup, setShowPopup] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
+  const [selectedDomainId, setSelectedDomainId] = useState<string | null>(null);
+
+  const { data: domains, isPending: domainsPending } = useDomains();
+  const { data: subDomains, isPending: isSubDomainsPending } =
+    useSubDomains(selectedDomainId);
 
   const handleDelete = () => {
     setShowPopup(true); //Show confirmation popup
@@ -98,6 +118,8 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -110,17 +132,40 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
       job: user.job || "",
       location: user.location || "",
       phoneNumber: user.phoneNumber,
+      interests: {
+        domain: user.interests?.domain ?? [],
+        subdomain: user.interests?.subdomain ?? [],
+        domainTopics: user.interests?.domainTopics ?? [],
+      },
     },
   });
+
+  const selectedDomain = watch("interests.domain");
+
+  useEffect(() => {
+    const foundDomain = domains?.find(
+      (domain: Domain) => domain.name === String(selectedDomain),
+    );
+    setSelectedDomainId(foundDomain?._id);
+  }, [selectedDomain]);
 
   const onSubmit = async (updatedProfile: FormData) => {
     const newForm = new FormData();
     Object.entries(updatedProfile).forEach(([key, value]) => {
+      if (key === "interests") return;
       newForm.append(key, value as string);
     });
 
     if (imageFile) {
       newForm.append("image", imageFile);
+    }
+    // serialise interests as JSON
+    if (updatedProfile.interests) {
+      newForm.append("interests", JSON.stringify(updatedProfile.interests));
+    }
+
+    for (const [key, val] of newForm.entries()) {
+      console.log(key, val);
     }
 
     const updateData = await mutation.mutateAsync(newForm);
@@ -144,6 +189,13 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
       setIsCancelling(false); //Stop loading after action is done
     }, 500); //Simulate a short delay
   };
+
+  const [selectedTopics, setSelectedTopics] = useState<DomainTopic[]>([]);
+
+  useEffect(() => {
+    const topicNames = selectedTopics.map((t) => t.name);
+    setValue("interests.domainTopics", topicNames, { shouldValidate: true });
+  }, [selectedTopics]);
 
   return (
     <Modal
@@ -458,33 +510,112 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                 )}
               </div>
               <div className="space-y-2">
-                <label className="block font-body font-semibold text-[13px] md:text-base  ">
+                <label className="block font-body font-semibold">
                   Interests
                 </label>
-                <div className="flex flex-col md:flex-row justify-between">
-                  <div className="flex flex-col">
-                    <label className="font-body font-medium text-[10px] md:text-sm  mb-2">
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex-1">
+                    <label className="block font-body font-semibold text-[13px] md:text-base">
                       Domain
                     </label>
-                    <select className="bg-transparent border-base-content w-[60%] md:w-full px-3 py-2 border-[1px] rounded-[5px] font-body font-medium text-[10px] md:text-sm ">
-                      <option value="tech">Software Engineering</option>
+                    <select
+                      {...register("interests.domain", {
+                        setValueAs: (v) => (Array.isArray(v) ? v : [v]),
+                      })}
+                      disabled={domainsPending}
+                      className="bg-transparent border-base-content block w-full px-3 py-2 border-[1px] rounded-[5px] font-body font-semibold text-sm"
+                    >
+                      {/* {domain.map(d => (
+              <option key={d} value={d}>{d}</option>
+            ))} */}
+
+                      <option value="" disabled>
+                        {domainsPending
+                          ? "Loading domains…"
+                          : "Select a domain"}
+                      </option>
+
+                      {domains?.map((d) => (
+                        <option key={d._id} value={d.name}>
+                          {d.name}
+                        </option>
+                      ))}
                     </select>
+                    {errors.interests?.domain && (
+                      <p className="text-error">
+                        {errors.interests?.domain.message}
+                      </p>
+                    )}
                   </div>
-                  <div className="flex flex-col">
-                    <label className="font-body font-medium text-[10px] md:text-sm  mb-2 mt-2">
-                      Sub domain
+                  <div className="flex-1">
+                    <label className="block font-body font-semibold text-[13px] md:text-base">
+                      Sub‑domain
                     </label>
-                    <select className="bg-transparent border-base-content flex justify-start w-[60%] md:w-full px-3 py-2 border-[1px] rounded-[5px] font-body font-medium text-[10px] md:text-sm ">
-                      <option value="frontend">Frontend</option>
+                    {/* <select
+            defaultValue={user.interests?.subdomain?.[0] || ""}
+            {...register("interests.subdomain", {
+              setValueAs: (v) => (Array.isArray(v) ? v : [v]),
+            })}
+            disabled={!watch("interests.domain").length || isSubDomainsPending}
+            className="bg-transparent border-base-content block w-full px-3 py-2 border-[1px] rounded-[5px] font-body font-semibold text-sm"
+          >
+
+             <option value="" disabled>
+    {!watch("interests.domain").length ? "Sub-domain" : isSubDomainsPending ? "Loading…" : "Sub‑domain"}
+  </option>
+            {subDomains?.map(sd => (
+              <option key={sd._id} value={sd.name}>{sd.name}</option>
+            ))}
+            
+          </select> */}
+
+                    <select
+                      defaultValue={user.interests?.subdomain?.[0] || ""}
+                      {...register("interests.subdomain", {
+                        setValueAs: (v) => (Array.isArray(v) ? v : [v]),
+                      })}
+                      disabled={
+                        !watch("interests.domain").length || isSubDomainsPending
+                      }
+                      className="bg-transparent border-base-content block w-full px-3 py-2 border-[1px] rounded-[5px] font-body font-semibold text-sm"
+                    >
+                      <option value="" disabled>
+                        {!watch("interests.domain")[0]
+                          ? "Pick domain first"
+                          : isSubDomainsPending
+                            ? "Loading…"
+                            : "Select sub‑domain"}
+                      </option>
+                      {subDomains?.map((sd) => (
+                        <option key={sd._id} value={sd.name}>
+                          {sd.name}
+                        </option>
+                      ))}
                     </select>
+
+                    {errors.interests?.subdomain && (
+                      <p className="text-error">
+                        {errors.interests?.subdomain.message}
+                      </p>
+                    )}
                   </div>
                 </div>
-                <label className="block font-body font-medium text-[10px] md:text-sm ">
-                  Topics
-                </label>
-                <select className="bg-transparent border-base-content flex justify-start w-[60%] md:w-[45%] px-3 py-2 border-[1px] rounded-[5px] font-body font-medium text-[10px] md:text-sm ">
-                  <option value="frontend">ReactJS</option>
-                </select>
+                <div>
+                  <label className="block font-body font-semibold text-[13px] md:text-base">
+                    Topics
+                  </label>
+                  <MultiSelect
+                    options={subDomains || []} // assuming subTopics is an array of topics
+                    selected={selectedTopics}
+                    onChange={setSelectedTopics}
+                  />
+
+                  {errors.interests?.domainTopics && (
+                    <p className="text-base-content text-[13px] font-body font-medium mt-1">
+                      *{errors.interests?.domainTopics.message}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
             <div className="mt-6 flex justify-end space-x-4 mb-10 w-full ">
