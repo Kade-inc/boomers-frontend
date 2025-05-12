@@ -1,3 +1,4 @@
+import DomainTopic from "./DomainTopic";
 import UserProfile from "./UserProfile";
 
 export default interface User {
@@ -27,5 +28,5 @@ export default interface User {
 interface Interest {
   domain: string[];
   subdomain: string[];
-  domainTopics: string[];
+  domainTopics: DomainTopic[];
 }

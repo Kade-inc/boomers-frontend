@@ -13,6 +13,7 @@ import useSubDomains from "../hooks/useSubDomains";
 import Domain from "../entities/Domain";
 import MultiSelect from "./MultiSelect";
 import DomainTopic from "../entities/DomainTopic";
+import useDomainTopics from "../hooks/useDomainTopics";
 
 type ModalTriggerProps = {
   isOpen: boolean;
@@ -49,9 +50,14 @@ const schema = z.object({
   }),
   interests: z
     .object({
-      domain: z.array(z.string()).min(1, "Pick a domain"),
-      subdomain: z.array(z.string()).min(1, "Pick a sub‑domain"),
-      domainTopics: z.array(z.string()).min(1, "Pick at least one topic"),
+      domain: z.array(z.string()),
+      subdomain: z.array(z.string()),
+      domainTopics: z.array(
+        z.object({
+          _id: z.string(),
+          name: z.string(),
+        }),
+      ),
     })
     .optional(),
 });
@@ -61,8 +67,6 @@ type FormData = z.infer<typeof schema>;
 const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
   const mutation = useUpdateUser(user.user_id!);
   const { setUser } = useAuthStore();
-  // const { domain = [], subdomain = [], domainTopics = [] } =
-  // useAuthStore((s) => s.user.interests) ?? { domain: [], subdomain: [], domainTopics: [] };
 
   const deletePictureMutation = useDeleteProfilePicture();
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -72,9 +76,21 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
   const [isCancelling, setIsCancelling] = useState(false);
   const [selectedDomainId, setSelectedDomainId] = useState<string | null>(null);
 
-  const { data: domains, isPending: domainsPending } = useDomains();
-  const { data: subDomains, isPending: isSubDomainsPending } =
-    useSubDomains(selectedDomainId);
+  const {
+    data: domains,
+    isPending: domainsPending,
+    error: domainsError,
+  } = useDomains();
+  const {
+    data: subDomains,
+    isPending: isSubDomainsPending,
+    error: subDomainsError,
+  } = useSubDomains(selectedDomainId);
+  const {
+    data: fetchedDomainTopics,
+    isPending: domainTopicsPending,
+    error: fetchedDomainTopicsError,
+  } = useDomainTopics();
 
   const handleDelete = () => {
     setShowPopup(true); //Show confirmation popup
@@ -146,8 +162,9 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
     const foundDomain = domains?.find(
       (domain: Domain) => domain.name === String(selectedDomain),
     );
+
     setSelectedDomainId(foundDomain?._id);
-  }, [selectedDomain]);
+  }, [selectedDomain, domains]);
 
   const onSubmit = async (updatedProfile: FormData) => {
     const newForm = new FormData();
@@ -161,13 +178,13 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
     }
     // serialise interests as JSON
     if (updatedProfile.interests) {
-      newForm.append("interests", JSON.stringify(updatedProfile.interests));
+      const payload = {
+        domain: updatedProfile.interests.domain,
+        subdomain: updatedProfile.interests.subdomain,
+        domainTopics: updatedProfile.interests.domainTopics.map((t) => t.name),
+      };
+      newForm.append("interests", JSON.stringify(payload));
     }
-
-    for (const [key, val] of newForm.entries()) {
-      console.log(key, val);
-    }
-
     const updateData = await mutation.mutateAsync(newForm);
     setUser(updateData);
     onClose();
@@ -193,9 +210,33 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
   const [selectedTopics, setSelectedTopics] = useState<DomainTopic[]>([]);
 
   useEffect(() => {
-    const topicNames = selectedTopics.map((t) => t.name);
-    setValue("interests.domainTopics", topicNames, { shouldValidate: true });
-  }, [selectedTopics]);
+    // selectedTopics is DomainTopic[]
+    setValue("interests.domainTopics", selectedTopics, {
+      shouldValidate: true,
+    });
+  }, [selectedTopics, setValue]);
+
+  useEffect(() => {
+    if (!fetchedDomainTopics) return;
+
+    // the strings the store gave us:
+    const storedNames = user.interests?.domainTopics ?? [];
+
+    // find the matching DomainTopic objects:
+    const initial = fetchedDomainTopics.filter((dt) =>
+      storedNames.includes(dt.name),
+    );
+
+    // tick the checkboxes...
+    setSelectedTopics(initial);
+
+    // ...and sync into react-hook-form
+    setValue(
+      "interests.domainTopics",
+      initial.map((t) => t.name),
+      { shouldValidate: true },
+    );
+  }, [fetchedDomainTopics]);
 
   return (
     <Modal
@@ -284,7 +325,7 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                   {user.profile_picture && !previewImage && (
                     <button
                       type="button"
-                      className="w-full rounded-[3px] border-[1px] border-red-500 font-body font-semibold text-[11px] md:text-sm text-nowrap mb-2  text-[#E02828] hover:bg-white px-3 py-2.5"
+                      className="w-full rounded-[3px] bg-error border-none font-body font-semibold text-[11px] md:text-sm text-nowrap mb-2  text-white px-3 py-2.5"
                       onClick={handleDelete}
                       disabled={deletePictureMutation.isPending}
                     >
@@ -514,120 +555,129 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                   Interests
                 </label>
                 <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex-1">
-                    <label className="block font-body font-semibold text-[13px] md:text-base">
-                      Domain
-                    </label>
-                    <select
-                      {...register("interests.domain", {
-                        setValueAs: (v) => (Array.isArray(v) ? v : [v]),
-                      })}
-                      disabled={domainsPending}
-                      className="bg-transparent border-base-content block w-full px-3 py-2 border-[1px] rounded-[5px] font-body font-semibold text-sm"
-                    >
-                      {/* {domain.map(d => (
+                  {domainsError ? (
+                    <p className="font-body font-semibold text-error">
+                      Error fetching domains
+                    </p>
+                  ) : (
+                    <div className="flex-1">
+                      <label className="block font-body font-semibold text-[13px] md:text-base">
+                        Domain
+                      </label>
+                      <select
+                        {...register("interests.domain", {
+                          setValueAs: (v) => (Array.isArray(v) ? v : [v]),
+                        })}
+                        disabled={domainsPending}
+                        className="bg-transparent border-base-content block w-full px-3 py-2 border-[1px] rounded-[5px] font-body font-semibold text-sm"
+                      >
+                        {/* {domain.map(d => (
               <option key={d} value={d}>{d}</option>
             ))} */}
 
-                      <option value="" disabled>
-                        {domainsPending
-                          ? "Loading domains…"
-                          : "Select a domain"}
-                      </option>
-
-                      {domains?.map((d) => (
-                        <option key={d._id} value={d.name}>
-                          {d.name}
+                        <option value="" disabled>
+                          {domainsPending
+                            ? "Loading domains…"
+                            : "Select a domain"}
                         </option>
-                      ))}
-                    </select>
-                    {errors.interests?.domain && (
-                      <p className="text-error">
-                        {errors.interests?.domain.message}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <label className="block font-body font-semibold text-[13px] md:text-base">
-                      Sub‑domain
-                    </label>
-                    {/* <select
-            defaultValue={user.interests?.subdomain?.[0] || ""}
-            {...register("interests.subdomain", {
-              setValueAs: (v) => (Array.isArray(v) ? v : [v]),
-            })}
-            disabled={!watch("interests.domain").length || isSubDomainsPending}
-            className="bg-transparent border-base-content block w-full px-3 py-2 border-[1px] rounded-[5px] font-body font-semibold text-sm"
-          >
 
-             <option value="" disabled>
-    {!watch("interests.domain").length ? "Sub-domain" : isSubDomainsPending ? "Loading…" : "Sub‑domain"}
-  </option>
-            {subDomains?.map(sd => (
-              <option key={sd._id} value={sd.name}>{sd.name}</option>
-            ))}
-            
-          </select> */}
-
-                    <select
-                      defaultValue={user.interests?.subdomain?.[0] || ""}
-                      {...register("interests.subdomain", {
-                        setValueAs: (v) => (Array.isArray(v) ? v : [v]),
-                      })}
-                      disabled={
-                        !watch("interests.domain").length || isSubDomainsPending
-                      }
-                      className="bg-transparent border-base-content block w-full px-3 py-2 border-[1px] rounded-[5px] font-body font-semibold text-sm"
-                    >
-                      <option value="" disabled>
-                        {!watch("interests.domain")[0]
-                          ? "Pick domain first"
-                          : isSubDomainsPending
-                            ? "Loading…"
-                            : "Select sub‑domain"}
-                      </option>
-                      {subDomains?.map((sd) => (
-                        <option key={sd._id} value={sd.name}>
-                          {sd.name}
-                        </option>
-                      ))}
-                    </select>
-
-                    {errors.interests?.subdomain && (
-                      <p className="text-error">
-                        {errors.interests?.subdomain.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <div>
-                  <label className="block font-body font-semibold text-[13px] md:text-base">
-                    Topics
-                  </label>
-                  <MultiSelect
-                    options={subDomains || []} // assuming subTopics is an array of topics
-                    selected={selectedTopics}
-                    onChange={setSelectedTopics}
-                  />
-
-                  {errors.interests?.domainTopics && (
-                    <p className="text-base-content text-[13px] font-body font-medium mt-1">
-                      *{errors.interests?.domainTopics.message}
+                        {domains?.map((d) => (
+                          <option key={d._id} value={d.name}>
+                            {d.name}
+                          </option>
+                        ))}
+                      </select>
+                      {errors.interests?.domain && (
+                        <p className="text-error">
+                          {errors.interests?.domain.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                  {subDomainsError ? (
+                    <p className="font-body font-semibold text-error">
+                      Error fetching sub-domains
                     </p>
+                  ) : (
+                    <div className="flex-1">
+                      <label className="block font-body font-semibold text-[13px] md:text-base">
+                        Sub‑domain
+                      </label>
+
+                      <select
+                        defaultValue={user.interests?.subdomain?.[0] || ""}
+                        {...register("interests.subdomain", {
+                          setValueAs: (v) => (Array.isArray(v) ? v : [v]),
+                        })}
+                        disabled={
+                          !watch("interests.domain").length ||
+                          isSubDomainsPending
+                        }
+                        className="bg-transparent border-base-content block w-full px-3 py-2 border-[1px] rounded-[5px] font-body font-semibold text-sm"
+                      >
+                        <option value="" disabled>
+                          {!watch("interests.domain")[0]
+                            ? "Pick domain first"
+                            : isSubDomainsPending
+                              ? "Loading…"
+                              : "Select sub‑domain"}
+                        </option>
+                        {subDomains?.map((sd) => (
+                          <option key={sd._id} value={sd.name}>
+                            {sd.name}
+                          </option>
+                        ))}
+                      </select>
+
+                      {errors.interests?.subdomain && (
+                        <p className="text-error">
+                          {errors.interests?.subdomain.message}
+                        </p>
+                      )}
+                    </div>
                   )}
                 </div>
+
+                {fetchedDomainTopicsError ? (
+                  <p className="font-body font-semibold text-error">
+                    Error fetching sub-domains
+                  </p>
+                ) : (
+                  <>
+                    {selectedDomain.length > 0 && (
+                      <div>
+                        <label className="block font-body font-semibold text-[13px] md:text-base">
+                          Topics
+                        </label>
+                        {domainTopicsPending ? (
+                          <p className="font-body text-[13px]">
+                            Loading Domain Topics...
+                          </p>
+                        ) : (
+                          <MultiSelect
+                            options={fetchedDomainTopics || []}
+                            selected={selectedTopics}
+                            onChange={setSelectedTopics}
+                            parentContainerWidth="w-full"
+                            inputStyles="bg-transparent border-base-content block w-full px-3 py-2 border-[1px] rounded-[5px] font-body font-semibold text-sm cursor-pointer flex justify-between items-center"
+                          />
+                        )}
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             </div>
             <div className="mt-6 flex justify-end space-x-4 mb-10 w-full ">
               <button
                 onClick={handleClose}
-                className="px-4 md:px-6 btn max-w-full rounded-md font-body font-semibold text-[11px] md:text-sm text-nowrap text-white bg-darkgrey border-[1px] border-darkgrey hover:bg-darkgrey"
+                className="px-4 md:px-6 btn max-w-full rounded-md font-body font-semibold text-[11px] md:text-sm text-nowrap text-white bg-error hover:bg-error border-none"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 md:px-6 btn rounded-md bg-yellow  font-body font-semibold text-[11px] md:text-sm  text-nowrap text-darkgrey hover:bg-yellow"
+                className="px-4 md:px-6 btn rounded-md bg-yellow  font-body font-semibold text-[11px] md:text-sm  text-nowrap text-darkgrey hover:bg-yellow border-none"
                 disabled={mutation.isPending}
               >
                 {mutation.isPending ? (

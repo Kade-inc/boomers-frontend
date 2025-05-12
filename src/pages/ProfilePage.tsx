@@ -124,11 +124,13 @@ const ProfilePage = () => {
                     <span className="hidden md:block">Edit Profile</span>
                   </button>
                 )}
-                <EditProfileModal
-                  isOpen={isModalOpen}
-                  onClose={closeModal}
-                  user={user}
-                />
+                {isModalOpen && (
+                  <EditProfileModal
+                    isOpen={isModalOpen}
+                    onClose={closeModal}
+                    user={user}
+                  />
+                )}
               </div>
             </div>
           </div>
