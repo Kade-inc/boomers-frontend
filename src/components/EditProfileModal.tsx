@@ -223,7 +223,7 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
     const storedNames = user.interests?.domainTopics ?? [];
 
     // find the matching DomainTopic objects:
-    const initial = fetchedDomainTopics.filter((dt) =>
+    const initial = fetchedDomainTopics.filter((dt: DomainTopic) =>
       storedNames.includes(dt.name),
     );
 
