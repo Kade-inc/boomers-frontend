@@ -93,10 +93,10 @@ const ProfilePage = () => {
                 </h1>
                 {profileData?.location && (
                   <>
-                    <p className="flex items-center font-body font-normal text-[13px] md:text-base mb-2">
+                    <div className="flex items-center font-body font-normal text-[13px] md:text-base mb-2">
                       <img src={location} className="w-[11px] h-[11px] mr-2" />
                       <p>{profileData?.location}</p>
-                    </p>
+                    </div>
                   </>
                 )}
 
@@ -122,11 +122,13 @@ const ProfilePage = () => {
                     <span className="hidden md:block">Edit Profile</span>
                   </button>
                 )}
-                <EditProfileModal
-                  isOpen={isModalOpen}
-                  onClose={closeModal}
-                  user={user}
-                />
+                {isModalOpen && (
+                  <EditProfileModal
+                    isOpen={isModalOpen}
+                    onClose={closeModal}
+                    user={user}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -144,16 +146,33 @@ const ProfilePage = () => {
             <h1 className="font-body font-semibold text-base md:text-lg ">
               Your Interests
             </h1>
-            <div className="flex flex-wrap gap-2 justify-start mt-2">
-              <button className="px-4 border-[1px] rounded-[3px] h-[29px] border-lightgrey font-body font-medium text-sm  mr-7">
-                {profileData?.interests?.domain}
-              </button>
-              <button className="px-4 border-[1px] rounded-[3px] h-[29px] border-lightgrey font-body font-medium text-sm  mr-7">
-                {profileData?.interests?.domainTopics}
-              </button>
-              <button className="px-4 border-[1px] rounded-[3px] h-[29px] border-lightgrey font-body font-medium text-sm ">
-                {profileData?.interests?.subdomain}
-              </button>
+            <div className="flex flex-wrap gap-4 justify-start mt-2">
+              {profileData?.interests?.domain.map((d, index) => (
+                <div
+                  key={index}
+                  className="border py-2 px-4 rounded-sm border-lightgrey font-body font-medium text-sm"
+                >
+                  {d}
+                </div>
+              ))}
+
+              {profileData?.interests?.domainTopics.map((t, index) => (
+                <div
+                  key={index}
+                  className="border py-2 px-4 rounded-sm border-lightgrey font-body font-medium text-sm"
+                >
+                  {t}
+                </div>
+              ))}
+
+              {profileData?.interests?.subdomain.map((sd, index) => (
+                <div
+                  key={index}
+                  className="border py-2 px-4 rounded-sm border-lightgrey font-body font-medium text-sm "
+                >
+                  {sd}
+                </div>
+              ))}
             </div>
           </div>
         </div>

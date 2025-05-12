@@ -5,12 +5,16 @@ interface MultiSelectProps {
   options: DomainTopic[];
   selected: DomainTopic[];
   onChange: (selected: DomainTopic[]) => void;
+  parentContainerWidth?: string;
+  inputStyles?: string;
 }
 
 const MultiSelect: React.FC<MultiSelectProps> = ({
   options,
   selected,
   onChange,
+  parentContainerWidth,
+  inputStyles,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -29,13 +33,15 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   );
 
   return (
-    <div className="relative w-[143px]">
+    <div
+      className={`relative ${parentContainerWidth ? parentContainerWidth : "w-[143px]"} `}
+    >
       {/* Dropdown Button with Arrow Icon */}
       <div
-        className="border border-gray-300 p-1 rounded cursor-pointer text-[14px] flex justify-between items-center"
+        className={`${inputStyles ?? "border border-gray-300 p-1 rounded cursor-pointer text-[14px] flex justify-between items-center"}`}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span>
+        <span className="font-body">
           {selected.length === 0
             ? "Topics"
             : selected.map((s) => s.name).join(", ")}
@@ -64,7 +70,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search topics"
-            className="w-full p-1 border mb-2 text-[14px] bg-transparent"
+            className="w-full p-1 border mb-2 text-[14px] bg-transparent font-body"
           />
           {filteredOptions.map((option) => (
             <label key={option._id} className="block text-[14px]">
@@ -73,7 +79,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
                 checked={selected.some((item) => item._id === option._id)}
                 onChange={() => toggleOption(option)}
               />
-              <span className="ml-1">{option.name}</span>
+              <span className="ml-1 font-body">{option.name}</span>
             </label>
           ))}
           {filteredOptions.length === 0 && (

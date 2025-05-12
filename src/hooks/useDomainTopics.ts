@@ -5,7 +5,7 @@ import DomainTopic from "../entities/DomainTopic";
 
 const apiClient = new APIClient("/api/domains/domainTopics");
 
-const useDomainTopics = (): UseQueryResult<any, DomainTopic> => {
+const useDomainTopics = (): UseQueryResult<DomainTopic[], Error> => {
   return useQuery({
     queryKey: ["domain-topics"],
     queryFn: () => apiClient.getDomainTopics(),

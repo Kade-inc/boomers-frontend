@@ -35,7 +35,6 @@ const Dashboard = () => {
   const { data: teamSpotlight, isPending: pendingSpotlight } =
     useTeamSpotlight();
 
-  console.log("TEST: ", teamSpotlight);
   const {
     data: advice,
     isPending: adviceLoading,
