@@ -37,8 +37,6 @@ const ProfilePage = () => {
     if (userId && userProfile) {
       setProfileData(userProfile);
     } else {
-      console.log("HAPA");
-      console.log("USER: ", user);
       setProfileData(user);
     }
   }, [userId, userProfile, user]);
