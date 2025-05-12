@@ -101,7 +101,17 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] || null;
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const allowed = ["image/jpeg", "image/png", "image/webp"];
+    // (in case someone renames a .exe to .jpg, etc.)
+    if (!allowed.includes(file.type)) {
+      alert("Only JPG, PNG or WEBP files are allowed.");
+      event.target.value = ""; // reset the input
+      return;
+    }
+
     setImageFile(file);
     if (file) {
       const reader = new FileReader();
@@ -319,7 +329,7 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                     type="file"
                     ref={fileInputRef}
                     style={{ display: "none" }} // Hide the input
-                    accept="image/*"
+                    accept="image/jpeg,image/png,image/webp"
                     onChange={handleFileChange}
                   />
                   {user.profile_picture && !previewImage && (
@@ -571,10 +581,6 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                         disabled={domainsPending}
                         className="bg-transparent border-base-content block w-full px-3 py-2 border-[1px] rounded-[5px] font-body font-semibold text-sm"
                       >
-                        {/* {domain.map(d => (
-              <option key={d} value={d}>{d}</option>
-            ))} */}
-
                         <option value="" disabled>
                           {domainsPending
                             ? "Loading domains…"

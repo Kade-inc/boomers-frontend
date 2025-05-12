@@ -50,7 +50,7 @@ function AppLayout() {
   useEffect(() => {
     if (user && user.user_id) {
       socket.emit("joinUser", { userId: user.user_id });
-      console.log("Joined personal room for user:", user.user_id);
+      // console.log("Joined personal room for user:", user.user_id);
     }
   }, [user]);
 
