@@ -1086,6 +1086,31 @@ class APIClient {
       throw axiosError;
     }
   };
+
+  getAllSearchProfiles = async (
+    query: string,
+    page: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.get(
+        `${this.endpoint}?q=${query}&page=${page}`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching all search profiles:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
 }
 
 export default APIClient;

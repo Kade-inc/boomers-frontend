@@ -1,11 +1,14 @@
 import { useLocation, Link } from "react-router-dom";
 import useAllSearchTeams from "../hooks/Search/useAllSearchTeams";
 import useAllSearchChallenges from "../hooks/Search/useAllSearchChallenges";
+import useAllSearchProfiles from "../hooks/Search/useAllSearchProfiles";
 import Team from "../entities/Team";
 import Challenge from "../entities/Challenge";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
+import Profile from "../entities/Profile";
 
 interface PaginatedResponse {
-  results: (Team | Challenge)[];
+  results: (Team | Challenge | Profile)[];
   total: number;
   page: number;
   totalPages: number;
@@ -28,8 +31,8 @@ export default function AllResultsAllPage() {
   );
   const { data: challengesData, isPending: isChallengesPending } =
     useAllSearchChallenges(query, currentPage.toString());
-  console.log("Teams Data", teamsData);
-  console.log("Challenges Data", challengesData);
+  const { data: profilesData, isPending: isProfilesPending } =
+    useAllSearchProfiles(query, currentPage.toString());
 
   const renderPagination = (data: PaginatedResponse) => {
     if (!data || !data.totalPages) return null;
@@ -216,14 +219,8 @@ export default function AllResultsAllPage() {
                       <div className="font-medium font-body">
                         {challenge.challenge_name}
                       </div>
-                      {challenge.due_date && (
-                        <div className="text-sm text-base-content/60 mt-1">
-                          Due:{" "}
-                          {new Date(challenge.due_date).toLocaleDateString()}
-                        </div>
-                      )}
                       {challenge.difficulty && (
-                        <div className="text-sm text-base-content/60 mt-1">
+                        <div className="text-sm text-base-content mt-1">
                           Difficulty: {challenge.difficulty}/5
                         </div>
                       )}
@@ -245,7 +242,63 @@ export default function AllResultsAllPage() {
           </div>
         );
       case "people":
-        return <div>People content will go here</div>;
+        return (
+          <div className="space-y-4">
+            {isProfilesPending ? (
+              <div className="font-body flex justify-center">
+                <span className="loading loading-dots loading-md"></span>
+              </div>
+            ) : profilesData?.results && profilesData.results.length > 0 ? (
+              <>
+                {profilesData.results.map((profile: Profile) => (
+                  <div
+                    className="flex items-center justify-between border-b py-4 font-body"
+                    key={profile._id}
+                  >
+                    <div className="flex items-center gap-4">
+                      {profile.profile_picture ? (
+                        <img
+                          src={profile.profile_picture}
+                          alt={`${profile.firstName || profile.username}'s profile`}
+                          className="w-12 h-12 rounded-full object-cover"
+                        />
+                      ) : (
+                        <UserCircleIcon className="w-12 h-12 text-base-content" />
+                      )}
+                      <div>
+                        <div className="font-medium font-body">
+                          {profile.firstName && profile.lastName
+                            ? `${profile.firstName} ${profile.lastName}`
+                            : profile.username}
+                        </div>
+                        {profile.job && (
+                          <div className="text-sm text-base-content mt-1">
+                            {profile.job}
+                          </div>
+                        )}
+                        {profile.location && (
+                          <div className="text-sm text-base-content mt-1">
+                            {profile.location}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <Link to={`/profile/${profile._id}`}>
+                      <button className="font-medium px-6 font-body bg-yellow border-none py-2 text-sm text-darkgrey rounded-full">
+                        View
+                      </button>
+                    </Link>
+                  </div>
+                ))}
+                {renderPagination(profilesData)}
+              </>
+            ) : (
+              <div className="text-center text-base-content font-body py-4">
+                No results found
+              </div>
+            )}
+          </div>
+        );
       default:
         return <div>Invalid section</div>;
     }
