@@ -144,7 +144,7 @@ const ProfilePage = () => {
         <div className="bg-base-200 mt-4 shadow-custom text-base-content rounded-[5px] pb-4">
           <div className="ml-6 my-4">
             <h1 className="font-body font-semibold text-base md:text-lg ">
-              Your Interests
+              Interests
             </h1>
             <div className="flex flex-wrap gap-4 justify-start mt-2">
               {profileData?.interests?.domain.map((d, index) => (
@@ -179,7 +179,7 @@ const ProfilePage = () => {
         <div className="bg-base-200 mt-4 shadow-custom text-base-content rounded-[5px] pb-12">
           <div className="ml-6 my-4">
             <h1 className="font-body font-semibold text-base md:text-lg ">
-              Your Houses
+              Houses
             </h1>
             {teamsPending ? (
               <div className="flex justify-center items-center">
@@ -188,7 +188,8 @@ const ProfilePage = () => {
             ) : teams && teams.length > 0 ? (
               <TeamCardCarousel slides={teams} />
             ) : (
-              <p className="my-6">You do not belong to any team currently.</p>
+              <p className="my-6 font-body">
+                No teams associated.</p>
             )}
           </div>
         </div>
