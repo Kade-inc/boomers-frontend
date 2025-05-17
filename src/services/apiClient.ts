@@ -978,6 +978,65 @@ class APIClient {
       );
     }
   };
+
+  getSearchResults = async (query: string, requiresAuth = true) => {
+    try {
+      const response = await this.axiosInstance.get(
+        `${this.endpoint}?q=${query}`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching search results:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  getSearchHistory = async (requiresAuth = true) => {
+    try {
+      const response = await this.axiosInstance.get(this.endpoint, {
+        headers: {
+          requiresAuth,
+        },
+      });
+      console.log("Raw Search History Response:", response.data);
+      return response.data.data || response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching search history:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  clearSearchHistory = async (requiresAuth = true) => {
+    try {
+      await this.axiosInstance.delete(this.endpoint, {
+        headers: {
+          requiresAuth,
+        },
+      });
+      toast.success("Search history cleared successfully");
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error clearing search history:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
 }
 
 export default APIClient;
