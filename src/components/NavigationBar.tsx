@@ -36,9 +36,6 @@ function NavigationBar() {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
-  console.log("Search Query:", searchQuery);
-  console.log("Debounced Query:", debouncedSearchQuery);
-
   const {
     data: searchHistory,
     isPending: searchHistoryPending,
@@ -51,16 +48,11 @@ function NavigationBar() {
   } = useSearchResults(debouncedSearchQuery);
   const clearHistoryMutation = useClearSearchHistory();
 
-  console.log("Search History in NavBar:", searchHistory);
-  console.log("Search History Loading:", searchHistoryPending);
-  console.log("Search History Error:", searchHistoryError);
-
   const handleClearHistory = () => {
     clearHistoryMutation.mutate();
   };
 
   const handleFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("Input value:", event.target.value);
     setSearchQuery(event.target.value);
   };
 

@@ -36,4 +36,7 @@ interface TeamResult {
   _id: string;
   name: string;
   teamColor?: string;
+  domain: string;
+  subdomain: string;
+  subdomainTopics: string[];
 }
