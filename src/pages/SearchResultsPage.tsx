@@ -1,5 +1,5 @@
 import { useLocation, Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import useSearchResults from "../hooks/Search/useSearchResults";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 
@@ -7,15 +7,47 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
+function useScrollspy(ids: string[], offset: number = 0) {
+  const [activeId, setActiveId] = useState<string>("");
+
+  const handleScroll = useCallback(() => {
+    const elements = ids.map((id) => document.getElementById(id));
+    const visibleElements = elements.filter(
+      (element): element is HTMLElement => {
+        if (!element) return false;
+        const rect = element.getBoundingClientRect();
+        return rect.top <= offset && rect.bottom >= offset;
+      },
+    );
+
+    if (visibleElements.length > 0) {
+      setActiveId(visibleElements[0].id);
+    }
+  }, [ids, offset]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Check initial position
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
+
+  return activeId;
+}
+
 export default function SearchResultsPage() {
   const query = useQuery().get("q") || "";
-  const [activeSection, setActiveSection] = useState("challenges");
   const { data: searchResult, isPending } = useSearchResults(query);
+  const activeSection = useScrollspy(["challenges", "people", "teams"], 100);
 
-  // Scroll to section on sidebar click
-  const handleSectionClick = (key: string) => {
-    setActiveSection(key);
-    document.getElementById(key)?.scrollIntoView({ behavior: "smooth" });
+  const handleSectionClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    id: string,
+  ) => {
+    e.preventDefault();
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const hasAnyResults =
@@ -48,44 +80,47 @@ export default function SearchResultsPage() {
             <ul>
               {hasChallenges && (
                 <li key="challenges">
-                  <button
+                  <a
+                    href="#challenges"
+                    onClick={(e) => handleSectionClick(e, "challenges")}
                     className={`block w-full text-left py-2 px-2 rounded ${
                       activeSection === "challenges"
                         ? "bg-green-100 text-green-700 font-semibold"
-                        : ""
+                        : "hover:bg-green-100 hover:text-green-700"
                     }`}
-                    onClick={() => handleSectionClick("challenges")}
                   >
                     Challenges
-                  </button>
+                  </a>
                 </li>
               )}
               {hasPeople && (
                 <li key="people">
-                  <button
+                  <a
+                    href="#people"
+                    onClick={(e) => handleSectionClick(e, "people")}
                     className={`block w-full text-left py-2 px-2 rounded ${
                       activeSection === "people"
                         ? "bg-green-100 text-green-700 font-semibold"
-                        : ""
+                        : "hover:bg-green-100 hover:text-green-700"
                     }`}
-                    onClick={() => handleSectionClick("people")}
                   >
                     People
-                  </button>
+                  </a>
                 </li>
               )}
               {hasTeams && (
                 <li key="teams">
-                  <button
+                  <a
+                    href="#teams"
+                    onClick={(e) => handleSectionClick(e, "teams")}
                     className={`block w-full text-left py-2 px-2 rounded ${
                       activeSection === "teams"
                         ? "bg-green-100 text-green-700 font-semibold"
-                        : ""
+                        : "hover:bg-green-100 hover:text-green-700"
                     }`}
-                    onClick={() => handleSectionClick("teams")}
                   >
                     Teams
-                  </button>
+                  </a>
                 </li>
               )}
             </ul>
@@ -95,61 +130,6 @@ export default function SearchResultsPage() {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col gap-10 p-10 max-w-3xl mx-auto">
-        {/* Mobile Section Navigation */}
-        <div className="md:hidden flex flex-col gap-4 mb-6">
-          {hasChallenges && (
-            <button
-              className={`w-full text-left p-4 rounded-lg ${
-                activeSection === "challenges"
-                  ? "bg-green-100 text-green-700"
-                  : "bg-base-100"
-              }`}
-              onClick={() => handleSectionClick("challenges")}
-            >
-              <div className="flex justify-between items-center">
-                <span className="font-semibold">Challenges</span>
-                <span className="text-lg">
-                  {activeSection === "challenges" ? "−" : "+"}
-                </span>
-              </div>
-            </button>
-          )}
-          {hasPeople && (
-            <button
-              className={`w-full text-left p-4 rounded-lg ${
-                activeSection === "people"
-                  ? "bg-green-100 text-green-700"
-                  : "bg-base-100"
-              }`}
-              onClick={() => handleSectionClick("people")}
-            >
-              <div className="flex justify-between items-center">
-                <span className="font-semibold">People</span>
-                <span className="text-lg">
-                  {activeSection === "people" ? "−" : "+"}
-                </span>
-              </div>
-            </button>
-          )}
-          {hasTeams && (
-            <button
-              className={`w-full text-left p-4 rounded-lg ${
-                activeSection === "teams"
-                  ? "bg-green-100 text-green-700"
-                  : "bg-base-100"
-              }`}
-              onClick={() => handleSectionClick("teams")}
-            >
-              <div className="flex justify-between items-center">
-                <span className="font-semibold">Teams</span>
-                <span className="text-lg">
-                  {activeSection === "teams" ? "−" : "+"}
-                </span>
-              </div>
-            </button>
-          )}
-        </div>
-
         {/* Challenges Section */}
         {(isPending ||
           (searchResult?.challenges.results &&
@@ -177,14 +157,16 @@ export default function SearchResultsPage() {
                     </Link>
                   </div>
                 ))}
-                <div className="text-center mt-6">
-                  <Link
-                    to={`/search/challenges?q=${query}`}
-                    className="text-base-content font-body font-semibold"
-                  >
-                    See all challenge results
-                  </Link>
-                </div>
+                {searchResult.challenges.hasMore && (
+                  <div className="text-center mt-6">
+                    <Link
+                      to={`/search/challenges?q=${query}`}
+                      className="text-base-content font-body font-medium"
+                    >
+                      See all challenge results
+                    </Link>
+                  </div>
+                )}
               </>
             )}
           </section>
@@ -213,7 +195,7 @@ export default function SearchResultsPage() {
                           className="w-10 h-10 rounded-full"
                         />
                       ) : (
-                        <UserCircleIcon className="w-10 h-10 text-gray-400" />
+                        <UserCircleIcon className="w-10 h-10 text-base-content" />
                       )}
                       <div>
                         <div className="font-medium font-body">
@@ -224,20 +206,22 @@ export default function SearchResultsPage() {
                       </div>
                     </div>
                     <Link to={`/profile/${profile.user_id}`}>
-                      <button className="font-medium 6 font-body bg-yellow border-none py-2 text-sm text-darkgrey rounded-full">
+                      <button className="font-medium px-6 font-body bg-yellow border-none py-2 text-sm text-darkgrey rounded-full">
                         View
                       </button>
                     </Link>
                   </div>
                 ))}
-                <div className="text-center mt-6">
-                  <Link
-                    to={`/search/people?q=${query}`}
-                    className="text-base-content font-body font-semibold"
-                  >
-                    See all people results
-                  </Link>
-                </div>
+                {searchResult.profiles.hasMore && (
+                  <div className="text-center mt-6">
+                    <Link
+                      to={`/search/people?q=${query}`}
+                      className="text-base-content font-body font-medium"
+                    >
+                      See all people results
+                    </Link>
+                  </div>
+                )}
               </>
             )}
           </section>
@@ -256,7 +240,7 @@ export default function SearchResultsPage() {
                 {searchResult.teams.results.map((team) => (
                   <div
                     key={team._id}
-                    className="flex items-center justify-between border-b py-4 font-body rounded-md px-4 mb-4"
+                    className="flex items-center justify-between  py-4 font-body rounded-md px-4 mb-4"
                     style={{
                       background:
                         team.teamColor ||
@@ -304,14 +288,16 @@ export default function SearchResultsPage() {
                     </Link>
                   </div>
                 ))}
-                <div className="text-center mt-6">
-                  <Link
-                    to={`/search/teams?q=${query}`}
-                    className="text-base-content font-body font-semibold"
-                  >
-                    See all team results
-                  </Link>
-                </div>
+                {searchResult.teams.hasMore && (
+                  <div className="text-center mt-6">
+                    <Link
+                      to={`/search/teams?q=${query}`}
+                      className="text-base-content font-body font-medium"
+                    >
+                      See all team results
+                    </Link>
+                  </div>
+                )}
               </>
             )}
           </section>
