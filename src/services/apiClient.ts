@@ -1008,7 +1008,6 @@ class APIClient {
           requiresAuth,
         },
       });
-      console.log("Raw Search History Response:", response.data);
       return response.data.data || response.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;

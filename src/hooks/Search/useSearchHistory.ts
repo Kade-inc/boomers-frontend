@@ -10,7 +10,6 @@ const useSearchHistory = (enabled: boolean = false) => {
     queryKey: ["searchHistory"],
     queryFn: async () => {
       const response = await apiClient.getSearchHistory();
-      console.log("Search History Response:", response);
       return response;
     },
     enabled,
