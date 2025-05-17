@@ -119,7 +119,7 @@ function NavigationBar() {
             <div className="fixed top-[72px] left-0 right-0 bottom-0 bg-black/30 animate-fade-in" />
             <div
               ref={searchResultsRef}
-              className="fixed xl:absolute top-[72px] xl:top-14 left-0 right-0 xl:right-auto bottom-0 xl:bottom-auto bg-base-100 min-h-[100px] xl:min-h-[100px] max-h-[calc(100vh-72px)] xl:max-h-[400px] w-full xl:w-3/4 rounded-none xl:rounded overflow-hidden z-50 flex flex-col"
+              className="fixed xl:absolute top-[72px] xl:top-14 left-0 right-0 xl:right-auto bottom-0 xl:bottom-auto bg-base-100 min-h-[100px] xl:min-h-[100px] max-h-[calc(100vh-72px)] xl:max-h-[750px] w-full xl:w-3/4 rounded-none xl:rounded overflow-hidden z-50 flex flex-col"
             >
               <div className="overflow-y-auto flex-1">
                 <div className="p-4">
@@ -212,6 +212,7 @@ function NavigationBar() {
                                 key={team._id}
                                 to={`/teams/${team._id}`}
                                 className="flex items-center justify-between p-2 hover:bg-base-200 rounded"
+                                onClick={() => setIsInputFocused(false)}
                               >
                                 <div className="flex items-center">
                                   <MagnifyingGlassIcon className="w-4 h-4 mr-2 text-gray-400" />
@@ -238,9 +239,10 @@ function NavigationBar() {
                             .slice(0, 4)
                             .map((profile) => (
                               <Link
-                                key={profile._id}
-                                to={`/profile/${profile._id}`}
+                                key={profile.user_id}
+                                to={`/profile/${profile.user_id}`}
                                 className="flex items-center justify-between p-2 hover:bg-base-200 rounded"
+                                onClick={() => setIsInputFocused(false)}
                               >
                                 <div className="flex items-center">
                                   <MagnifyingGlassIcon className="w-4 h-4 mr-2 text-gray-400" />
@@ -275,8 +277,9 @@ function NavigationBar() {
                             .map((challenge) => (
                               <Link
                                 key={challenge._id}
-                                to={`/challenges/${challenge._id}`}
+                                to={`/challenge/${challenge._id}`}
                                 className="flex items-center p-2 hover:bg-base-200 rounded"
+                                onClick={() => setIsInputFocused(false)}
                               >
                                 <MagnifyingGlassIcon className="w-4 h-4 mr-2 text-gray-400" />
                                 <span className="text-sm font-body">
@@ -308,6 +311,7 @@ function NavigationBar() {
                       <Link
                         to={`/search?q=${debouncedSearchQuery}`}
                         className="text-sm text-base-content hover:text-blue-800 block text-center font-body font-medium"
+                        onClick={() => setIsInputFocused(false)}
                       >
                         See all results
                       </Link>

@@ -5,22 +5,22 @@ export interface SearchResult {
 }
 
 interface Challenges {
-  results: Result3[];
+  results: ChallengeResult[];
   hasMore: boolean;
 }
 
-interface Result3 {
+interface ChallengeResult {
   _id: string;
   challenge_name: string;
 }
 
 interface Profiles {
-  results: Result2[];
+  results: ProfileResult[];
   hasMore: boolean;
 }
 
-interface Result2 {
-  _id: string;
+interface ProfileResult {
+  user_id: string;
   firstName: null | string;
   lastName: null | string;
   username: string;
@@ -28,11 +28,11 @@ interface Result2 {
 }
 
 interface Teams {
-  results: Result[];
+  results: TeamResult[];
   hasMore: boolean;
 }
 
-interface Result {
+interface TeamResult {
   _id: string;
   name: string;
   teamColor?: string;
