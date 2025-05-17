@@ -168,7 +168,7 @@ export default function SearchResultsPage() {
                   {searchResult.challenges.hasMore && (
                     <div className="text-center mt-6">
                       <Link
-                        to={`/search/challenges?q=${query}`}
+                        to={`/search/results/challenges?q=${query}`}
                         className="text-base-content font-body font-medium"
                       >
                         See all
@@ -228,7 +228,7 @@ export default function SearchResultsPage() {
                   {searchResult.profiles.hasMore && (
                     <div className="text-center mt-6">
                       <Link
-                        to={`/search/people?q=${query}`}
+                        to={`/search/results/people?q=${query}`}
                         className="text-base-content font-body font-medium"
                       >
                         See all
@@ -305,7 +305,7 @@ export default function SearchResultsPage() {
                   {searchResult.teams.hasMore && (
                     <div className="text-center mt-6">
                       <Link
-                        to={`/search/teams?q=${query}`}
+                        to={`/search/results/teams?q=${query}`}
                         className="text-base-content font-body font-medium"
                       >
                         See all
