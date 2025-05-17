@@ -25,8 +25,6 @@ const MemberRequestDialog = ({
   const [showRejectionInput, setShowRejectionInput] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
 
-  // console.log("DATA: ", teams);
-
   const resetDialog = () => {
     setAcceptClicked(false);
     setIsAccepting(false);
