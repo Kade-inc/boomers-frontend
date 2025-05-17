@@ -56,6 +56,22 @@ function NavigationBar() {
     setSearchQuery(event.target.value);
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter" && searchQuery.trim()) {
+      // Check if there are any results in any category
+      const hasResults =
+        searchResult &&
+        (searchResult.teams.results.length > 0 ||
+          searchResult.profiles.results.length > 0 ||
+          searchResult.challenges.results.length > 0);
+
+      if (hasResults) {
+        setIsInputFocused(false);
+        navigate(`/search?q=${searchQuery.trim()}`);
+      }
+    }
+  };
+
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchResultsRef = useRef<HTMLDivElement>(null);
   const themeToggleRef = useRef<HTMLDivElement>(null);
@@ -102,6 +118,7 @@ function NavigationBar() {
             placeholder="Search"
             className="input md:w-auto rounded-full pl-10 text-[12px] md:text-base font-body bg-grey input-bordered"
             onChange={handleFilter}
+            onKeyDown={handleKeyDown}
             onFocus={() => setIsInputFocused(true)}
             value={searchQuery}
           />
@@ -130,6 +147,7 @@ function NavigationBar() {
                       placeholder="Search"
                       className="input w-full rounded-full pl-10 text-[12px] md:text-base font-body bg-grey input-bordered"
                       onChange={handleFilter}
+                      onKeyDown={handleKeyDown}
                       value={searchQuery}
                       autoFocus
                     />
