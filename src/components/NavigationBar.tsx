@@ -6,8 +6,14 @@ import {
   MagnifyingGlassCircleIcon,
   MagnifyingGlassIcon,
   UserCircleIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/solid";
 import useNotificationsStore from "../stores/useNotificationsStore";
+import useSearchHistory from "../hooks/Search/useSearchHistory";
+import useClearSearchHistory from "../hooks/Search/useClearSearchHistory";
+import { useState, useEffect, useRef } from "react";
+import useSearchResults from "../hooks/Search/useSearchResults";
+import { useDebounce } from "../hooks/useDebounce";
 
 function NavigationBar() {
   const currentRoute = useLocation();
@@ -26,6 +32,60 @@ function NavigationBar() {
     navigate("/");
   };
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isInputFocused, setIsInputFocused] = useState(false);
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+
+  console.log("Search Query:", searchQuery);
+  console.log("Debounced Query:", debouncedSearchQuery);
+
+  const {
+    data: searchHistory,
+    isPending: searchHistoryPending,
+    error: searchHistoryError,
+  } = useSearchHistory(isInputFocused);
+  const {
+    data: searchResult,
+    isPending: searchResultPending,
+    error: searchResultError,
+  } = useSearchResults(debouncedSearchQuery);
+  const clearHistoryMutation = useClearSearchHistory();
+
+  console.log("Search History in NavBar:", searchHistory);
+  console.log("Search History Loading:", searchHistoryPending);
+  console.log("Search History Error:", searchHistoryError);
+
+  const handleClearHistory = () => {
+    clearHistoryMutation.mutate();
+  };
+
+  const handleFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("Input value:", event.target.value);
+    setSearchQuery(event.target.value);
+  };
+
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchResultsRef = useRef<HTMLDivElement>(null);
+  const themeToggleRef = useRef<HTMLDivElement>(null);
+
+  // Add click outside handler to close the results
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchInputRef.current && searchResultsRef.current) {
+        if (
+          !searchInputRef.current.contains(event.target as Node) &&
+          !searchResultsRef.current.contains(event.target as Node) &&
+          !themeToggleRef.current?.contains(event.target as Node)
+        ) {
+          setIsInputFocused(false);
+        }
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
     <div className="navbar bg-base-100 flex md:px-10 justify-between px-5 md:pt-4 fixed z-40">
       <div className="flex p-0 w-[20%] md:w-[20%]">
@@ -37,15 +97,230 @@ function NavigationBar() {
         </Link>
       </div>
       <div className="xl:hidden w-[10%]">
-        <MagnifyingGlassCircleIcon className="inset-y-0 left-0 flex items-center pl-2 w-12 h-12 top-2.5 text-base-content" />
+        <button onClick={() => setIsInputFocused(true)} className="p-2">
+          <MagnifyingGlassCircleIcon className="inset-y-0 left-0 flex items-center pl-2 w-12 h-12 top-2.5 text-base-content" />
+        </button>
       </div>
-      <div className="lg:w-[20%] justify-start items-center relative hidden xl:flex">
-        <MagnifyingGlassIcon className="absolute inset-y-0 left-0 flex items-center pl-2 w-8 h-8 top-2.5 fill-gray-400" />
-        <input
-          type="text"
-          placeholder="Search team/users"
-          className="input md:w-auto rounded-full pl-10 text-[12px] md:text-base font-body bg-grey input-bordered"
-        />
+      <div className="relative w-1/2" id="search-container">
+        <div className="lg:w-[20%] justify-start items-center relative hidden xl:flex">
+          <MagnifyingGlassIcon className="absolute inset-y-0 left-0 flex items-center pl-2 w-8 h-8 top-2.5 fill-gray-400" />
+          <input
+            ref={searchInputRef}
+            type="text"
+            placeholder="Search"
+            className="input md:w-auto rounded-full pl-10 text-[12px] md:text-base font-body bg-grey input-bordered"
+            onChange={handleFilter}
+            onFocus={() => setIsInputFocused(true)}
+            value={searchQuery}
+          />
+        </div>
+        {isInputFocused && (
+          <>
+            <div className="fixed top-[72px] left-0 right-0 bottom-0 bg-black/30 animate-fade-in" />
+            <div
+              ref={searchResultsRef}
+              className="fixed xl:absolute top-[72px] xl:top-14 left-0 right-0 xl:right-auto bottom-0 xl:bottom-auto bg-base-100 min-h-[100px] xl:min-h-[100px] max-h-[calc(100vh-72px)] xl:max-h-[750px] w-full xl:w-3/4 rounded-none xl:rounded overflow-hidden z-50 flex flex-col"
+            >
+              <div className="overflow-y-auto flex-1">
+                <div className="p-4">
+                  <div className="flex justify-end mb-4">
+                    <button
+                      onClick={() => setIsInputFocused(false)}
+                      className="xl:hidden p-2 hover:bg-base-200 rounded-full"
+                    >
+                      <XMarkIcon className="w-6 h-6 text-base-content" />
+                    </button>
+                  </div>
+                  <div className="xl:hidden relative mb-4">
+                    <MagnifyingGlassIcon className="absolute inset-y-0 left-0 flex items-center pl-2 w-8 h-8 top-2.5 fill-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Search"
+                      className="input w-full rounded-full pl-10 text-[12px] md:text-base font-body bg-grey input-bordered"
+                      onChange={handleFilter}
+                      value={searchQuery}
+                      autoFocus
+                    />
+                  </div>
+                  {!searchQuery ? (
+                    <div>
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-sm font-body font-medium text-base-content">
+                          Recent Searches
+                        </h3>
+                        {searchHistory && searchHistory.length > 0 && (
+                          <button
+                            onClick={handleClearHistory}
+                            className="text-sm text-base-content hover:text-error font-body"
+                            disabled={clearHistoryMutation.isPending}
+                          >
+                            {clearHistoryMutation.isPending
+                              ? "Clearing..."
+                              : "Clear"}
+                          </button>
+                        )}
+                      </div>
+                      {searchHistoryPending ? (
+                        <div className="flex items-center justify-center h-32">
+                          <span className="loading loading-spinner loading-md"></span>
+                        </div>
+                      ) : searchHistoryError ? (
+                        <div className="text-error text-center">
+                          Error loading search history
+                        </div>
+                      ) : searchHistory && searchHistory.length > 0 ? (
+                        <div className="space-y-2">
+                          {searchHistory.map((history) => (
+                            <button
+                              key={history._id}
+                              onClick={() => setSearchQuery(history.term)}
+                              className="w-full flex items-center p-2 hover:bg-base-200 rounded"
+                            >
+                              <MagnifyingGlassIcon className="w-4 h-4 mr-2 text-gray-400" />
+                              <span className="text-sm font-body text-base-content">
+                                {history.term}
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center text-base-content font-body py-4">
+                          No recent searches
+                        </div>
+                      )}
+                    </div>
+                  ) : searchResultPending ? (
+                    <div className="flex items-center justify-center h-32">
+                      <span className="loading loading-spinner loading-md"></span>
+                    </div>
+                  ) : searchResultError ? (
+                    <div className="p-4 text-error">
+                      Error loading search results
+                    </div>
+                  ) : searchResult ? (
+                    <div className="p-4">
+                      {/* Teams Section */}
+                      {searchResult.teams.results.length > 0 && (
+                        <div className="mb-4">
+                          <h3 className="text-sm font-body font-medium text-base-content mb-2">
+                            Teams
+                          </h3>
+                          {searchResult.teams.results
+                            .slice(0, 3)
+                            .map((team) => (
+                              <Link
+                                key={team._id}
+                                to={`/teams/${team._id}`}
+                                className="flex items-center justify-between p-2 hover:bg-base-200 rounded"
+                                onClick={() => setIsInputFocused(false)}
+                              >
+                                <div className="flex items-center">
+                                  <MagnifyingGlassIcon className="w-4 h-4 mr-2 text-gray-400" />
+                                  <span className="text-sm font-body">
+                                    {team.name}
+                                  </span>
+                                </div>
+                                <div
+                                  className="w-8 h-8 rounded-full"
+                                  style={{ background: team?.teamColor }}
+                                />
+                              </Link>
+                            ))}
+                        </div>
+                      )}
+
+                      {/* Profiles Section */}
+                      {searchResult.profiles.results.length > 0 && (
+                        <div className="mb-4">
+                          <h3 className="text-sm font-body font-medium text-base-content mb-2">
+                            Users
+                          </h3>
+                          {searchResult.profiles.results
+                            .slice(0, 4)
+                            .map((profile) => (
+                              <Link
+                                key={profile.user_id}
+                                to={`/profile/${profile.user_id}`}
+                                className="flex items-center justify-between p-2 hover:bg-base-200 rounded"
+                                onClick={() => setIsInputFocused(false)}
+                              >
+                                <div className="flex items-center">
+                                  <MagnifyingGlassIcon className="w-4 h-4 mr-2 text-gray-400" />
+                                  <span className="text-sm font-body">
+                                    {profile.firstName && profile.lastName
+                                      ? `${profile.firstName} ${profile.lastName}`
+                                      : profile.username}
+                                  </span>
+                                </div>
+                                {profile.profile_picture ? (
+                                  <img
+                                    src={profile.profile_picture}
+                                    alt={`${profile.username}'s profile`}
+                                    className="w-8 h-8 rounded-full"
+                                  />
+                                ) : (
+                                  <UserCircleIcon className="w-8 h-8" />
+                                )}
+                              </Link>
+                            ))}
+                        </div>
+                      )}
+
+                      {/* Challenges Section */}
+                      {searchResult.challenges.results.length > 0 && (
+                        <div className="mb-4">
+                          <h3 className="text-sm font-body font-medium text-base-content mb-2">
+                            Challenges
+                          </h3>
+                          {searchResult.challenges.results
+                            .slice(0, 3)
+                            .map((challenge) => (
+                              <Link
+                                key={challenge._id}
+                                to={`/challenge/${challenge._id}`}
+                                className="flex items-center p-2 hover:bg-base-200 rounded"
+                                onClick={() => setIsInputFocused(false)}
+                              >
+                                <MagnifyingGlassIcon className="w-4 h-4 mr-2 text-gray-400" />
+                                <span className="text-sm font-body">
+                                  {challenge.challenge_name}
+                                </span>
+                              </Link>
+                            ))}
+                        </div>
+                      )}
+
+                      {/* No Results */}
+                      {!searchResult.teams.results.length &&
+                        !searchResult.profiles.results.length &&
+                        !searchResult.challenges.results.length && (
+                          <div className="text-center text-base-content font-body py-4">
+                            No results found
+                          </div>
+                        )}
+                    </div>
+                  ) : null}
+                </div>
+
+                {/* See All Results Link - Always at bottom */}
+                {searchResult &&
+                  (searchResult.teams.results.length > 0 ||
+                    searchResult.profiles.results.length > 0 ||
+                    searchResult.challenges.results.length > 0) && (
+                    <div className="p-4 border-t bg-base-100">
+                      <Link
+                        to={`/search?q=${debouncedSearchQuery}`}
+                        className="text-sm text-base-content hover:text-blue-800 block text-center font-body font-medium"
+                        onClick={() => setIsInputFocused(false)}
+                      >
+                        See all results
+                      </Link>
+                    </div>
+                  )}
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="flex">
@@ -126,7 +401,9 @@ function NavigationBar() {
           </Link>
         </div>
 
-        <ThemeToggle />
+        <div ref={themeToggleRef}>
+          <ThemeToggle />
+        </div>
 
         <button
           className="btn btn-ghost btn-circle"
