@@ -6,6 +6,7 @@ import {
   MagnifyingGlassCircleIcon,
   MagnifyingGlassIcon,
   UserCircleIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/solid";
 import useNotificationsStore from "../stores/useNotificationsStore";
 import useSearchHistory from "../hooks/Search/useSearchHistory";
@@ -65,6 +66,7 @@ function NavigationBar() {
 
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchResultsRef = useRef<HTMLDivElement>(null);
+  const themeToggleRef = useRef<HTMLDivElement>(null);
 
   // Add click outside handler to close the results
   useEffect(() => {
@@ -72,7 +74,8 @@ function NavigationBar() {
       if (searchInputRef.current && searchResultsRef.current) {
         if (
           !searchInputRef.current.contains(event.target as Node) &&
-          !searchResultsRef.current.contains(event.target as Node)
+          !searchResultsRef.current.contains(event.target as Node) &&
+          !themeToggleRef.current?.contains(event.target as Node)
         ) {
           setIsInputFocused(false);
         }
@@ -94,7 +97,9 @@ function NavigationBar() {
         </Link>
       </div>
       <div className="xl:hidden w-[10%]">
-        <MagnifyingGlassCircleIcon className="inset-y-0 left-0 flex items-center pl-2 w-12 h-12 top-2.5 text-base-content" />
+        <button onClick={() => setIsInputFocused(true)} className="p-2">
+          <MagnifyingGlassCircleIcon className="inset-y-0 left-0 flex items-center pl-2 w-12 h-12 top-2.5 text-base-content" />
+        </button>
       </div>
       <div className="relative w-1/2" id="search-container">
         <div className="lg:w-[20%] justify-start items-center relative hidden xl:flex">
@@ -102,7 +107,7 @@ function NavigationBar() {
           <input
             ref={searchInputRef}
             type="text"
-            placeholder="Search team/users"
+            placeholder="Search"
             className="input md:w-auto rounded-full pl-10 text-[12px] md:text-base font-body bg-grey input-bordered"
             onChange={handleFilter}
             onFocus={() => setIsInputFocused(true)}
@@ -114,178 +119,201 @@ function NavigationBar() {
             <div className="fixed top-[72px] left-0 right-0 bottom-0 bg-black/30 animate-fade-in" />
             <div
               ref={searchResultsRef}
-              className="absolute top-14 bg-base-100 min-h-[100px] max-h-[400px] w-3/4 rounded overflow-hidden z-50 flex flex-col"
+              className="fixed xl:absolute top-[72px] xl:top-14 left-0 right-0 xl:right-auto bottom-0 xl:bottom-auto bg-base-100 min-h-[100px] xl:min-h-[100px] max-h-[calc(100vh-72px)] xl:max-h-[400px] w-full xl:w-3/4 rounded-none xl:rounded overflow-hidden z-50 flex flex-col"
             >
               <div className="overflow-y-auto flex-1">
-                {!searchQuery ? (
-                  <div className="p-4">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-sm font-body font-medium text-base-content">
-                        Recent Searches
-                      </h3>
-                      {searchHistory && searchHistory.length > 0 && (
-                        <button
-                          onClick={handleClearHistory}
-                          className="text-sm text-base-content hover:text-error font-body"
-                          disabled={clearHistoryMutation.isPending}
-                        >
-                          {clearHistoryMutation.isPending
-                            ? "Clearing..."
-                            : "Clear"}
-                        </button>
-                      )}
-                    </div>
-                    {searchHistoryPending ? (
-                      <div className="flex items-center justify-center h-32">
-                        <span className="loading loading-spinner loading-md"></span>
-                      </div>
-                    ) : searchHistoryError ? (
-                      <div className="text-error text-center">
-                        Error loading search history
-                      </div>
-                    ) : searchHistory && searchHistory.length > 0 ? (
-                      <div className="space-y-2">
-                        {searchHistory.map((history) => (
+                <div className="p-4">
+                  <div className="flex justify-end mb-4">
+                    <button
+                      onClick={() => setIsInputFocused(false)}
+                      className="xl:hidden p-2 hover:bg-base-200 rounded-full"
+                    >
+                      <XMarkIcon className="w-6 h-6 text-base-content" />
+                    </button>
+                  </div>
+                  <div className="xl:hidden relative mb-4">
+                    <MagnifyingGlassIcon className="absolute inset-y-0 left-0 flex items-center pl-2 w-8 h-8 top-2.5 fill-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Search"
+                      className="input w-full rounded-full pl-10 text-[12px] md:text-base font-body bg-grey input-bordered"
+                      onChange={handleFilter}
+                      value={searchQuery}
+                      autoFocus
+                    />
+                  </div>
+                  {!searchQuery ? (
+                    <div>
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-sm font-body font-medium text-base-content">
+                          Recent Searches
+                        </h3>
+                        {searchHistory && searchHistory.length > 0 && (
                           <button
-                            key={history._id}
-                            onClick={() => setSearchQuery(history.term)}
-                            className="w-full flex items-center p-2 hover:bg-base-200 rounded"
+                            onClick={handleClearHistory}
+                            className="text-sm text-base-content hover:text-error font-body"
+                            disabled={clearHistoryMutation.isPending}
                           >
-                            <MagnifyingGlassIcon className="w-4 h-4 mr-2 text-gray-400" />
-                            <span className="text-sm font-body text-base-content">
-                              {history.term}
-                            </span>
+                            {clearHistoryMutation.isPending
+                              ? "Clearing..."
+                              : "Clear"}
                           </button>
-                        ))}
+                        )}
                       </div>
-                    ) : (
-                      <div className="text-center text-base-content font-body py-4">
-                        No recent searches
-                      </div>
-                    )}
-                  </div>
-                ) : searchResultPending ? (
-                  <div className="flex items-center justify-center h-32">
-                    <span className="loading loading-spinner loading-md"></span>
-                  </div>
-                ) : searchResultError ? (
-                  <div className="p-4 text-error">
-                    Error loading search results
-                  </div>
-                ) : searchResult ? (
-                  <div className="p-4">
-                    {/* Teams Section */}
-                    {searchResult.teams.results.length > 0 && (
-                      <div className="mb-4">
-                        <h3 className="text-sm font-body font-medium text-base-content mb-2">
-                          Teams
-                        </h3>
-                        {searchResult.teams.results.slice(0, 3).map((team) => (
-                          <Link
-                            key={team._id}
-                            to={`/teams/${team._id}`}
-                            className="flex items-center justify-between p-2 hover:bg-base-200 rounded"
-                          >
-                            <div className="flex items-center">
-                              <MagnifyingGlassIcon className="w-4 h-4 mr-2 text-gray-400" />
-                              <span className="text-sm font-body">
-                                {team.name}
-                              </span>
-                            </div>
-                            <div
-                              className="w-8 h-8 rounded-full"
-                              style={{ background: team?.teamColor }}
-                            />
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Profiles Section */}
-                    {searchResult.profiles.results.length > 0 && (
-                      <div className="mb-4">
-                        <h3 className="text-sm font-body font-medium text-base-content mb-2">
-                          Users
-                        </h3>
-                        {searchResult.profiles.results
-                          .slice(0, 4)
-                          .map((profile) => (
-                            <Link
-                              key={profile._id}
-                              to={`/profile/${profile._id}`}
-                              className="flex items-center justify-between p-2 hover:bg-base-200 rounded"
-                            >
-                              <div className="flex items-center">
-                                <MagnifyingGlassIcon className="w-4 h-4 mr-2 text-gray-400" />
-                                <span className="text-sm font-body">
-                                  {profile.firstName && profile.lastName
-                                    ? `${profile.firstName} ${profile.lastName}`
-                                    : profile.username}
-                                </span>
-                              </div>
-                              {profile.profile_picture ? (
-                                <img
-                                  src={profile.profile_picture}
-                                  alt={`${profile.username}'s profile`}
-                                  className="w-8 h-8 rounded-full"
-                                />
-                              ) : (
-                                <UserCircleIcon className="w-8 h-8" />
-                              )}
-                            </Link>
-                          ))}
-                      </div>
-                    )}
-
-                    {/* Challenges Section */}
-                    {searchResult.challenges.results.length > 0 && (
-                      <div className="mb-4">
-                        <h3 className="text-sm font-body font-medium text-base-content mb-2">
-                          Challenges
-                        </h3>
-                        {searchResult.challenges.results
-                          .slice(0, 3)
-                          .map((challenge) => (
-                            <Link
-                              key={challenge._id}
-                              to={`/challenges/${challenge._id}`}
-                              className="flex items-center p-2 hover:bg-base-200 rounded"
+                      {searchHistoryPending ? (
+                        <div className="flex items-center justify-center h-32">
+                          <span className="loading loading-spinner loading-md"></span>
+                        </div>
+                      ) : searchHistoryError ? (
+                        <div className="text-error text-center">
+                          Error loading search history
+                        </div>
+                      ) : searchHistory && searchHistory.length > 0 ? (
+                        <div className="space-y-2">
+                          {searchHistory.map((history) => (
+                            <button
+                              key={history._id}
+                              onClick={() => setSearchQuery(history.term)}
+                              className="w-full flex items-center p-2 hover:bg-base-200 rounded"
                             >
                               <MagnifyingGlassIcon className="w-4 h-4 mr-2 text-gray-400" />
-                              <span className="text-sm font-body">
-                                {challenge.challenge_name}
+                              <span className="text-sm font-body text-base-content">
+                                {history.term}
                               </span>
-                            </Link>
+                            </button>
                           ))}
-                      </div>
-                    )}
-
-                    {/* No Results */}
-                    {!searchResult.teams.results.length &&
-                      !searchResult.profiles.results.length &&
-                      !searchResult.challenges.results.length && (
+                        </div>
+                      ) : (
                         <div className="text-center text-base-content font-body py-4">
-                          No results found
+                          No recent searches
                         </div>
                       )}
-                  </div>
-                ) : null}
-              </div>
+                    </div>
+                  ) : searchResultPending ? (
+                    <div className="flex items-center justify-center h-32">
+                      <span className="loading loading-spinner loading-md"></span>
+                    </div>
+                  ) : searchResultError ? (
+                    <div className="p-4 text-error">
+                      Error loading search results
+                    </div>
+                  ) : searchResult ? (
+                    <div className="p-4">
+                      {/* Teams Section */}
+                      {searchResult.teams.results.length > 0 && (
+                        <div className="mb-4">
+                          <h3 className="text-sm font-body font-medium text-base-content mb-2">
+                            Teams
+                          </h3>
+                          {searchResult.teams.results
+                            .slice(0, 3)
+                            .map((team) => (
+                              <Link
+                                key={team._id}
+                                to={`/teams/${team._id}`}
+                                className="flex items-center justify-between p-2 hover:bg-base-200 rounded"
+                              >
+                                <div className="flex items-center">
+                                  <MagnifyingGlassIcon className="w-4 h-4 mr-2 text-gray-400" />
+                                  <span className="text-sm font-body">
+                                    {team.name}
+                                  </span>
+                                </div>
+                                <div
+                                  className="w-8 h-8 rounded-full"
+                                  style={{ background: team?.teamColor }}
+                                />
+                              </Link>
+                            ))}
+                        </div>
+                      )}
 
-              {/* See All Results Link - Always at bottom */}
-              {searchResult &&
-                (searchResult.teams.results.length > 0 ||
-                  searchResult.profiles.results.length > 0 ||
-                  searchResult.challenges.results.length > 0) && (
-                  <div className="p-4 border-t bg-base-100">
-                    <Link
-                      to={`/search?q=${debouncedSearchQuery}`}
-                      className="text-sm text-base-content hover:text-blue-800 block text-center font-body font-medium"
-                    >
-                      See all results
-                    </Link>
-                  </div>
-                )}
+                      {/* Profiles Section */}
+                      {searchResult.profiles.results.length > 0 && (
+                        <div className="mb-4">
+                          <h3 className="text-sm font-body font-medium text-base-content mb-2">
+                            Users
+                          </h3>
+                          {searchResult.profiles.results
+                            .slice(0, 4)
+                            .map((profile) => (
+                              <Link
+                                key={profile._id}
+                                to={`/profile/${profile._id}`}
+                                className="flex items-center justify-between p-2 hover:bg-base-200 rounded"
+                              >
+                                <div className="flex items-center">
+                                  <MagnifyingGlassIcon className="w-4 h-4 mr-2 text-gray-400" />
+                                  <span className="text-sm font-body">
+                                    {profile.firstName && profile.lastName
+                                      ? `${profile.firstName} ${profile.lastName}`
+                                      : profile.username}
+                                  </span>
+                                </div>
+                                {profile.profile_picture ? (
+                                  <img
+                                    src={profile.profile_picture}
+                                    alt={`${profile.username}'s profile`}
+                                    className="w-8 h-8 rounded-full"
+                                  />
+                                ) : (
+                                  <UserCircleIcon className="w-8 h-8" />
+                                )}
+                              </Link>
+                            ))}
+                        </div>
+                      )}
+
+                      {/* Challenges Section */}
+                      {searchResult.challenges.results.length > 0 && (
+                        <div className="mb-4">
+                          <h3 className="text-sm font-body font-medium text-base-content mb-2">
+                            Challenges
+                          </h3>
+                          {searchResult.challenges.results
+                            .slice(0, 3)
+                            .map((challenge) => (
+                              <Link
+                                key={challenge._id}
+                                to={`/challenges/${challenge._id}`}
+                                className="flex items-center p-2 hover:bg-base-200 rounded"
+                              >
+                                <MagnifyingGlassIcon className="w-4 h-4 mr-2 text-gray-400" />
+                                <span className="text-sm font-body">
+                                  {challenge.challenge_name}
+                                </span>
+                              </Link>
+                            ))}
+                        </div>
+                      )}
+
+                      {/* No Results */}
+                      {!searchResult.teams.results.length &&
+                        !searchResult.profiles.results.length &&
+                        !searchResult.challenges.results.length && (
+                          <div className="text-center text-base-content font-body py-4">
+                            No results found
+                          </div>
+                        )}
+                    </div>
+                  ) : null}
+                </div>
+
+                {/* See All Results Link - Always at bottom */}
+                {searchResult &&
+                  (searchResult.teams.results.length > 0 ||
+                    searchResult.profiles.results.length > 0 ||
+                    searchResult.challenges.results.length > 0) && (
+                    <div className="p-4 border-t bg-base-100">
+                      <Link
+                        to={`/search?q=${debouncedSearchQuery}`}
+                        className="text-sm text-base-content hover:text-blue-800 block text-center font-body font-medium"
+                      >
+                        See all results
+                      </Link>
+                    </div>
+                  )}
+              </div>
             </div>
           </>
         )}
@@ -369,7 +397,9 @@ function NavigationBar() {
           </Link>
         </div>
 
-        <ThemeToggle />
+        <div ref={themeToggleRef}>
+          <ThemeToggle />
+        </div>
 
         <button
           className="btn btn-ghost btn-circle"
