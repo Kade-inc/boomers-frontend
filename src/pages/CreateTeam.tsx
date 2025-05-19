@@ -277,7 +277,7 @@ function CreateTeam() {
               </div>
             </div>
             <div className="min-h-80 md:w-full xl:w-2/4 w-full flex justify-center pb-8 md:pb-0">
-              <div className="w-full md:w-[70%] bg-base-200 pt-10 flex justify-center md:h-[75vh] xl:h-[80vh] shadow-lg rounded-md pb-8 md:pb-0 overflow-scroll">
+              <div className="w-full md:w-[70%] bg-base-200 pt-10 flex justify-center md:h-[85vh] xl:h-[85vh] shadow-lg rounded-md pb-8 md:pb-0 overflow-y-auto">
                 <form className="w-[80%]" onSubmit={handleSubmit(onSubmit)}>
                   <div className="mb-6">
                     <label
@@ -384,7 +384,7 @@ function CreateTeam() {
                       )}
                     </label>
                     <select
-                      className="select w-full border border-base-content focus:outline-none rounded-[5px] placeholder-gray-300 mt-[5px] bg-transparent text-[16px]"
+                      className="select w-full border border-base-content focus:outline-none rounded-[5px] placeholder-gray-300 mt-[5px] bg-transparent text-[16px] disabled:opacity-50 disabled:border-gray-400"
                       style={{
                         height: "40px",
                         minHeight: "40px",
@@ -394,10 +394,12 @@ function CreateTeam() {
                       {...register("subDomain")}
                       value={subDomain} // Controlled value
                       id="subDomain"
-                      disabled={!selectedDomainId && subdomainsPending}
+                      disabled={!domain || subdomainsPending}
                     >
                       <option value="" disabled>
-                        Sub Domain
+                        {domain && subdomainsPending
+                          ? "Loading..."
+                          : "Sub Domain"}
                       </option>
                       {subdomainOptions.map((subdomain) => (
                         <option key={subdomain._id} value={subdomain.name}>
@@ -429,7 +431,8 @@ function CreateTeam() {
                       selected={selectedTopics}
                       onChange={handleTopicChange}
                       parentContainerWidth="w-full"
-                      inputStyles="w-full border border-base-content focus:outline-none rounded-[5px] placeholder-gray-300 mt-[5px] bg-transparent text-[16px]"
+                      inputStyles="w-full border border-base-content focus:outline-none rounded-[5px] placeholder-gray-300 mt-[5px] bg-transparent text-[16px] flex items-center justify-between px-4 py-2"
+                      disabled={!subDomain}
                     />
                     {isSubmitted && topic.length === 0 && (
                       <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
@@ -466,7 +469,7 @@ function CreateTeam() {
                   </div>
 
                   <button
-                    className="btn w-full bg-yellow text-darkgrey border-none text-[16px] hover:bg-yellow rounded-sm font-medium disabled:opacity-100 xl:mb-8 3xl:mb-0"
+                    className="btn w-full bg-yellow text-darkgrey border-none text-[16px] hover:bg-yellow rounded-sm font-medium disabled:opacity-100 mb-4"
                     type="submit"
                     disabled={mutation.isPending}
                   >
