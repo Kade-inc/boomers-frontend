@@ -188,8 +188,7 @@ const ProfilePage = () => {
             ) : teams && teams.length > 0 ? (
               <TeamCardCarousel slides={teams} />
             ) : (
-              <p className="my-6 font-body">
-                No teams associated.</p>
+              <p className="my-6 font-body">No teams associated.</p>
             )}
           </div>
         </div>
