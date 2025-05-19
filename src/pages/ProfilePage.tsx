@@ -161,7 +161,7 @@ const ProfilePage = () => {
                   key={index}
                   className="border py-2 px-4 rounded-sm border-lightgrey font-body font-medium text-sm"
                 >
-                  {t}
+                  {typeof t === "string" ? t : t.name}
                 </div>
               ))}
 
