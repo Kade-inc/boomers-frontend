@@ -113,7 +113,7 @@ const ProfilePage = () => {
                 </div>
               </div>
               <div>
-                {!userId && (
+                {(!userId || userId === user.user_id) && (
                   <button
                     className="px-4 md:px-6 h-[32px] max-w-full rounded-[5px] bg-yellow font-body font-semibold text-[11px] md:text-sm  text-nowrap text-darkgrey hover:bg-yellow mr-5"
                     onClick={openModal}
