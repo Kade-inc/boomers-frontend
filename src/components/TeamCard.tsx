@@ -24,7 +24,6 @@ const TeamCard = ({
   subStyles,
 }: TeamProps) => {
   const { user } = useAuthStore.getState();
-  console.log("TEAM: ", team);
 
   return (
     <>
