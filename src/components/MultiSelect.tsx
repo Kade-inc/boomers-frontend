@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import DomainTopic from "../entities/DomainTopic";
 
 interface MultiSelectProps {
@@ -20,6 +20,23 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const toggleOption = (option: DomainTopic) => {
     const isSelected = selected.some((item) => item._id === option._id);
@@ -36,6 +53,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
 
   return (
     <div
+      ref={dropdownRef}
       className={`relative ${parentContainerWidth ? parentContainerWidth : "w-[143px]"} `}
     >
       {/* Dropdown Button with Arrow Icon */}
