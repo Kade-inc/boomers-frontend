@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import TeamCard from "../components/TeamCard";
@@ -116,52 +116,31 @@ function CreateTeam() {
 
   const [selectedTopics, setSelectedTopics] = useState<DomainTopic[]>([]);
 
-  const handleColorSelect = (colorName: string) => {
+  // Memoize handlers
+  const handleColorSelect = useCallback((colorName: string) => {
     setSelectedColor(colorName);
     setTeam((prevTeam) => ({
       ...prevTeam,
       teamColor: colorName,
     }));
-  };
+  }, []);
 
-  const handleTopicChange = (selected: DomainTopic[]) => {
-    setSelectedTopics(selected);
-    setTeam((prevTeam) => ({
-      ...prevTeam,
-      subdomainTopics: selected.map((topic) => topic.name),
-    }));
-    setValue(
-      "topic",
-      selected.map((topic) => topic.name),
-    );
-  };
+  const handleTopicChange = useCallback(
+    (selected: DomainTopic[]) => {
+      setSelectedTopics(selected);
+      setTeam((prevTeam) => ({
+        ...prevTeam,
+        subdomainTopics: selected.map((topic) => topic.name),
+      }));
+      setValue(
+        "topic",
+        selected.map((topic) => topic.name),
+      );
+    },
+    [setValue],
+  );
 
-  useEffect(() => {
-    if (domains && domains.length > 0) {
-      setDomainOptions(domains);
-    }
-  }, [domains]);
-
-  useEffect(() => {
-    if (subdomains && subdomains.length > 0) {
-      setSubdomainOptions(subdomains);
-    }
-  }, [subdomains]);
-
-  useEffect(() => {
-    if (fetchedDomainTopics) {
-      setDomainTopics(fetchedDomainTopics);
-    }
-  }, [fetchedDomainTopics]);
-
-  useEffect(() => {
-    const selectedDomain = domainOptions.find(
-      (domains: Domain) => domains.name === domain,
-    );
-    setSelectedDomainId(selectedDomain ? selectedDomain._id : "");
-  }, [domain]);
-
-  const onSubmit = async () => {
+  const onSubmit = useCallback(async () => {
     const response = await mutation.mutateAsync(
       {
         name: name,
@@ -191,7 +170,58 @@ function CreateTeam() {
     );
     setCreatedTeamId(response.data._id);
     setIsTeamSuccess(true);
-  };
+  }, [
+    mutation,
+    name,
+    username,
+    domain,
+    subDomain,
+    team.subdomainTopics,
+    team.teamColor,
+  ]);
+
+  // Memoize filtered options
+  const filteredDomainOptions = useMemo(() => {
+    if (domains && domains.length > 0) {
+      return domains;
+    }
+    return [];
+  }, [domains]);
+
+  const filteredSubdomainOptions = useMemo(() => {
+    if (subdomains && subdomains.length > 0) {
+      return subdomains;
+    }
+    return [];
+  }, [subdomains]);
+
+  const filteredDomainTopics = useMemo(() => {
+    if (fetchedDomainTopics) {
+      return fetchedDomainTopics;
+    }
+    return [];
+  }, [fetchedDomainTopics]);
+
+  // Update options when data changes
+  useEffect(() => {
+    setDomainOptions(filteredDomainOptions);
+  }, [filteredDomainOptions]);
+
+  useEffect(() => {
+    setSubdomainOptions(filteredSubdomainOptions);
+  }, [filteredSubdomainOptions]);
+
+  useEffect(() => {
+    setDomainTopics(filteredDomainTopics);
+  }, [filteredDomainTopics]);
+
+  // Update selected domain ID when domain changes
+  useEffect(() => {
+    const selectedDomain = domainOptions.find(
+      (domains: Domain) => domains.name === domain,
+    );
+    setSelectedDomainId(selectedDomain ? selectedDomain._id : "");
+  }, [domain, domainOptions]);
 
   if (domainsPending || domainTopicsPending) {
     return (
