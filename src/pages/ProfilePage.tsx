@@ -115,7 +115,7 @@ const ProfilePage = () => {
               <div>
                 {(!userId || userId === user.user_id) && (
                   <button
-                    className="px-4 md:px-6 h-[32px] max-w-full rounded-[5px] bg-yellow font-body font-semibold text-[11px] md:text-sm  text-nowrap text-darkgrey hover:bg-yellow mr-5"
+                    className="px-4 md:px-6 h-[32px] max-w-full rounded-[5px] bg-yellow font-body font-semibold text-[13px] md:text-sm  text-nowrap text-darkgrey hover:bg-yellow mr-5"
                     onClick={openModal}
                   >
                     <span className="block md:hidden">Edit</span>
@@ -177,7 +177,7 @@ const ProfilePage = () => {
           </div>
         </div>
         <div className="bg-base-200 mt-4 shadow-custom text-base-content rounded-[5px] pb-12">
-          <div className="ml-6 my-4">
+          <div className="md:mx-6 my-4 px-[10px] md:px-0">
             <h1 className="font-body font-semibold text-base md:text-lg ">
               Houses
             </h1>
