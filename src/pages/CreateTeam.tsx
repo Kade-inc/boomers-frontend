@@ -14,6 +14,7 @@ import useCreateTeam from "../hooks/useCreateTeam";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import axios, { AxiosError } from "axios";
+import MultiSelect from "../components/MultiSelect";
 
 interface FormInputs {
   name: string;
@@ -43,14 +44,12 @@ const schema = z.object({
 });
 
 function CreateTeam() {
-  // TO FIX: Remove this later since it's not really useful
-  // It's currently used when setting team color and in handleTopicChange
   const [team, setTeam] = useState<Team>({
     name: "",
     teamUsername: "",
     domain: "",
-    subDomain: "",
-    subDomainTopics: [],
+    subdomain: "",
+    subdomainTopics: [],
     teamColor: "linear-gradient(0deg, #00989B, #005E78)",
   });
 
@@ -60,7 +59,6 @@ function CreateTeam() {
     useSubDomains(selectedDomainId);
   const [domainOptions, setDomainOptions] = useState<Domain[]>([]);
   const [subdomainOptions, setSubdomainOptions] = useState<SubDomain[]>([]);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const { data: fetchedDomainTopics, isPending: domainTopicsPending } =
     useDomainTopics();
   const [subDomainTopics, setDomainTopics] = useState<DomainTopic[]>([]);
@@ -116,6 +114,8 @@ function CreateTeam() {
   const name = watch("name");
   const username = watch("username");
 
+  const [selectedTopics, setSelectedTopics] = useState<DomainTopic[]>([]);
+
   const handleColorSelect = (colorName: string) => {
     setSelectedColor(colorName);
     setTeam((prevTeam) => ({
@@ -124,24 +124,16 @@ function CreateTeam() {
     }));
   };
 
-  const handleTopicChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-
-    setTeam((prevTeam) => {
-      const isAlreadySelected = (prevTeam.subDomainTopics || []).includes(
-        value,
-      );
-
-      const updatedTopics = isAlreadySelected
-        ? (prevTeam.subDomainTopics || []).filter((topic) => topic !== value)
-        : [...(prevTeam.subDomainTopics || []), value];
-      setValue("topic", updatedTopics);
-      return { ...prevTeam, subDomainTopics: updatedTopics };
-    });
-  };
-
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
+  const handleTopicChange = (selected: DomainTopic[]) => {
+    setSelectedTopics(selected);
+    setTeam((prevTeam) => ({
+      ...prevTeam,
+      subdomainTopics: selected.map((topic) => topic.name),
+    }));
+    setValue(
+      "topic",
+      selected.map((topic) => topic.name),
+    );
   };
 
   useEffect(() => {
@@ -175,8 +167,8 @@ function CreateTeam() {
         name: name,
         teamUsername: username,
         domain: domain,
-        subDomain: subDomain,
-        subDomainTopics: team.subDomainTopics,
+        subdomain: subDomain,
+        subdomainTopics: team.subdomainTopics,
         teamColor: team.teamColor,
       },
       {
@@ -285,11 +277,11 @@ function CreateTeam() {
               </div>
             </div>
             <div className="min-h-80 md:w-full xl:w-2/4 w-full flex justify-center pb-8 md:pb-0">
-              <div className="w-full md:w-[70%] bg-base-200 pt-10 flex justify-center md:h-[80vh] shadow-lg rounded-md pb-8 md:pb-0 overflow-scroll">
+              <div className="w-full md:w-[70%] bg-base-200 pt-10 flex justify-center md:h-[75vh] xl:h-[80vh] shadow-lg rounded-md pb-8 md:pb-0 overflow-scroll">
                 <form className="w-[80%]" onSubmit={handleSubmit(onSubmit)}>
                   <div className="mb-6">
                     <label
-                      className="block text-base-content mb-[1%] text-[18px]"
+                      className="block text-base-content mb-[1%] text-[16px]"
                       htmlFor="name"
                     >
                       Team Name
@@ -302,7 +294,7 @@ function CreateTeam() {
                     <input
                       type="text"
                       placeholder="Team Name"
-                      className="input w-full border border-base-content focus:outline-none bg-transparent rounded-md placeholder-gray-300 mt-[5px]"
+                      className="input w-full border border-base-content focus:outline-none bg-transparent rounded-[5px] placeholder-gray-300 mt-[5px] h-[40px] text-[16px]"
                       style={{ backgroundColor: "transparent" }}
                       {...register("name")}
                       id="name"
@@ -316,7 +308,7 @@ function CreateTeam() {
 
                   <div className="mb-6">
                     <label
-                      className="block text-base-content mb-[1%] text-[18px]"
+                      className="block text-base-content mb-[1%] text-[16px]"
                       htmlFor="username"
                     >
                       Team Nickname
@@ -329,7 +321,7 @@ function CreateTeam() {
                     <input
                       type="text"
                       placeholder="Team Nickname"
-                      className="input w-full border border-base-content focus:outline-none bg-transparent rounded-md placeholder-gray-300 mt-[5px]"
+                      className="input w-full border border-base-content focus:outline-none bg-transparent rounded-[5px] placeholder-gray-300 mt-[5px] h-[40px] text-[16px]"
                       style={{ backgroundColor: "transparent" }}
                       {...register("username")}
                       id="username"
@@ -342,7 +334,7 @@ function CreateTeam() {
                   </div>
                   <div className="mb-6">
                     <label
-                      className="block text-base-content mb-[1%] text-[18px]"
+                      className="block text-base-content mb-[1%] text-[16px]"
                       htmlFor="domain"
                     >
                       Domain
@@ -353,7 +345,13 @@ function CreateTeam() {
                       )}
                     </label>
                     <select
-                      className="select w-full border border-base-content focus:outline-none rounded-md placeholder-gray-100 mt-[5px] bg-transparent"
+                      className="select w-full border border-base-content focus:outline-none rounded-[5px] placeholder-gray-100 mt-[5px] bg-transparent text-[16px]"
+                      style={{
+                        height: "40px",
+                        minHeight: "40px",
+                        padding: "0 1rem",
+                        lineHeight: "40px",
+                      }}
                       {...register("domain")}
                       value={domain} // Controlled value
                       id="domain"
@@ -375,7 +373,7 @@ function CreateTeam() {
                   </div>
                   <div className="mb-6">
                     <label
-                      className="block text-base-content mb-[1%] text-[18px]"
+                      className="block text-base-content mb-[1%] text-[16px]"
                       htmlFor="subDomain"
                     >
                       Sub Domain
@@ -386,7 +384,13 @@ function CreateTeam() {
                       )}
                     </label>
                     <select
-                      className="select w-full border border-base-content focus:outline-none rounded-md placeholder-gray-300 mt-[5px] bg-transparent"
+                      className="select w-full border border-base-content focus:outline-none rounded-[5px] placeholder-gray-300 mt-[5px] bg-transparent text-[16px]"
+                      style={{
+                        height: "40px",
+                        minHeight: "40px",
+                        padding: "0 1rem",
+                        lineHeight: "40px",
+                      }}
                       {...register("subDomain")}
                       value={subDomain} // Controlled value
                       id="subDomain"
@@ -410,7 +414,7 @@ function CreateTeam() {
 
                   <div className="mb-6 relative">
                     <label
-                      className="block text-base-content mb-[1%] text-[18px]"
+                      className="block text-base-content mb-[1%] text-[16px]"
                       htmlFor="topics"
                     >
                       Topics
@@ -420,36 +424,13 @@ function CreateTeam() {
                         </span>
                       )}
                     </label>
-                    <button
-                      type="button"
-                      onClick={toggleDropdown}
-                      className="select w-full border border-base-content focus:outline-none rounded-md placeholder-gray-300 mt-[5px] bg-transparent text-left p-2"
-                    >
-                      {team.subDomainTopics && team.subDomainTopics.length > 0
-                        ? `Selected Topics: ${team.subDomainTopics.join(", ")}`
-                        : "Select Topics"}
-                    </button>
-                    {dropdownOpen && (
-                      <div className="absolute z-10 w-full bg-base-100 border border-base-content mt-2 rounded-md shadow-lg p-3 max-h-60 overflow-y-auto">
-                        {subDomainTopics?.map((topic) => (
-                          <label
-                            key={topic._id}
-                            className="flex items-center space-x-2 mt-2"
-                          >
-                            <input
-                              type="checkbox"
-                              value={topic.name}
-                              onChange={handleTopicChange}
-                              checked={(team.subDomainTopics || []).includes(
-                                topic.name,
-                              )}
-                              className="checkbox"
-                            />
-                            <span>{topic.name}</span>
-                          </label>
-                        ))}
-                      </div>
-                    )}
+                    <MultiSelect
+                      options={subDomainTopics || []}
+                      selected={selectedTopics}
+                      onChange={handleTopicChange}
+                      parentContainerWidth="w-full"
+                      inputStyles="w-full border border-base-content focus:outline-none rounded-[5px] placeholder-gray-300 mt-[5px] bg-transparent text-[16px]"
+                    />
                     {isSubmitted && topic.length === 0 && (
                       <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
                         Please select at least one topic
@@ -471,13 +452,13 @@ function CreateTeam() {
                           onClick={() => handleColorSelect(gradient)}
                           className={`ml-1 xl:ml-3 cursor-pointer flex items-center justify-center ${
                             selectedColor === gradient
-                              ? "border-4 w-[60px] h-[60px] rounded-full border-base-content"
+                              ? "border-4 w-[55px] h-[55px] rounded-full border-base-content"
                               : ""
                           }`}
                         >
                           <div
                             style={{ background: gradient }}
-                            className="w-[45px] h-[45px] rounded-full"
+                            className="w-[40px] h-[40px] rounded-full"
                           ></div>
                         </div>
                       ))}
@@ -485,7 +466,7 @@ function CreateTeam() {
                   </div>
 
                   <button
-                    className="btn w-full bg-yellow text-darkgrey border-none text-[17px] hover:bg-yellow rounded-sm font-medium disabled:opacity-100 xl:mb-8 3xl:mb-0"
+                    className="btn w-full bg-yellow text-darkgrey border-none text-[16px] hover:bg-yellow rounded-sm font-medium disabled:opacity-100 xl:mb-8 3xl:mb-0"
                     type="submit"
                     disabled={mutation.isPending}
                   >

@@ -4,8 +4,8 @@ export default interface Team {
   name: string;
   teamUsername?: string;
   domain?: string;
-  subDomain?: string;
-  subDomainTopics?: string[];
+  subdomain?: string;
+  subdomainTopics?: string[];
   createdAt?: string;
   updatedAt?: string;
   _v?: number;

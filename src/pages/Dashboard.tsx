@@ -92,6 +92,8 @@ const Dashboard = () => {
     }
   }, [teamRecommendations]);
 
+  console.log("TEAMS 3: ", teams);
+
   const filteredTeams = teams.filter((team) => {
     if (teamsFilter === "AllTeams") return true;
     if (teamsFilter === "Owner") return team.owner_id === user.user_id;

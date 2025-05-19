@@ -1,9 +1,7 @@
 import Team from "../entities/Team";
 import useAuthStore from "../stores/useAuthStore";
 
-type ExtendedTeamInterface = Team & {
-  subdomainTopics?: string[];
-};
+type ExtendedTeamInterface = Team;
 
 interface TeamProps {
   team: ExtendedTeamInterface;
@@ -26,6 +24,7 @@ const TeamCard = ({
   subStyles,
 }: TeamProps) => {
   const { user } = useAuthStore.getState();
+  console.log("TEAM: ", team);
 
   return (
     <>
@@ -65,10 +64,10 @@ const TeamCard = ({
                   <div className="flex items-center mb-2 font-medium">
                     {team?.domain || domain}
 
-                    {(team?.subDomain || subDomain) && (
+                    {(team?.subdomain || subDomain) && (
                       <>
                         <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
-                        {team?.subDomain || subDomain}
+                        {team?.subdomain || subDomain}
                       </>
                     )}
 
