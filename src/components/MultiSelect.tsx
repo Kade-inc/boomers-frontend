@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import DomainTopic from "../entities/DomainTopic";
 
 interface MultiSelectProps {
@@ -7,6 +7,7 @@ interface MultiSelectProps {
   onChange: (selected: DomainTopic[]) => void;
   parentContainerWidth?: string;
   inputStyles?: string;
+  disabled?: boolean;
 }
 
 const MultiSelect: React.FC<MultiSelectProps> = ({
@@ -15,9 +16,27 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   onChange,
   parentContainerWidth,
   inputStyles,
+  disabled = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const toggleOption = (option: DomainTopic) => {
     const isSelected = selected.some((item) => item._id === option._id);
@@ -34,21 +53,22 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
 
   return (
     <div
+      ref={dropdownRef}
       className={`relative ${parentContainerWidth ? parentContainerWidth : "w-[143px]"} `}
     >
       {/* Dropdown Button with Arrow Icon */}
       <div
-        className={`${inputStyles ?? "border border-gray-300 p-1 rounded cursor-pointer text-[14px] flex justify-between items-center"}`}
-        onClick={() => setIsOpen(!isOpen)}
+        className={`${inputStyles ?? "border border-gray-300 p-1 rounded cursor-pointer text-[14px] flex justify-between items-center"} ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
       >
-        <span className="font-body">
+        <span className="font-body truncate flex-1 mr-2">
           {selected.length === 0
             ? "Topics"
             : selected.map((s) => s.name).join(", ")}
         </span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className={`h-4 w-4 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          className={`h-4 w-4 transition-transform duration-200 flex-shrink-0 ${isOpen ? "rotate-180" : ""}`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -63,7 +83,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
       </div>
 
       {/* Dropdown Panel */}
-      {isOpen && (
+      {isOpen && !disabled && (
         <div className="absolute z-10 border mt-1 p-2 w-full max-h-60 overflow-auto text-base-content bg-base-100">
           <input
             type="text"
