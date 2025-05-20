@@ -114,20 +114,22 @@ const TeamsPage = () => {
             </div>
           )}
           {!isDomainsPending && !isSubDomainsPending && !isSubTopicsPending && (
-            <div className="flex gap-2 flex-wrap items-center justify-between">
-              <div className="flex gap-2 flex-wrap items-center font-body">
+            <div className="flex flex-col sm:flex-row gap-2 flex-wrap items-start sm:items-center justify-between">
+              <div className="flex flex-col sm:flex-row gap-2 flex-wrap items-start sm:items-center font-body w-full sm:w-auto mb-2 md:mb-0">
                 <p>Filters:</p>
                 <button
-                  className="text-[14px] py-1 px-4 text-darkgrey bg-yellow sm:hidden md:w-[98px] rounded-sm"
+                  className="text-[14px] py-1 px-4 text-darkgrey bg-yellow sm:hidden md:w-[98px] rounded-sm w-full"
                   onClick={() => {
                     setShowFilters(!showFilters);
                   }}
                 >
                   {!showFilters ? "Show Filters" : "Hide Filters"}
                 </button>
-                <div className={`flex gap-2 flex-wrap`}>
+                <div
+                  className={`flex flex-col sm:flex-row gap-2 flex-wrap w-full sm:w-auto`}
+                >
                   <select
-                    className={`max-w-xs bg-transparent border p-1 border-1 rounded w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
+                    className={`bg-transparent border p-1 border-1 rounded w-full sm:w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
                     style={{ borderColor: "rgba(204, 205, 207, 1)" }}
                     value={selectedDomain}
                     onChange={(e) => setSelectedDomain(e.target.value)}
@@ -142,7 +144,7 @@ const TeamsPage = () => {
                     ))}
                   </select>
                   <select
-                    className={`max-w-xs bg-transparent border p-1 border-1 rounded w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
+                    className={`bg-transparent border p-1 border-1 rounded w-full sm:w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
                     style={{ borderColor: "rgba(204, 205, 207, 1)" }}
                     value={selectedSubDomain}
                     onChange={(e) => setSelectedSubDomain(e.target.value)}
@@ -157,17 +159,18 @@ const TeamsPage = () => {
                     ))}
                   </select>
                   <div
-                    className={`${showFilters ? "block" : "hidden"} sm:block`}
+                    className={`${showFilters ? "block" : "hidden"} sm:block w-full sm:w-[143px]`}
                   >
                     <MultiSelect
                       options={subTopics || []}
                       selected={selectedTopics}
                       onChange={setSelectedTopics}
+                      parentContainerWidth="w-full sm:w-[143px]"
                     />
                   </div>
                 </div>
                 <button
-                  className="text-white bg-[#C83A3A] rounded-sm bg-redish text-[14px] py-1 px-4"
+                  className="text-white bg-[#C83A3A] rounded-sm bg-redish text-[14px] py-1 px-4 w-full sm:w-auto"
                   onClick={() => {
                     setSelectedSubDomain("");
                     setSelectedTopics([]);
