@@ -493,7 +493,7 @@ const TeamDetailsPage = () => {
               {activeTab === "challenges" &&
                 user.user_id === team?.members[0]?._id && (
                   <button
-                    className=" text-[14px] p-1 text-black bg-[#F8B500] sm:w-[198px] sm:h-[39px]  font-body rounded"
+                    className="text-darkgrey bg-[#F8B500] px-4 py-2 font-body rounded"
                     onClick={() => navigate("/create-challenge")}
                   >
                     Create Challenge
@@ -503,7 +503,7 @@ const TeamDetailsPage = () => {
                 <>
                   {owner ? (
                     <button
-                      className="w-[98px] text-[14px] p-1 text-black bg-yellow sm:w-[143px] font-body rounded"
+                      className="text-darkgrey text-[14px] bg-yellow font-body rounded px-4 py-2"
                       onClick={() => {
                         const modal = document.getElementById(
                           "my_modal_3",
@@ -522,7 +522,7 @@ const TeamDetailsPage = () => {
                         (member: TeamMember) => member._id === user.user_id,
                       ) ? (
                     <button
-                      className="w-[98px] text-[14px] p-1 text-white bg-red-600 sm:w-[143px] font-body rounded"
+                      className="text-white text-[14px] bg-red-600 font-body rounded px-4 py-2"
                       onClick={() => {
                         const modal = document.getElementById(
                           "my_modal_5",
@@ -536,7 +536,7 @@ const TeamDetailsPage = () => {
                     </button>
                   ) : (
                     <button
-                      className={`w-[98px] text-[14px] p-1 text-black sm:w-[143px] font-body rounded flex items-center justify-center ${
+                      className={`text-[14px] text-darkgrey font-body rounded flex items-center justify-center px-4 py-2 ${
                         isClicked || userRequest
                           ? "bg-gray-400 cursor-not-allowed"
                           : "bg-yellow"
