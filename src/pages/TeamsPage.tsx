@@ -116,7 +116,24 @@ const TeamsPage = () => {
           {!isDomainsPending && !isSubDomainsPending && !isSubTopicsPending && (
             <div className="flex flex-col sm:flex-row gap-2 flex-wrap items-start sm:items-center justify-between">
               <div className="flex flex-col sm:flex-row gap-2 flex-wrap items-start sm:items-center font-body w-full sm:w-auto mb-2 md:mb-0">
-                <p>Filters:</p>
+                <div className="flex items-center gap-2">
+                  <p>Filters:</p>
+                  {(selectedDomain ||
+                    selectedSubDomain ||
+                    selectedTopics.length > 0) && (
+                    <span className="text-base-content font-semibold text-sm">
+                      (
+                      {
+                        [
+                          selectedDomain,
+                          selectedSubDomain,
+                          selectedTopics.length,
+                        ].filter(Boolean).length
+                      }
+                      )
+                    </span>
+                  )}
+                </div>
                 <button
                   className="text-[14px] py-1 px-4 text-darkgrey bg-yellow sm:hidden md:w-[98px] rounded-sm w-full"
                   onClick={() => {
