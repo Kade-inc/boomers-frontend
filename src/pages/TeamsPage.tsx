@@ -101,7 +101,7 @@ const TeamsPage = () => {
   };
 
   return (
-    <div className="h-screen text-base-content bg-base-100 px-10">
+    <div className="h-screen text-base-content bg-base-100 px-2 md:px-10">
       {!teamId ? (
         <>
           <p className="text-[20px] pt-3 mb-3 font-bold font-heading">Teams</p>
@@ -118,7 +118,7 @@ const TeamsPage = () => {
               <div className="flex gap-2 flex-wrap items-center font-body">
                 <p>Filters:</p>
                 <button
-                  className="w-[98px] text-[14px] p-1 text-white bg-yellow sm:hidden sm:w-[143px]"
+                  className="text-[14px] py-1 px-3 text-darkgrey bg-yellow sm:hidden md:w-[98px] rounded-sm"
                   onClick={() => {
                     setShowFilters(!showFilters);
                   }}
@@ -156,11 +156,15 @@ const TeamsPage = () => {
                       </option>
                     ))}
                   </select>
-                  <MultiSelect
-                    options={subTopics || []} // assuming subTopics is an array of topics
-                    selected={selectedTopics}
-                    onChange={setSelectedTopics}
-                  />
+                  <div
+                    className={`${showFilters ? "block" : "hidden"} sm:block`}
+                  >
+                    <MultiSelect
+                      options={subTopics || []}
+                      selected={selectedTopics}
+                      onChange={setSelectedTopics}
+                    />
+                  </div>
                 </div>
                 <button
                   className="text-white bg-[#C83A3A] px-6 py-[2px] rounded-sm bg-redish"
@@ -203,7 +207,7 @@ const TeamsPage = () => {
             </div>
           )}
           {!isPending && (
-            <div className="flex flex-wrap gap-12 mt-10 mb-12 lg:w-[90%] pb-12">
+            <div className="flex flex-wrap justify-center md:justify-start gap-12 mt-10 mb-12 lg:w-[90%] pb-12">
               {currentTeams.map((team: Team) => {
                 return (
                   <TeamCard
@@ -223,7 +227,6 @@ const TeamsPage = () => {
           )}
 
           <div className="pb-12">
-            {/* Pagination UI */}
             {teams && teams.totalPages > 1 && (
               <ReactPaginate
                 breakLabel="..."
