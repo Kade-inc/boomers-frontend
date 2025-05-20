@@ -118,7 +118,7 @@ const TeamsPage = () => {
               <div className="flex gap-2 flex-wrap items-center font-body">
                 <p>Filters:</p>
                 <button
-                  className="text-[14px] py-1 px-3 text-darkgrey bg-yellow sm:hidden md:w-[98px] rounded-sm"
+                  className="text-[14px] py-1 px-4 text-darkgrey bg-yellow sm:hidden md:w-[98px] rounded-sm"
                   onClick={() => {
                     setShowFilters(!showFilters);
                   }}
@@ -167,7 +167,7 @@ const TeamsPage = () => {
                   </div>
                 </div>
                 <button
-                  className="text-white bg-[#C83A3A] px-6 py-[2px] rounded-sm bg-redish"
+                  className="text-white bg-[#C83A3A] rounded-sm bg-redish text-[14px] py-1 px-4"
                   onClick={() => {
                     setSelectedSubDomain("");
                     setSelectedTopics([]);
@@ -207,7 +207,7 @@ const TeamsPage = () => {
             </div>
           )}
           {!isPending && (
-            <div className="flex flex-wrap justify-center md:justify-start gap-12 mt-10 mb-12 lg:w-[90%] pb-12">
+            <div className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-12 mt-10 mb-12 lg:w-[90%] pb-12">
               {currentTeams.map((team: Team) => {
                 return (
                   <TeamCard
@@ -215,7 +215,7 @@ const TeamsPage = () => {
                     team={team}
                     section="allTeams-section"
                     onClick={() => navigate(`/teams/${team._id}`)}
-                    styles={"h-[165px] w-[330px]"}
+                    styles={"h-[165px] w-full md:w-[330px]"}
                     subStyles="px-4"
                   />
                 );
