@@ -1,7 +1,11 @@
 import TeamCard from "../components/TeamCard";
 import { useEffect, useState } from "react";
-import { Outlet, useNavigate, useParams } from "react-router-dom";
-import ReactPaginate from "react-paginate";
+import {
+  Outlet,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import useTeams from "../hooks/useTeams";
 import Team from "../entities/Team";
 import useDomains from "../hooks/useDomains";
@@ -23,8 +27,8 @@ const TeamsPage = () => {
   const [selectedTopics, setSelectedTopics] = useState<DomainTopic[]>([]);
   const [currentTeams, setCurrentTeams] = useState<Team[]>([]);
   const [searchName, setSearchName] = useState("");
-
-  const [page, setPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = Number(searchParams.get("page")) || 1;
 
   const debouncedSearchName = useDebounce(searchName, 500);
 
@@ -34,7 +38,7 @@ const TeamsPage = () => {
     isPending,
     error,
   } = useTeams({
-    page,
+    page: currentPage,
     domain: selectedDomain,
     subdomain: selectedSubDomain,
     subdomainTopics: selectedTopics,
@@ -77,6 +81,14 @@ const TeamsPage = () => {
     }
   }, [subDomains]);
 
+  // Update URL when page changes
+  const handlePageChange = (newPage: number) => {
+    setSearchParams((prev) => {
+      prev.set("page", newPage.toString());
+      return prev;
+    });
+  };
+
   if (error || domainsError || subTopicsError || subDomainsError) {
     return (
       <div className="flex justify-center items-center h-screen bg-base-100">
@@ -92,13 +104,6 @@ const TeamsPage = () => {
       </div>
     );
   }
-
-  // ReactPaginate's onPageChange handler.
-  const handlePageClick = (event: { selected: number }) => {
-    // react-paginate is zero-indexed so add 1
-    const selectedPage = event.selected + 1;
-    setPage(selectedPage);
-  };
 
   return (
     <div className="h-screen text-base-content bg-base-100 px-2 md:px-10">
@@ -192,7 +197,7 @@ const TeamsPage = () => {
                     setSelectedSubDomain("");
                     setSelectedTopics([]);
                     setSearchName("");
-                    setPage(1);
+                    handlePageChange(1);
                   }}
                 >
                   Clear all
@@ -248,22 +253,80 @@ const TeamsPage = () => {
 
           <div className="pb-12">
             {teams && teams.totalPages > 1 && (
-              <ReactPaginate
-                breakLabel="..."
-                nextLabel="next"
-                onPageChange={handlePageClick}
-                pageRangeDisplayed={5}
-                pageCount={teams.totalPages}
-                previousLabel="previous"
-                forcePage={page - 1} // This forces the active page to sync with your state
-                containerClassName="flex justify-center items-center mt-6 font-body text-darkgrey border-base-content"
-                pageClassName="mx-1"
-                pageLinkClassName="px-3 py-1 border border-gray-300 rounded hover:bg-yellow cursor-pointer text-base-content hover:text-darkgrey"
-                activeClassName="bg-yellow text-darkgrey"
-                previousLinkClassName="px-3 py-1 border border-gray-300 rounded hover:bg-yellow cursor-pointer text-base-content hover:text-darkgrey"
-                nextLinkClassName="px-3 py-1 border border-gray-300 rounded hover:bg-yellow cursor-pointer text-base-content hover:text-darkgrey"
-                disabledLinkClassName="opacity-50 cursor-not-allowed"
-              />
+              <div className="flex justify-center mt-8">
+                <div className="join">
+                  {/* Previous button */}
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    className={`join-item btn ${currentPage === 1 ? "btn-disabled" : ""}`}
+                    disabled={currentPage === 1}
+                  >
+                    «
+                  </button>
+
+                  {/* First page */}
+                  {currentPage > 3 && (
+                    <>
+                      <button
+                        onClick={() => handlePageChange(1)}
+                        className="join-item btn"
+                      >
+                        1
+                      </button>
+                      {currentPage > 4 && (
+                        <span className="join-item btn btn-disabled">...</span>
+                      )}
+                    </>
+                  )}
+
+                  {/* Page numbers */}
+                  {Array.from({ length: 5 }, (_, i) => {
+                    const pageNumber = currentPage - 2 + i;
+                    if (pageNumber > 0 && pageNumber <= teams.totalPages) {
+                      return (
+                        <button
+                          key={pageNumber}
+                          onClick={() => handlePageChange(pageNumber)}
+                          className={`join-item btn font-body ${
+                            currentPage === pageNumber
+                              ? "bg-yellow text-darkgrey"
+                              : ""
+                          }`}
+                        >
+                          {pageNumber}
+                        </button>
+                      );
+                    }
+                    return null;
+                  })}
+
+                  {/* Last page */}
+                  {currentPage < teams.totalPages - 2 && (
+                    <>
+                      {currentPage < teams.totalPages - 3 && (
+                        <span className="join-item btn btn-disabled">...</span>
+                      )}
+                      <button
+                        onClick={() => handlePageChange(teams.totalPages)}
+                        className="join-item btn"
+                      >
+                        {teams.totalPages}
+                      </button>
+                    </>
+                  )}
+
+                  {/* Next button */}
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    className={`join-item btn ${
+                      currentPage === teams.totalPages ? "btn-disabled" : ""
+                    }`}
+                    disabled={currentPage === teams.totalPages}
+                  >
+                    »
+                  </button>
+                </div>
+              </div>
             )}
           </div>
           <div className="fixed bottom-0 right-0 m-4">
