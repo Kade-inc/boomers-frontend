@@ -330,7 +330,7 @@ function EditTeam() {
                   Want to make changes?
                 </p>
                 <p className="text-yellow font-bold text-[25px] md:text-[35px]">
-                  Edit your Team.
+                  Update your Team.
                 </p>
               </div>
               <div className="flex flex-col  xl:ml-6">
