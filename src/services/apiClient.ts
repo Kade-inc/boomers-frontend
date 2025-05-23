@@ -1111,6 +1111,32 @@ class APIClient {
       throw axiosError;
     }
   };
+
+  updateTeam = async (teamId: string, payload: any, requiresAuth = true) => {
+    try {
+      const response = await this.axiosInstance.put(
+        `${this.endpoint}/${teamId}`,
+        payload,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      return data;
+    } catch (error: any) {
+      let errorMessage =
+        "An unexpected error occurred. Please try again later.";
+
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+
+      toast.error(`${errorMessage}`);
+      throw new Error(errorMessage);
+    }
+  };
 }
 
 export default APIClient;
