@@ -25,6 +25,7 @@ const CreateTeam = lazy(() => import("../pages/CreateTeam"));
 const CreateChallenge = lazy(() => import("../pages/CreateChallenge"));
 const ChallengePage = lazy(() => import("../pages/ChallengePage"));
 const EditChallengePage = lazy(() => import("../pages/EditChallengePage"));
+const EditTeam = lazy(() => import("../pages/EditTeam"));
 const PendingRequestsPage = lazy(() => import("../pages/PendingRequestsPage"));
 const SearchResultsPage = lazy(() => import("../pages/SearchResultsPage"));
 const AllSearchResultsPage = lazy(
@@ -56,6 +57,7 @@ const router = createBrowserRouter([
       { path: "dashboard", element: withSuspense(<Dashboard />) },
       { path: "teams", element: withSuspense(<TeamsPage />) },
       { path: "teams/:teamId", element: withSuspense(<TeamDetailsPage />) },
+      { path: "teams/:teamId/edit", element: withSuspense(<EditTeam />) },
       { path: "profile/:userId?", element: withSuspense(<ProfilePage />) },
       {
         path: "recommendations",

@@ -237,10 +237,21 @@ const TeamDetailsPage = () => {
               className="card bg-gradient-to-b from-[#005E78] to-[#00989B] text-white p-0 w-full h-[200px] rounded-[3px] font-body"
               style={{ background: team?.teamColor }}
             >
-              <div className="card-body">
+              <div className="card-body px-2 md:px-6">
                 <div className="flex justify-between w-full items-center">
                   <div>
-                    <h2 className="font-bold text-[20px] mb-5">{team?.name}</h2>
+                    <div className="flex items-center gap-2 mb-5">
+                      <h2 className="font-bold text-[20px] ">{team?.name}</h2>
+                      {owner && (
+                        <button
+                          className="text-darkgrey text-[14px] bg-white font-body font-medium rounded px-4 py-1"
+                          onClick={() => navigate(`/teams/${teamId}/edit`)}
+                        >
+                          Edit
+                        </button>
+                      )}
+                    </div>
+
                     <p className="mb-3 text-[18px] font-medium">
                       Specialization
                     </p>
