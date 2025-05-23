@@ -67,7 +67,7 @@ function EditTeam() {
     domain: "",
     subdomain: "",
     subdomainTopics: [],
-    teamColor: "linear-gradient(0deg, #00989B, #005E78)",
+    teamColor: "",
   });
 
   const { data: domains, isPending: domainsPending } = useDomains();
