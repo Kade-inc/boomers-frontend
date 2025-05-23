@@ -22,9 +22,9 @@ const useUpdateTeam = (): UseMutationResult<
   return useMutation({
     mutationKey: ["update-team"],
     mutationFn: ({ teamId, payload }) => apiClient.updateTeam(teamId, payload),
-    onSuccess: ({ teamId }) => {
+    onSuccess: ({ _id }) => {
       queryClient.invalidateQueries({
-        queryKey: ["team", teamId],
+        queryKey: ["team", _id],
       });
       queryClient.invalidateQueries({
         queryKey: ["teams"],

@@ -1112,7 +1112,11 @@ class APIClient {
     }
   };
 
-  updateTeam = async (teamId: string, payload: any, requiresAuth = true) => {
+  updateTeam = async (
+    teamId: string,
+    payload: Partial<Team>,
+    requiresAuth = true,
+  ): Promise<Team> => {
     try {
       const response = await this.axiosInstance.put(
         `${this.endpoint}/${teamId}`,
