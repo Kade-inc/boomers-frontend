@@ -16,6 +16,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import axios, { AxiosError } from "axios";
 import MultiSelect from "../components/MultiSelect";
+import useAuthStore from "../stores/useAuthStore";
 
 interface FormInputs {
   name: string;
@@ -47,6 +48,19 @@ const schema = z.object({
 function EditTeam() {
   const { teamId } = useParams();
   const { data: teamData, isPending: isTeamLoading } = useTeam(teamId || "");
+  const { userId } = useAuthStore();
+  const navigate = useNavigate();
+
+  // Add authorization check
+  useEffect(() => {
+    if (teamData && userId) {
+      if (teamData.owner_id !== userId) {
+        toast.error("You don't have permission to edit this team");
+        navigate("/dashboard");
+      }
+    }
+  }, [teamData, userId, navigate]);
+
   const [team, setTeam] = useState<Team>({
     name: "",
     teamUsername: "",
@@ -78,7 +92,7 @@ function EditTeam() {
     "linear-gradient(0deg, #00989B, #005E78)",
   );
   const [isTeamSuccess, setIsTeamSuccess] = useState<boolean>(false);
-  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -145,7 +159,7 @@ function EditTeam() {
   const onSubmit = useCallback(async () => {
     if (!teamId) return;
 
-    await mutation.mutateAsync(
+    const response = await mutation.mutateAsync(
       {
         teamId,
         payload: {
@@ -175,6 +189,8 @@ function EditTeam() {
         },
       },
     );
+    // Update team state with the response data
+    setTeam(response);
     setIsTeamSuccess(true);
   }, [
     mutation,
