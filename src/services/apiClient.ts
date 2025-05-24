@@ -1141,6 +1141,48 @@ class APIClient {
       throw new Error(errorMessage);
     }
   };
+
+  getSolution = async (requiresAuth = true) => {
+    try {
+      const response = await this.axiosInstance.get(this.endpoint, {
+        headers: {
+          requiresAuth,
+        },
+      });
+      return response.data.data || response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching solution:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  getAllChallengeSolutions = async (
+    challengeId: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.get(
+        `${this.endpoint}/${challengeId}/solutions`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data.data || response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching challenge solutions:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
 }
 
 export default APIClient;
