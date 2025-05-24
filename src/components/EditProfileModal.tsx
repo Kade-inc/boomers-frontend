@@ -230,31 +230,27 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
   const [selectedTopics, setSelectedTopics] = useState<DomainTopic[]>([]);
 
   useEffect(() => {
-    // selectedTopics is DomainTopic[]
+    if (!fetchedDomainTopics) return;
+
+    // Initialize selected topics from user's interests
+    const initialTopics = fetchedDomainTopics.filter((dt) =>
+      user.interests?.domainTopics?.some((userTopic) =>
+        typeof userTopic === "string"
+          ? userTopic === dt.name
+          : userTopic.name === dt.name,
+      ),
+    );
+
+    setSelectedTopics(initialTopics);
+    setValue("interests.domainTopics", initialTopics, { shouldValidate: true });
+  }, [fetchedDomainTopics, user.interests?.domainTopics, setValue]);
+
+  useEffect(() => {
+    // Update form value when selected topics change
     setValue("interests.domainTopics", selectedTopics, {
       shouldValidate: true,
     });
   }, [selectedTopics, setValue]);
-
-  useEffect(() => {
-    if (!fetchedDomainTopics) return;
-
-    // the strings the store gave us:
-    const storedNames = (user.interests?.domainTopics ?? []).map(
-      (t: DomainTopic) => t.name,
-    );
-
-    // find the matching DomainTopic objects:
-    const initial = fetchedDomainTopics.filter((dt: DomainTopic) =>
-      storedNames.includes(dt.name),
-    );
-
-    // tick the checkboxes...
-    setSelectedTopics(initial);
-
-    // ...and sync into react-hook-form
-    setValue("interests.domainTopics", initial, { shouldValidate: true });
-  }, [fetchedDomainTopics]);
 
   return (
     <Modal
