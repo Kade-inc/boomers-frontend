@@ -73,7 +73,7 @@ const router = createBrowserRouter([
         element: withSuspense(<ChallengePage />),
       },
       {
-        path: "challenge/:challengeId/solution",
+        path: "challenge/:challengeId/solution/:solutionId",
         element: withSuspense(<ChallengeSolutionPage />),
       },
       {

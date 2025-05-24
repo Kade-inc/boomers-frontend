@@ -7,7 +7,6 @@ type ModalTriggerProps = {
   isOpen: boolean;
   onClose: () => void;
   challengeId: string;
-  // modalData: Team;
 };
 
 const SolutionDisclaimer = ({
@@ -22,9 +21,9 @@ const SolutionDisclaimer = ({
     postSolution(
       { challengeId },
       {
-        onSuccess: () => {
+        onSuccess: (response) => {
           onClose();
-          navigate(`/challenge/${challengeId}/solution`);
+          navigate(`/challenge/${challengeId}/solution/${response._id}`);
         },
         onError: (error) => {
           toast.error(error.message);

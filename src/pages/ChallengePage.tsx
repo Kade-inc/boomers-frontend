@@ -184,7 +184,8 @@ function ChallengePage() {
 
   const handleBeginChallenge = () => {
     if (hasUserSolution) {
-      navigate(`/challenge/${challengeId}/solution`);
+      console.log(userSolution);
+      navigate(`/challenge/${challengeId}/solution/${userSolution?._id}`);
     } else {
       setShowSolutionDisclaimer(true);
     }

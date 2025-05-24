@@ -1142,13 +1142,20 @@ class APIClient {
     }
   };
 
-  getSolution = async (requiresAuth = true) => {
+  getSolution = async (
+    challengeId: string,
+    solutionId: string,
+    requiresAuth = true,
+  ) => {
     try {
-      const response = await this.axiosInstance.get(this.endpoint, {
-        headers: {
-          requiresAuth,
+      const response = await this.axiosInstance.get(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}`,
+        {
+          headers: {
+            requiresAuth,
+          },
         },
-      });
+      );
       return response.data.data || response.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
