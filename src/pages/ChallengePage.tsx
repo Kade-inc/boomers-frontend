@@ -27,6 +27,7 @@ import { formatDistanceToNow } from "date-fns";
 import useDeleteComment from "../hooks/Challenges/useDeleteComment";
 import toast, { Toaster } from "react-hot-toast";
 import usePostChallengeComment from "../hooks/Challenges/usePostChallengeComment";
+import SolutionDisclaimer from "../components/Modals/SolutionDisclaimer";
 
 function ChallengePage() {
   const [showStatsModal, setShowStatsModal] = useState(false);
@@ -34,6 +35,7 @@ function ChallengePage() {
     useState(false);
   const [showCommentsModal, setShowCommentsModal] = useState(false);
   const [challengeDeleted, setchallengeDeleted] = useState(false);
+  const [showSolutionDisclaimer, setShowSolutionDisclaimer] = useState(false);
   const [timeLeft, setTimeLeft] = useState({
     years: 0,
     months: 0,
@@ -479,7 +481,10 @@ function ChallengePage() {
                   </button>
                 )}
                 {isTeamMember() && !isDue && (
-                  <button className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 md:w-[80%] lg:w-[85%] absolute bottom-6 left-8 ">
+                  <button
+                    className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 md:w-[80%] lg:w-[85%] absolute bottom-6 left-8 "
+                    onClick={() => setShowSolutionDisclaimer(true)}
+                  >
                     Begin challenge
                   </button>
                 )}
@@ -487,7 +492,10 @@ function ChallengePage() {
             </div>
           </div>
           {isTeamMember() && !isDue && (
-            <button className="py-4 bg-yellow rounded-none font-body text-darkgrey w-full fixed bottom-0 z-30 font-medium md:hidden">
+            <button
+              className="py-4 bg-yellow rounded-none font-body text-darkgrey w-full fixed bottom-0 z-30 font-medium md:hidden"
+              onClick={() => setShowSolutionDisclaimer(true)}
+            >
               Begin Challenge
             </button>
           )}
@@ -712,6 +720,12 @@ function ChallengePage() {
           teamId={team?._id}
           challengeId={challenge?._id || ""}
           setChallengeDeleted={setchallengeDeleted}
+        />
+      )}
+      {showSolutionDisclaimer && (
+        <SolutionDisclaimer
+          isOpen={showSolutionDisclaimer}
+          onClose={() => setShowSolutionDisclaimer(false)}
         />
       )}
     </>
