@@ -5,6 +5,7 @@ import { persist, PersistOptions } from "zustand/middleware";
 import { jwtDecode } from "jwt-decode";
 import User from "../entities/User";
 import Team from "../entities/Team";
+import UserProfile from "../entities/UserProfile";
 
 interface AuthStore {
   isAuthenticated: boolean;
@@ -15,6 +16,7 @@ interface AuthStore {
   user: User;
   userTeams: Team[];
   setUser: (user: User) => void;
+  setUserTeams: (teams: Team[]) => void;
   checkAuth: () => void;
   token: string | null;
 }
@@ -28,7 +30,7 @@ const useAuthStore = create<AuthStore>(
   (persist as MyPersist)(
     (set) => ({
       isAuthenticated: !!Cookies.get("token"), // Initialize from cookie
-      user: {},
+      user: { profile: {} as UserProfile },
       userId: "",
       token: null,
       userTeams: [],
@@ -47,7 +49,7 @@ const useAuthStore = create<AuthStore>(
         Cookies.remove("refreshToken");
         set({
           isAuthenticated: false,
-          user: {},
+          user: { profile: {} as UserProfile },
           userId: "",
           token: null,
           userTeams: [],
@@ -55,14 +57,24 @@ const useAuthStore = create<AuthStore>(
       },
       setUserId: (userId: string) => set(() => ({ userId })),
       setUser: (user: User) => set(() => ({ user })),
-      clearToken: () => set({ user: {}, userId: "", isAuthenticated: false }), // Clear all user info
+      clearToken: () =>
+        set({
+          user: { profile: {} as UserProfile },
+          userId: "",
+          isAuthenticated: false,
+        }), // Clear all user info
       checkAuth: () => {
         const token = Cookies.get("token");
         if (token) {
           const decodedToken = jwtDecode(token);
           const currentTime = Date.now() / 1000;
           if (decodedToken.exp && decodedToken.exp < currentTime) {
-            set({ token: null, isAuthenticated: false, user: {}, userId: "" });
+            set({
+              token: null,
+              isAuthenticated: false,
+              user: { profile: {} as UserProfile },
+              userId: "",
+            });
             Cookies.remove("token");
             Cookies.remove("refreshToken");
           }
