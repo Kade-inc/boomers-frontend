@@ -14,6 +14,7 @@ import Domain from "../entities/Domain";
 import MultiSelect from "./MultiSelect";
 import DomainTopic from "../entities/DomainTopic";
 import useDomainTopics from "../hooks/useDomainTopics";
+import SubDomain from "../entities/SubDomain";
 
 type ModalTriggerProps = {
   isOpen: boolean;
@@ -239,7 +240,9 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
     if (!fetchedDomainTopics) return;
 
     // the strings the store gave us:
-    const storedNames = user.interests?.domainTopics ?? [];
+    const storedNames = (user.interests?.domainTopics ?? []).map(
+      (t: DomainTopic) => t.name,
+    );
 
     // find the matching DomainTopic objects:
     const initial = fetchedDomainTopics.filter((dt: DomainTopic) =>
@@ -250,11 +253,7 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
     setSelectedTopics(initial);
 
     // ...and sync into react-hook-form
-    setValue(
-      "interests.domainTopics",
-      initial.map((t) => t.name),
-      { shouldValidate: true },
-    );
+    setValue("interests.domainTopics", initial, { shouldValidate: true });
   }, [fetchedDomainTopics]);
 
   return (
@@ -294,7 +293,8 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                     <img
                       src={
                         (previewImage && URL.createObjectURL(previewImage)) ||
-                        user.profile_picture
+                        user.profile_picture ||
+                        undefined
                       }
                       alt="Profile picture"
                       className="rounded-full w-[80px] h-[80px] object-cover"
@@ -400,7 +400,8 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                               src={
                                 (previewImage &&
                                   URL.createObjectURL(previewImage)) ||
-                                user.profile_picture
+                                user.profile_picture ||
+                                undefined
                               }
                               alt="Profile picture"
                               className="rounded-full w-[90px] h-[90px] object-cover"
@@ -596,7 +597,7 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                             : "Select a domain"}
                         </option>
 
-                        {domains?.map((d) => (
+                        {domains?.map((d: Domain) => (
                           <option key={d._id} value={d.name}>
                             {d.name}
                           </option>
@@ -637,7 +638,7 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                               ? "Loading…"
                               : "Select sub‑domain"}
                         </option>
-                        {subDomains?.map((sd) => (
+                        {subDomains?.map((sd: SubDomain) => (
                           <option key={sd._id} value={sd.name}>
                             {sd.name}
                           </option>
