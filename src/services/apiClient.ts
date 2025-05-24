@@ -1215,6 +1215,63 @@ class APIClient {
       throw error; // Throw the error to allow React Query to handle it
     }
   };
+
+  addSolutionStep = async (
+    challengeId: string,
+    solutionId: string,
+    description: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.post(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/steps`,
+        { description },
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: any) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        `Error adding solution step: ${
+          axiosError.response?.data ?? axiosError.message
+        }`,
+      );
+      throw error; // Throw the error to allow React Query to handle it
+    }
+  };
+
+  updateSolutionStep = async (
+    challengeId: string,
+    solutionId: string,
+    stepId: string,
+    description: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.patch(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/steps/${stepId}`,
+        { description },
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: any) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        `Error updating solution step: ${
+          axiosError.response?.data ?? axiosError.message
+        }`,
+      );
+      throw error; // Throw the error to allow React Query to handle it
+    }
+  };
 }
 
 export default APIClient;
