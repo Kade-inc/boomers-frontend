@@ -84,11 +84,15 @@ function ChallengePage() {
     error: solutionsError,
   } = useGetAllChallengeSolutions(challengeId || "");
 
-  // Check if user already has a solution
-  const hasUserSolution = useMemo(() => {
-    if (!solutions || !user.user_id) return false;
-    return solutions.some((solution) => solution.user_id === user.user_id);
+  // Check if user already has a solution and get it
+  const userSolution = useMemo(() => {
+    if (!solutions || !user.user_id) return null;
+    return solutions.find(solution => solution.user_id === user.user_id);
   }, [solutions, user.user_id]);
+
+  const hasUserSolution = useMemo(() => {
+    return !!userSolution;
+  }, [userSolution]);
 
   const { mutate: postComment, isPending: postCommentIsPending } =
     usePostChallengeComment();
@@ -530,7 +534,7 @@ function ChallengePage() {
                     className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 md:w-[80%] lg:w-[85%] absolute bottom-6 left-8 "
                     onClick={() => handleBeginChallenge()}
                   >
-                    Begin challenge
+                    {userSolution?.status === 1 ? "Continue" : "Begin challenge"}
                   </button>
                 )}
               </div>
@@ -541,7 +545,7 @@ function ChallengePage() {
               className="py-4 bg-yellow rounded-none font-body text-darkgrey w-full fixed bottom-0 z-30 font-medium md:hidden"
               onClick={() => handleBeginChallenge()}
             >
-              Begin Challenge
+              {userSolution?.status === 1 ? "Continue" : "Begin Challenge"}
             </button>
           )}
 
