@@ -87,7 +87,7 @@ function ChallengePage() {
   // Check if user already has a solution and get it
   const userSolution = useMemo(() => {
     if (!solutions || !user.user_id) return null;
-    return solutions.find(solution => solution.user_id === user.user_id);
+    return solutions.find((solution) => solution.user_id === user.user_id);
   }, [solutions, user.user_id]);
 
   const hasUserSolution = useMemo(() => {
@@ -184,7 +184,7 @@ function ChallengePage() {
 
   const handleBeginChallenge = () => {
     if (hasUserSolution) {
-      console.log("User already has a solution");
+      navigate(`/challenge/${challengeId}/solution`);
     } else {
       setShowSolutionDisclaimer(true);
     }
@@ -534,7 +534,9 @@ function ChallengePage() {
                     className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 md:w-[80%] lg:w-[85%] absolute bottom-6 left-8 "
                     onClick={() => handleBeginChallenge()}
                   >
-                    {userSolution?.status === 1 ? "Continue" : "Begin challenge"}
+                    {userSolution?.status === 1
+                      ? "Continue"
+                      : "Begin challenge"}
                   </button>
                 )}
               </div>
@@ -775,6 +777,7 @@ function ChallengePage() {
         <SolutionDisclaimer
           isOpen={showSolutionDisclaimer}
           onClose={() => setShowSolutionDisclaimer(false)}
+          challengeId={challenge?._id || ""}
         />
       )}
     </>

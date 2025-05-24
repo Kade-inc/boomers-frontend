@@ -1183,6 +1183,31 @@ class APIClient {
       throw axiosError;
     }
   };
+
+  postChallengeSolution = async (challengeId: string, requiresAuth = true) => {
+    try {
+      const response = await this.axiosInstance.post(
+        `${this.endpoint}/${challengeId}/solutions`,
+        {},
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      toast.success("Starting solution...");
+      return data;
+    } catch (error: any) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        `Error beginning challenge solution: ${
+          axiosError.response?.data ?? axiosError.message
+        }`,
+      );
+      throw error; // Throw the error to allow React Query to handle it
+    }
+  };
 }
 
 export default APIClient;

@@ -1,8 +1,8 @@
+import Challenge from "./Challenge";
 import Comment from "./Comment";
 
 export interface ChallengeSolution {
   _id: string;
-  challenge_id: string;
   user_id: string;
   status: number;
   steps: Step[];
@@ -17,6 +17,8 @@ export interface ChallengeSolution {
   createdAt: string;
   updatedAt: string;
   __v: number;
+  challenge_id?: string;
+  challenge?: Challenge;
 }
 
 interface Step {

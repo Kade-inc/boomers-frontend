@@ -1,12 +1,38 @@
 import Modal from "react-modal";
+import usePostChallengeSolution from "../../hooks/ChallengeSolution/usePostChallengeSolution";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 type ModalTriggerProps = {
   isOpen: boolean;
   onClose: () => void;
+  challengeId: string;
   // modalData: Team;
 };
 
-const SolutionDisclaimer = ({ isOpen, onClose }: ModalTriggerProps) => {
+const SolutionDisclaimer = ({
+  isOpen,
+  onClose,
+  challengeId,
+}: ModalTriggerProps) => {
+  const { mutate: postSolution, isPending: postSolutionIsPending } =
+    usePostChallengeSolution();
+  const navigate = useNavigate();
+  const handlePostSolution = () => {
+    postSolution(
+      { challengeId },
+      {
+        onSuccess: () => {
+          onClose();
+          navigate(`/challenge/${challengeId}/solution`);
+        },
+        onError: (error) => {
+          toast.error(error.message);
+        },
+      },
+    );
+  };
+
   return (
     <>
       <Modal
@@ -45,8 +71,15 @@ const SolutionDisclaimer = ({ isOpen, onClose }: ModalTriggerProps) => {
               review the steps.
             </li>
           </ul>
-          <button className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-md mt-4 w-[80%] font-medium text-[16px]">
-            Proceed
+          <button
+            className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-md mt-4 w-[80%] font-medium text-[16px]"
+            onClick={handlePostSolution}
+          >
+            {postSolutionIsPending ? (
+              <span className="loading loading-spinner loading-xs"></span>
+            ) : (
+              "Proceed"
+            )}
           </button>
         </div>
       </Modal>
