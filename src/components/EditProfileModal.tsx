@@ -14,6 +14,7 @@ import Domain from "../entities/Domain";
 import MultiSelect from "./MultiSelect";
 import DomainTopic from "../entities/DomainTopic";
 import useDomainTopics from "../hooks/useDomainTopics";
+import SubDomain from "../entities/SubDomain";
 
 type ModalTriggerProps = {
   isOpen: boolean;
@@ -229,33 +230,27 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
   const [selectedTopics, setSelectedTopics] = useState<DomainTopic[]>([]);
 
   useEffect(() => {
-    // selectedTopics is DomainTopic[]
+    if (!fetchedDomainTopics) return;
+
+    // Initialize selected topics from user's interests
+    const initialTopics = fetchedDomainTopics.filter((dt) =>
+      user.interests?.domainTopics?.some((userTopic) =>
+        typeof userTopic === "string"
+          ? userTopic === dt.name
+          : userTopic.name === dt.name,
+      ),
+    );
+
+    setSelectedTopics(initialTopics);
+    setValue("interests.domainTopics", initialTopics, { shouldValidate: true });
+  }, [fetchedDomainTopics, user.interests?.domainTopics, setValue]);
+
+  useEffect(() => {
+    // Update form value when selected topics change
     setValue("interests.domainTopics", selectedTopics, {
       shouldValidate: true,
     });
   }, [selectedTopics, setValue]);
-
-  useEffect(() => {
-    if (!fetchedDomainTopics) return;
-
-    // the strings the store gave us:
-    const storedNames = user.interests?.domainTopics ?? [];
-
-    // find the matching DomainTopic objects:
-    const initial = fetchedDomainTopics.filter((dt: DomainTopic) =>
-      storedNames.includes(dt.name),
-    );
-
-    // tick the checkboxes...
-    setSelectedTopics(initial);
-
-    // ...and sync into react-hook-form
-    setValue(
-      "interests.domainTopics",
-      initial.map((t) => t.name),
-      { shouldValidate: true },
-    );
-  }, [fetchedDomainTopics]);
 
   return (
     <Modal
@@ -294,7 +289,8 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                     <img
                       src={
                         (previewImage && URL.createObjectURL(previewImage)) ||
-                        user.profile_picture
+                        user.profile_picture ||
+                        undefined
                       }
                       alt="Profile picture"
                       className="rounded-full w-[80px] h-[80px] object-cover"
@@ -400,7 +396,8 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                               src={
                                 (previewImage &&
                                   URL.createObjectURL(previewImage)) ||
-                                user.profile_picture
+                                user.profile_picture ||
+                                undefined
                               }
                               alt="Profile picture"
                               className="rounded-full w-[90px] h-[90px] object-cover"
@@ -596,7 +593,7 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                             : "Select a domain"}
                         </option>
 
-                        {domains?.map((d) => (
+                        {domains?.map((d: Domain) => (
                           <option key={d._id} value={d.name}>
                             {d.name}
                           </option>
@@ -637,7 +634,7 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                               ? "Loading…"
                               : "Select sub‑domain"}
                         </option>
-                        {subDomains?.map((sd) => (
+                        {subDomains?.map((sd: SubDomain) => (
                           <option key={sd._id} value={sd.name}>
                             {sd.name}
                           </option>
