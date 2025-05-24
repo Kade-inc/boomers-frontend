@@ -9,6 +9,7 @@ import useAuthStore from "../stores/useAuthStore";
 import Team from "../entities/Team";
 import { ExtendedChallengeInterface } from "../entities/Challenge";
 import JoinRequest from "../entities/JoinRequest";
+import { ChallengeSolution } from "../entities/ChallengeSolution";
 
 interface ErrorResponse {
   message: string;
@@ -1139,6 +1140,192 @@ class APIClient {
 
       toast.error(`${errorMessage}`);
       throw new Error(errorMessage);
+    }
+  };
+
+  getSolution = async (
+    challengeId: string,
+    solutionId: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.get(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data.data || response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching solution:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  getAllChallengeSolutions = async (
+    challengeId: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.get(
+        `${this.endpoint}/${challengeId}/solutions`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data.data || response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching challenge solutions:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  postChallengeSolution = async (challengeId: string, requiresAuth = true) => {
+    try {
+      const response = await this.axiosInstance.post(
+        `${this.endpoint}/${challengeId}/solutions`,
+        {},
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      toast.success("Starting solution...");
+      return data;
+    } catch (error: any) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        `Error beginning challenge solution: ${
+          axiosError.response?.data ?? axiosError.message
+        }`,
+      );
+      throw error; // Throw the error to allow React Query to handle it
+    }
+  };
+
+  addSolutionStep = async (
+    challengeId: string,
+    solutionId: string,
+    description: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.post(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/steps`,
+        { description },
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: any) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        `Error adding solution step: ${
+          axiosError.response?.data ?? axiosError.message
+        }`,
+      );
+      throw error; // Throw the error to allow React Query to handle it
+    }
+  };
+
+  updateSolutionStep = async (
+    challengeId: string,
+    solutionId: string,
+    stepId: string,
+    description: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.patch(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/steps/${stepId}`,
+        { description },
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: any) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        `Error updating solution step: ${
+          axiosError.response?.data ?? axiosError.message
+        }`,
+      );
+      throw error; // Throw the error to allow React Query to handle it
+    }
+  };
+
+  deleteSolutionStep = async (
+    challengeId: string,
+    solutionId: string,
+    stepId: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.delete(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/steps/${stepId}`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      toast.success("Step deleted successfully");
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error delete challenge step:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
+  updateSolution = async (
+    challengeId: string,
+    solutionId: string,
+    payload: Partial<ChallengeSolution>,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.patch(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}`,
+        payload,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: any) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        `Error updating solution: ${
+          axiosError.response?.data ?? axiosError.message
+        }`,
+      );
+      throw error; // Throw the error to allow React Query to handle it
     }
   };
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useChallenge from "../hooks/Challenges/useChallenge";
 import useTeam from "../hooks/useTeam";
@@ -27,6 +27,8 @@ import { formatDistanceToNow } from "date-fns";
 import useDeleteComment from "../hooks/Challenges/useDeleteComment";
 import toast, { Toaster } from "react-hot-toast";
 import usePostChallengeComment from "../hooks/Challenges/usePostChallengeComment";
+import SolutionDisclaimer from "../components/Modals/SolutionDisclaimer";
+import useGetAllChallengeSolutions from "../hooks/ChallengeSolution/useGetAllChallengeSolutions";
 
 function ChallengePage() {
   const [showStatsModal, setShowStatsModal] = useState(false);
@@ -34,6 +36,7 @@ function ChallengePage() {
     useState(false);
   const [showCommentsModal, setShowCommentsModal] = useState(false);
   const [challengeDeleted, setchallengeDeleted] = useState(false);
+  const [showSolutionDisclaimer, setShowSolutionDisclaimer] = useState(false);
   const [timeLeft, setTimeLeft] = useState({
     years: 0,
     months: 0,
@@ -59,15 +62,37 @@ function ChallengePage() {
     setActiveTooltip((prev) => (prev === id ? null : id)); // Toggle between opening and closing
   };
 
-  const { data: challenge, isPending: challengePending } = useChallenge(
-    challengeId || "",
-  );
-  const { data: team, isPending: teamPending } = useTeam(
-    challenge?.team_id || "",
-  );
-  const { data: comments, isPending: commentsPending } = useChallengeComments(
-    challengeId || "",
-  );
+  const {
+    data: challenge,
+    isPending: challengePending,
+    error: challengeError,
+  } = useChallenge(challengeId || "");
+  const {
+    data: team,
+    isPending: teamPending,
+    error: teamError,
+  } = useTeam(challenge?.team_id || "");
+  const {
+    data: comments,
+    isPending: commentsPending,
+    error: commentsError,
+  } = useChallengeComments(challengeId || "");
+
+  const {
+    data: solutions,
+    isPending: solutionsPending,
+    error: solutionsError,
+  } = useGetAllChallengeSolutions(challengeId || "");
+
+  // Check if user already has a solution and get it
+  const userSolution = useMemo(() => {
+    if (!solutions || !user.user_id) return null;
+    return solutions.find((solution) => solution.user_id === user.user_id);
+  }, [solutions, user.user_id]);
+
+  const hasUserSolution = useMemo(() => {
+    return !!userSolution;
+  }, [userSolution]);
 
   const { mutate: postComment, isPending: postCommentIsPending } =
     usePostChallengeComment();
@@ -157,13 +182,40 @@ function ChallengePage() {
     return () => clearInterval(timer); // Cleanup interval on unmount
   }, [challenge?.due_date]);
 
-  if (challengePending || commentsPending || (challenge && teamPending)) {
+  const handleBeginChallenge = () => {
+    if (hasUserSolution) {
+      console.log(userSolution);
+      navigate(`/challenge/${challengeId}/solution/${userSolution?._id}`);
+    } else {
+      setShowSolutionDisclaimer(true);
+    }
+  };
+  if (
+    challengePending ||
+    commentsPending ||
+    (challenge && teamPending) ||
+    solutionsPending
+  ) {
     return (
       <>
         <div className="h-screen flex justify-center items-center bg-base-100">
           <span className="loading loading-dots loading-lg"></span>
         </div>
       </>
+    );
+  }
+
+  if (challengeError || teamError || commentsError || solutionsError) {
+    return (
+      <div className="h-screen flex flex-col justify-center items-center text-base-content font-body font-medium text-[18px] space-y-2 bg-base-100">
+        <p>Error loading challenge data</p>
+        <button
+          className="btn bg-yellow text-darkgrey hover:bg-yellow"
+          onClick={() => navigate("/")}
+        >
+          Home
+        </button>
+      </div>
     );
   }
 
@@ -479,16 +531,24 @@ function ChallengePage() {
                   </button>
                 )}
                 {isTeamMember() && !isDue && (
-                  <button className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 md:w-[80%] lg:w-[85%] absolute bottom-6 left-8 ">
-                    Begin challenge
+                  <button
+                    className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 md:w-[80%] lg:w-[85%] absolute bottom-6 left-8 "
+                    onClick={() => handleBeginChallenge()}
+                  >
+                    {userSolution?.status === 1
+                      ? "Continue"
+                      : "Begin challenge"}
                   </button>
                 )}
               </div>
             </div>
           </div>
           {isTeamMember() && !isDue && (
-            <button className="py-4 bg-yellow rounded-none font-body text-darkgrey w-full fixed bottom-0 z-30 font-medium md:hidden">
-              Begin Challenge
+            <button
+              className="py-4 bg-yellow rounded-none font-body text-darkgrey w-full fixed bottom-0 z-30 font-medium md:hidden"
+              onClick={() => handleBeginChallenge()}
+            >
+              {userSolution?.status === 1 ? "Continue" : "Begin Challenge"}
             </button>
           )}
 
@@ -712,6 +772,13 @@ function ChallengePage() {
           teamId={team?._id}
           challengeId={challenge?._id || ""}
           setChallengeDeleted={setchallengeDeleted}
+        />
+      )}
+      {showSolutionDisclaimer && (
+        <SolutionDisclaimer
+          isOpen={showSolutionDisclaimer}
+          onClose={() => setShowSolutionDisclaimer(false)}
+          challengeId={challenge?._id || ""}
         />
       )}
     </>

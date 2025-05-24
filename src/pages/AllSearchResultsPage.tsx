@@ -158,28 +158,28 @@ export default function AllResultsAllPage() {
                       </div>
                       <div className="text-sm text-white/80 mt-1 flex items-center flex-wrap gap-1">
                         {team.domain && <span>{team.domain}</span>}
-                        {team.subDomain && <span>• {team.subDomain}</span>}
-                        {team.subDomainTopics &&
-                          team.subDomainTopics.length > 0 && (
+                        {team.subdomain && <span>• {team.subdomain}</span>}
+                        {team.subdomainTopics &&
+                          team.subdomainTopics.length > 0 && (
                             <>
                               <div className="bg-white rounded-full w-1 h-1"></div>
                               <div
                                 className={`${
-                                  team.subDomainTopics.length > 3
+                                  team.subdomainTopics.length > 3
                                     ? "tooltip tooltip-top tooltip-warning"
                                     : ""
                                 }`}
-                                data-tip={team.subDomainTopics
+                                data-tip={team.subdomainTopics
                                   .slice(3)
                                   .join(", ")}
                               >
-                                {team.subDomainTopics.length > 3
-                                  ? `${team.subDomainTopics
+                                {team.subdomainTopics.length > 3
+                                  ? `${team.subdomainTopics
                                       .slice(0, 3)
                                       .join(", ")} +${
-                                      team.subDomainTopics.length - 3
+                                      team.subdomainTopics.length - 3
                                     }`
-                                  : team.subDomainTopics.join(", ")}
+                                  : team.subdomainTopics.join(", ")}
                               </div>
                             </>
                           )}

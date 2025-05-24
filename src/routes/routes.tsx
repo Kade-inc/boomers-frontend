@@ -31,6 +31,9 @@ const SearchResultsPage = lazy(() => import("../pages/SearchResultsPage"));
 const AllSearchResultsPage = lazy(
   () => import("../pages/AllSearchResultsPage"),
 );
+const ChallengeSolutionPage = lazy(
+  () => import("../pages/ChallengeSolutionPage"),
+);
 
 const loadingDots = (
   <div className="flex justify-center items-center h-screen bg-base-100">
@@ -68,6 +71,10 @@ const router = createBrowserRouter([
       {
         path: "challenge/:challengeId",
         element: withSuspense(<ChallengePage />),
+      },
+      {
+        path: "challenge/:challengeId/solution/:solutionId",
+        element: withSuspense(<ChallengeSolutionPage />),
       },
       {
         path: "edit-challenge/:challengeId",
