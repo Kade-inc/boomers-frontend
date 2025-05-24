@@ -9,6 +9,7 @@ import useAuthStore from "../stores/useAuthStore";
 import Team from "../entities/Team";
 import { ExtendedChallengeInterface } from "../entities/Challenge";
 import JoinRequest from "../entities/JoinRequest";
+import { ChallengeSolution } from "../entities/ChallengeSolution";
 
 interface ErrorResponse {
   message: string;
@@ -1266,6 +1267,61 @@ class APIClient {
       const axiosError = error as AxiosError;
       toast.error(
         `Error updating solution step: ${
+          axiosError.response?.data ?? axiosError.message
+        }`,
+      );
+      throw error; // Throw the error to allow React Query to handle it
+    }
+  };
+
+  deleteSolutionStep = async (
+    challengeId: string,
+    solutionId: string,
+    stepId: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.delete(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/steps/${stepId}`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      toast.success("Step deleted successfully");
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error delete challenge step:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
+  updateSolution = async (
+    challengeId: string,
+    solutionId: string,
+    payload: Partial<ChallengeSolution>,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.patch(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}`,
+        payload,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: any) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        `Error updating solution: ${
           axiosError.response?.data ?? axiosError.message
         }`,
       );
