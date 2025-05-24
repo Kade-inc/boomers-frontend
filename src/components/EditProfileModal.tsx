@@ -176,6 +176,15 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
     setSelectedDomainId(foundDomain?._id);
   }, [selectedDomain, domains]);
 
+  // Add effect to update subdomain when subdomains are loaded
+  useEffect(() => {
+    if (subDomains && user.interests?.subdomain?.[0]) {
+      setValue("interests.subdomain", [user.interests.subdomain[0]], {
+        shouldValidate: true,
+      });
+    }
+  }, [subDomains, setValue, user.interests?.subdomain]);
+
   const onSubmit = async (updatedProfile: FormData) => {
     const newForm = new FormData();
     Object.entries(updatedProfile).forEach(([key, value]) => {
