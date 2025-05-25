@@ -191,10 +191,7 @@ function ChallengePage() {
     }
   };
   if (
-    challengePending ||
-    commentsPending ||
-    (challenge && teamPending) ||
-    solutionsPending
+    challengePending || teamPending
   ) {
     return (
       <>
@@ -205,7 +202,7 @@ function ChallengePage() {
     );
   }
 
-  if (challengeError || teamError || commentsError || solutionsError) {
+  if (challengeError && teamError) {
     return (
       <div className="h-screen flex flex-col justify-center items-center text-base-content font-body font-medium text-[18px] space-y-2 bg-base-100">
         <p>Error loading challenge data</p>
@@ -485,6 +482,24 @@ function ChallengePage() {
                       />
                     </div>
                   )}
+                  {activeTab === "solutions" && (
+                    <div className="text-darkgrey">
+                      {solutionsPending ? (
+                        <div className="flex justify-center items-center h-full">
+                          <span className="loading loading-dots loading-lg"></span>
+                        </div>
+                      ) : solutions && solutions.length > 0 ? (
+                        <div>
+                          {/* Solutions content */}
+                          <p>Solutions will be displayed here</p>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center h-full">
+                          <p>No solutions yet</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="bg-darkgrey w-[40%] xl:w-1/4 min-h-[450px] rounded-lg pt-8 px-8 space-y-4 relative mt-8 hidden md:block">
@@ -625,15 +640,22 @@ function ChallengePage() {
                 }}
               />
             </div>
-            {comments && comments.length === 0 && (
+            {commentsPending ? (
+              <div className="py-2 h-[70vh] flex flex-col justify-center items-center space-y-2">
+                <span className="loading loading-dots loading-lg"></span>
+              </div>
+            ) : !comments ? (
+              <div className="py-2 h-[70vh] flex flex-col justify-center items-center space-y-2">
+                <p>Error loading comments</p>
+              </div>
+            ) : comments.length === 0 ? (
               <>
                 <div className="py-2 h-[70vh] flex flex-col justify-center items-center space-y-2">
                   <PiChatsBold size={80} />
                   <p>No comments</p>
                 </div>
               </>
-            )}
-            {comments && comments.length > 0 && (
+            ) : (
               <>
                 <div
                   className={`py-2 overflow-scroll ${isOwner() || isTeamMember() ? "h-[70vh]" : "h-[90vh]"}`}
