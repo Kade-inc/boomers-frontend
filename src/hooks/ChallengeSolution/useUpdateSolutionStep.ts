@@ -11,19 +11,14 @@ const useUpdateSolutionStep = (): UseMutationResult<
     challengeId: string;
     solutionId: string;
     stepId: string;
-    description: string;
+    payload: Partial<ChallengeStep>;
   },
   unknown
 > => {
   return useMutation({
     mutationKey: ["update-solution-step"],
-    mutationFn: ({ challengeId, solutionId, stepId, description }) =>
-      apiClient.updateSolutionStep(
-        challengeId,
-        solutionId,
-        stepId,
-        description,
-      ),
+    mutationFn: ({ challengeId, solutionId, stepId, payload }) =>
+      apiClient.updateSolutionStep(challengeId, solutionId, stepId, payload),
   });
 };
 

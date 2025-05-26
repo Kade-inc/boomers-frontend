@@ -11,6 +11,7 @@ import { ExtendedChallengeInterface } from "../entities/Challenge";
 import JoinRequest from "../entities/JoinRequest";
 import { ChallengeSolution } from "../entities/ChallengeSolution";
 import { SolutionStepComment } from "../entities/SolutionStepComment";
+import { ChallengeStep } from "../entities/ChallengeStep";
 
 interface ErrorResponse {
   message: string;
@@ -1250,13 +1251,13 @@ class APIClient {
     challengeId: string,
     solutionId: string,
     stepId: string,
-    description: string,
+    payload: Partial<ChallengeStep>,
     requiresAuth = true,
   ) => {
     try {
       const response = await this.axiosInstance.patch(
         `${this.endpoint}/${challengeId}/solutions/${solutionId}/steps/${stepId}`,
-        { description },
+        payload,
         {
           headers: {
             requiresAuth,

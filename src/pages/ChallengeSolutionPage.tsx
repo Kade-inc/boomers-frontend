@@ -67,6 +67,7 @@ const ChallengeSolutionPage = () => {
   const [deletingStepIndex, setDeletingStepIndex] = useState<number | null>(
     null,
   );
+  const [updatingStepId, setUpdatingStepId] = useState<string | null>(null);
 
   useEffect(() => {
     if (window.innerWidth >= 768) {
@@ -165,7 +166,9 @@ const ChallengeSolutionPage = () => {
           challengeId: challengeId!,
           solutionId: solutionId!,
           stepId: steps[editIndex]._id,
-          description: editValue.trim(),
+          payload: {
+            description: editValue.trim(),
+          },
         },
         {
           onSuccess: () => {
@@ -235,6 +238,34 @@ const ChallengeSolutionPage = () => {
           toast.success("Solution committed successfully");
         },
         onError: (error) => {
+          alert(error.message);
+        },
+      },
+    );
+  };
+
+  const handleCompleteStep = (stepId: string) => {
+    const step = steps.find((s) => s._id === stepId);
+    if (!step) return;
+
+    setUpdatingStepId(stepId);
+    updateStep(
+      {
+        challengeId: challengeId!,
+        solutionId: solutionId!,
+        stepId: stepId,
+        payload: {
+          completed: true,
+          description: step.description,
+        },
+      },
+      {
+        onSuccess: () => {
+          setUpdatingStepId(null);
+          refetchSolution();
+        },
+        onError: (error) => {
+          setUpdatingStepId(null);
           alert(error.message);
         },
       },
@@ -474,20 +505,34 @@ const ChallengeSolutionPage = () => {
                           {step.description}
                         </span>
                         <div className="flex items-center gap-2">
-                          <button
-                            className="bg-yellow text-darkgrey px-6 py-1 text-sm rounded font-medium"
-                            onClick={() => handleEditStep(idx)}
-                            title="Edit"
-                          >
-                            Complete
-                          </button>
-                          <button
-                            className="ml-2 text-blue-500"
-                            onClick={() => handleEditStep(idx)}
-                            title="Edit"
-                          >
-                            <TbEdit className="text-2xl text-blue-500" />
-                          </button>
+                          {step.completed ? (
+                            <div className="bg-green-500 text-white px-2 py-2 text-sm rounded-full font-medium">
+                              <FaCheck />
+                            </div>
+                          ) : (
+                            <button
+                              className="bg-yellow text-darkgrey px-6 py-1 text-sm rounded font-medium"
+                              onClick={() => handleCompleteStep(step._id)}
+                              title="Edit"
+                              disabled={updatingStepId === step._id}
+                            >
+                              {updatingStepId === step._id ? (
+                                <span className="loading loading-dots loading-xs"></span>
+                              ) : (
+                                "Complete"
+                              )}
+                            </button>
+                          )}
+                          {!step.completed && (
+                            <button
+                              className="ml-2 text-blue-500"
+                              onClick={() => handleEditStep(idx)}
+                              title="Edit"
+                            >
+                              <TbEdit className="text-2xl text-blue-500" />
+                            </button>
+                          )}
+
                           <button
                             className="ml-2 text-blue-500"
                             onClick={() => {
