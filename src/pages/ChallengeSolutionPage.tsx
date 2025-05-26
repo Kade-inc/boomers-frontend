@@ -636,6 +636,11 @@ const ChallengeSolutionPage = () => {
                 ))}
               </div>
             </div>
+            <div className="flex items-center justify-center">
+              <button className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium">
+                Submit Solution
+              </button>
+            </div>
             <button
               className="hidden md:block absolute bg-transparent border-2 border-teal-500 text-teal-500 px-8 py-2 rounded font-medium right-0 top-0"
               onClick={() => {
