@@ -26,6 +26,7 @@ import { useAddSolutionStepComment } from "../hooks/ChallengeSolution/useAddSolu
 import { useGetSolutionComments } from "../hooks/ChallengeSolution/useGetSolutionComments";
 import { useAddSolutionComment } from "../hooks/ChallengeSolution/useAddSolutionComment";
 import { useDeleteSolutionComment } from "../hooks/ChallengeSolution/useDeleteSolutionComment";
+import ChallengeDescriptionModal from "../components/Modals/ChallengeDescriptionModal";
 
 const ChallengeSolutionPage = () => {
   const { challengeId, solutionId } = useParams();
@@ -92,6 +93,8 @@ const ChallengeSolutionPage = () => {
   );
   const [updatingStepId, setUpdatingStepId] = useState<string | null>(null);
   const [solutionComment, setSolutionComment] = useState("");
+  const [showChallengeDescriptionModal, setShowChallengeDescriptionModal] =
+    useState(false);
   useEffect(() => {
     if (window.innerWidth >= 768) {
       setDescOpen(true);
@@ -516,8 +519,18 @@ const ChallengeSolutionPage = () => {
         )}
         {solution?.status === 1 && (
           <div className="flex flex-col items-center justify-center mb-10 relative gap-4">
-            <h1>Challenge Description</h1>
-            <h2>
+            <button
+              className="border-2 border-blue-500 px-6 py-2 rounded-full text-blue-500 cursor-pointer"
+              onClick={() => setShowChallengeDescriptionModal(true)}
+            >
+              Challenge Description
+            </button>
+            <ChallengeDescriptionModal
+              isOpen={showChallengeDescriptionModal}
+              onClose={() => setShowChallengeDescriptionModal(false)}
+              solution={solution}
+            />
+            <h2 className="text-md font-bold">
               {solution.user.profile.firstName +
                 " " +
                 solution.user.profile.lastName ||
