@@ -76,6 +76,7 @@ function ChallengePage() {
     data: comments,
     isPending: commentsPending,
     error: commentsError,
+    refetch,
   } = useChallengeComments(challengeId || "");
 
   const {
@@ -190,9 +191,7 @@ function ChallengePage() {
       setShowSolutionDisclaimer(true);
     }
   };
-  if (
-    challengePending || teamPending
-  ) {
+  if (challengePending || teamPending) {
     return (
       <>
         <div className="h-screen flex justify-center items-center bg-base-100">
@@ -488,6 +487,18 @@ function ChallengePage() {
                         <div className="flex justify-center items-center h-full">
                           <span className="loading loading-dots loading-lg"></span>
                         </div>
+                      ) : solutionsError ? (
+                        <div className="flex flex-col justify-center items-center h-full space-y-2">
+                          <p className="text-error">
+                            Error loading solutions: {solutionsError.message}
+                          </p>
+                          <button
+                            className="btn btn-sm bg-yellow text-darkgrey"
+                            onClick={() => refetch()}
+                          >
+                            Retry
+                          </button>
+                        </div>
                       ) : solutions && solutions.length > 0 ? (
                         <div>
                           {/* Solutions content */}
@@ -643,6 +654,18 @@ function ChallengePage() {
             {commentsPending ? (
               <div className="py-2 h-[70vh] flex flex-col justify-center items-center space-y-2">
                 <span className="loading loading-dots loading-lg"></span>
+              </div>
+            ) : commentsError ? (
+              <div className="py-2 h-[70vh] flex flex-col justify-center items-center space-y-2">
+                <p className="text-error">
+                  Error loading comments: {commentsError.message}
+                </p>
+                <button
+                  className="btn btn-sm bg-yellow text-darkgrey"
+                  onClick={() => refetch()}
+                >
+                  Retry
+                </button>
               </div>
             ) : !comments ? (
               <div className="py-2 h-[70vh] flex flex-col justify-center items-center space-y-2">

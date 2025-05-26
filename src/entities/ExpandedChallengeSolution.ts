@@ -2,7 +2,6 @@ import Comment from "./Comment";
 
 export interface ExpandedChallengeSolution {
   _id: string;
-  user_id: string;
   status: number;
   steps: Step[];
   valid: boolean;
@@ -17,6 +16,19 @@ export interface ExpandedChallengeSolution {
   updatedAt: string;
   __v: number;
   challenge: Challenge;
+  user: User;
+}
+
+interface User {
+  _id: string;
+  profile: Profile;
+}
+
+interface Profile {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  username: string;
 }
 
 interface Challenge {
