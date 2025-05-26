@@ -12,6 +12,7 @@ import JoinRequest from "../entities/JoinRequest";
 import { ChallengeSolution } from "../entities/ChallengeSolution";
 import { SolutionStepComment } from "../entities/SolutionStepComment";
 import { ChallengeStep } from "../entities/ChallengeStep";
+import { SolutionComment } from "../entities/SolutionComment";
 
 interface ErrorResponse {
   message: string;
@@ -1462,6 +1463,112 @@ class APIClient {
       const axiosError = error as AxiosError;
       toast.error(
         "Error deleting solution step comment:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  getSolutionComments = async (
+    challengeId: string,
+    solutionId: string,
+    requiresAuth = true,
+  ): Promise<SolutionComment[]> => {
+    try {
+      const response = await this.axiosInstance.get(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/comments`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data.data || response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching solution comments:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  postSolutionComment = async (
+    challengeId: string,
+    solutionId: string,
+    comment: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.post(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/comments`,
+        { comment },
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error posting solution comment:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  updateSolutionComment = async (
+    challengeId: string,
+    solutionId: string,
+    commentId: string,
+    comment: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.patch(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/comments/${commentId}`,
+        { comment },
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error updating solution comment:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  deleteSolutionComment = async (
+    challengeId: string,
+    solutionId: string,
+    commentId: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.delete(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/comments/${commentId}`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error deleting solution comment:",
         axiosError.response?.data ?? axiosError.message,
       );
       throw axiosError;
