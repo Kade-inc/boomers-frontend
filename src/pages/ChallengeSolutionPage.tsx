@@ -432,7 +432,7 @@ const ChallengeSolutionPage = () => {
               </p>
               <p className="flex items-end">% Complete</p>
             </div>
-            <div className="flex flex-col items-center justify-center w-1/2 gap-4">
+            <div className="flex flex-col items-center justify-center w-full md:w-1/2 gap-4">
               <h1>Steps</h1>
               <div className="flex flex-col items-center justify-center w-full gap-6">
                 {solution.steps.map((step, idx) => (
