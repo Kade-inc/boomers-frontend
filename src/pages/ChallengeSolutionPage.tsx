@@ -12,7 +12,11 @@ import useDeleteSolutionStep from "../hooks/ChallengeSolution/useDeleteSolutionS
 import useUpdateSolution from "../hooks/ChallengeSolution/useUpdateSolution";
 import { toast } from "react-hot-toast";
 import { PiChatsBold } from "react-icons/pi";
-import { EllipsisHorizontalIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  EllipsisHorizontalIcon,
+  TrashIcon,
+  ChatBubbleOvalLeftIcon,
+} from "@heroicons/react/24/outline";
 import { UserCircleIcon, XCircleIcon } from "@heroicons/react/24/solid";
 import { useGetSolutionStepComments } from "../hooks/ChallengeSolution/useGetSolutionStepComments";
 import useAuthStore from "../stores/useAuthStore";
@@ -353,7 +357,7 @@ const ChallengeSolutionPage = () => {
             to={`/challenge/${challengeId}`}
             className="text-base-content font-body hover:text-primary"
           >
-            ← Back to Challenge
+            ← Back <span className="hidden md:inline">to Challenge</span>
           </Link>
         </div>
 
@@ -986,6 +990,24 @@ const ChallengeSolutionPage = () => {
           </ul>
         </div>
       </div>
+      <button
+        className="flex items-center pl-2 h-[50px] w-[105px] bg-black bottom-28 -right-8 md:hidden z-30 rounded-full fixed "
+        onClick={() => {
+          const drawer = document.getElementById(
+            "solution-comment-drawer",
+          ) as HTMLInputElement | null;
+          if (drawer) {
+            drawer.checked = true;
+          }
+        }}
+      >
+        <ChatBubbleOvalLeftIcon width={30} height={30} color="white" />{" "}
+        <span className="text-white font-body ml-1 font-semibold">
+          {solutionComments &&
+            solutionComments.length > 0 &&
+            solutionComments.length}
+        </span>
+      </button>
     </>
   );
 };
