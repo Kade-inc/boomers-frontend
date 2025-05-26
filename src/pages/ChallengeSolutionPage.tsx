@@ -449,11 +449,11 @@ const ChallengeSolutionPage = () => {
                             </span>
                             <div className="flex items-center gap-2">
                               <button
-                                className="ml-2 text-blue-500"
+                                className="ml-2 text-teal-500"
                                 onClick={() => handleEditStep(idx)}
                                 title="Edit"
                               >
-                                <TbEdit className="text-2xl text-blue-500" />
+                                <TbEdit className="text-2xl text-teal-500" />
                               </button>
                               <button
                                 className="ml-2 text-red-500"
@@ -520,7 +520,7 @@ const ChallengeSolutionPage = () => {
         {solution?.status === 1 && (
           <div className="flex flex-col items-center justify-center mb-10 relative gap-4">
             <button
-              className="border-2 border-blue-500 px-6 py-2 rounded-full text-blue-500 cursor-pointer"
+              className="border-2 border-teal-500 text-teal-500 px-6 py-2 rounded-full cursor-pointer"
               onClick={() => setShowChallengeDescriptionModal(true)}
             >
               Challenge Description
@@ -606,16 +606,16 @@ const ChallengeSolutionPage = () => {
                           )}
                           {!step.completed && (
                             <button
-                              className="ml-2 text-blue-500"
+                              className="ml-2 text-teal-500"
                               onClick={() => handleEditStep(idx)}
                               title="Edit"
                             >
-                              <TbEdit className="text-2xl text-blue-500" />
+                              <TbEdit className="text-2xl text-teal-500" />
                             </button>
                           )}
 
                           <button
-                            className="ml-2 text-blue-500"
+                            className="ml-2 text-teal-500"
                             onClick={() => {
                               const drawer = document.getElementById(
                                 "step-comment-drawer",
@@ -637,7 +637,7 @@ const ChallengeSolutionPage = () => {
               </div>
             </div>
             <button
-              className="hidden md:block absolute bg-yellow text-darkgrey px-8 py-2 rounded font-medium right-0 top-0"
+              className="hidden md:block absolute bg-transparent border-2 border-teal-500 text-teal-500 px-8 py-2 rounded font-medium right-0 top-0"
               onClick={() => {
                 const drawer = document.getElementById(
                   "solution-comment-drawer",
