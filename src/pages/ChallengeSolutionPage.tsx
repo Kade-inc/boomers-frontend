@@ -19,6 +19,9 @@ import useAuthStore from "../stores/useAuthStore";
 import { useDeleteSolutionStepComment } from "../hooks/ChallengeSolution/useDeleteSolutionStepComment";
 import { formatDistanceToNow } from "date-fns";
 import { useAddSolutionStepComment } from "../hooks/ChallengeSolution/useAddSolutionStepComment";
+import { useGetSolutionComments } from "../hooks/ChallengeSolution/useGetSolutionComments";
+import { useAddSolutionComment } from "../hooks/ChallengeSolution/useAddSolutionComment";
+import { useDeleteSolutionComment } from "../hooks/ChallengeSolution/useDeleteSolutionComment";
 
 const ChallengeSolutionPage = () => {
   const { challengeId, solutionId } = useParams();
@@ -53,6 +56,22 @@ const ChallengeSolutionPage = () => {
     useDeleteSolutionStepComment();
   const { mutate: addStepComment, isPending: isAddingStepComment } =
     useAddSolutionStepComment();
+  const {
+    data: solutionComments,
+    isLoading: solutionCommentsPending,
+    refetch: refetchSolutionComments,
+    error: solutionCommentsError,
+  } = useGetSolutionComments({
+    challengeId: challengeId!,
+    solutionId: solutionId!,
+  });
+  const {
+    mutate: deleteSolutionComment,
+    isPending: isDeletingSolutionComment,
+  } = useDeleteSolutionComment();
+  const { mutate: addSolutionComment, isPending: isAddingSolutionComment } =
+    useAddSolutionComment();
+
   console.log(solution);
 
   // Step management
@@ -68,7 +87,7 @@ const ChallengeSolutionPage = () => {
     null,
   );
   const [updatingStepId, setUpdatingStepId] = useState<string | null>(null);
-
+  const [solutionComment, setSolutionComment] = useState("");
   useEffect(() => {
     if (window.innerWidth >= 768) {
       setDescOpen(true);
@@ -154,6 +173,45 @@ const ChallengeSolutionPage = () => {
     setActiveTooltip(null);
   };
 
+  const handleDeleteSolutionComment = (commentId: string) => {
+    deleteSolutionComment(
+      {
+        challengeId: challengeId!,
+        solutionId: solutionId!,
+        commentId: commentId,
+      },
+      {
+        onSuccess: () => {
+          refetchSolutionComments();
+          toast.success("Comment deleted successfully");
+        },
+        onError: (error) => {
+          alert(error.message);
+        },
+      },
+    );
+  };
+
+  const handleAddSolutionComment = () => {
+    addSolutionComment(
+      {
+        challengeId: challengeId!,
+        solutionId: solutionId!,
+        comment: solutionComment,
+      },
+      {
+        onSuccess: () => {
+          refetchSolutionComments();
+          setSolutionComment("");
+          toast.success("Comment added successfully");
+        },
+        onError: (error) => {
+          alert(error.message);
+        },
+      },
+    );
+  };
+
   const handleEditStep = (index: number) => {
     setEditIndex(index);
     setEditValue(steps[index].description);
@@ -192,6 +250,12 @@ const ChallengeSolutionPage = () => {
     e: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     setStepComment(e.target.value);
+  };
+
+  const handleSolutionCommentChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    setSolutionComment(e.target.value);
   };
 
   const handlePostStepComment = () => {
@@ -555,7 +619,17 @@ const ChallengeSolutionPage = () => {
                 ))}
               </div>
             </div>
-            <button className="hidden md:block absolute bg-yellow text-darkgrey px-8 py-2 rounded font-medium right-0 top-0">
+            <button
+              className="hidden md:block absolute bg-yellow text-darkgrey px-8 py-2 rounded font-medium right-0 top-0"
+              onClick={() => {
+                const drawer = document.getElementById(
+                  "solution-comment-drawer",
+                ) as HTMLInputElement | null;
+                if (drawer) {
+                  drawer.checked = true; // Open the drawer
+                }
+              }}
+            >
               Comments
             </button>
           </div>
@@ -728,6 +802,182 @@ const ChallengeSolutionPage = () => {
                       disabled={isAddingStepComment}
                     >
                       {isAddingStepComment ? "Posting..." : "Send"}
+                    </button>
+                  </div>
+                </div>
+              </label>
+            )}
+          </ul>
+        </div>
+      </div>
+
+      <div className="drawer drawer-end font-body">
+        <input
+          id="solution-comment-drawer"
+          type="checkbox"
+          className="drawer-toggle"
+        />
+
+        <div className="drawer-side z-40">
+          <label
+            htmlFor="solution-comment-drawer"
+            aria-label="close sidebar"
+            className="drawer-overlay"
+          ></label>
+
+          <ul className="menu bg-base-200 text-base-content min-h-full w-[400px] py-4 px-8">
+            {/* Sidebar content here */}
+            <div className="flex justify-between border-b-[1px] pb-4">
+              <p className="text-base-content font-semibold text-[18px]">
+                Comments{" "}
+                {solution?.comments && solution?.comments.length > 0 && (
+                  <span className="ml-2 bg-gray-200 text-darkgrey p-2 rounded-full text-sm font-semibold px-3">
+                    {solution?.comments.length}
+                  </span>
+                )}
+              </p>
+              <XCircleIcon
+                height={26}
+                width={26}
+                className="cursor-pointer"
+                onClick={() => {
+                  const drawer = document.getElementById(
+                    "solution-comment-drawer",
+                  ) as HTMLInputElement | null;
+                  if (drawer) {
+                    drawer.checked = false;
+                  }
+                }}
+              />
+            </div>
+            {solutionCommentsPending ? (
+              <div className="py-2 h-[70vh] flex flex-col justify-center items-center space-y-2">
+                <span className="loading loading-dots loading-lg"></span>
+              </div>
+            ) : solutionCommentsError ? (
+              <div className="py-2 h-[70vh] flex flex-col justify-center items-center space-y-2">
+                <p className="text-error">
+                  Error loading comments: {solutionCommentsError.message}
+                </p>
+                <button
+                  className="btn btn-sm bg-yellow text-darkgrey"
+                  onClick={() => refetchSolutionComments()}
+                >
+                  Retry
+                </button>
+              </div>
+            ) : !solutionComments ? (
+              <div className="py-2 h-[70vh] flex flex-col justify-center items-center space-y-2">
+                <p>Error loading solution comments</p>
+              </div>
+            ) : solutionComments.length === 0 ? (
+              <>
+                <div className="py-2 h-[70vh] flex flex-col justify-center items-center space-y-2">
+                  <PiChatsBold size={80} />
+                  <p>No solution comments</p>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className={`py-2 overflow-scroll "h-[90vh]"}`}>
+                  {solutionComments.map((comment, index) => (
+                    <div className="py-2" key={`${comment._id}-${index}`}>
+                      <div className="relative flex items-center p-0">
+                        {comment.user?.profile?.profile_picture ? (
+                          <img
+                            src={comment.user.profile.profile_picture}
+                            alt="profile Picture"
+                            className="object-cover rounded-full w-10 h-10 overflow-hidden "
+                          />
+                        ) : (
+                          <UserCircleIcon
+                            height={42}
+                            width={42}
+                            className="text-base-content"
+                          />
+                        )}
+                        <p className="font-semibold ml-4 text-[13px]">
+                          {comment.user?.profile?.firstName &&
+                          comment.user?.profile?.lastName
+                            ? comment.user.profile.firstName +
+                              " " +
+                              comment.user.profile.lastName
+                            : comment.user?.profile?.username}
+                        </p>
+
+                        {comment.user?._id === user.user_id && (
+                          <div className="ml-auto">
+                            <EllipsisHorizontalIcon
+                              height={20}
+                              width={20}
+                              className="cursor-pointer hover:bg-[#EDD38B] hover:rounded-full"
+                              onClick={() => toggleTooltip(comment._id)}
+                            />
+                            {activeTooltip === comment._id && (
+                              <div className="absolute right-0 top-full mt-2 w-40 bg-base-100 shadow-md rounded-md">
+                                <ul className="py-0 text-sm text-gray-700">
+                                  <li
+                                    className="px-0 py-0 cursor-pointer flex flex-row items-center space-x-0 hover:bg-gray-200"
+                                    onClick={() =>
+                                      handleDeleteSolutionComment(comment._id)
+                                    }
+                                  >
+                                    <TrashIcon
+                                      height={50}
+                                      width={50}
+                                      color="red"
+                                      className="hover:bg-transparent"
+                                    />
+                                    <button
+                                      className="text-error font-medium hover:bg-transparent bg-transparent"
+                                      disabled={isDeletingSolutionComment}
+                                    >
+                                      {isDeletingSolutionComment ? (
+                                        <span>Deleting...</span>
+                                      ) : (
+                                        <span>Delete</span>
+                                      )}
+                                    </button>
+                                  </li>
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex justify-between mt-2 border-b-2 pb-4">
+                        <p className="ml-2 w-[240px] font-medium text-[13px]">
+                          {comment.comment}
+                        </p>
+                        <p className="text-[10px] content-end font-semibold">
+                          {formatDistanceToNow(new Date(comment.createdAt), {
+                            addSuffix: true,
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+            {isOwner() && (
+              <label className="form-control absolute w-[85%] bottom-2">
+                <div className="relative flex flex-col bg-base-100 rounded-md">
+                  <textarea
+                    className="textarea h-24 text-[13px] focus:border-none focus:outline-none w-full mb-2"
+                    placeholder="Add comment..."
+                    onChange={handleSolutionCommentChange}
+                    value={solutionComment}
+                  ></textarea>
+                  <div className="flex justify-end border-t-2 w-[90%] mx-auto">
+                    <button
+                      className="btn btn-sm bg-yellow text-darkgrey rounded-md text-[13px] font-medium mt-2 mb-2 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-yellow"
+                      type="submit"
+                      onClick={handleAddSolutionComment}
+                      disabled={isAddingSolutionComment}
+                    >
+                      {isAddingSolutionComment ? "Posting..." : "Send"}
                     </button>
                   </div>
                 </div>
