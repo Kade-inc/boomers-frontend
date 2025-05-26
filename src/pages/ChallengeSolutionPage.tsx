@@ -12,14 +12,13 @@ import useDeleteSolutionStep from "../hooks/ChallengeSolution/useDeleteSolutionS
 import useUpdateSolution from "../hooks/ChallengeSolution/useUpdateSolution";
 import { toast } from "react-hot-toast";
 import { PiChatsBold } from "react-icons/pi";
-import { EllipsisHorizontalIcon, TrashIcon, } from "@heroicons/react/24/outline";
+import { EllipsisHorizontalIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { UserCircleIcon, XCircleIcon } from "@heroicons/react/24/solid";
 import { useGetSolutionStepComments } from "../hooks/ChallengeSolution/useGetSolutionStepComments";
 import useAuthStore from "../stores/useAuthStore";
 import { useDeleteSolutionStepComment } from "../hooks/ChallengeSolution/useDeleteSolutionStepComment";
 import { formatDistanceToNow } from "date-fns";
 import { useAddSolutionStepComment } from "../hooks/ChallengeSolution/useAddSolutionStepComment";
-
 
 const ChallengeSolutionPage = () => {
   const { challengeId, solutionId } = useParams();
@@ -32,23 +31,35 @@ const ChallengeSolutionPage = () => {
     error: solutionError,
     refetch: refetchSolution,
   } = useGetSolution(challengeId!, solutionId!);
-  const { data: stepComments, isLoading: stepCommentsPending, refetch: refetchStepComments } = useGetSolutionStepComments({ challengeId: challengeId!, stepId: stepId!, solutionId: solutionId! });
+  const {
+    data: stepComments,
+    isLoading: stepCommentsPending,
+    refetch: refetchStepComments,
+    error: stepCommentsError,
+  } = useGetSolutionStepComments({
+    challengeId: challengeId!,
+    stepId: stepId!,
+    solutionId: solutionId!,
+  });
   const { mutate: addStep, isPending: isAddingStep } = useAddSolutionStep();
-  const { mutate: updateStep, isPending: isUpdatingStep } = useUpdateSolutionStep();
+  const { mutate: updateStep, isPending: isUpdatingStep } =
+    useUpdateSolutionStep();
   const { mutate: deleteStep, isPending: isDeletingStep } =
     useDeleteSolutionStep();
   const { mutate: updateSolution, isPending: isUpdatingSolution } =
     useUpdateSolution();
 
-  const { mutate: deleteStepComment, isPending: isDeletingStepComment } = useDeleteSolutionStepComment();
-  const { mutate: addStepComment, isPending: isAddingStepComment } = useAddSolutionStepComment();
+  const { mutate: deleteStepComment, isPending: isDeletingStepComment } =
+    useDeleteSolutionStepComment();
+  const { mutate: addStepComment, isPending: isAddingStepComment } =
+    useAddSolutionStepComment();
   console.log(solution);
 
   // Step management
   const [stepInput, setStepInput] = useState("");
-  const [steps, setSteps] = useState<{ _id: string; description: string; completed: boolean }[]>(
-    [],
-  );
+  const [steps, setSteps] = useState<
+    { _id: string; description: string; completed: boolean }[]
+  >([]);
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [editValue, setEditValue] = useState("");
   const [stepComment, setStepComment] = useState("");
@@ -56,7 +67,6 @@ const ChallengeSolutionPage = () => {
   const [deletingStepIndex, setDeletingStepIndex] = useState<number | null>(
     null,
   );
- 
 
   useEffect(() => {
     if (window.innerWidth >= 768) {
@@ -123,20 +133,23 @@ const ChallengeSolutionPage = () => {
   };
 
   const handleDeleteStepComment = (commentId: string) => {
-    deleteStepComment({
-      challengeId: challengeId!,
-      stepId: stepId!,
-      solutionId: solutionId!,
-      commentId: commentId,
-    }, {
-      onSuccess: () => {
-        refetchStepComments();
-        toast.success("Comment deleted successfully");
+    deleteStepComment(
+      {
+        challengeId: challengeId!,
+        stepId: stepId!,
+        solutionId: solutionId!,
+        commentId: commentId,
       },
-      onError: (error) => {
-        alert(error.message);
+      {
+        onSuccess: () => {
+          refetchStepComments();
+          toast.success("Comment deleted successfully");
+        },
+        onError: (error) => {
+          alert(error.message);
+        },
       },
-    });
+    );
     setActiveTooltip(null);
   };
 
@@ -172,26 +185,31 @@ const ChallengeSolutionPage = () => {
     return user.user_id === solution?.user._id;
   };
 
-  const handleStepCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleStepCommentChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
     setStepComment(e.target.value);
   };
 
   const handlePostStepComment = () => {
-    addStepComment({
-      challengeId: challengeId!,
-      stepId: stepId!,
-      solutionId: solutionId!,
-      comment: stepComment,
-    }, {
-      onSuccess: () => {
-        refetchStepComments();
-        setStepComment("");
-        toast.success("Comment added successfully");
+    addStepComment(
+      {
+        challengeId: challengeId!,
+        stepId: stepId!,
+        solutionId: solutionId!,
+        comment: stepComment,
       },
-      onError: (error) => {
-        alert(error.message);
+      {
+        onSuccess: () => {
+          refetchStepComments();
+          setStepComment("");
+          toast.success("Comment added successfully");
+        },
+        onError: (error) => {
+          alert(error.message);
+        },
       },
-    });
+    );
   };
 
   const handleCancelEdit = () => {
@@ -214,7 +232,7 @@ const ChallengeSolutionPage = () => {
       {
         onSuccess: () => {
           refetchSolution();
-          toast.success("Solution steps added successfully");
+          toast.success("Solution committed successfully");
         },
         onError: (error) => {
           alert(error.message);
@@ -234,262 +252,276 @@ const ChallengeSolutionPage = () => {
 
   return (
     <>
-    <div className="h-screen bg-base-100 px-5 md:px-10 pt-10 font-body font-semibold">
-      <div>
-        <Link
-          to={`/challenge/${challengeId}`}
-          className="text-base-content font-body hover:text-primary"
-        >
-          ← Back to Challenge
-        </Link>
-      </div>
+      <div className="h-screen bg-base-100 px-5 md:px-10 pt-10 font-body font-semibold">
+        <div>
+          <Link
+            to={`/challenge/${challengeId}`}
+            className="text-base-content font-body hover:text-primary"
+          >
+            ← Back to Challenge
+          </Link>
+        </div>
 
-      <div className="flex items-center justify-center mb-10">
-        <h1 className="font-heading text-4xl">
-          <span>{solution?.challenge.challenge_name}</span>
-        </h1>
-      </div>
-   
-      {solution?.status === 0 && (
-        <>
-          <div className="flex md:flex-row flex-col justify-between gap-10">
-            <div className="text-darkgrey md:w-[45%]">
-              <div className="flex items-center justify-between mb-4">
-                <p className="font-semibold text-base-content">Description</p>
+        <div className="flex items-center justify-center mb-10">
+          <h1 className="font-heading text-4xl">
+            <span>{solution?.challenge.challenge_name}</span>
+          </h1>
+        </div>
+
+        {solution?.status === 0 && (
+          <>
+            <div className="flex md:flex-row flex-col justify-between gap-10">
+              <div className="text-darkgrey md:w-[45%]">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="font-semibold text-base-content">Description</p>
+                  <button
+                    className="text-sm text-base-content md:hidden"
+                    onClick={() => setDescOpen((open) => !open)}
+                  >
+                    {descOpen ? (
+                      <span className="flex items-center gap-2">
+                        Collapse <FaChevronDown />
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-2">
+                        Expand <FaChevronUp />
+                      </span>
+                    )}
+                  </button>
+                </div>
+                {descOpen && (
+                  <div className="h-[70vh] overflow-scroll">
+                    <CKEditor
+                      editor={ClassicEditor}
+                      data={solution?.challenge.description}
+                      disabled={true}
+                      config={{
+                        toolbar: [],
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+              <div className="md:w-[45%]">
+                <p className="mb-2 font-semibold text-base-content">Steps</p>
+                {/* Steps List */}
+                {steps.length > 0 && (
+                  <div className="flex flex-col gap-4 mb-4">
+                    {steps.map((step, idx) => (
+                      <div
+                        key={step._id}
+                        className="flex items-center justify-between bg-base-100 p-4 rounded border border-base-content/10"
+                      >
+                        {editIndex === idx ? (
+                          <div className="flex-1 flex items-center gap-2">
+                            <textarea
+                              className="border rounded p-1 flex-1 focus:outline-none"
+                              value={editValue}
+                              onChange={(e) => setEditValue(e.target.value)}
+                              autoFocus
+                            />
+                            <button
+                              className="text-green-600 font-bold"
+                              onClick={handleSaveEditStep}
+                              title="Save"
+                              disabled={isUpdatingStep}
+                            >
+                              {isUpdatingStep ? (
+                                <span className="loading loading-dots loading-xs"></span>
+                              ) : (
+                                <FaCheck />
+                              )}
+                            </button>
+                            <button
+                              className="text-gray-500"
+                              onClick={handleCancelEdit}
+                              title="Cancel"
+                            >
+                              <IoIosClose className="text-3xl text-base-content" />
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-between w-full">
+                            <span className="text-base-content w-[90%] font-medium">
+                              {step.description}
+                            </span>
+                            <div className="flex items-center gap-2">
+                              <button
+                                className="ml-2 text-blue-500"
+                                onClick={() => handleEditStep(idx)}
+                                title="Edit"
+                              >
+                                <TbEdit className="text-2xl text-blue-500" />
+                              </button>
+                              <button
+                                className="ml-2 text-red-500"
+                                onClick={() => handleDeleteStep(idx)}
+                                title="Delete"
+                                disabled={
+                                  isDeletingStep && deletingStepIndex === idx
+                                }
+                              >
+                                {isDeletingStep && deletingStepIndex === idx ? (
+                                  <span className="loading loading-dots loading-xs"></span>
+                                ) : (
+                                  <FaTrash className="text-lg text-red-500" />
+                                )}
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {/* Step Input */}
+                <textarea
+                  className="w-full border rounded p-2 mb-2 font-medium bg-transparent focus:outline-none"
+                  placeholder={
+                    steps.length === 0
+                      ? "Type your first step here..."
+                      : "Type your next step here..."
+                  }
+                  value={stepInput}
+                  onChange={(e) => setStepInput(e.target.value)}
+                />
                 <button
-                  className="text-sm text-base-content md:hidden"
-                  onClick={() => setDescOpen((open) => !open)}
+                  className="bg-purple-700 text-white px-8 py-2 rounded font-medium"
+                  onClick={handleAddStep}
+                  disabled={!stepInput.trim() || isAddingStep}
                 >
-                  {descOpen ? (
-                    <span className="flex items-center gap-2">
-                      Collapse <FaChevronDown />
-                    </span>
+                  {isAddingStep ? (
+                    <span className="loading loading-dots loading-xs"></span>
+                  ) : steps.length === 0 ? (
+                    "Add"
                   ) : (
-                    <span className="flex items-center gap-2">
-                      Expand <FaChevronUp />
-                    </span>
+                    "Add step"
                   )}
                 </button>
               </div>
-              {descOpen && (
-                <div className="h-[70vh] overflow-scroll">
-                  <CKEditor
-                    editor={ClassicEditor}
-                    data={solution?.challenge.description}
-                    disabled={true}
-                    config={{
-                      toolbar: [],
-                    }}
-                  />
-                </div>
-              )}
             </div>
-            <div className="md:w-[45%]">
-              <p className="mb-2 font-semibold text-base-content">Steps</p>
-              {/* Steps List */}
-              {steps.length > 0 && (
-                <div className="flex flex-col gap-4 mb-4">
-                  {steps.map((step, idx) => (
-                    <div
-                      key={step._id}
-                      className="flex items-center justify-between bg-base-100 p-4 rounded border border-base-content/10"
-                    >
-                      {editIndex === idx ? (
-                        <div className="flex-1 flex items-center gap-2">
-                          <textarea
-                            className="border rounded p-1 flex-1 focus:outline-none"
-                            value={editValue}
-                            onChange={(e) => setEditValue(e.target.value)}
-                            autoFocus
-                          />
-                          <button
-                            className="text-green-600 font-bold"
-                            onClick={handleSaveEditStep}
-                            title="Save"
-                            disabled={isUpdatingStep}
-                          >
-                            {isUpdatingStep ? (
-                              <span className="loading loading-dots loading-xs"></span>
-                            ) : (
-                              <FaCheck />
-                            )}
-                          </button>
-                          <button
-                            className="text-gray-500"
-                            onClick={handleCancelEdit}
-                            title="Cancel"
-                          >
-                            <IoIosClose className="text-3xl text-base-content" />
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-between w-full">
-                          <span className="text-base-content w-[90%] font-medium">
-                            {step.description}
-                          </span>
-                          <div className="flex items-center gap-2">
-                            <button
-                              className="ml-2 text-blue-500"
-                              onClick={() => handleEditStep(idx)}
-                              title="Edit"
-                            >
-                              <TbEdit className="text-2xl text-blue-500" />
-                            </button>
-                            <button
-                              className="ml-2 text-red-500"
-                              onClick={() => handleDeleteStep(idx)}
-                              title="Delete"
-                              disabled={
-                                isDeletingStep && deletingStepIndex === idx
-                              }
-                            >
-                              {isDeletingStep && deletingStepIndex === idx ? (
-                                <span className="loading loading-dots loading-xs"></span>
-                              ) : (
-                                <FaTrash className="text-lg text-red-500" />
-                              )}
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-              {/* Step Input */}
-              <textarea
-                className="w-full border rounded p-2 mb-2 font-medium bg-transparent focus:outline-none"
-                placeholder={
-                  steps.length === 0
-                    ? "Type your first step here..."
-                    : "Type your next step here..."
-                }
-                value={stepInput}
-                onChange={(e) => setStepInput(e.target.value)}
-              />
+            <div className="flex items-center justify-center">
               <button
-                className="bg-purple-700 text-white px-8 py-2 rounded font-medium"
-                onClick={handleAddStep}
-                disabled={!stepInput.trim() || isAddingStep}
+                className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium"
+                disabled={isUpdatingSolution}
+                onClick={handleCommitSolution}
               >
-                {isAddingStep ? (
+                {isUpdatingSolution ? (
                   <span className="loading loading-dots loading-xs"></span>
                 ) : (
-                  steps.length === 0 ? "Add" : "Add step"
+                  "Commit"
                 )}
               </button>
             </div>
-          </div>
-          <div className="flex items-center justify-center">
-            <button
-              className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium"
-              disabled={isUpdatingSolution}
-              onClick={handleCommitSolution}
-            >
-              {isUpdatingSolution ? (
-                <span className="loading loading-dots loading-xs"></span>
-              ) : (
-                "Commit"
-              )}
+          </>
+        )}
+        {solution?.status === 1 && (
+          <div className="flex flex-col items-center justify-center mb-10 relative gap-4">
+            <h1>Challenge Description</h1>
+            <h2>
+              {solution.user.profile.firstName +
+                " " +
+                solution.user.profile.lastName ||
+                solution.user.profile.username}
+              &apos;s solution
+            </h2>
+
+            <div className="flex gap-2">
+              <p className="text-6xl font-semibold flex items-end">
+                {solution.percentageCompleted}
+              </p>
+              <p className="flex items-end">% Complete</p>
+            </div>
+            <div className="flex flex-col items-center justify-center w-1/2 gap-4">
+              <h1>Steps</h1>
+              <div className="flex flex-col items-center justify-center w-full gap-6">
+                {solution.steps.map((step, idx) => (
+                  <div
+                    key={step._id}
+                    className="flex items-center justify-between bg-base-100 p-4 rounded border border-base-content/10 w-3/4"
+                  >
+                    {editIndex === idx ? (
+                      <div className="flex-1 flex items-center gap-2">
+                        <textarea
+                          className="border rounded p-1 flex-1 focus:outline-none"
+                          value={editValue}
+                          onChange={(e) => setEditValue(e.target.value)}
+                          autoFocus
+                        />
+                        <button
+                          className="text-green-600 font-bold"
+                          onClick={handleSaveEditStep}
+                          title="Save"
+                          disabled={isUpdatingStep}
+                        >
+                          {isUpdatingStep ? (
+                            <span className="loading loading-dots loading-xs"></span>
+                          ) : (
+                            <FaCheck />
+                          )}
+                        </button>
+                        <button
+                          className="text-gray-500"
+                          onClick={handleCancelEdit}
+                          title="Cancel"
+                        >
+                          <IoIosClose className="text-3xl text-base-content" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-between w-full">
+                        <span className="text-base-content w-[90%] font-medium">
+                          {step.description}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <button
+                            className="bg-yellow text-darkgrey px-6 py-1 text-sm rounded font-medium"
+                            onClick={() => handleEditStep(idx)}
+                            title="Edit"
+                          >
+                            Complete
+                          </button>
+                          <button
+                            className="ml-2 text-blue-500"
+                            onClick={() => handleEditStep(idx)}
+                            title="Edit"
+                          >
+                            <TbEdit className="text-2xl text-blue-500" />
+                          </button>
+                          <button
+                            className="ml-2 text-blue-500"
+                            onClick={() => {
+                              const drawer = document.getElementById(
+                                "step-comment-drawer",
+                              ) as HTMLInputElement | null;
+                              if (drawer) {
+                                setStepId(step._id);
+                                drawer.checked = true; // Open the drawer
+                              }
+                            }}
+                            title="Comments"
+                          >
+                            <PiChatsBold size={20} />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <button className="hidden md:block absolute bg-yellow text-darkgrey px-8 py-2 rounded font-medium right-0 top-0">
+              Comments
             </button>
           </div>
-        </>
-      )}
-         {solution?.status === 1 && (
-        <div className="flex flex-col items-center justify-center mb-10 relative gap-4">
-        <h1>Challenge Description</h1>
-        <h2>{solution.user.profile.firstName + " " + solution.user.profile.lastName || solution.user.profile.username}&apos;s solution</h2>
-        
-        <div className="flex gap-2">
-          <p className="text-6xl font-semibold flex items-end">{solution.percentageCompleted}</p>
-          <p className="flex items-end">% Complete</p>
-        </div>
-        <div className="flex flex-col items-center justify-center w-1/2 gap-4">
-          <h1>Steps</h1>
-          <div className="flex flex-col items-center justify-center w-full gap-6">
-          {solution.steps.map((step, idx) => (
-                    <div
-                      key={step._id}
-                      className="flex items-center justify-between bg-base-100 p-4 rounded border border-base-content/10 w-3/4"
-                    >
-                      {editIndex === idx ? (
-                        <div className="flex-1 flex items-center gap-2">
-                          <textarea
-                            className="border rounded p-1 flex-1 focus:outline-none"
-                            value={editValue}
-                            onChange={(e) => setEditValue(e.target.value)}
-                            autoFocus
-                          />
-                          <button
-                            className="text-green-600 font-bold"
-                            onClick={handleSaveEditStep}
-                            title="Save"
-                            disabled={isUpdatingStep}
-                          >
-                            {isUpdatingStep ? (
-                              <span className="loading loading-dots loading-xs"></span>
-                            ) : (
-                              <FaCheck />
-                            )}
-                          </button>
-                          <button
-                            className="text-gray-500"
-                            onClick={handleCancelEdit}
-                            title="Cancel"
-                          >
-                            <IoIosClose className="text-3xl text-base-content" />
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-between w-full">
-                          <span className="text-base-content w-[90%] font-medium">
-                            {step.description}
-                          </span>
-                          <div className="flex items-center gap-2">
-                          <button
-                              className="bg-yellow text-darkgrey px-6 py-1 text-sm rounded font-medium"
-                              onClick={() => handleEditStep(idx)}
-                              title="Edit"
-                            >
-                              Complete
-                            </button>
-                            <button
-                              className="ml-2 text-blue-500"
-                              onClick={() => handleEditStep(idx)}
-                              title="Edit"
-                            >
-                              <TbEdit className="text-2xl text-blue-500" />
-                            </button>
-                            <button
-                              className="ml-2 text-blue-500"
-                              onClick={() => {
-                                const drawer = document.getElementById(
-                                  "step-comment-drawer",
-                                ) as HTMLInputElement | null;
-                                if (drawer) {
-                                  setStepId(step._id)
-                                  drawer.checked = true; // Open the drawer
-                                }
-                              }}
-                              title="Comments"
-                            >
-                            <PiChatsBold size={20} />
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-            </div>
-            </div>
-        <button className="hidden md:block absolute bg-yellow text-darkgrey px-8 py-2 rounded font-medium right-0 top-0">
-          Comments
-        </button>
-        </div>
-      )}
-    </div>
-    <div className="drawer drawer-end font-body">
-        <input id="step-comment-drawer" type="checkbox" className="drawer-toggle" />
+        )}
+      </div>
+      <div className="drawer drawer-end font-body">
+        <input
+          id="step-comment-drawer"
+          type="checkbox"
+          className="drawer-toggle"
+        />
 
         <div className="drawer-side z-40">
           <label
@@ -498,7 +530,7 @@ const ChallengeSolutionPage = () => {
             className="drawer-overlay"
           ></label>
 
-<ul className="menu bg-base-200 text-base-content min-h-full w-[400px] py-4 px-8">
+          <ul className="menu bg-base-200 text-base-content min-h-full w-[400px] py-4 px-8">
             {/* Sidebar content here */}
             <div className="flex justify-between border-b-[1px] pb-4">
               <p className="text-base-content font-semibold text-[18px]">
@@ -527,7 +559,19 @@ const ChallengeSolutionPage = () => {
               <div className="py-2 h-[70vh] flex flex-col justify-center items-center space-y-2">
                 <span className="loading loading-dots loading-lg"></span>
               </div>
-            ) :  !stepComments ? (
+            ) : stepCommentsError ? (
+              <div className="py-2 h-[70vh] flex flex-col justify-center items-center space-y-2">
+                <p className="text-error">
+                  Error loading comments: {stepCommentsError.message}
+                </p>
+                <button
+                  className="btn btn-sm bg-yellow text-darkgrey"
+                  onClick={() => refetchStepComments()}
+                >
+                  Retry
+                </button>
+              </div>
+            ) : !stepComments ? (
               <div className="py-2 h-[70vh] flex flex-col justify-center items-center space-y-2">
                 <p>Error loading step comments</p>
               </div>
@@ -540,9 +584,7 @@ const ChallengeSolutionPage = () => {
               </>
             ) : (
               <>
-                <div
-                  className={`py-2 overflow-scroll "h-[90vh]"}`}
-                >
+                <div className={`py-2 overflow-scroll "h-[90vh]"}`}>
                   {stepComments.map((comment, index) => (
                     <div className="py-2" key={`${comment._id}-${index}`}>
                       <div className="relative flex items-center p-0">
@@ -649,7 +691,7 @@ const ChallengeSolutionPage = () => {
           </ul>
         </div>
       </div>
-      </>
+    </>
   );
 };
 
