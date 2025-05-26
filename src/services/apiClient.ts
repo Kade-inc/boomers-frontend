@@ -10,6 +10,7 @@ import Team from "../entities/Team";
 import { ExtendedChallengeInterface } from "../entities/Challenge";
 import JoinRequest from "../entities/JoinRequest";
 import { ChallengeSolution } from "../entities/ChallengeSolution";
+import { SolutionStepComment } from "../entities/SolutionStepComment";
 
 interface ErrorResponse {
   message: string;
@@ -1326,6 +1327,143 @@ class APIClient {
         }`,
       );
       throw error; // Throw the error to allow React Query to handle it
+    }
+  };
+
+  getSolutionStepComments = async (
+    challengeId: string,
+    stepId: string,
+    solutionId: string,
+    requiresAuth = true,
+  ): Promise<SolutionStepComment[]> => {
+    try {
+      const response = await this.axiosInstance.get(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/steps/${stepId}/comments`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data.data || response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching solution step comments:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  getSolutionStepCommentById = async (
+    challengeId: string,
+    stepId: string,
+    solutionId: string,
+    commentId: string,
+    requiresAuth = true,
+  ): Promise<SolutionStepComment> => {
+    try {
+      const response = await this.axiosInstance.get(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/steps/${stepId}/comments/${commentId}`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data.data || response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching solution step comment:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  postSolutionStepComment = async (
+    challengeId: string,
+    stepId: string,
+    solutionId: string,
+    comment: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.post(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/steps/${stepId}/comments`,
+        { comment },
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error posting solution step comment:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  updateSolutionStepComment = async (
+    challengeId: string,
+    stepId: string,
+    solutionId: string,
+    commentId: string,
+    comment: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.patch(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/steps/${stepId}/comments/${commentId}`,
+        { comment },
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error updating solution step comment:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  deleteSolutionStepComment = async (
+    challengeId: string,
+    stepId: string,
+    solutionId: string,
+    commentId: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.delete(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/steps/${stepId}/comments/${commentId}`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error deleting solution step comment:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
     }
   };
 }
