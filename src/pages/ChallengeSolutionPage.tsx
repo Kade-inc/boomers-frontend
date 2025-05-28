@@ -750,22 +750,23 @@ const ChallengeSolutionPage = () => {
                 ))}
               </div>
             </div>
-            <div className="flex items-center justify-center gap-4">
-              {isOwner() && (
+            {isOwner() && (
+              <div className="flex items-center justify-center gap-4">
                 <button
                   className="bg-red-500 text-white px-8 py-2 rounded font-medium"
                   onClick={() => setIsDeleteSolutionModalOpen(true)}
                 >
                   Delete Solution
                 </button>
-              )}
-              <button
-                className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium"
-                onClick={() => setIsSubmitSolutionModalOpen(true)}
-              >
-                Submit Solution
-              </button>
-            </div>
+
+                <button
+                  className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium"
+                  onClick={() => setIsSubmitSolutionModalOpen(true)}
+                >
+                  Submit Solution
+                </button>
+              </div>
+            )}
             <DeleteSolutionModal
               isOpen={isDeleteSolutionModalOpen}
               onClose={() => setIsDeleteSolutionModalOpen(false)}
@@ -1255,28 +1256,26 @@ const ChallengeSolutionPage = () => {
                 </div>
               </>
             )}
-            {isOwner() && (
-              <label className="form-control absolute w-[85%] bottom-2">
-                <div className="relative flex flex-col bg-base-100 rounded-md">
-                  <textarea
-                    className="textarea h-24 text-[13px] focus:border-none focus:outline-none w-full mb-2"
-                    placeholder="Add comment..."
-                    onChange={handleStepCommentChange}
-                    value={stepComment}
-                  ></textarea>
-                  <div className="flex justify-end border-t-2 w-[90%] mx-auto">
-                    <button
-                      className="btn btn-sm bg-yellow text-darkgrey rounded-md text-[13px] font-medium mt-2 mb-2 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-yellow"
-                      type="submit"
-                      onClick={handlePostStepComment}
-                      disabled={isAddingStepComment}
-                    >
-                      {isAddingStepComment ? "Posting..." : "Send"}
-                    </button>
-                  </div>
+            <label className="form-control absolute w-[85%] bottom-2">
+              <div className="relative flex flex-col bg-base-100 rounded-md">
+                <textarea
+                  className="textarea h-24 text-[13px] focus:border-none focus:outline-none w-full mb-2"
+                  placeholder="Add comment..."
+                  onChange={handleStepCommentChange}
+                  value={stepComment}
+                ></textarea>
+                <div className="flex justify-end border-t-2 w-[90%] mx-auto">
+                  <button
+                    className="btn btn-sm bg-yellow text-darkgrey rounded-md text-[13px] font-medium mt-2 mb-2 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-yellow"
+                    type="submit"
+                    onClick={handlePostStepComment}
+                    disabled={isAddingStepComment}
+                  >
+                    {isAddingStepComment ? "Posting..." : "Send"}
+                  </button>
                 </div>
-              </label>
-            )}
+              </div>
+            </label>
           </ul>
         </div>
       </div>
@@ -1431,28 +1430,27 @@ const ChallengeSolutionPage = () => {
                 </div>
               </>
             )}
-            {isOwner() && (
-              <label className="form-control absolute w-[85%] bottom-2">
-                <div className="relative flex flex-col bg-base-100 rounded-md">
-                  <textarea
-                    className="textarea h-24 text-[13px] focus:border-none focus:outline-none w-full mb-2"
-                    placeholder="Add comment..."
-                    onChange={handleSolutionCommentChange}
-                    value={solutionComment}
-                  ></textarea>
-                  <div className="flex justify-end border-t-2 w-[90%] mx-auto">
-                    <button
-                      className="btn btn-sm bg-yellow text-darkgrey rounded-md text-[13px] font-medium mt-2 mb-2 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-yellow"
-                      type="submit"
-                      onClick={handleAddSolutionComment}
-                      disabled={isAddingSolutionComment}
-                    >
-                      {isAddingSolutionComment ? "Posting..." : "Send"}
-                    </button>
-                  </div>
+
+            <label className="form-control absolute w-[85%] bottom-2">
+              <div className="relative flex flex-col bg-base-100 rounded-md">
+                <textarea
+                  className="textarea h-24 text-[13px] focus:border-none focus:outline-none w-full mb-2"
+                  placeholder="Add comment..."
+                  onChange={handleSolutionCommentChange}
+                  value={solutionComment}
+                ></textarea>
+                <div className="flex justify-end border-t-2 w-[90%] mx-auto">
+                  <button
+                    className="btn btn-sm bg-yellow text-darkgrey rounded-md text-[13px] font-medium mt-2 mb-2 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-yellow"
+                    type="submit"
+                    onClick={handleAddSolutionComment}
+                    disabled={isAddingSolutionComment}
+                  >
+                    {isAddingSolutionComment ? "Posting..." : "Send"}
+                  </button>
                 </div>
-              </label>
-            )}
+              </div>
+            </label>
           </ul>
         </div>
       </div>
