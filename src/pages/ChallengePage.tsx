@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import useChallenge from "../hooks/Challenges/useChallenge";
 import useTeam from "../hooks/useTeam";
 import { MdDescription, MdOutlineDescription } from "react-icons/md";
@@ -88,7 +88,7 @@ function ChallengePage() {
   // Check if user already has a solution and get it
   const userSolution = useMemo(() => {
     if (!solutions || !user.user_id) return null;
-    return solutions.find((solution) => solution.user_id === user.user_id);
+    return solutions.find((solution) => solution.user._id === user.user_id);
   }, [solutions, user.user_id]);
 
   const hasUserSolution = useMemo(() => {
@@ -500,10 +500,45 @@ function ChallengePage() {
                           </button>
                         </div>
                       ) : solutions && solutions.length > 0 ? (
-                        <div>
-                          {/* Solutions content */}
-                          <p>Solutions will be displayed here</p>
-                        </div>
+                        <>
+                          <div className="bg-base-200 min-h-[400px] max-h-[500px] overflow-y-scroll p-4">
+                            {/* Solutions content */}
+                            <div className="flex flex-col items-center justify-center h-full">
+                              {solutions.map((solution) => (
+                                <Link
+                                  key={solution._id}
+                                  to={`/challenge/${challengeId}/solution/${solution._id}`}
+                                  className="w-full md:w-1/2"
+                                >
+                                  <div className="flex items-center justify-between border-2 border-teal-500 rounded-md p-4 w-full cursor-pointer gap-4 hover:bg-teal-500 transition-colors hover:text-white text-base-content">
+                                    {solution.user.profile.profile_picture ? (
+                                      <img
+                                        src={
+                                          solution.user.profile.profile_picture
+                                        }
+                                        alt="profile picture"
+                                        className="w-10 h-10 rounded-full"
+                                      />
+                                    ) : (
+                                      <UserCircleIcon
+                                        height={42}
+                                        width={42}
+                                        className="text-base-content"
+                                      />
+                                    )}
+                                    <p className="font-semibold">
+                                      {solution.user.profile.firstName &&
+                                      solution.user.profile.lastName
+                                        ? `${solution.user.profile.firstName} ${solution.user.profile.lastName}`
+                                        : solution.user.profile.username}
+                                      &apos;s Solution
+                                    </p>
+                                  </div>
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+                        </>
                       ) : (
                         <div className="flex flex-col items-center justify-center h-full">
                           <p>No solutions yet</p>

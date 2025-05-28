@@ -46,8 +46,8 @@ const SubmitSolutionModal = ({
         solutionId: solutionId,
         payload: {
           status: 2,
-          solution: data.solution as unknown as null,
-          demo_url: data.solutionUrl as unknown as null,
+          solution: data.solution || "",
+          demo_url: data.solutionUrl || "",
         },
       },
       {
