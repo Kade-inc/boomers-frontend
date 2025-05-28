@@ -11,7 +11,7 @@ import { IoIosClose } from "react-icons/io";
 import useDeleteSolutionStep from "../hooks/ChallengeSolution/useDeleteSolutionStep";
 import useUpdateSolution from "../hooks/ChallengeSolution/useUpdateSolution";
 import { toast } from "react-hot-toast";
-import { PiChatsBold } from "react-icons/pi";
+import { PiChatsBold, PiConfettiDuotone } from "react-icons/pi";
 import {
   EllipsisHorizontalIcon,
   TrashIcon,
@@ -27,6 +27,7 @@ import { useGetSolutionComments } from "../hooks/ChallengeSolution/useGetSolutio
 import { useAddSolutionComment } from "../hooks/ChallengeSolution/useAddSolutionComment";
 import { useDeleteSolutionComment } from "../hooks/ChallengeSolution/useDeleteSolutionComment";
 import ChallengeDescriptionModal from "../components/Modals/ChallengeDescriptionModal";
+import SubmitSolutionModal from "../components/Modals/SubmitSolutionModal";
 
 const ChallengeSolutionPage = () => {
   const { challengeId, solutionId } = useParams();
@@ -95,6 +96,9 @@ const ChallengeSolutionPage = () => {
   const [solutionComment, setSolutionComment] = useState("");
   const [showChallengeDescriptionModal, setShowChallengeDescriptionModal] =
     useState(false);
+  const [isSubmitSolutionModalOpen, setIsSubmitSolutionModalOpen] =
+    useState(false);
+  const [submittedSolution, setSubmittedSolution] = useState(false);
   useEffect(() => {
     if (window.innerWidth >= 768) {
       setDescOpen(true);
@@ -342,6 +346,10 @@ const ChallengeSolutionPage = () => {
       },
     );
   };
+
+  useEffect(() => {
+    console.log("CHANGED");
+  }, [submittedSolution]);
 
   if (solutionIsLoading)
     return (
@@ -637,7 +645,10 @@ const ChallengeSolutionPage = () => {
               </div>
             </div>
             <div className="flex items-center justify-center">
-              <button className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium">
+              <button
+                className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium"
+                onClick={() => setIsSubmitSolutionModalOpen(true)}
+              >
                 Submit Solution
               </button>
             </div>
@@ -656,7 +667,36 @@ const ChallengeSolutionPage = () => {
             </button>
           </div>
         )}
+        {solution?.status === 2 && submittedSolution && (
+          <div className="flex flex-col items-center justify-center mb-10 relative gap-4 h-[50vh]">
+            <p className="text-base-content font-body font-bold text-[18px] lg:text-[25px]">
+              Success!
+            </p>
+            <PiConfettiDuotone className="text-teal-500 text-[100px]" />
+            <p className="text-[14px] text-nowrap lg:text-[18px] font-medium font-body text-center py-2 lg:py-2">
+              Your solution was submitted successfully!
+            </p>
+            <button
+              className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium"
+              onClick={() => setSubmittedSolution(false)}
+            >
+              View Solution
+            </button>
+          </div>
+        )}
+        {solution?.status === 2 && !submittedSolution && (
+          <div className="flex flex-col items-center justify-center mb-10 relative gap-4">
+            <h2 className="text-md font-bold">Testing</h2>
+          </div>
+        )}
       </div>
+      <SubmitSolutionModal
+        isOpen={isSubmitSolutionModalOpen}
+        onClose={() => setIsSubmitSolutionModalOpen(false)}
+        challengeId={challengeId!}
+        solutionId={solutionId!}
+        setSubmittedSolution={setSubmittedSolution}
+      />
       <div className="drawer drawer-end font-body">
         <input
           id="step-comment-drawer"
