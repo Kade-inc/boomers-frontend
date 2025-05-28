@@ -546,6 +546,39 @@ function ChallengePage() {
                       )}
                     </div>
                   )}
+                  {activeTab === "my plan" && (
+                    <div className="text-darkgrey bg-base-200 min-h-[400px] max-h-[500px] overflow-y-scroll p-4">
+                      <p className="text-base-content mb-4">My steps</p>
+                      <>
+                        {userSolution?.steps &&
+                          userSolution.steps.length > 0 && (
+                            <div className="flex flex-col items-center justify-center h-full w-full md:w-1/2 gap-4">
+                              {userSolution.steps.map((step, index) => (
+                                <div
+                                  key={step._id}
+                                  className="flex items-center justify-between border-2 border-teal-500 rounded-md p-4 w-full gap-4"
+                                >
+                                  <p className="text-base-content">
+                                    {index + 1}. {step.description}
+                                  </p>
+                                  {step.completed && (
+                                    <p className="text-green-500 font-medium">
+                                      Completed
+                                    </p>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        {userSolution?.steps &&
+                          userSolution.steps.length === 0 && (
+                            <div className="flex flex-col items-center justify-center h-full w-full md:w-1/2 gap-4">
+                              <p className="text-base-content">No steps yet</p>
+                            </div>
+                          )}
+                      </>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="bg-darkgrey w-[40%] xl:w-1/4 min-h-[450px] rounded-lg pt-8 px-8 space-y-4 relative mt-8 hidden md:block">
