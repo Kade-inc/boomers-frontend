@@ -6,10 +6,10 @@ import {
 import { Link } from "react-router-dom";
 import useGetJoinRequests from "../hooks/useGetJoinRequests";
 import useAuthStore from "../stores/useAuthStore";
-import ActionModal from "../components/ActionModal";
 import JoinRequest from "../entities/JoinRequest";
-import RejectedModal from "../components/RejectedModal";
-import ApprovalModal from "../components/ApprovalModal";
+import ActionModal from "../components/Modals/ActionModal";
+import ApprovalModal from "../components/Modals/ApprovalModal";
+import RejectedModal from "../components/Modals/RejectedModal";
 
 const PendingRequestsPage = () => {
   const [expandAction, setExpandAction] = useState(true);
@@ -43,14 +43,15 @@ const PendingRequestsPage = () => {
   const sentPendingRequests = (
     Array.isArray(requests) ? requests : requests?.data || []
   ).filter(
-    (req) => req.status === "PENDING" && req.user_id?.profile._id === user._id,
+    (req) => req.status === "PENDING" && req.user_id?.profile?._id === user._id,
   );
 
   // Requests I have sent
   const declinedRequests = (
     Array.isArray(requests) ? requests : requests?.data || []
   ).filter(
-    (req) => req.status === "DECLINED" && req.user_id?.profile._id === user._id,
+    (req) =>
+      req.status === "DECLINED" && req.user_id?.profile?._id === user._id,
   );
 
   if (isPending) {
@@ -196,7 +197,7 @@ const PendingRequestsPage = () => {
                     ? `${request.owner_id.profile?.firstName} ${request.owner_id.profile.lastName}`
                     : request.owner_id.profile?.firstName ||
                       request.owner_id.profile?.lastName ||
-                      request.owner_id.profile.username ||
+                      request.owner_id.profile?.username ||
                       "Unknown User"}
                 </p>
               </div>
@@ -243,7 +244,7 @@ const PendingRequestsPage = () => {
                     ? `${reject.owner_id.profile?.firstName} ${reject.owner_id.profile.lastName}`
                     : reject.owner_id.profile?.firstName ||
                       reject.owner_id.profile?.lastName ||
-                      reject.owner_id.profile.username ||
+                      reject.owner_id.profile?.username ||
                       "Unknown User"}
                 </p>
                 <button

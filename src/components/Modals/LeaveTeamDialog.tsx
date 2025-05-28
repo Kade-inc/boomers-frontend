@@ -1,5 +1,5 @@
 import { AiOutlineExclamationCircle } from "react-icons/ai";
-import useLeaveTeam from "../hooks/useLeaveTeam";
+import useLeaveTeam from "../../hooks/useLeaveTeam";
 import toast from "react-hot-toast";
 import { useState } from "react";
 

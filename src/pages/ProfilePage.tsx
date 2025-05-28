@@ -1,7 +1,7 @@
 import location from "../assets/location-sign-svgrepo-com 1.svg";
 import ellipse from "../assets/Ellipse 81.svg";
 import { useEffect, useState } from "react";
-import EditProfileModal from "../components/EditProfileModal";
+import EditProfileModal from "../components/Modals/EditProfileModal";
 import useAuthStore from "../stores/useAuthStore";
 import useTeams from "../hooks/useTeams";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
