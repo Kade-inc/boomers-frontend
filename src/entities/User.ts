@@ -16,7 +16,7 @@ export default interface User {
   interests?: Interest | null;
   lastName?: string;
   profile_picture?: string | null;
-  profile: UserProfile;
+  profile?: UserProfile;
   updatedAt?: string;
   user_id?: string;
   _v?: string;

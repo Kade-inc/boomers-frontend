@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import useGetSolution from "../hooks/ChallengeSolution/useGetSolution";
 import useAddSolutionStep from "../hooks/ChallengeSolution/useAddSolutionStep";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
@@ -11,7 +11,7 @@ import { IoIosClose } from "react-icons/io";
 import useDeleteSolutionStep from "../hooks/ChallengeSolution/useDeleteSolutionStep";
 import useUpdateSolution from "../hooks/ChallengeSolution/useUpdateSolution";
 import { toast } from "react-hot-toast";
-import { PiChatsBold } from "react-icons/pi";
+import { PiChatsBold, PiConfettiDuotone } from "react-icons/pi";
 import {
   EllipsisHorizontalIcon,
   TrashIcon,
@@ -27,8 +27,13 @@ import { useGetSolutionComments } from "../hooks/ChallengeSolution/useGetSolutio
 import { useAddSolutionComment } from "../hooks/ChallengeSolution/useAddSolutionComment";
 import { useDeleteSolutionComment } from "../hooks/ChallengeSolution/useDeleteSolutionComment";
 import ChallengeDescriptionModal from "../components/Modals/ChallengeDescriptionModal";
+import SubmitSolutionModal from "../components/Modals/SubmitSolutionModal";
+import DeleteSolutionModal from "../components/Modals/DeleteSolutionModal";
+import { TiDeleteOutline } from "react-icons/ti";
+import { AxiosError } from "axios";
 
 const ChallengeSolutionPage = () => {
+  const navigate = useNavigate();
   const { challengeId, solutionId } = useParams();
   const { user } = useAuthStore();
   const [stepId, setStepId] = useState<string | null>(null);
@@ -39,6 +44,16 @@ const ChallengeSolutionPage = () => {
     error: solutionError,
     refetch: refetchSolution,
   } = useGetSolution(challengeId!, solutionId!);
+
+  useEffect(() => {
+    if (
+      solutionError instanceof AxiosError &&
+      solutionError.response?.status === 404
+    ) {
+      navigate(`/challenge/${challengeId}`);
+    }
+  }, [solutionError, challengeId, navigate]);
+
   const {
     data: stepComments,
     isLoading: stepCommentsPending,
@@ -76,7 +91,6 @@ const ChallengeSolutionPage = () => {
   } = useDeleteSolutionComment();
   const { mutate: addSolutionComment, isPending: isAddingSolutionComment } =
     useAddSolutionComment();
-
   console.log(solution);
 
   // Step management
@@ -95,6 +109,13 @@ const ChallengeSolutionPage = () => {
   const [solutionComment, setSolutionComment] = useState("");
   const [showChallengeDescriptionModal, setShowChallengeDescriptionModal] =
     useState(false);
+  const [isSubmitSolutionModalOpen, setIsSubmitSolutionModalOpen] =
+    useState(false);
+  const [submittedSolution, setSubmittedSolution] = useState(false);
+  const [isDeleteSolutionModalOpen, setIsDeleteSolutionModalOpen] =
+    useState(false);
+  const [solutionDeleted, setSolutionDeleted] = useState(false);
+
   useEffect(() => {
     if (window.innerWidth >= 768) {
       setDescOpen(true);
@@ -370,7 +391,7 @@ const ChallengeSolutionPage = () => {
           </h1>
         </div>
 
-        {solution?.status === 0 && (
+        {!solutionDeleted && solution?.status === 0 && (
           <>
             <div className="flex md:flex-row flex-col justify-between gap-10">
               <div className="text-darkgrey md:w-[45%]">
@@ -505,7 +526,7 @@ const ChallengeSolutionPage = () => {
             <div className="flex items-center justify-center">
               <button
                 className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium"
-                disabled={isUpdatingSolution}
+                disabled={isUpdatingSolution || steps.length === 0}
                 onClick={handleCommitSolution}
               >
                 {isUpdatingSolution ? (
@@ -517,7 +538,7 @@ const ChallengeSolutionPage = () => {
             </div>
           </>
         )}
-        {solution?.status === 1 && (
+        {!solutionDeleted && solution?.status === 1 && (
           <div className="flex flex-col items-center justify-center mb-10 relative gap-4">
             <button
               className="border-2 border-teal-500 text-teal-500 px-6 py-2 rounded-full cursor-pointer"
@@ -636,11 +657,29 @@ const ChallengeSolutionPage = () => {
                 ))}
               </div>
             </div>
-            <div className="flex items-center justify-center">
-              <button className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium">
+            <div className="flex items-center justify-center gap-4">
+              {isOwner() && (
+                <button
+                  className="bg-red-500 text-white px-8 py-2 rounded font-medium"
+                  onClick={() => setIsDeleteSolutionModalOpen(true)}
+                >
+                  Delete Solution
+                </button>
+              )}
+              <button
+                className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium"
+                onClick={() => setIsSubmitSolutionModalOpen(true)}
+              >
                 Submit Solution
               </button>
             </div>
+            <DeleteSolutionModal
+              isOpen={isDeleteSolutionModalOpen}
+              onClose={() => setIsDeleteSolutionModalOpen(false)}
+              challengeId={challengeId!}
+              solutionId={solutionId!}
+              setSolutionDeleted={setSolutionDeleted}
+            />
             <button
               className="hidden md:block absolute bg-transparent border-2 border-teal-500 text-teal-500 px-8 py-2 rounded font-medium right-0 top-0"
               onClick={() => {
@@ -656,7 +695,50 @@ const ChallengeSolutionPage = () => {
             </button>
           </div>
         )}
+        {!solutionDeleted && solution?.status === 2 && submittedSolution && (
+          <div className="flex flex-col items-center justify-center mb-10 relative gap-4 h-[50vh]">
+            <p className="text-base-content font-body font-bold text-[18px] lg:text-[25px]">
+              Success!
+            </p>
+            <PiConfettiDuotone className="text-teal-500 text-[100px]" />
+            <p className="text-[14px] text-nowrap lg:text-[18px] font-medium font-body text-center py-2 lg:py-2">
+              Your solution was submitted successfully!
+            </p>
+            <button
+              className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium"
+              onClick={() => setSubmittedSolution(false)}
+            >
+              View Solution
+            </button>
+          </div>
+        )}
+        {!solutionDeleted && solution?.status === 2 && !submittedSolution && (
+          <div className="flex flex-col items-center justify-center mb-10 relative gap-4">
+            <h2 className="text-md font-bold">Testing</h2>
+          </div>
+        )}
+        {solutionDeleted && (
+          <div className="flex flex-col items-center justify-center mb-10 relative gap-4 h-[50vh]">
+            <TiDeleteOutline className="text-red-500 text-[150px]" />
+            <p className="text-base-content font-body font-semibold text-[18px]">
+              Solution deleted successfully
+            </p>
+            <button
+              className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium"
+              onClick={() => navigate(`/challenge/${challengeId}`)}
+            >
+              Back to Challenge
+            </button>
+          </div>
+        )}
       </div>
+      <SubmitSolutionModal
+        isOpen={isSubmitSolutionModalOpen}
+        onClose={() => setIsSubmitSolutionModalOpen(false)}
+        challengeId={challengeId!}
+        solutionId={solutionId!}
+        setSubmittedSolution={setSubmittedSolution}
+      />
       <div className="drawer drawer-end font-body">
         <input
           id="step-comment-drawer"
