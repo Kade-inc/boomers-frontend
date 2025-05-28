@@ -1574,6 +1574,31 @@ class APIClient {
       throw axiosError;
     }
   };
+
+  deleteChallengeSolution = async (
+    challengeId: string,
+    solutionId: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.delete(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error deleting challenge solution:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
 }
 
 export default APIClient;
