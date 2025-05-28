@@ -37,9 +37,9 @@ import SubmitSolutionModal from "../components/Modals/SubmitSolutionModal";
 import DeleteSolutionModal from "../components/Modals/DeleteSolutionModal";
 import { TiDeleteOutline } from "react-icons/ti";
 import { AxiosError } from "axios";
-import useGetSolutionRating from "../hooks/ChallengeSolution/useGetSolutionRating";
 import useGetAllSolutionRatings from "../hooks/ChallengeSolution/useGetAllSolutionRatings";
 import usePostSolutionRating from "../hooks/ChallengeSolution/usePostSolutionRating";
+import useUpdateSolutionRating from "../hooks/ChallengeSolution/useUpdateSolutionRating";
 
 const ChallengeSolutionPage = () => {
   const navigate = useNavigate();
@@ -130,12 +130,6 @@ const ChallengeSolutionPage = () => {
   const [overallRating, setOverallRating] = useState<number | null>(null);
   const [mentorRating, setMentorRating] = useState<number | null>(null);
   const [isRating, setIsRating] = useState<boolean>(false);
-  const { data: solutionRating } = useGetSolutionRating(
-    challengeId!,
-    solutionId!,
-    solutionRatingId!,
-  );
-  console.log(solutionRating);
 
   const { data: solutionRatings } = useGetAllSolutionRatings(
     challengeId!,
@@ -146,25 +140,52 @@ const ChallengeSolutionPage = () => {
   const { mutate: postSolutionRating, isPending: isPostingSolutionRating } =
     usePostSolutionRating();
 
+  const { mutate: updateSolutionRating, isPending: isUpdatingSolutionRating } =
+    useUpdateSolutionRating();
+
   const handleRateSolution = (currentRate: number | null) => {
     if (!currentRate) return;
-    postSolutionRating(
-      {
-        challengeId: challengeId!,
-        solutionId: solutionId!,
-        rating: currentRate,
-      },
-      {
-        onSuccess: () => {
-          toast.success("Solution rated successfully");
-          setIsRating(false);
-          setRating(currentRate);
+
+    if (solutionRatingId) {
+      // Update existing rating
+      updateSolutionRating(
+        {
+          challengeId: challengeId!,
+          solutionId: solutionId!,
+          ratingId: solutionRatingId,
+          rating: currentRate,
         },
-        onError: (error: Error) => {
-          toast.error(error.message);
+        {
+          onSuccess: () => {
+            toast.success("Solution rating updated successfully");
+            setIsRating(false);
+            setRating(currentRate);
+          },
+          onError: (error: Error) => {
+            toast.error(error.message);
+          },
         },
-      },
-    );
+      );
+    } else {
+      // Create new rating
+      postSolutionRating(
+        {
+          challengeId: challengeId!,
+          solutionId: solutionId!,
+          rating: currentRate,
+        },
+        {
+          onSuccess: () => {
+            toast.success("Solution rated successfully");
+            setIsRating(false);
+            setRating(currentRate);
+          },
+          onError: (error: Error) => {
+            toast.error(error.message);
+          },
+        },
+      );
+    }
   };
 
   useEffect(() => {
@@ -785,7 +806,7 @@ const ChallengeSolutionPage = () => {
           </div>
         )}
         {!solutionDeleted && solution?.status === 2 && !submittedSolution && (
-          <div className="flex flex-col items-center justify-center mb-10 relative gap-4">
+          <div className="flex flex-col items-center justify-center mb-10 relative gap-4 pb-10">
             <div className="flex gap-2">
               <p className="text-6xl font-semibold flex items-end">
                 {solution.percentageCompleted}
@@ -822,7 +843,7 @@ const ChallengeSolutionPage = () => {
                   {solution.steps.map((step, idx) => (
                     <div
                       key={step._id}
-                      className="flex items-center justify-between bg-base-100 p-4 rounded border border-base-content/10 w-3/4"
+                      className="flex items-center justify-between bg-base-100 p-4 rounded border border-base-content/10 w-full md:w-3/4"
                     >
                       {editIndex === idx ? (
                         <div className="flex-1 flex items-center gap-2">
@@ -909,14 +930,12 @@ const ChallengeSolutionPage = () => {
                 </div>
               </div>
               <div className="w-full md:w-1/2 flex justify-center items-center">
-                <div className="flex flex-col  gap-4 bg-darkgrey h-[400px] w-[400px] rounded-md p-8">
+                <div className="flex flex-col  gap-4 bg-darkgrey h-[400px] w-[400px] rounded-md p-8 shadow-xl">
                   <p className="text-white font-semibold text-[18px]">
                     Ratings
                   </p>
                   <div className="flex flex-col gap-2">
-                    <p className="text-white font-medium">
-                      Your Rating: {rating}
-                    </p>
+                    <p className="text-white font-medium">Your Rating</p>
                     <div className="flex flex-row gap-2">
                       {[...Array(5)].map((_, index) => {
                         const currentRate = index + 1;
@@ -925,16 +944,28 @@ const ChallengeSolutionPage = () => {
                             <>
                               <label>
                                 {isRating ? (
-                                  <FaStar
-                                    size={30}
-                                    color={
-                                      currentRate <= rating!
-                                        ? "#F8B500"
-                                        : "white"
-                                    }
-                                    onClick={() => setRating(currentRate)}
-                                    className="cursor-pointer"
-                                  />
+                                  isUpdatingSolutionRating ||
+                                  isPostingSolutionRating ? (
+                                    <FaStar
+                                      size={30}
+                                      color={
+                                        currentRate <= rating!
+                                          ? "#F8B500"
+                                          : "white"
+                                      }
+                                    />
+                                  ) : (
+                                    <FaStar
+                                      size={30}
+                                      color={
+                                        currentRate <= rating!
+                                          ? "#F8B500"
+                                          : "white"
+                                      }
+                                      onClick={() => setRating(currentRate)}
+                                      className="cursor-pointer"
+                                    />
+                                  )
                                 ) : (
                                   <FaStar
                                     size={30}
@@ -970,9 +1001,14 @@ const ChallengeSolutionPage = () => {
                         <button
                           className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium"
                           onClick={() => handleRateSolution(rating)}
-                          disabled={isPostingSolutionRating || !rating}
+                          disabled={
+                            isPostingSolutionRating ||
+                            isUpdatingSolutionRating ||
+                            !rating
+                          }
                         >
-                          {isPostingSolutionRating ? (
+                          {isPostingSolutionRating ||
+                          isUpdatingSolutionRating ? (
                             <span className="loading loading-dots loading-xs"></span>
                           ) : (
                             "Rate"
@@ -982,9 +1018,7 @@ const ChallengeSolutionPage = () => {
                     )}
                   </div>
 
-                  <p className="text-white font-medium">
-                    Overall Rating: {overallRating}
-                  </p>
+                  <p className="text-white font-medium">Overall Rating</p>
                   <div className="flex flex-row gap-2">
                     {[...Array(5)].map((_, index) => {
                       const currentRate = index + 1;
@@ -1008,9 +1042,7 @@ const ChallengeSolutionPage = () => {
                     })}
                   </div>
 
-                  <p className="text-white font-medium">
-                    Mentor Rating: {mentorRating}
-                  </p>
+                  <p className="text-white font-medium">Mentor Rating</p>
                   <div className="flex flex-row gap-2">
                     {[...Array(5)].map((_, index) => {
                       const currentRate = index + 1;
