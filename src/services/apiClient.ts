@@ -1607,18 +1607,18 @@ class APIClient {
   ) => {
     try {
       const response = await this.axiosInstance.get(
-        `${this.endpoint}/${challengeId}/solutions/${solutionId}/ratings`,
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/rating`,
         {
           headers: {
             requiresAuth,
           },
         },
       );
-      return response.data;
+      return response.data.data || response.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(
-        "Error fetching solution ratings:",
+        "Error fetching solution rating:",
         axiosError.response?.data ?? axiosError.message,
       );
       throw axiosError;
@@ -1633,7 +1633,7 @@ class APIClient {
   ) => {
     try {
       const response = await this.axiosInstance.post(
-        `${this.endpoint}/${challengeId}/solutions/${solutionId}/ratings`,
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/rating`,
         { rating },
         {
           headers: {
@@ -1641,7 +1641,7 @@ class APIClient {
           },
         },
       );
-      return response.data;
+      return response.data.data || response.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(
@@ -1660,7 +1660,7 @@ class APIClient {
   ) => {
     try {
       const response = await this.axiosInstance.patch(
-        `${this.endpoint}/${challengeId}/solutions/${solutionId}/ratings/${ratingId}`,
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/rating/${ratingId}`,
         { rating },
         {
           headers: {
@@ -1668,7 +1668,7 @@ class APIClient {
           },
         },
       );
-      return response.data;
+      return response.data.data || response.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(
@@ -1687,7 +1687,7 @@ class APIClient {
   ) => {
     try {
       const response = await this.axiosInstance.delete(
-        `${this.endpoint}/${challengeId}/solutions/${solutionId}/ratings/${ratingId}`,
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/rating/${ratingId}`,
         {
           headers: {
             requiresAuth,
@@ -1713,7 +1713,7 @@ class APIClient {
   ) => {
     try {
       const response = await this.axiosInstance.get(
-        `${this.endpoint}/${challengeId}/solutions/${solutionId}/ratings/${ratingId}`,
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/rating/${ratingId}`,
         {
           headers: {
             requiresAuth,

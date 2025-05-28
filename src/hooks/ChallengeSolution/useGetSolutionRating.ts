@@ -14,6 +14,7 @@ const useGetSolutionRating = (
     queryFn: () =>
       apiClient.getSolutionRatingById(challengeId, solutionId, ratingId),
     staleTime: 1000 * 60 * 5, // 5 minutes
+    enabled: false,
   });
 };
 

@@ -1,4 +1,8 @@
-import { useMutation, UseMutationResult } from "@tanstack/react-query";
+import {
+  useMutation,
+  UseMutationResult,
+  useQueryClient,
+} from "@tanstack/react-query";
 import APIClient from "../../services/apiClient";
 import Challenge from "../../entities/Challenge";
 
@@ -14,10 +18,16 @@ const usePostSolutionRating = (): UseMutationResult<
   },
   unknown
 > => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["post-solution-rating"],
     mutationFn: ({ challengeId, solutionId, rating }) =>
       apiClient.postSolutionRating(challengeId, solutionId, rating),
+    onSuccess: ({ challenge_id, solution_id }) => {
+      queryClient.invalidateQueries({
+        queryKey: ["solution-ratings", challenge_id, solution_id],
+      });
+    },
   });
 };
 

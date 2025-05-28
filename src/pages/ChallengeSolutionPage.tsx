@@ -4,7 +4,13 @@ import useGetSolution from "../hooks/ChallengeSolution/useGetSolution";
 import useAddSolutionStep from "../hooks/ChallengeSolution/useAddSolutionStep";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { FaCheck, FaChevronDown, FaChevronUp, FaTrash } from "react-icons/fa";
+import {
+  FaCheck,
+  FaChevronDown,
+  FaChevronUp,
+  FaStar,
+  FaTrash,
+} from "react-icons/fa";
 import useUpdateSolutionStep from "../hooks/ChallengeSolution/useUpdateSolutionStep";
 import { TbEdit } from "react-icons/tb";
 import { IoIosClose } from "react-icons/io";
@@ -31,6 +37,9 @@ import SubmitSolutionModal from "../components/Modals/SubmitSolutionModal";
 import DeleteSolutionModal from "../components/Modals/DeleteSolutionModal";
 import { TiDeleteOutline } from "react-icons/ti";
 import { AxiosError } from "axios";
+import useGetSolutionRating from "../hooks/ChallengeSolution/useGetSolutionRating";
+import useGetAllSolutionRatings from "../hooks/ChallengeSolution/useGetAllSolutionRatings";
+import usePostSolutionRating from "../hooks/ChallengeSolution/usePostSolutionRating";
 
 const ChallengeSolutionPage = () => {
   const navigate = useNavigate();
@@ -91,6 +100,7 @@ const ChallengeSolutionPage = () => {
   } = useDeleteSolutionComment();
   const { mutate: addSolutionComment, isPending: isAddingSolutionComment } =
     useAddSolutionComment();
+
   console.log(solution);
 
   // Step management
@@ -115,6 +125,68 @@ const ChallengeSolutionPage = () => {
   const [isDeleteSolutionModalOpen, setIsDeleteSolutionModalOpen] =
     useState(false);
   const [solutionDeleted, setSolutionDeleted] = useState(false);
+  const [rating, setRating] = useState<number | null>(null);
+  const [solutionRatingId, setSolutionRatingId] = useState<string | null>(null);
+  const [overallRating, setOverallRating] = useState<number | null>(null);
+  const [mentorRating, setMentorRating] = useState<number | null>(null);
+  const [isRating, setIsRating] = useState<boolean>(false);
+  const { data: solutionRating } = useGetSolutionRating(
+    challengeId!,
+    solutionId!,
+    solutionRatingId!,
+  );
+  console.log(solutionRating);
+
+  const { data: solutionRatings } = useGetAllSolutionRatings(
+    challengeId!,
+    solutionId!,
+  );
+  console.log(solutionRatings);
+
+  const { mutate: postSolutionRating, isPending: isPostingSolutionRating } =
+    usePostSolutionRating();
+
+  const handleRateSolution = (currentRate: number | null) => {
+    if (!currentRate) return;
+    postSolutionRating(
+      {
+        challengeId: challengeId!,
+        solutionId: solutionId!,
+        rating: currentRate,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Solution rated successfully");
+          setIsRating(false);
+          setRating(currentRate);
+        },
+        onError: (error: Error) => {
+          toast.error(error.message);
+        },
+      },
+    );
+  };
+
+  useEffect(() => {
+    if (solutionRatings) {
+      console.log(solutionRatings);
+      const rating = solutionRatings.find(
+        (rating) => rating.user_id === user.user_id,
+      );
+      setSolutionRatingId(rating?._id || null);
+      setRating(rating?.rating || null);
+
+      const allRatings = solutionRatings.map((rating) => rating.rating);
+      const averageRating =
+        allRatings.reduce((acc, curr) => acc + curr, 0) / allRatings.length;
+      setOverallRating(averageRating);
+
+      const mentorRating = solutionRatings.filter(
+        (rating) => rating.user_id === solution?.challenge.owner_id,
+      );
+      setMentorRating(mentorRating[0]?.rating || null);
+    }
+  }, [solutionRatings]);
 
   useEffect(() => {
     if (window.innerWidth >= 768) {
@@ -837,8 +909,130 @@ const ChallengeSolutionPage = () => {
                 </div>
               </div>
               <div className="w-full md:w-1/2 flex justify-center items-center">
-                <div className="flex flex-col justify-center gap-4 bg-darkgrey h-[400px] w-[400px] rounded-md">
-                  <p>Ratings</p>
+                <div className="flex flex-col  gap-4 bg-darkgrey h-[400px] w-[400px] rounded-md p-8">
+                  <p className="text-white font-semibold text-[18px]">
+                    Ratings
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    <p className="text-white font-medium">
+                      Your Rating: {rating}
+                    </p>
+                    <div className="flex flex-row gap-2">
+                      {[...Array(5)].map((_, index) => {
+                        const currentRate = index + 1;
+                        return (
+                          <div key={index}>
+                            <>
+                              <label>
+                                {isRating ? (
+                                  <FaStar
+                                    size={30}
+                                    color={
+                                      currentRate <= rating!
+                                        ? "#F8B500"
+                                        : "white"
+                                    }
+                                    onClick={() => setRating(currentRate)}
+                                    className="cursor-pointer"
+                                  />
+                                ) : (
+                                  <FaStar
+                                    size={30}
+                                    color={
+                                      currentRate <= rating!
+                                        ? "#F8B500"
+                                        : "white"
+                                    }
+                                  />
+                                )}
+                              </label>
+                            </>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    {!isRating && (
+                      <button
+                        className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium mt-4"
+                        onClick={() => setIsRating(true)}
+                      >
+                        Rate Solution
+                      </button>
+                    )}
+                    {isRating && (
+                      <div className="flex gap-4 mt-4">
+                        <button
+                          className="bg-[red] text-white px-8 py-2 rounded font-medium"
+                          onClick={() => setIsRating(false)}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium"
+                          onClick={() => handleRateSolution(rating)}
+                          disabled={isPostingSolutionRating || !rating}
+                        >
+                          {isPostingSolutionRating ? (
+                            <span className="loading loading-dots loading-xs"></span>
+                          ) : (
+                            "Rate"
+                          )}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  <p className="text-white font-medium">
+                    Overall Rating: {overallRating}
+                  </p>
+                  <div className="flex flex-row gap-2">
+                    {[...Array(5)].map((_, index) => {
+                      const currentRate = index + 1;
+                      return (
+                        <div key={index}>
+                          <>
+                            <label>
+                              {/* <input type="radio" name="rate" value={currentRate} onChange={() => setRating(currentRate)} /> */}
+                              <FaStar
+                                size={30}
+                                color={
+                                  currentRate <= overallRating!
+                                    ? "#F8B500"
+                                    : "white"
+                                }
+                              />
+                            </label>
+                          </>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <p className="text-white font-medium">
+                    Mentor Rating: {mentorRating}
+                  </p>
+                  <div className="flex flex-row gap-2">
+                    {[...Array(5)].map((_, index) => {
+                      const currentRate = index + 1;
+                      return (
+                        <div key={index}>
+                          <>
+                            <label>
+                              {/* <input type="radio" name="rate" value={currentRate} onChange={() => setRating(currentRate)} /> */}
+                              <FaStar
+                                size={30}
+                                color={
+                                  currentRate <= mentorRating!
+                                    ? "#F8B500"
+                                    : "white"
+                                }
+                              />
+                            </label>
+                          </>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>
