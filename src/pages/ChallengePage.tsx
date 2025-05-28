@@ -561,9 +561,10 @@ function ChallengePage() {
                     className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 md:w-[80%] lg:w-[85%] absolute bottom-6 left-8 "
                     onClick={() => handleBeginChallenge()}
                   >
-                    {userSolution?.status === 1
-                      ? "Continue"
-                      : "Begin challenge"}
+                    {userSolution?.status === 0 && "Begin challenge"}
+                    {userSolution?.status === 1 && "Continue"}
+
+                    {userSolution?.status === 2 && "View Solution"}
                   </button>
                 )}
               </div>

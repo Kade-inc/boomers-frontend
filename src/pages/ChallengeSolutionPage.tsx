@@ -4,7 +4,13 @@ import useGetSolution from "../hooks/ChallengeSolution/useGetSolution";
 import useAddSolutionStep from "../hooks/ChallengeSolution/useAddSolutionStep";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { FaCheck, FaChevronDown, FaChevronUp, FaTrash } from "react-icons/fa";
+import {
+  FaCheck,
+  FaChevronDown,
+  FaChevronUp,
+  FaStar,
+  FaTrash,
+} from "react-icons/fa";
 import useUpdateSolutionStep from "../hooks/ChallengeSolution/useUpdateSolutionStep";
 import { TbEdit } from "react-icons/tb";
 import { IoIosClose } from "react-icons/io";
@@ -31,6 +37,9 @@ import SubmitSolutionModal from "../components/Modals/SubmitSolutionModal";
 import DeleteSolutionModal from "../components/Modals/DeleteSolutionModal";
 import { TiDeleteOutline } from "react-icons/ti";
 import { AxiosError } from "axios";
+import useGetAllSolutionRatings from "../hooks/ChallengeSolution/useGetAllSolutionRatings";
+import usePostSolutionRating from "../hooks/ChallengeSolution/usePostSolutionRating";
+import useUpdateSolutionRating from "../hooks/ChallengeSolution/useUpdateSolutionRating";
 
 const ChallengeSolutionPage = () => {
   const navigate = useNavigate();
@@ -91,6 +100,7 @@ const ChallengeSolutionPage = () => {
   } = useDeleteSolutionComment();
   const { mutate: addSolutionComment, isPending: isAddingSolutionComment } =
     useAddSolutionComment();
+
   console.log(solution);
 
   // Step management
@@ -115,6 +125,89 @@ const ChallengeSolutionPage = () => {
   const [isDeleteSolutionModalOpen, setIsDeleteSolutionModalOpen] =
     useState(false);
   const [solutionDeleted, setSolutionDeleted] = useState(false);
+  const [rating, setRating] = useState<number | null>(null);
+  const [solutionRatingId, setSolutionRatingId] = useState<string | null>(null);
+  const [overallRating, setOverallRating] = useState<number | null>(null);
+  const [mentorRating, setMentorRating] = useState<number | null>(null);
+  const [isRating, setIsRating] = useState<boolean>(false);
+
+  const { data: solutionRatings } = useGetAllSolutionRatings(
+    challengeId!,
+    solutionId!,
+  );
+  console.log(solutionRatings);
+
+  const { mutate: postSolutionRating, isPending: isPostingSolutionRating } =
+    usePostSolutionRating();
+
+  const { mutate: updateSolutionRating, isPending: isUpdatingSolutionRating } =
+    useUpdateSolutionRating();
+
+  const handleRateSolution = (currentRate: number | null) => {
+    if (!currentRate) return;
+
+    if (solutionRatingId) {
+      // Update existing rating
+      updateSolutionRating(
+        {
+          challengeId: challengeId!,
+          solutionId: solutionId!,
+          ratingId: solutionRatingId,
+          rating: currentRate,
+        },
+        {
+          onSuccess: () => {
+            toast.success("Solution rating updated successfully");
+            setIsRating(false);
+            setRating(currentRate);
+          },
+          onError: (error: Error) => {
+            toast.error(error.message);
+          },
+        },
+      );
+    } else {
+      // Create new rating
+      postSolutionRating(
+        {
+          challengeId: challengeId!,
+          solutionId: solutionId!,
+          rating: currentRate,
+        },
+        {
+          onSuccess: () => {
+            toast.success("Solution rated successfully");
+            setIsRating(false);
+            setRating(currentRate);
+          },
+          onError: (error: Error) => {
+            toast.error(error.message);
+          },
+        },
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (solutionRatings) {
+      console.log(solutionRatings);
+      const rating = solutionRatings.find(
+        (rating) => rating.user_id === user.user_id,
+      );
+      setSolutionRatingId(rating?._id || null);
+      setRating(rating?.rating || null);
+
+      const allRatings = solutionRatings.map((rating) => rating.rating);
+      const averageRating =
+        allRatings.reduce((acc, curr) => acc + curr, 0) / allRatings.length;
+      setOverallRating(averageRating);
+
+      const mentorRating = solutionRatings.filter(
+        (rating) => rating.user_id === solution?.challenge.owner_id,
+      );
+      setMentorRating(mentorRating[0]?.rating || null);
+    }
+  }, [solutionRatings]);
 
   useEffect(() => {
     if (window.innerWidth >= 768) {
@@ -713,8 +806,281 @@ const ChallengeSolutionPage = () => {
           </div>
         )}
         {!solutionDeleted && solution?.status === 2 && !submittedSolution && (
-          <div className="flex flex-col items-center justify-center mb-10 relative gap-4">
-            <h2 className="text-md font-bold">Testing</h2>
+          <div className="flex flex-col items-center justify-center mb-10 relative gap-4 pb-10">
+            <div className="flex gap-2">
+              <p className="text-6xl font-semibold flex items-end">
+                {solution.percentageCompleted}
+              </p>
+              <p className="flex items-end">% Complete</p>
+            </div>
+            <div>
+              <p className="text-base-content font-bold text-[18px] text-center mb-4">
+                Solution Links
+              </p>
+              <p className="bg-gradient-to-bl from-[#495D6D] to-[#313752] p-4 text-white rounded-md">
+                <a
+                  href={solution.demo_url || ""}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {solution.demo_url || "No demo URL"}
+                </a>
+              </p>
+              <p className="bg-gradient-to-bl from-[#495D6D] to-[#313752] p-4 text-white rounded-md mt-4">
+                <a
+                  href={solution.solution || ""}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {solution.solution || "No solution URL"}
+                </a>
+              </p>
+            </div>
+            <div className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-between w-[90%] gap-4">
+              <div className="flex flex-col items-start w-full md:w-1/2 gap-4">
+                <h1>Steps</h1>
+                <div className="flex flex-col items-start justify-center w-full gap-6">
+                  {solution.steps.map((step, idx) => (
+                    <div
+                      key={step._id}
+                      className="flex items-center justify-between bg-base-100 p-4 rounded border border-base-content/10 w-full md:w-3/4"
+                    >
+                      {editIndex === idx ? (
+                        <div className="flex-1 flex items-center gap-2">
+                          <textarea
+                            className="border rounded p-1 flex-1 focus:outline-none"
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
+                            autoFocus
+                          />
+                          <button
+                            className="text-green-600 font-bold"
+                            onClick={handleSaveEditStep}
+                            title="Save"
+                            disabled={isUpdatingStep}
+                          >
+                            {isUpdatingStep ? (
+                              <span className="loading loading-dots loading-xs"></span>
+                            ) : (
+                              <FaCheck />
+                            )}
+                          </button>
+                          <button
+                            className="text-gray-500"
+                            onClick={handleCancelEdit}
+                            title="Cancel"
+                          >
+                            <IoIosClose className="text-3xl text-base-content" />
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between w-full">
+                          <span className="text-base-content w-[90%] font-medium">
+                            {step.description}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            {step.completed ? (
+                              <div className="bg-green-500 text-white px-2 py-2 text-sm rounded-full font-medium">
+                                <FaCheck />
+                              </div>
+                            ) : (
+                              <button
+                                className="bg-yellow text-darkgrey px-6 py-1 text-sm rounded font-medium"
+                                onClick={() => handleCompleteStep(step._id)}
+                                title="Edit"
+                                disabled={updatingStepId === step._id}
+                              >
+                                {updatingStepId === step._id ? (
+                                  <span className="loading loading-dots loading-xs"></span>
+                                ) : (
+                                  "Complete"
+                                )}
+                              </button>
+                            )}
+                            {!step.completed && (
+                              <button
+                                className="ml-2 text-teal-500"
+                                onClick={() => handleEditStep(idx)}
+                                title="Edit"
+                              >
+                                <TbEdit className="text-2xl text-teal-500" />
+                              </button>
+                            )}
+
+                            <button
+                              className="ml-2 text-teal-500"
+                              onClick={() => {
+                                const drawer = document.getElementById(
+                                  "step-comment-drawer",
+                                ) as HTMLInputElement | null;
+                                if (drawer) {
+                                  setStepId(step._id);
+                                  drawer.checked = true; // Open the drawer
+                                }
+                              }}
+                              title="Comments"
+                            >
+                              <PiChatsBold size={20} />
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="w-full md:w-1/2 flex justify-center items-center">
+                <div className="flex flex-col  gap-4 bg-darkgrey h-[400px] w-[400px] rounded-md p-8 shadow-xl">
+                  <p className="text-white font-semibold text-[18px]">
+                    Ratings
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    <p className="text-white font-medium">Your Rating</p>
+                    <div className="flex flex-row gap-2">
+                      {[...Array(5)].map((_, index) => {
+                        const currentRate = index + 1;
+                        return (
+                          <div key={index}>
+                            <>
+                              <label>
+                                {isRating ? (
+                                  isUpdatingSolutionRating ||
+                                  isPostingSolutionRating ? (
+                                    <FaStar
+                                      size={30}
+                                      color={
+                                        currentRate <= rating!
+                                          ? "#F8B500"
+                                          : "white"
+                                      }
+                                    />
+                                  ) : (
+                                    <FaStar
+                                      size={30}
+                                      color={
+                                        currentRate <= rating!
+                                          ? "#F8B500"
+                                          : "white"
+                                      }
+                                      onClick={() => setRating(currentRate)}
+                                      className="cursor-pointer"
+                                    />
+                                  )
+                                ) : (
+                                  <FaStar
+                                    size={30}
+                                    color={
+                                      currentRate <= rating!
+                                        ? "#F8B500"
+                                        : "white"
+                                    }
+                                  />
+                                )}
+                              </label>
+                            </>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    {!isRating && (
+                      <button
+                        className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium mt-4"
+                        onClick={() => setIsRating(true)}
+                      >
+                        Rate Solution
+                      </button>
+                    )}
+                    {isRating && (
+                      <div className="flex gap-4 mt-4">
+                        <button
+                          className="bg-[red] text-white px-8 py-2 rounded font-medium"
+                          onClick={() => setIsRating(false)}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium"
+                          onClick={() => handleRateSolution(rating)}
+                          disabled={
+                            isPostingSolutionRating ||
+                            isUpdatingSolutionRating ||
+                            !rating
+                          }
+                        >
+                          {isPostingSolutionRating ||
+                          isUpdatingSolutionRating ? (
+                            <span className="loading loading-dots loading-xs"></span>
+                          ) : (
+                            "Rate"
+                          )}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  <p className="text-white font-medium">Overall Rating</p>
+                  <div className="flex flex-row gap-2">
+                    {[...Array(5)].map((_, index) => {
+                      const currentRate = index + 1;
+                      return (
+                        <div key={index}>
+                          <>
+                            <label>
+                              {/* <input type="radio" name="rate" value={currentRate} onChange={() => setRating(currentRate)} /> */}
+                              <FaStar
+                                size={30}
+                                color={
+                                  currentRate <= overallRating!
+                                    ? "#F8B500"
+                                    : "white"
+                                }
+                              />
+                            </label>
+                          </>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <p className="text-white font-medium">Mentor Rating</p>
+                  <div className="flex flex-row gap-2">
+                    {[...Array(5)].map((_, index) => {
+                      const currentRate = index + 1;
+                      return (
+                        <div key={index}>
+                          <>
+                            <label>
+                              {/* <input type="radio" name="rate" value={currentRate} onChange={() => setRating(currentRate)} /> */}
+                              <FaStar
+                                size={30}
+                                color={
+                                  currentRate <= mentorRating!
+                                    ? "#F8B500"
+                                    : "white"
+                                }
+                              />
+                            </label>
+                          </>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button
+              className="hidden md:block absolute bg-transparent border-2 border-teal-500 text-teal-500 px-8 py-2 rounded font-medium right-0 top-0"
+              onClick={() => {
+                const drawer = document.getElementById(
+                  "solution-comment-drawer",
+                ) as HTMLInputElement | null;
+                if (drawer) {
+                  drawer.checked = true; // Open the drawer
+                }
+              }}
+            >
+              Comments
+            </button>
           </div>
         )}
         {solutionDeleted && (

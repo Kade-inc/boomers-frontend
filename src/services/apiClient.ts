@@ -1599,6 +1599,137 @@ class APIClient {
       throw axiosError;
     }
   };
+
+  getSolutionRatings = async (
+    challengeId: string,
+    solutionId: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.get(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/rating`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data.data || response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching solution rating:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  postSolutionRating = async (
+    challengeId: string,
+    solutionId: string,
+    rating: number,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.post(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/rating`,
+        { rating },
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data.data || response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error posting solution rating:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
+  updateSolutionRating = async (
+    challengeId: string,
+    solutionId: string,
+    ratingId: string,
+    rating: number,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.patch(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/rating/${ratingId}`,
+        { rating },
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data.data || response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error updating solution rating:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  deleteSolutionRating = async (
+    challengeId: string,
+    solutionId: string,
+    ratingId: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.delete(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/rating/${ratingId}`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error deleting solution rating:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  getSolutionRatingById = async (
+    challengeId: string,
+    solutionId: string,
+    ratingId: string,
+    requiresAuth = true,
+  ) => {
+    try {
+      const response = await this.axiosInstance.get(
+        `${this.endpoint}/${challengeId}/solutions/${solutionId}/rating/${ratingId}`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching solution rating by id:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
 }
 
 export default APIClient;
