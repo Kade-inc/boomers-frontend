@@ -1,20 +1,20 @@
 import Modal from "react-modal";
-import User from "../entities/User";
+import User from "../../entities/User";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import useUpdateUser from "../hooks/useUpdateUser";
-import useAuthStore from "../stores/useAuthStore";
+import useUpdateUser from "../../hooks/useUpdateUser";
+import useAuthStore from "../../stores/useAuthStore";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import { useEffect, useRef, useState } from "react";
-import useDeleteProfilePicture from "../hooks/useDeleteProfilePicture";
-import useDomains from "../hooks/useDomains";
-import useSubDomains from "../hooks/useSubDomains";
-import Domain from "../entities/Domain";
-import MultiSelect from "./MultiSelect";
-import DomainTopic from "../entities/DomainTopic";
-import useDomainTopics from "../hooks/useDomainTopics";
-import SubDomain from "../entities/SubDomain";
+import useDeleteProfilePicture from "../../hooks/useDeleteProfilePicture";
+import useDomains from "../../hooks/useDomains";
+import useSubDomains from "../../hooks/useSubDomains";
+import Domain from "../../entities/Domain";
+import MultiSelect from "../../components/MultiSelect";
+import DomainTopic from "../../entities/DomainTopic";
+import useDomainTopics from "../../hooks/useDomainTopics";
+import SubDomain from "../../entities/SubDomain";
 
 type ModalTriggerProps = {
   isOpen: boolean;

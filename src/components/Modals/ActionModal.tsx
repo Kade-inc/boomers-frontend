@@ -1,19 +1,18 @@
 import { useState, useRef } from "react";
 import React from "react";
-import useJoinTeamRequest from "../hooks/useJoinTeamRequest";
+import useJoinTeamRequest from "../../hooks/useJoinTeamRequest";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
-import JoinRequest from "../entities/JoinRequest";
-import User from "../entities/User";
+import JoinRequest from "../../entities/JoinRequest";
+import User from "../../entities/User";
+import DomainTopic from "../../entities/DomainTopic";
 
 interface ActionDialogProps {
   selectedPendingMemberAction: JoinRequest | null;
 }
 
-const MemberRequestDialog = ({
-  selectedPendingMemberAction,
-}: ActionDialogProps) => {
+const ActionModal = ({ selectedPendingMemberAction }: ActionDialogProps) => {
   const [acceptClicked, setAcceptClicked] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const { mutate: joinRequest } = useJoinTeamRequest();
@@ -151,10 +150,10 @@ const MemberRequestDialog = ({
                         </p>
 
                         {selectedPendingMemberAction?.user_id?.interests.domainTopics?.map(
-                          (topic: string, index: number) => (
+                          (topic: DomainTopic, index: number) => (
                             <React.Fragment key={index}>
                               <div className="bg-black rounded-full w-1 h-1 mx-1"></div>
-                              <p>{topic}</p>
+                              <p>{topic.name}</p>
                             </React.Fragment>
                           ),
                         )}
@@ -174,13 +173,15 @@ const MemberRequestDialog = ({
                   Kindly give a reason to let{" "}
                   <span>
                     {" "}
-                    {selectedPendingMemberAction?.user_id.profile.firstName &&
-                    selectedPendingMemberAction?.user_id.profile.lastName
-                      ? `${selectedPendingMemberAction.user_id.profile.firstName} ${selectedPendingMemberAction.user_id.profile.lastName}`
+                    {selectedPendingMemberAction?.user_id.profile?.firstName &&
+                    selectedPendingMemberAction?.user_id.profile?.lastName
+                      ? `${selectedPendingMemberAction.user_id.profile?.firstName} ${selectedPendingMemberAction.user_id.profile?.lastName}`
                       : selectedPendingMemberAction?.user_id.profile
-                          .firstName ||
-                        selectedPendingMemberAction?.user_id.profile.lastName ||
-                        selectedPendingMemberAction?.user_id.profile.username ||
+                          ?.firstName ||
+                        selectedPendingMemberAction?.user_id.profile
+                          ?.lastName ||
+                        selectedPendingMemberAction?.user_id.profile
+                          ?.username ||
                         "Unknown User"}
                   </span>{" "}
                   know why you have rejected their request
@@ -295,4 +296,4 @@ const MemberRequestDialog = ({
   );
 };
 
-export default MemberRequestDialog;
+export default ActionModal;

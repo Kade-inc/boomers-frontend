@@ -1,7 +1,7 @@
 import { UserCircleIcon } from "@heroicons/react/24/solid";
-import JoinRequest from "../entities/JoinRequest";
+import JoinRequest from "../../entities/JoinRequest";
 import React from "react";
-import useGetUser from "../hooks/useGetUser";
+import useGetUser from "../../hooks/useGetUser";
 interface ApprovalDialogProps {
   selectedPendingMemberApproval: JoinRequest | null;
   mode?: "action" | "approval";

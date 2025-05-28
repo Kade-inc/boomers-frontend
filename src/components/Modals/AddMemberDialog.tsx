@@ -1,8 +1,8 @@
 import { useState } from "react";
-import useGetAllUsers from "../hooks/useGetAllUsers";
-import useGetUser from "../hooks/useGetUser";
+import useGetAllUsers from "../../hooks/useGetAllUsers";
+import useGetUser from "../../hooks/useGetUser";
 import React from "react";
-import useAddTeamMember from "../hooks/useAddTeamMember";
+import useAddTeamMember from "../../hooks/useAddTeamMember";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 
 interface AddMemberDialogProps {
@@ -132,10 +132,10 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
                     >
                       <div className="flex flex-col justify-center items-center">
                         <div className="h-[95px] flex items-center justify-center mt-6 mb-3">
-                          {user.profile.profile_picture ? (
+                          {user.profile?.profile_picture ? (
                             <img
                               className="h-[81px] w-[81px] rounded-full bg-white"
-                              src={user.profile.profile_picture}
+                              src={user.profile?.profile_picture}
                               alt="User avatar"
                             />
                           ) : (
@@ -144,10 +144,10 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
                         </div>
 
                         <p className="mb-3 w-full text-center">
-                          {user.profile.firstName && user.profile.lastName
-                            ? `${user.profile.firstName} ${user.profile.lastName}`
-                            : user.profile.firstName ||
-                              user.profile.lastName ||
+                          {user.profile?.firstName && user.profile?.lastName
+                            ? `${user.profile?.firstName} ${user.profile?.lastName}`
+                            : user.profile?.firstName ||
+                              user.profile?.lastName ||
                               user.username}
                         </p>
 
@@ -183,7 +183,7 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
               <>
                 <p className="text-white mb-6">
                   {user?.firstName && user?.lastName
-                    ? `${user.firstName} ${user.lastName}`
+                    ? `${user?.firstName} ${user?.lastName}`
                     : user?.username || "Username not available"}
                 </p>
 

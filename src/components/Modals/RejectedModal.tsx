@@ -1,4 +1,4 @@
-import JoinRequest from "../entities/JoinRequest";
+import JoinRequest from "../../entities/JoinRequest";
 interface RejectedModalProps {
   selectedRejectRequest: JoinRequest | null;
 }
