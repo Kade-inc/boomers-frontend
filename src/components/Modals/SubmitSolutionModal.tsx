@@ -52,7 +52,6 @@ const SubmitSolutionModal = ({
       },
       {
         onSuccess: () => {
-          toast.success("Solution Submitted successfully");
           queryClient.invalidateQueries({
             queryKey: ["challenge-solution", challengeId, solutionId],
           });

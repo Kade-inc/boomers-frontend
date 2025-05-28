@@ -714,7 +714,147 @@ const ChallengeSolutionPage = () => {
         )}
         {!solutionDeleted && solution?.status === 2 && !submittedSolution && (
           <div className="flex flex-col items-center justify-center mb-10 relative gap-4">
-            <h2 className="text-md font-bold">Testing</h2>
+            <div className="flex gap-2">
+              <p className="text-6xl font-semibold flex items-end">
+                {solution.percentageCompleted}
+              </p>
+              <p className="flex items-end">% Complete</p>
+            </div>
+            <div>
+              <p className="text-base-content font-bold text-[18px] text-center mb-4">
+                Solution Links
+              </p>
+              <p className="bg-gradient-to-bl from-[#495D6D] to-[#313752] p-4 text-white rounded-md">
+                <a
+                  href={solution.demo_url || ""}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {solution.demo_url || "No demo URL"}
+                </a>
+              </p>
+              <p className="bg-gradient-to-bl from-[#495D6D] to-[#313752] p-4 text-white rounded-md mt-4">
+                <a
+                  href={solution.solution || ""}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {solution.solution || "No solution URL"}
+                </a>
+              </p>
+            </div>
+            <div className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-between w-[90%] gap-4">
+              <div className="flex flex-col items-start w-full md:w-1/2 gap-4">
+                <h1>Steps</h1>
+                <div className="flex flex-col items-start justify-center w-full gap-6">
+                  {solution.steps.map((step, idx) => (
+                    <div
+                      key={step._id}
+                      className="flex items-center justify-between bg-base-100 p-4 rounded border border-base-content/10 w-3/4"
+                    >
+                      {editIndex === idx ? (
+                        <div className="flex-1 flex items-center gap-2">
+                          <textarea
+                            className="border rounded p-1 flex-1 focus:outline-none"
+                            value={editValue}
+                            onChange={(e) => setEditValue(e.target.value)}
+                            autoFocus
+                          />
+                          <button
+                            className="text-green-600 font-bold"
+                            onClick={handleSaveEditStep}
+                            title="Save"
+                            disabled={isUpdatingStep}
+                          >
+                            {isUpdatingStep ? (
+                              <span className="loading loading-dots loading-xs"></span>
+                            ) : (
+                              <FaCheck />
+                            )}
+                          </button>
+                          <button
+                            className="text-gray-500"
+                            onClick={handleCancelEdit}
+                            title="Cancel"
+                          >
+                            <IoIosClose className="text-3xl text-base-content" />
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between w-full">
+                          <span className="text-base-content w-[90%] font-medium">
+                            {step.description}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            {step.completed ? (
+                              <div className="bg-green-500 text-white px-2 py-2 text-sm rounded-full font-medium">
+                                <FaCheck />
+                              </div>
+                            ) : (
+                              <button
+                                className="bg-yellow text-darkgrey px-6 py-1 text-sm rounded font-medium"
+                                onClick={() => handleCompleteStep(step._id)}
+                                title="Edit"
+                                disabled={updatingStepId === step._id}
+                              >
+                                {updatingStepId === step._id ? (
+                                  <span className="loading loading-dots loading-xs"></span>
+                                ) : (
+                                  "Complete"
+                                )}
+                              </button>
+                            )}
+                            {!step.completed && (
+                              <button
+                                className="ml-2 text-teal-500"
+                                onClick={() => handleEditStep(idx)}
+                                title="Edit"
+                              >
+                                <TbEdit className="text-2xl text-teal-500" />
+                              </button>
+                            )}
+
+                            <button
+                              className="ml-2 text-teal-500"
+                              onClick={() => {
+                                const drawer = document.getElementById(
+                                  "step-comment-drawer",
+                                ) as HTMLInputElement | null;
+                                if (drawer) {
+                                  setStepId(step._id);
+                                  drawer.checked = true; // Open the drawer
+                                }
+                              }}
+                              title="Comments"
+                            >
+                              <PiChatsBold size={20} />
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="w-full md:w-1/2 flex justify-center items-center">
+                <div className="flex flex-col justify-center gap-4 bg-darkgrey h-[400px] w-[400px] rounded-md">
+                  <p>Ratings</p>
+                </div>
+              </div>
+            </div>
+            <button
+              className="hidden md:block absolute bg-transparent border-2 border-teal-500 text-teal-500 px-8 py-2 rounded font-medium right-0 top-0"
+              onClick={() => {
+                const drawer = document.getElementById(
+                  "solution-comment-drawer",
+                ) as HTMLInputElement | null;
+                if (drawer) {
+                  drawer.checked = true; // Open the drawer
+                }
+              }}
+            >
+              Comments
+            </button>
           </div>
         )}
         {solutionDeleted && (
