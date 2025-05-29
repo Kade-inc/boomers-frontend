@@ -233,14 +233,6 @@ function ChallengePage() {
     tooltip: {
       trigger: "item",
     },
-    // legend: {
-    //   top: "5%",
-    //   left: "center",
-    //   textStyle: {
-    //     color: "#fffff", // Set the legend text color
-    //     fontSize: 14, // Optionally, adjust the font size
-    //   },
-    // },
     series: [
       {
         name: "",
@@ -262,12 +254,24 @@ function ChallengePage() {
           show: false,
         },
         data: [
-          { value: 1048, name: "Completed" },
-          { value: 735, name: "Not Started" },
+          {
+            value: solutions?.filter((s) => s.status === 2).length || 0,
+            name: "Completed",
+          },
+          {
+            value: solutions?.filter((s) => s.status === 1).length || 0,
+            name: "In Progress",
+          },
+          {
+            value:
+              (team?.members.filter((m: Team) => m._id !== challenge?.owner_id)
+                .length || 0) - (solutions?.length || 0),
+            name: "Not Started",
+          },
         ],
       },
     ],
-    color: ["#FFFFFF", "#F8B500"],
+    color: ["#FFFFFF", "#F8B500", "#00989B"],
   };
 
   return (
