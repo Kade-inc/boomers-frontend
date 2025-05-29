@@ -1,9 +1,8 @@
 import Modal from "react-modal";
 import { XCircleIcon } from "@heroicons/react/24/solid";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useDeleteSolution } from "../../hooks/ChallengeSolution/useDeleteSolution";
 import { useQueryClient } from "@tanstack/react-query";
-// import { useNavigate } from "react-router-dom";
 
 type ModalTriggerProps = {
   isOpen: boolean;
@@ -22,7 +21,6 @@ const DeleteSolutionModal = ({
 }: ModalTriggerProps) => {
   const deleteSolutionMutation = useDeleteSolution();
   const queryClient = useQueryClient();
-  // const navigate = useNavigate()
   const handleDeleteSolution = async () => {
     await deleteSolutionMutation.mutateAsync(
       {
@@ -39,8 +37,7 @@ const DeleteSolutionModal = ({
           onClose();
         },
         onError: (error) => {
-          alert(error.message);
-          toast.error("Error deleting solution");
+          toast.error(`Error deleting solution: ${error.message}`);
         },
       },
     );
@@ -48,22 +45,6 @@ const DeleteSolutionModal = ({
 
   return (
     <>
-      <Toaster
-        position="bottom-center"
-        reverseOrder={true}
-        toastOptions={{
-          error: {
-            style: {
-              background: "#D92D2D",
-              color: "white",
-            },
-            iconTheme: {
-              primary: "white",
-              secondary: "#D92D2D",
-            },
-          },
-        }}
-      />
       <Modal
         isOpen={isOpen}
         onRequestClose={onClose}
