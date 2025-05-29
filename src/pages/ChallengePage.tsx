@@ -620,6 +620,20 @@ function ChallengePage() {
                 <div className=" mx-auto my-0">
                   <ReactECharts option={option} />
                 </div>
+                <div className="flex justify-center items-center gap-6 mt-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-[#FFFFFF]"></div>
+                    <span className="text-white text-sm">Completed</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-[#F8B500]"></div>
+                    <span className="text-white text-sm">In Progress</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-[#00989B]"></div>
+                    <span className="text-white text-sm">Not Started</span>
+                  </div>
+                </div>
                 {isOwner() && (
                   <button
                     className="btn bg-error hover:bg-error text-white border-none rounded-sm mt-4 md:w-[80%] lg:w-[85%] absolute bottom-6 left-8 "
