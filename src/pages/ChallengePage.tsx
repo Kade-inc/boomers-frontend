@@ -233,14 +233,6 @@ function ChallengePage() {
     tooltip: {
       trigger: "item",
     },
-    // legend: {
-    //   top: "5%",
-    //   left: "center",
-    //   textStyle: {
-    //     color: "#fffff", // Set the legend text color
-    //     fontSize: 14, // Optionally, adjust the font size
-    //   },
-    // },
     series: [
       {
         name: "",
@@ -262,12 +254,24 @@ function ChallengePage() {
           show: false,
         },
         data: [
-          { value: 1048, name: "Completed" },
-          { value: 735, name: "Not Started" },
+          {
+            value: solutions?.filter((s) => s.status === 2).length || 0,
+            name: "Completed",
+          },
+          {
+            value: solutions?.filter((s) => s.status === 1).length || 0,
+            name: "In Progress",
+          },
+          {
+            value:
+              (team?.members.filter((m: Team) => m._id !== challenge?.owner_id)
+                .length || 0) - (solutions?.length || 0),
+            name: "Not Started",
+          },
         ],
       },
     ],
-    color: ["#FFFFFF", "#F8B500"],
+    color: ["#FFFFFF", "#F8B500", "#00989B"],
   };
 
   return (
@@ -616,6 +620,20 @@ function ChallengePage() {
                 <div className=" mx-auto my-0">
                   <ReactECharts option={option} />
                 </div>
+                <div className="flex justify-center items-center gap-6 mt-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-[#FFFFFF]"></div>
+                    <span className="text-white text-sm">Completed</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-[#F8B500]"></div>
+                    <span className="text-white text-sm">In Progress</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-[#00989B]"></div>
+                    <span className="text-white text-sm">Not Started</span>
+                  </div>
+                </div>
                 {isOwner() && (
                   <button
                     className="btn bg-error hover:bg-error text-white border-none rounded-sm mt-4 md:w-[80%] lg:w-[85%] absolute bottom-6 left-8 "
@@ -863,6 +881,9 @@ function ChallengePage() {
           isOpen={showStatsModal}
           onClose={closeStatsModal}
           challenge={challenge}
+          solutions={solutions || []}
+          team={team}
+          commentsCount={comments?.length || 0}
         />
       )}
       {showCommentsModal && (
