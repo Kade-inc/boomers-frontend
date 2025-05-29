@@ -881,6 +881,9 @@ function ChallengePage() {
           isOpen={showStatsModal}
           onClose={closeStatsModal}
           challenge={challenge}
+          solutions={solutions || []}
+          team={team}
+          commentsCount={comments?.length || 0}
         />
       )}
       {showCommentsModal && (

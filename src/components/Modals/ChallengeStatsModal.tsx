@@ -2,29 +2,42 @@ import Modal from "react-modal";
 import { XCircleIcon } from "@heroicons/react/24/solid";
 import { ExtendedChallengeInterface } from "../../entities/Challenge";
 import ReactECharts from "echarts-for-react";
+import { ChallengeSolution } from "../../entities/ChallengeSolution";
+
+type TeamMember = {
+  _id: string;
+  profile: {
+    firstName?: string;
+    lastName?: string;
+    username?: string;
+  };
+};
+
+type Team = {
+  _id: string;
+  members: TeamMember[];
+};
 
 type ModalTriggerProps = {
   isOpen: boolean;
   onClose: () => void;
   challenge: ExtendedChallengeInterface;
+  solutions: ChallengeSolution[];
+  team: Team | undefined;
+  commentsCount: number;
 };
 
 const ChallengeStatsModal = ({
   isOpen,
   onClose,
   challenge,
+  solutions,
+  team,
+  commentsCount,
 }: ModalTriggerProps) => {
   const option = {
     tooltip: {
       trigger: "item",
-    },
-    legend: {
-      top: "5%",
-      left: "center",
-      textStyle: {
-        color: "#fffff", // Set the legend text color
-        fontSize: 14, // Optionally, adjust the font size
-      },
     },
     series: [
       {
@@ -47,12 +60,25 @@ const ChallengeStatsModal = ({
           show: false,
         },
         data: [
-          { value: 1048, name: "Completed" },
-          { value: 735, name: "Not Started" },
+          {
+            value: solutions?.filter((s) => s.status === 2).length || 0,
+            name: "Completed",
+          },
+          {
+            value: solutions?.filter((s) => s.status === 1).length || 0,
+            name: "In Progress",
+          },
+          {
+            value:
+              (team?.members.filter(
+                (m: TeamMember) => m._id !== challenge?.owner_id,
+              ).length || 0) - (solutions?.length || 0),
+            name: "Not Started",
+          },
         ],
       },
     ],
-    color: ["#FFFFFF", "#F8B500"],
+    color: ["#FFFFFF", "#F8B500", "#00989B"],
   };
 
   return (
@@ -81,13 +107,27 @@ const ChallengeStatsModal = ({
               {challenge?.difficulty === 4 && "Very Hard"}
               {challenge?.difficulty === 5 && "Legendary"}
             </p>
-            <div className="flex items-center ">
+            <div className="flex items-center mb-6">
               <p className="text-white font-normal mr-4">Comments</p>
               <p className="bg-white rounded-full text-darkgrey w-8 h-8 flex justify-center items-center pl-0.2">
-                34
+                {commentsCount}
               </p>
             </div>
-            <div className="w-[60%] mx-auto my-0">
+            <div className="flex justify-center items-center gap-6">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-[#FFFFFF]"></div>
+                <span className="text-white text-sm">Completed</span>
+              </div>
+              <div className="flex items-center gap-2 ">
+                <div className="w-3 h-3 rounded-full bg-[#F8B500]"></div>
+                <span className="text-white text-sm">In Progress</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-[#00989B]"></div>
+                <span className="text-white text-sm">Not Started</span>
+              </div>
+            </div>
+            <div className="w-[60%] mx-auto">
               <ReactECharts option={option} />
             </div>
           </div>
