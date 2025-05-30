@@ -414,12 +414,12 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                       <div className="flex flex-col md:flex-row">
                         <div
                           onClick={handleCloseConfirmModal}
-                          className="flex items-center justify-center py-3 w-full md:w-1/2 font-body font-semibold text-[13px] md:text-sm text-nowrap text-white bg-[#34A853] cursor-pointer"
+                          className="flex items-center justify-center py-3 w-full md:w-1/2 font-body font-semibold text-[13px] md:text-sm text-nowrap text-white bg-[#14AC91] cursor-pointer"
                         >
                           CANCEL
                         </div>
                         <div
-                          className="flex items-center justify-center py-3 bg-[#EB4335] font-body font-semibold text-[13px] md:text-sm  text-nowrap text-white w-full md:w-1/2 cursor-pointer"
+                          className="flex items-center justify-center py-3 bg-[#C83A3A] font-body font-semibold text-[13px] md:text-sm  text-nowrap text-white w-full md:w-1/2 cursor-pointer"
                           onClick={handleDeletePicture}
                         >
                           {deletePictureMutation.isPending ? (
