@@ -140,7 +140,9 @@ const Dashboard = () => {
             <p className="font-body text-[16px]">
               Hi, {user.firstName ? <>{user.firstName}</> : user.username}
             </p>
-            <p className="font-body font-medium text-[20px]">Welcome Back!</p>
+            <p className="font-body font-medium text-[20px]">
+              {user.firstName ? "Welcome Back!" : "Welcome to your dashboard"}
+            </p>
           </div>
           <div className="mt-6">
             {teamsData.data?.length !== 0 && (
@@ -208,13 +210,19 @@ const Dashboard = () => {
               <>
                 <div className="flex items-center flex-col text-[16px] mt-10">
                   <p className="mb-6">
-                    You do not belong to any team currently.
+                    You do not own or belong to any team currently.
                   </p>
                   <div className="flex flex-row items-center justify-center gap-4">
-                    <button className="px-8 py-2.5 text-[14px] font-medium bg-[#000] rounded-[4px] text-white">
+                    <button
+                      className="px-8 py-2.5 text-[14px] font-medium bg-[#000] rounded-[4px] text-white"
+                      onClick={() => navigate("/create-team")}
+                    >
                       Create Team
                     </button>
-                    <button className="px-8 py-2.5 text-[14px] font-medium bg-yellow rounded-[4px] text-darkgrey">
+                    <button
+                      className="px-8 py-2.5 text-[14px] font-medium bg-yellow rounded-[4px] text-darkgrey"
+                      onClick={() => navigate("/teams")}
+                    >
                       Join a Team
                     </button>
                   </div>

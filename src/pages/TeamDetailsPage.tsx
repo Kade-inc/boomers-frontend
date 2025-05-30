@@ -212,25 +212,24 @@ const TeamDetailsPage = () => {
             }}
           />
         )}
-        {teamMemberRequestsError ||
-          (requests?.length < 1 && (
-            <Toaster
-              position="bottom-center"
-              reverseOrder={true}
-              toastOptions={{
-                error: {
-                  style: {
-                    background: "#D92D2D",
-                    color: "white",
-                  },
-                  iconTheme: {
-                    primary: "white",
-                    secondary: "#D92D2D",
-                  },
+        {teamMemberRequestsError && (
+          <Toaster
+            position="bottom-center"
+            reverseOrder={true}
+            toastOptions={{
+              error: {
+                style: {
+                  background: "#D92D2D",
+                  color: "white",
                 },
-              }}
-            />
-          ))}
+                iconTheme: {
+                  primary: "white",
+                  secondary: "#D92D2D",
+                },
+              },
+            }}
+          />
+        )}
         {team && (
           <>
             <div
@@ -270,7 +269,12 @@ const TeamDetailsPage = () => {
                       )}
                     </div>
                   </div>
-                  <div className="text-center flex flex-col items-center justify-center">
+                  <div
+                    className="text-center flex flex-col items-center justify-center cursor-pointer"
+                    onClick={() =>
+                      navigate(`/profile/${team?.members[0]?._id}`)
+                    }
+                  >
                     {team?.members[0]?.profile_picture ? (
                       <img
                         className="mb-3 mx-auto w-[60px] h-[60px] sm:w-[81px] sm:h-[81px] rounded-full"
@@ -344,7 +348,7 @@ const TeamDetailsPage = () => {
                           setSelectedTeamMember(member);
                           openMemberDialog("member");
                         } else {
-                          // Do nothing
+                          navigate(`/profile/${member._id}`);
                         }
                       }}
                     />
