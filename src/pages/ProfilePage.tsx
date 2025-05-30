@@ -78,6 +78,18 @@ const ProfilePage = () => {
   return (
     <div className="flex justify-center min-h-screen w-full bg-base-100 pb-8">
       <div className=" flex flex-col w-[90%] max-w-4xl mx-auto mt-10">
+        {userId && window.history.length > 2 && (
+          <div className="flex justify-start mb-4">
+            <button
+              onClick={() => {
+                navigate(-1);
+              }}
+              className="text-base-content font-body font-bold hover:text-primary"
+            >
+              ← Back
+            </button>
+          </div>
+        )}
         <div className="bg-base-200 shadow-custom relative text-base-content rounded-[5px] pb-4 mt-4">
           <div className="bg-custom-gradient w-full h-[70px] md:h-[157px]"></div>
           <div className="pl-6">
