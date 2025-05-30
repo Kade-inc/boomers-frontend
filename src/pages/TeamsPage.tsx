@@ -232,7 +232,7 @@ const TeamsPage = () => {
             </div>
           )}
           {!isPending && (
-            <div className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-12 mt-10 mb-12 lg:w-[90%] pb-12">
+            <div className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-12 mt-10 mb-12 pb-12">
               {currentTeams.map((team: Team) => {
                 return (
                   <TeamCard
