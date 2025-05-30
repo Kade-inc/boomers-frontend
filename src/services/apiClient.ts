@@ -391,9 +391,6 @@ class APIClient {
         },
       );
       const { data } = response.data;
-      if (data.length < 1) {
-        toast.error("No Member requests");
-      }
       return data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
