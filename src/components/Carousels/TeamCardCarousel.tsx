@@ -5,9 +5,11 @@ import Team from "../../entities/Team";
 import TeamCard from "../TeamCard";
 interface CarouselProps {
   slides: Team[];
+  section?: string;
+  userId?: string;
 }
 
-function TeamCardCarousel({ slides }: CarouselProps) {
+function TeamCardCarousel({ slides, userId, section }: CarouselProps) {
   const navigate = useNavigate();
   if (!slides || slides.length === 0) {
     return <div>No slides available</div>; // Handle the case when there is no data
@@ -70,7 +72,8 @@ function TeamCardCarousel({ slides }: CarouselProps) {
                 key={slide._id}
                 team={slide}
                 styles={`w-full h-[180px] md:w-[260px] md:h-[150px] 2xl:w-[360px] 2xl:h-[180px]`}
-                section="dashboard-section"
+                section={section}
+                userId={userId}
                 onClick={() => {
                   navigate(`/teams/${slide._id}`);
                 }}

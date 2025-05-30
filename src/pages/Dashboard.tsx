@@ -276,7 +276,10 @@ const Dashboard = () => {
             )}
             {filteredTeams && filteredTeams?.length > 0 && (
               <>
-                <TeamCardCarousel slides={filteredTeams} />
+                <TeamCardCarousel
+                  slides={filteredTeams}
+                  section="dashboard-section"
+                />
               </>
             )}
             {filteredTeams.length === 0 && (

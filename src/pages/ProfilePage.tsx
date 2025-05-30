@@ -43,9 +43,15 @@ const ProfilePage = () => {
 
   useEffect(() => {
     if (teamsData?.data) {
-      const userTeams = teamsData.data.filter(
-        (team: Team) => team.owner_id === (userId || user.user_id),
-      );
+      let userTeams: Team[] = [];
+      if (userId) {
+        userTeams = teamsData.data;
+      } else {
+        userTeams = teamsData.data.filter(
+          (team: Team) => team.owner_id === user.user_id,
+        );
+      }
+
       setTeams(userTeams);
     }
   }, [teamsData, userId, user.user_id]);
@@ -186,7 +192,11 @@ const ProfilePage = () => {
                 <span className="loading loading-dots loading-lg"></span>
               </div>
             ) : teams && teams.length > 0 ? (
-              <TeamCardCarousel slides={teams} />
+              <TeamCardCarousel
+                slides={teams}
+                userId={userId || ""}
+                section="profile-section"
+              />
             ) : (
               <p className="my-6 font-body">No teams associated.</p>
             )}

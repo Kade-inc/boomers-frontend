@@ -12,6 +12,7 @@ interface TeamProps {
   domain?: string;
   subDomain?: string;
   subStyles?: string;
+  userId?: string;
 }
 const TeamCard = ({
   team,
@@ -22,6 +23,7 @@ const TeamCard = ({
   domain,
   subDomain,
   subStyles,
+  userId,
 }: TeamProps) => {
   const { user } = useAuthStore.getState();
 
@@ -52,6 +54,16 @@ const TeamCard = ({
               <>
                 {team.owner_id === user.user_id && (
                   <p className="text-right text-[12px]">Owner</p>
+                )}
+              </>
+            )}
+            {section === "profile-section" && (
+              <>
+                {team.owner_id === userId && (
+                  <p className="text-right text-[12px]">Owner</p>
+                )}
+                {team.owner_id !== userId && (
+                  <p className="text-right text-[12px]">Member</p>
                 )}
               </>
             )}
