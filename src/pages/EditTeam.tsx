@@ -246,6 +246,14 @@ function EditTeam() {
     setSelectedDomainId(selectedDomain ? selectedDomain._id : "");
   }, [domain, domainOptions]);
 
+  // Update team state when subdomain changes
+  useEffect(() => {
+    setTeam((prevTeam) => ({
+      ...prevTeam,
+      subdomain: subDomain,
+    }));
+  }, [subDomain]);
+
   // Initialize form with team data
   useEffect(() => {
     if (teamData) {
