@@ -5,6 +5,8 @@ export default interface Notification {
   isRead: boolean;
   reference: string;
   referenceModel: string;
+  subreference?: string;
+  subreferenceModel?: string;
   createdAt: string;
   updatedAt?: string;
   __v?: number;

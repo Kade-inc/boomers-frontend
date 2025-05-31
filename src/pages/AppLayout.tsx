@@ -118,8 +118,25 @@ function AppLayout() {
   }, [logout, checkAuth]);
 
   const handleNotificationRedirect = (notification: Notification) => {
-    if (notification.referenceModel === "TeamChallenge") {
+    if (
+      notification.referenceModel === "TeamChallenge" &&
+      !notification.subreference
+    ) {
       navigate(`/challenge/${notification.reference}`);
+    } else if (
+      notification.referenceModel === "ChallengeComment" &&
+      !notification.subreference
+    ) {
+      navigate(`/challenge/${notification.reference}`);
+    } else if (notification.referenceModel === "SolutionComment") {
+      navigate(`/challenge/${notification.reference}`);
+    } else if (
+      notification.referenceModel === "TeamChallenge" &&
+      notification.subreference
+    ) {
+      navigate(
+        `/challenge/${notification.reference}/solution/${notification.subreference}`,
+      );
     }
 
     const drawer = document.getElementById(
