@@ -647,10 +647,11 @@ function ChallengePage() {
                     className="btn bg-yellow text-darkgrey border-none rounded-md mt-4 w-full"
                     onClick={() => handleBeginChallenge()}
                   >
-                    {userSolution?.status === 0 && "Begin challenge"}
-                    {userSolution?.status === 1 && "Continue"}
-
-                    {userSolution?.status === 2 && "View Solution"}
+                    {userSolution?.status === 0 || !userSolution?.status
+                      ? "Begin challenge"
+                      : userSolution?.status === 1
+                        ? "Continue"
+                        : "View Solution"}
                   </button>
                 )}
               </div>
@@ -661,7 +662,11 @@ function ChallengePage() {
               className="py-4 bg-yellow rounded-none font-body text-darkgrey w-full fixed bottom-0 z-30 font-medium md:hidden"
               onClick={() => handleBeginChallenge()}
             >
-              {userSolution?.status === 1 ? "Continue" : "Begin Challenge"}
+              {userSolution?.status === 0 || !userSolution?.status
+                ? "Begin challenge"
+                : userSolution?.status === 1
+                  ? "Continue"
+                  : "View Solution"}
             </button>
           )}
 

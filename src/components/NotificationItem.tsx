@@ -55,6 +55,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
           {notification.referenceModel === "ChallengeComment" && (
             <span>New Comment</span>
           )}
+          {notification.referenceModel === "SolutionComment" && (
+            <span>New Solution Comment</span>
+          )}
         </h2>
         <div className="w-2 h-2 bg-[#00989B] rounded-full"></div>
       </div>
