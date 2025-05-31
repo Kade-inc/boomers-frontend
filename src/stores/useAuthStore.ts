@@ -6,6 +6,7 @@ import { jwtDecode } from "jwt-decode";
 import User from "../entities/User";
 import Team from "../entities/Team";
 import UserProfile from "../entities/UserProfile";
+import Challenge from "../entities/Challenge";
 
 interface AuthStore {
   isAuthenticated: boolean;
@@ -19,6 +20,8 @@ interface AuthStore {
   setUserTeams: (teams: Team[]) => void;
   checkAuth: () => void;
   token: string | null;
+  userChallenges: Challenge[];
+  setUserChallenges: (challenges: Challenge[]) => void;
 }
 
 type MyPersist = (
@@ -34,6 +37,7 @@ const useAuthStore = create<AuthStore>(
       userId: "",
       token: null,
       userTeams: [],
+      userChallenges: [],
       login: (token: string) => {
         Cookies.set("token", token, {
           expires: 365 * 24 * 60 * 60 * 1000,
@@ -83,6 +87,8 @@ const useAuthStore = create<AuthStore>(
         }
       },
       setUserTeams: (teams: Team[]) => set(() => ({ userTeams: teams })),
+      setUserChallenges: (challenges: Challenge[]) =>
+        set(() => ({ userChallenges: challenges })),
     }),
     {
       name: "auth-storage", // This persists the store's state

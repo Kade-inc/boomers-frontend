@@ -585,7 +585,7 @@ function ChallengePage() {
                   )}
                 </div>
               </div>
-              <div className="bg-darkgrey w-[40%] xl:w-1/4 min-h-[450px] rounded-lg pt-8 px-8 space-y-4 relative mt-8 hidden md:block">
+              <div className="bg-darkgrey w-[40%] xl:w-1/4 min-h-[450px] rounded-lg py-8 px-8 space-y-4 relative mt-8 hidden md:block">
                 <p className="text-white font-normal">
                   {challenge?.difficulty === 1 && "Easy"}
                   {challenge?.difficulty === 2 && "Medium"}
@@ -636,7 +636,7 @@ function ChallengePage() {
                 </div>
                 {isOwner() && (
                   <button
-                    className="btn bg-error hover:bg-error text-white border-none rounded-sm mt-4 md:w-[80%] lg:w-[85%] absolute bottom-6 left-8 "
+                    className="btn bg-error text-white border-none rounded-md mt-4 w-full"
                     onClick={handleDeleteChallenge}
                   >
                     Delete Challenge
@@ -644,7 +644,7 @@ function ChallengePage() {
                 )}
                 {isTeamMember() && !isDue && (
                   <button
-                    className="btn bg-yellow hover:bg-yellow text-darkgrey border-none rounded-sm mt-4 md:w-[80%] lg:w-[85%] absolute bottom-6 left-8 "
+                    className="btn bg-yellow text-darkgrey border-none rounded-md mt-4 w-full"
                     onClick={() => handleBeginChallenge()}
                   >
                     {userSolution?.status === 0 && "Begin challenge"}

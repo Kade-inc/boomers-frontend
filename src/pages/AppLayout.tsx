@@ -20,7 +20,7 @@ const serverUrl = "http://localhost:5001";
 const socket: Socket = io(serverUrl);
 
 function AppLayout() {
-  const { logout, checkAuth, userTeams, user } = useAuthStore();
+  const { logout, checkAuth, userTeams, user, userChallenges } = useAuthStore();
   const notifications = useNotificationsStore((state) => state.notifications);
   const setNotifications = useNotificationsStore(
     (state) => state.setNotifications,
@@ -62,6 +62,15 @@ function AppLayout() {
       });
     }
   }, [userTeams]);
+
+  // Join challenge rooms for all user challenges
+  useEffect(() => {
+    if (userChallenges && userChallenges.length > 0) {
+      userChallenges.forEach((challenge) => {
+        socket.emit("joinChallenge", { challengeId: challenge._id });
+      });
+    }
+  }, [userChallenges]);
 
   // Listen for new notifications.
   useEffect(() => {
