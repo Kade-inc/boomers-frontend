@@ -46,18 +46,22 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
     <div className="py-8 px-2" key={notification._id}>
       <div className="flex items-center justify-between">
         <h2 className="font-semibold text-[#00989B]">
-          {notification.referenceModel === "TeamChallenge" && (
-            <span>New Challenge</span>
-          )}
-          {notification.referenceModel === "ChallengeSolution" && (
-            <span>New Solution</span>
-          )}
+          {notification.referenceModel === "TeamChallenge" &&
+            !notification.subreference && <span>New Challenge</span>}
+          {notification.referenceModel === "TeamChallenge" &&
+            notification.subreferenceModel === "ChallengeSolution" && (
+              <span>New Solution</span>
+            )}
           {notification.referenceModel === "ChallengeComment" && (
             <span>New Comment</span>
           )}
           {notification.referenceModel === "SolutionComment" && (
-            <span>New Solution Comment</span>
+            <span>Solution Comment</span>
           )}
+          {notification.referenceModel === "TeamChallenge" &&
+            notification.subreferenceModel === "ChallengeStep" && (
+              <span>Solution Step Comment</span>
+            )}
         </h2>
         <div className="w-2 h-2 bg-[#00989B] rounded-full"></div>
       </div>
