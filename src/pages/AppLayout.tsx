@@ -17,11 +17,7 @@ import { io, Socket } from "socket.io-client";
 import Team from "../entities/Team";
 
 const serverUrl = "http://localhost:5001";
-const socket: Socket = io(serverUrl, {
-  reconnection: true,
-  reconnectionAttempts: 5,
-  reconnectionDelay: 1000,
-});
+const socket: Socket = io(serverUrl);
 
 function AppLayout() {
   const { logout, checkAuth, userTeams, user, userChallenges } = useAuthStore();
@@ -29,35 +25,12 @@ function AppLayout() {
   const setNotifications = useNotificationsStore(
     (state) => state.setNotifications,
   );
-  const addNotification = useNotificationsStore(
-    (state) => state.addNotification,
-  );
   const isLoading = useLoadingStore((state) => state.isLoading);
   const navigate = useNavigate();
 
-  // Socket connection status
-  const [isConnected, setIsConnected] = useState(socket.connected);
-
-  // Socket connection handlers
-  useEffect(() => {
-    function onConnect() {
-      console.log("Socket connected successfully");
-      setIsConnected(true);
-    }
-
-    function onDisconnect() {
-      console.log("Socket disconnected");
-      setIsConnected(false);
-    }
-
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-
-    return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-    };
-  }, []);
+  const addNotification = useNotificationsStore(
+    (state) => state.addNotification,
+  );
 
   // Fetch initial notifications.
   // Here we assume that the user is authenticated if `user` exists.
@@ -77,67 +50,43 @@ function AppLayout() {
     }
   }, [fetchedNotifications, isSuccess, setNotifications]);
 
-  // Join personal room on mount (when user data is available)
+  // Join personal room on mount (when user data is available).
   useEffect(() => {
-    if (user && user.user_id && isConnected) {
+    if (user && user.user_id) {
       socket.emit("joinUser", { userId: user.user_id });
-      console.log("Joined personal room for user:", user.user_id);
-
-      // Verify room joining
-      socket.on("connect", () => {
-        socket.emit("joinUser", { userId: user.user_id });
-        console.log(
-          "Re-joined personal room after reconnection:",
-          user.user_id,
-        );
-      });
+      // console.log("Joined personal room for user:", user.user_id);
     }
-  }, [user, isConnected]);
-
-  // Cleanup socket listeners
-  useEffect(() => {
-    return () => {
-      if (user && user.user_id) {
-        socket.off("connect");
-      }
-    };
   }, [user]);
 
-  // Join all team rooms once userTeams are available
+  // Join all team rooms once userTeams are available.
   useEffect(() => {
-    if (userTeams && userTeams.length > 0 && isConnected) {
+    if (userTeams && userTeams.length > 0) {
       userTeams.forEach((team: Team) => {
         socket.emit("joinTeam", { teamId: team._id });
-        console.log("Joined team room:", team._id);
       });
     }
-  }, [userTeams, isConnected]);
+  }, [userTeams]);
 
   // Join challenge rooms for all user challenges
   useEffect(() => {
-    if (userChallenges && userChallenges.length > 0 && isConnected) {
+    if (userChallenges && userChallenges.length > 0) {
       userChallenges.forEach((challenge) => {
         socket.emit("joinChallenge", { challengeId: challenge._id });
-        console.log("Joined challenge room:", challenge._id);
       });
     }
-  }, [userChallenges, isConnected]);
+  }, [userChallenges]);
 
-  // Listen for new notifications
+  // Listen for new notifications.
   useEffect(() => {
-    if (!isConnected) return;
-
-    function onPushNotification(notification: Notification) {
+    socket.on("pushNotification", (notification) => {
       console.log("Received pushNotification:", notification);
       addNotification(notification);
-    }
-
-    socket.on("pushNotification", onPushNotification);
+    });
 
     return () => {
-      socket.off("pushNotification", onPushNotification);
+      socket.off("pushNotification");
     };
-  }, [isConnected, addNotification]);
+  }, [addNotification]);
 
   // Prepare notifications lists.
   const unreadNotifications =
