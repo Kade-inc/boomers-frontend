@@ -205,6 +205,7 @@ const ChallengeSolutionPage = () => {
       const mentorRating = solutionRatings.filter(
         (rating) => rating.user_id === solution?.challenge.owner_id,
       );
+      console.log("MENTOR RATING: ", mentorRating);
       setMentorRating(mentorRating[0]?.rating || null);
     }
   }, [solutionRatings]);
