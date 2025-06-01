@@ -70,6 +70,8 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
             notification.subreferenceModel === "TeamMemberRequest" && (
               <span>Member Request</span>
             )}
+          {notification.referenceModel === "Team" &&
+            !notification.subreference && <span>Team Member</span>}
         </h2>
         <div className="w-2 h-2 bg-[#00989B] rounded-full"></div>
       </div>

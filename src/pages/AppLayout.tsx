@@ -145,6 +145,14 @@ function AppLayout() {
     ) {
       queryClient.invalidateQueries({ queryKey: ["joinRequests"] });
       navigate(`/pending-requests`);
+    } else if (
+      notification.referenceModel === "Team" &&
+      !notification.subreference
+    ) {
+      queryClient.invalidateQueries({
+        queryKey: ["team", notification.reference],
+      });
+      navigate(`/teams/${notification.reference}`);
     }
 
     const drawer = document.getElementById(
