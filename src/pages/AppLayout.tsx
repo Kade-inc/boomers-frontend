@@ -15,6 +15,7 @@ import useMarkAllNotificationsRead from "../hooks/Notifications/useMarkAllNotifi
 import useNotificationsStore from "../stores/useNotificationsStore";
 import { io, Socket } from "socket.io-client";
 import Team from "../entities/Team";
+import { useQueryClient } from "@tanstack/react-query";
 
 const serverUrl = "http://localhost:5001";
 const socket: Socket = io(serverUrl);
@@ -27,6 +28,7 @@ function AppLayout() {
   );
   const isLoading = useLoadingStore((state) => state.isLoading);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const addNotification = useNotificationsStore(
     (state) => state.addNotification,
@@ -137,6 +139,12 @@ function AppLayout() {
       navigate(
         `/challenge/${notification.reference}/solution/${notification.subreference}`,
       );
+    } else if (
+      notification.referenceModel === "Team" &&
+      notification.subreferenceModel === "TeamMemberRequest"
+    ) {
+      queryClient.invalidateQueries({ queryKey: ["joinRequests"] });
+      navigate(`/pending-requests`);
     }
 
     const drawer = document.getElementById(
