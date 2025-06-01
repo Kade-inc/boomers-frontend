@@ -935,26 +935,39 @@ const ChallengeSolutionPage = () => {
                   <p className="text-white font-semibold text-[18px]">
                     Ratings
                   </p>
-                  <div className="flex flex-col gap-2">
-                    <p className="text-white font-medium">Your Rating</p>
-                    <div className="flex flex-row gap-2">
-                      {[...Array(5)].map((_, index) => {
-                        const currentRate = index + 1;
-                        return (
-                          <div key={index}>
-                            <>
-                              <label>
-                                {isRating ? (
-                                  isUpdatingSolutionRating ||
-                                  isPostingSolutionRating ? (
-                                    <FaStar
-                                      size={30}
-                                      color={
-                                        currentRate <= rating!
-                                          ? "#F8B500"
-                                          : "white"
-                                      }
-                                    />
+                  {user.user_id !== solution.user._id && (
+                    <div className="flex flex-col gap-2">
+                      <p className="text-white font-medium">Your Rating</p>
+                      <div className="flex flex-row gap-2">
+                        {[...Array(5)].map((_, index) => {
+                          const currentRate = index + 1;
+                          return (
+                            <div key={index}>
+                              <>
+                                <label>
+                                  {isRating ? (
+                                    isUpdatingSolutionRating ||
+                                    isPostingSolutionRating ? (
+                                      <FaStar
+                                        size={30}
+                                        color={
+                                          currentRate <= rating!
+                                            ? "#F8B500"
+                                            : "white"
+                                        }
+                                      />
+                                    ) : (
+                                      <FaStar
+                                        size={30}
+                                        color={
+                                          currentRate <= rating!
+                                            ? "#F8B500"
+                                            : "white"
+                                        }
+                                        onClick={() => setRating(currentRate)}
+                                        className="cursor-pointer"
+                                      />
+                                    )
                                   ) : (
                                     <FaStar
                                       size={30}
@@ -963,61 +976,50 @@ const ChallengeSolutionPage = () => {
                                           ? "#F8B500"
                                           : "white"
                                       }
-                                      onClick={() => setRating(currentRate)}
-                                      className="cursor-pointer"
                                     />
-                                  )
-                                ) : (
-                                  <FaStar
-                                    size={30}
-                                    color={
-                                      currentRate <= rating!
-                                        ? "#F8B500"
-                                        : "white"
-                                    }
-                                  />
-                                )}
-                              </label>
-                            </>
-                          </div>
-                        );
-                      })}
-                    </div>
-                    {!isRating && (
-                      <button
-                        className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium mt-4"
-                        onClick={() => setIsRating(true)}
-                      >
-                        Rate Solution
-                      </button>
-                    )}
-                    {isRating && (
-                      <div className="flex gap-4 mt-4">
-                        <button
-                          className="bg-[red] text-white px-8 py-2 rounded font-medium"
-                          onClick={() => setIsRating(false)}
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium"
-                          onClick={() => handleRateSolution(rating)}
-                          disabled={
-                            isPostingSolutionRating ||
-                            isUpdatingSolutionRating ||
-                            !rating
-                          }
-                        >
-                          {isPostingSolutionRating ||
-                          isUpdatingSolutionRating ? (
-                            <span className="loading loading-dots loading-xs"></span>
-                          ) : (
-                            "Rate"
-                          )}
-                        </button>
+                                  )}
+                                </label>
+                              </>
+                            </div>
+                          );
+                        })}
                       </div>
-                    )}
-                  </div>
+                      {!isRating && (
+                        <button
+                          className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium mt-4"
+                          onClick={() => setIsRating(true)}
+                        >
+                          Rate Solution
+                        </button>
+                      )}
+                      {isRating && (
+                        <div className="flex gap-4 mt-4">
+                          <button
+                            className="bg-[red] text-white px-8 py-2 rounded font-medium"
+                            onClick={() => setIsRating(false)}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium"
+                            onClick={() => handleRateSolution(rating)}
+                            disabled={
+                              isPostingSolutionRating ||
+                              isUpdatingSolutionRating ||
+                              !rating
+                            }
+                          >
+                            {isPostingSolutionRating ||
+                            isUpdatingSolutionRating ? (
+                              <span className="loading loading-dots loading-xs"></span>
+                            ) : (
+                              "Rate"
+                            )}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   <p className="text-white font-medium">Overall Rating</p>
                   <div className="flex flex-row gap-2">

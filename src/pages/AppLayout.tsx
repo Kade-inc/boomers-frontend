@@ -15,18 +15,24 @@ import useMarkAllNotificationsRead from "../hooks/Notifications/useMarkAllNotifi
 import useNotificationsStore from "../stores/useNotificationsStore";
 import { io, Socket } from "socket.io-client";
 import Team from "../entities/Team";
+import { useQueryClient } from "@tanstack/react-query";
 
 const serverUrl = "http://localhost:5001";
 const socket: Socket = io(serverUrl);
 
 function AppLayout() {
-  const { logout, checkAuth, userTeams, user } = useAuthStore();
+  const { logout, checkAuth, userTeams, user, userChallenges } = useAuthStore();
   const notifications = useNotificationsStore((state) => state.notifications);
   const setNotifications = useNotificationsStore(
     (state) => state.setNotifications,
   );
   const isLoading = useLoadingStore((state) => state.isLoading);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const addNotification = useNotificationsStore(
+    (state) => state.addNotification,
+  );
 
   // Fetch initial notifications.
   // Here we assume that the user is authenticated if `user` exists.
@@ -63,17 +69,26 @@ function AppLayout() {
     }
   }, [userTeams]);
 
+  // Join challenge rooms for all user challenges
+  useEffect(() => {
+    if (userChallenges && userChallenges.length > 0) {
+      userChallenges.forEach((challenge) => {
+        socket.emit("joinChallenge", { challengeId: challenge._id });
+      });
+    }
+  }, [userChallenges]);
+
   // Listen for new notifications.
   useEffect(() => {
     socket.on("pushNotification", (notification) => {
       console.log("Received pushNotification:", notification);
-      useNotificationsStore.getState().addNotification(notification);
+      addNotification(notification);
     });
 
     return () => {
       socket.off("pushNotification");
     };
-  }, []);
+  }, [addNotification]);
 
   // Prepare notifications lists.
   const unreadNotifications =
@@ -105,8 +120,39 @@ function AppLayout() {
   }, [logout, checkAuth]);
 
   const handleNotificationRedirect = (notification: Notification) => {
-    if (notification.referenceModel === "TeamChallenge") {
+    if (
+      notification.referenceModel === "TeamChallenge" &&
+      !notification.subreference
+    ) {
       navigate(`/challenge/${notification.reference}`);
+    } else if (
+      notification.referenceModel === "ChallengeComment" &&
+      !notification.subreference
+    ) {
+      navigate(`/challenge/${notification.reference}`);
+    } else if (notification.referenceModel === "SolutionComment") {
+      navigate(`/challenge/${notification.reference}`);
+    } else if (
+      notification.referenceModel === "TeamChallenge" &&
+      notification.subreference
+    ) {
+      navigate(
+        `/challenge/${notification.reference}/solution/${notification.subreference}`,
+      );
+    } else if (
+      notification.referenceModel === "Team" &&
+      notification.subreferenceModel === "TeamMemberRequest"
+    ) {
+      queryClient.invalidateQueries({ queryKey: ["joinRequests"] });
+      navigate(`/pending-requests`);
+    } else if (
+      notification.referenceModel === "Team" &&
+      !notification.subreference
+    ) {
+      queryClient.invalidateQueries({
+        queryKey: ["team", notification.reference],
+      });
+      navigate(`/teams/${notification.reference}`);
     }
 
     const drawer = document.getElementById(

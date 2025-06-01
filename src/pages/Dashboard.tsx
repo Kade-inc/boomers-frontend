@@ -23,6 +23,7 @@ import useGetJoinRequests from "../hooks/useGetJoinRequests";
 
 const Dashboard = () => {
   const user = useAuthStore((s) => s.user);
+  const setUserChallenges = useAuthStore((s) => s.setUserChallenges);
 
   const { data: teamsData, isPending: teamsLoading } = useTeams({
     userId: user.user_id,
@@ -46,6 +47,7 @@ const Dashboard = () => {
     isPending: requestsLoading,
     error: requestsError,
   } = useGetJoinRequests();
+
   const [teams, setTeams] = useState<Team[]>([]);
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [teamsFilter, setTeamsFilter] = useState("AllTeams");
@@ -83,6 +85,7 @@ const Dashboard = () => {
           return dateA.getTime() - dateB.getTime();
         });
       setChallenges(freshChallenges);
+      setUserChallenges(freshChallenges);
     }
   }, [challengesData]);
 

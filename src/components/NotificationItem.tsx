@@ -45,26 +45,55 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   return (
     <div className="py-8 px-2" key={notification._id}>
       <div className="flex items-center justify-between">
-        <h2 className="font-semibold">
-          {notification.referenceModel === "TeamChallenge" && (
-            <span>New Challenge</span>
+        <h2 className="font-semibold text-[#00989B]">
+          {notification.referenceModel === "TeamChallenge" &&
+            !notification.subreference && <span>New Challenge</span>}
+          {notification.referenceModel === "TeamChallenge" &&
+            notification.subreferenceModel === "ChallengeSolution" && (
+              <span>New Solution</span>
+            )}
+          {notification.referenceModel === "ChallengeComment" && (
+            <span>New Comment</span>
           )}
+          {notification.referenceModel === "SolutionComment" && (
+            <span>Solution Comment</span>
+          )}
+          {notification.referenceModel === "TeamChallenge" &&
+            notification.subreferenceModel === "ChallengeStep" && (
+              <span>Solution Step Comment</span>
+            )}
+          {notification.referenceModel === "TeamChallenge" &&
+            notification.subreferenceModel === "SolutionRating" && (
+              <span>Solution Rating</span>
+            )}
+          {notification.referenceModel === "Team" &&
+            notification.subreferenceModel === "TeamMemberRequest" && (
+              <span>Member Request</span>
+            )}
+          {notification.referenceModel === "Team" &&
+            !notification.subreference && <span>Team Member</span>}
+          {notification.referenceModel === "Team" &&
+            notification.subreferenceModel === "RemoveTeamMember" && (
+              <span>Team Member</span>
+            )}
         </h2>
         <div className="w-2 h-2 bg-[#00989B] rounded-full"></div>
       </div>
       <p className="mt-4">
         <FormattedNotificationMessage message={notification.message} />
       </p>
-      <div className="mt-4">
-        <button
-          className="bg-yellow px-4 py-2 font-medium rounded-[3px] text-darkgrey"
-          onClick={() => onRedirect(notification)}
-        >
-          View
-        </button>
+      <div className="mt-4 flex gap-4">
+        {notification?.subreferenceModel !== "RemoveTeamMember" && (
+          <button
+            className="bg-yellow px-4 py-2 font-medium rounded-[3px] text-darkgrey"
+            onClick={() => onRedirect(notification)}
+          >
+            View
+          </button>
+        )}
         {!notification.isRead && (
           <button
-            className="bg-[#00989B] px-4 py-2 ml-4 font-medium text-white rounded-[3px] "
+            className="bg-[#00989B] px-4 py-2 font-medium text-white rounded-[3px] "
             onClick={handleToggle}
             disabled={isLoading}
           >
