@@ -16,6 +16,7 @@ import SubDomain from "../entities/SubDomain";
 import MultiSelect from "../components/MultiSelect";
 import DomainTopic from "../entities/DomainTopic";
 import { useDebounce } from "../hooks/useDebounce";
+import { HiOutlineUserGroup } from "react-icons/hi2";
 
 const TeamsPage = () => {
   const [showFilters, setShowFilters] = useState(false);
@@ -100,7 +101,10 @@ const TeamsPage = () => {
   if (teams && !Array.isArray(teams.data)) {
     return (
       <div className="flex justify-center items-center h-screen bg-base-100 font-body">
-        <p>No teams</p>
+        <div className="flex flex-col items-center mt-2 w-full gap-4">
+          <HiOutlineUserGroup className="w-20 h-20 text-base-content" />
+          <p className="font-body text-base-content">No teams</p>
+        </div>
       </div>
     );
   }
@@ -108,8 +112,8 @@ const TeamsPage = () => {
   return (
     <div className="h-screen text-base-content bg-base-100 px-2 md:px-10">
       {!teamId ? (
-        <>
-          <p className="text-[20px] pt-3 mb-3 font-bold font-heading">Teams</p>
+        <div className="pt-10">
+          {/* <p className="text-[20px] pt-3 mb-3 font-bold font-heading">Teams</p> */}
           {(isDomainsPending || isSubDomainsPending || isSubTopicsPending) && (
             <div>
               <p className="font-body text-[14px] flex items-center">
@@ -248,7 +252,10 @@ const TeamsPage = () => {
             </div>
           )}
           {!isPending && currentTeams.length === 0 && (
-            <p className="font-body flex justify-center">No teams</p>
+            <div className="flex flex-col items-center mt-2 w-full gap-4">
+              <HiOutlineUserGroup className="w-20 h-20 text-base-content" />
+              <p className="font-body text-base-content">No teams</p>
+            </div>
           )}
 
           <div className="pb-12">
@@ -337,7 +344,7 @@ const TeamsPage = () => {
               Add team
             </button>
           </div>
-        </>
+        </div>
       ) : (
         <Outlet />
       )}
