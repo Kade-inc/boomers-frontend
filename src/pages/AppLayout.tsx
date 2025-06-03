@@ -20,7 +20,7 @@ const serverUrl = "http://localhost:5001";
 const socket: Socket = io(serverUrl);
 
 function AppLayout() {
-  const { logout, checkAuth, userTeams, user, userChallenges } = useAuthStore();
+  const { userTeams, user, userChallenges } = useAuthStore();
   const notifications = useNotificationsStore((state) => state.notifications);
   const setNotifications = useNotificationsStore(
     (state) => state.setNotifications,
@@ -103,20 +103,9 @@ function AppLayout() {
   };
 
   useEffect(() => {
-    checkAuth();
-    const checkToken = () => {
-      const token = Cookies.get("token");
-      if (!token) navigate("/");
-    };
-
-    checkToken();
-
-    const interval = setInterval(() => {
-      checkToken();
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [logout, checkAuth]);
+    const token = Cookies.get("token");
+    if (!token) navigate("/");
+  }, []);
 
   const handleNotificationRedirect = (notification: Notification) => {
     if (
