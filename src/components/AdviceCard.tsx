@@ -3,6 +3,7 @@ interface AdviceCardProps {
   isPending: boolean;
   error: Error | null;
   className?: string;
+  refetch: () => void;
 }
 
 const AdviceCard = ({
@@ -10,6 +11,7 @@ const AdviceCard = ({
   advice,
   isPending,
   error,
+  refetch,
 }: AdviceCardProps) => {
   if (isPending) {
     return (
@@ -58,6 +60,16 @@ const AdviceCard = ({
             </a>
           </div>
         </>
+      )}
+      {error && (
+        <div className="text-center text-white text-[14px] xl:text-[15px] font-regular font-body px-6">
+          Failed to fetch advice
+          <button className="bg-yellow text-darkgrey font-body font-medium px-6 py-2 rounded-sm text-[14px] mt-2" 
+          disabled={isPending} 
+          onClick={refetch}>
+            {isPending ? <span className="loading loading-dots loading-sm"></span> : "Refetch"}
+            </button>
+        </div>
       )}
     </div>
   );
