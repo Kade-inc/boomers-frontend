@@ -71,7 +71,7 @@ function TeamCardCarousel({ slides, userId, section }: CarouselProps) {
               <TeamCard
                 key={slide._id}
                 team={slide}
-                styles={`w-full h-[180px] md:w-[260px] md:h-[150px] 2xl:w-[360px] 2xl:h-[180px]`}
+                styles={`w-full h-[180px] md:w-[290px] md:h-[150px] 2xl:w-[360px] 2xl:h-[180px]`}
                 section={section}
                 userId={userId}
                 onClick={() => {

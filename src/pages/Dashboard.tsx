@@ -17,6 +17,8 @@ import PendingRequests from "../components/PendingRequest";
 import useTeamSpotlight from "../hooks/useTeamSpotlight";
 import SpotlightCard from "../components/Cards/SpotlightCard";
 import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
+import { HiUserGroup } from "react-icons/hi2";
+import { GrAnnounce } from "react-icons/gr";
 import ActionCenterModal from "../components/Modals/ActionCenterModal";
 import useAdvice from "../hooks/useAdvice";
 import useGetJoinRequests from "../hooks/useGetJoinRequests";
@@ -209,9 +211,10 @@ const Dashboard = () => {
               </div>
             )}
 
-            {teamsData.data?.length == 0 && (
+            {teamsData.data?.length === 0 && (
               <>
                 <div className="flex items-center flex-col text-[16px] mt-10">
+                  <HiUserGroup className="w-14 h-14" />
                   <p className="mb-6">
                     You do not own or belong to any team currently.
                   </p>
@@ -232,12 +235,10 @@ const Dashboard = () => {
                 </div>
 
                 <div className="flex items-center flex-col text-[16px] mt-10">
-                  <p className="mb-6 font-semibold">
-                    Team recommendations based on your profile.
-                  </p>
                   {teamRecommendations?.length === 0 && (
                     <>
                       <div className="flex flex-col items-center justify-center">
+                        <GrAnnounce className="w-14 h-14" />
                         <p className="mb-6">No recommendations found.</p>
                         <div className="flex flex-col items-center justify-center">
                           <p className="mb-6">
@@ -255,6 +256,9 @@ const Dashboard = () => {
                   )}
                   {teamRecommendations && teamRecommendations?.length > 0 && (
                     <>
+                      <p className="mb-6 font-semibold">
+                        Team recommendations based on your profile.
+                      </p>
                       <div className="flex flex-col md:flex-row justify-center items-center w-full">
                         {teamRecommendations
                           ?.slice(0, 2)
@@ -262,7 +266,7 @@ const Dashboard = () => {
                             <TeamCard
                               key={recommendation._id}
                               team={recommendation}
-                              styles={`w-full md:w-[400px] h-[130px] md:h-[200px] mb-3 md:mb-0 md:ml-6`}
+                              styles={`w-full h-[180px] md:w-[290px] md:h-[150px] 2xl:w-[360px] 2xl:h-[180px] mb-3 md:mb-0 md:ml-6`}
                               onClick={() => openModal(recommendation)}
                             />
                           ))}
@@ -292,11 +296,6 @@ const Dashboard = () => {
                   section="dashboard-section"
                 />
               </>
-            )}
-            {filteredTeams.length === 0 && (
-              <div className="flex items-center flex-col mt-10">
-                <p className="mb-6">No teams to display.</p>
-              </div>
             )}
           </div>
           <div className="mt-12">

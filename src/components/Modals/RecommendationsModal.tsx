@@ -117,6 +117,34 @@ const RecommendationsModal = ({
                   </div>
                 ))}
               </div>
+              <div className="mt-10">
+                <p className="font-semibold text-[20px] ">Specialities</p>
+
+                <div className="flex flex-row items-center">
+                  <div className="mx-1 text-base-content">{team.domain}</div>
+                  <div className="bg-base-content rounded-full w-1 h-1 mx-1"></div>
+                  <div className="mx-1 text-base-content">{team.subdomain}</div>
+                  <div className="bg-base-content rounded-full w-1 h-1 mx-1"></div>
+                  <div>
+                    {team?.subdomainTopics &&
+                      team.subdomainTopics.length > 0 && (
+                        <div className="flex flex-row items-center">
+                          {team?.subdomainTopics?.map(
+                            (topic: string, index: number) => (
+                              <div
+                                key={index}
+                                className="flex flex-row items-center"
+                              >
+                                <p>{topic}</p>
+                                <div className="bg-base-content rounded-full w-1 h-1 mx-1"></div>
+                              </div>
+                            ),
+                          )}
+                        </div>
+                      )}
+                  </div>
+                </div>
+              </div>
               <div className="flex justify-end h-[35vh] items-end">
                 <button className="btn bg-yellow text-darkgrey border-none text-[17px] px-10">
                   Request to join

@@ -11,6 +11,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import useGetUser from "../hooks/useGetUser";
 import User from "../entities/User";
 import UpdatedUserProfile from "../entities/UpdatedUserProfile";
+import { RiMessageLine } from "react-icons/ri";
+import { MdOutlineInterests } from "react-icons/md";
+import { HiOutlineUserGroup } from "react-icons/hi2";
 
 const ProfilePage = () => {
   const { userId } = useParams();
@@ -154,9 +157,18 @@ const ProfilePage = () => {
         <div className="bg-base-200 mt-4 shadow-custom text-base-content rounded-[5px] pb-2">
           <div className="font-body  ml-6 my-4">
             <h1 className=" font-semibold text-base md:text-lg ">Bio</h1>
-            <p className="font-medium text-[13px] md:text-base  mt-2">
-              {profileData?.bio || null}
-            </p>
+            {profileData?.bio ? (
+              <p className="font-medium text-[13px] md:text-base  mt-2">
+                {profileData?.bio}
+              </p>
+            ) : (
+              <div className="flex flex-col items-center mt-2">
+                <RiMessageLine className="w-10 h-10" />
+                <p className="font-medium text-[13px] md:text-base  mt-2">
+                  No bio found
+                </p>
+              </div>
+            )}
           </div>
         </div>
         <div className="bg-base-200 mt-4 shadow-custom text-base-content rounded-[5px] pb-4">
@@ -164,40 +176,50 @@ const ProfilePage = () => {
             <h1 className="font-body font-semibold text-base md:text-lg ">
               Interests
             </h1>
-            <div className="flex flex-wrap gap-4 justify-start mt-2">
-              {profileData?.interests?.domain.map((d, index) => (
-                <div
-                  key={index}
-                  className="border py-2 px-4 rounded-sm border-lightgrey font-body font-medium text-sm"
-                >
-                  {d}
-                </div>
-              ))}
+            {profileData?.interests?.domain &&
+            profileData?.interests?.domain.length > 0 ? (
+              <div className="flex flex-wrap gap-4 justify-start mt-2">
+                {profileData?.interests?.domain.map((d, index) => (
+                  <div
+                    key={index}
+                    className="border py-2 px-4 rounded-sm border-lightgrey font-body font-medium text-sm"
+                  >
+                    {d}
+                  </div>
+                ))}
 
-              {profileData?.interests?.domainTopics.map((t, index) => (
-                <div
-                  key={index}
-                  className="border py-2 px-4 rounded-sm border-lightgrey font-body font-medium text-sm"
-                >
-                  {typeof t === "string" ? t : t.name}
-                </div>
-              ))}
+                {profileData?.interests?.domainTopics.map((t, index) => (
+                  <div
+                    key={index}
+                    className="border py-2 px-4 rounded-sm border-lightgrey font-body font-medium text-sm"
+                  >
+                    {typeof t === "string" ? t : t.name}
+                  </div>
+                ))}
 
-              {profileData?.interests?.subdomain.map((sd, index) => (
-                <div
-                  key={index}
-                  className="border py-2 px-4 rounded-sm border-lightgrey font-body font-medium text-sm "
-                >
-                  {sd}
-                </div>
-              ))}
-            </div>
+                {profileData?.interests?.subdomain.map((sd, index) => (
+                  <div
+                    key={index}
+                    className="border py-2 px-4 rounded-sm border-lightgrey font-body font-medium text-sm "
+                  >
+                    {sd}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center mt-2">
+                <MdOutlineInterests className="w-10 h-10" />
+                <p className="font-medium text-[13px] md:text-base  mt-2 text-base-content font-body">
+                  No interests found
+                </p>
+              </div>
+            )}
           </div>
         </div>
         <div className="bg-base-200 mt-4 shadow-custom text-base-content rounded-[5px] pb-12">
           <div className="md:mx-6 my-4 px-[10px] md:px-0">
             <h1 className="font-body font-semibold text-base md:text-lg ">
-              Houses
+              Teams
             </h1>
             {teamsPending ? (
               <div className="flex justify-center items-center">
@@ -210,7 +232,10 @@ const ProfilePage = () => {
                 section="profile-section"
               />
             ) : (
-              <p className="my-6 font-body">No teams associated.</p>
+              <div className="flex flex-col items-center mt-2">
+                <HiOutlineUserGroup className="w-10 h-10" />
+                <p className="my-6 font-body">No teams associated.</p>
+              </div>
             )}
           </div>
         </div>
