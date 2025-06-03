@@ -18,7 +18,7 @@ import useTeamSpotlight from "../hooks/useTeamSpotlight";
 import SpotlightCard from "../components/Cards/SpotlightCard";
 import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
 import { HiUserGroup } from "react-icons/hi2";
-import { GrAnnounce } from "react-icons/gr";
+import { GrAnnounce, GrTest } from "react-icons/gr";
 import ActionCenterModal from "../components/Modals/ActionCenterModal";
 import useAdvice from "../hooks/useAdvice";
 import useGetJoinRequests from "../hooks/useGetJoinRequests";
@@ -360,7 +360,8 @@ const Dashboard = () => {
               </div>
             )}
             {teamsData.data.length > 0 && challengesData?.length == 0 && (
-              <div className="flex items-center flex-col text-[16px] mt-10">
+              <div className="flex items-center flex-col text-[16px] mt-10 gap-4">
+                <GrTest className="w-16 h-16 text-base-content" />
                 <p className="mb-6">
                   You&apos;re all caught up! No challenges to display.
                 </p>
