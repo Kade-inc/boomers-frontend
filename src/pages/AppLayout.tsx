@@ -158,23 +158,6 @@ function AppLayout() {
       <div className="pt-[60px]">
         <Outlet />
       </div>
-      {/* <Toaster
-        position="bottom-center"
-        reverseOrder={true}
-        toastOptions={{
-          duration: 10000,
-          error: {
-            style: {
-              background: "#D92D2D",
-              color: "white",
-            },
-            iconTheme: {
-              primary: "white",
-              secondary: "#D92D2D",
-            },
-          },
-        }}
-      /> */}
       <div className="drawer drawer-end z-30 ">
         <input
           id="notifications-drawer"
