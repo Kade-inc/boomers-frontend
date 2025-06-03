@@ -10,7 +10,6 @@ import useGetNotifications from "../hooks/useGetNotifications";
 import { IoCheckmarkDone, IoMail, IoMailOpen } from "react-icons/io5";
 import Notification from "../entities/Notification";
 import NotificationItem from "../components/NotificationItem";
-import { Toaster } from "react-hot-toast";
 import useMarkAllNotificationsRead from "../hooks/Notifications/useMarkAllNotificationsRead";
 import useNotificationsStore from "../stores/useNotificationsStore";
 import { io, Socket } from "socket.io-client";
@@ -21,7 +20,7 @@ const serverUrl = "http://localhost:5001";
 const socket: Socket = io(serverUrl);
 
 function AppLayout() {
-  const { logout, checkAuth, userTeams, user, userChallenges } = useAuthStore();
+  const { userTeams, user, userChallenges } = useAuthStore();
   const notifications = useNotificationsStore((state) => state.notifications);
   const setNotifications = useNotificationsStore(
     (state) => state.setNotifications,
@@ -104,20 +103,9 @@ function AppLayout() {
   };
 
   useEffect(() => {
-    checkAuth();
-    const checkToken = () => {
-      const token = Cookies.get("token");
-      if (!token) navigate("/");
-    };
-
-    checkToken();
-
-    const interval = setInterval(() => {
-      checkToken();
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [logout, checkAuth]);
+    const token = Cookies.get("token");
+    if (!token) navigate("/");
+  }, []);
 
   const handleNotificationRedirect = (notification: Notification) => {
     if (
@@ -170,22 +158,6 @@ function AppLayout() {
       <div className="pt-[60px]">
         <Outlet />
       </div>
-      <Toaster
-        position="bottom-center"
-        reverseOrder={true}
-        toastOptions={{
-          error: {
-            style: {
-              background: "#D92D2D",
-              color: "white",
-            },
-            iconTheme: {
-              primary: "white",
-              secondary: "#D92D2D",
-            },
-          },
-        }}
-      />
       <div className="drawer drawer-end z-30 ">
         <input
           id="notifications-drawer"

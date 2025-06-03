@@ -39,13 +39,6 @@ const useAuthStore = create<AuthStore>(
       userTeams: [],
       userChallenges: [],
       login: (token: string) => {
-        Cookies.set("token", token, {
-          expires: 365 * 24 * 60 * 60 * 1000,
-          httpOnly: true, // The cookie is only accessible by the web server
-          secure: true,
-          sameSite: "None",
-        });
-
         set({ token, isAuthenticated: true });
       },
       logout: () => {
@@ -57,6 +50,7 @@ const useAuthStore = create<AuthStore>(
           userId: "",
           token: null,
           userTeams: [],
+          userChallenges: [],
         });
       },
       setUserId: (userId: string) => set(() => ({ userId })),
