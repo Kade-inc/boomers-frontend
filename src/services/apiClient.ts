@@ -55,7 +55,6 @@ class APIClient {
           originalRequest._retry = true; // Prevent infinite loop
           try {
             const refresh_token = Cookies.get("refreshToken");
-            console.log("refresh_token", refresh_token);
             if (!refresh_token) {
               throw new Error("No refresh token found");
             }
@@ -74,21 +73,16 @@ class APIClient {
 
             const { accessToken, refreshToken } = response.data;
             Cookies.set("token", accessToken, {
-              expires: 365 * 24 * 60 * 60 * 1000,
+              expires: 60 * 60 * 1000,
             });
             Cookies.set("refreshToken", refreshToken, {
-              expires: 365 * 24 * 60 * 60 * 1000,
+              expires: 7 * 24 * 60 * 60 * 1000,
             });
             originalRequest.headers.Authorization = `Bearer ${accessToken}`;
             return this.axiosInstance(originalRequest);
-          } catch (refreshError) {
-            console.log("refreshError", refreshError);
+          } catch {
             const logout = useAuthStore.getState().logout;
             logout();
-            toast.error(
-              "Session expired. You have been logged out.",
-              axiosError.response?.data ?? axiosError.message,
-            );
           }
         }
         return Promise.reject(error);
@@ -133,9 +127,9 @@ class APIClient {
       const { accessToken, refreshToken } = response.data;
 
       // Set token in cookie and update auth state
-      Cookies.set("token", accessToken, { expires: 365 * 24 * 60 * 60 * 1000 });
+      Cookies.set("token", accessToken, { expires: 60 * 60 * 1000 });
       Cookies.set("refreshToken", refreshToken, {
-        expires: 365 * 24 * 60 * 60 * 1000,
+        expires: 7 * 24 * 60 * 60 * 1000,
       });
       login(accessToken);
 
