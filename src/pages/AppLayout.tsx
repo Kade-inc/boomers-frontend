@@ -10,7 +10,6 @@ import useGetNotifications from "../hooks/useGetNotifications";
 import { IoCheckmarkDone, IoMail, IoMailOpen } from "react-icons/io5";
 import Notification from "../entities/Notification";
 import NotificationItem from "../components/NotificationItem";
-import { Toaster } from "react-hot-toast";
 import useMarkAllNotificationsRead from "../hooks/Notifications/useMarkAllNotificationsRead";
 import useNotificationsStore from "../stores/useNotificationsStore";
 import { io, Socket } from "socket.io-client";
@@ -170,10 +169,11 @@ function AppLayout() {
       <div className="pt-[60px]">
         <Outlet />
       </div>
-      <Toaster
+      {/* <Toaster
         position="bottom-center"
         reverseOrder={true}
         toastOptions={{
+          duration: 10000,
           error: {
             style: {
               background: "#D92D2D",
@@ -185,7 +185,7 @@ function AppLayout() {
             },
           },
         }}
-      />
+      /> */}
       <div className="drawer drawer-end z-30 ">
         <input
           id="notifications-drawer"

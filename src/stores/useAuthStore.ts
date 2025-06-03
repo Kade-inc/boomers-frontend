@@ -39,12 +39,18 @@ const useAuthStore = create<AuthStore>(
       userTeams: [],
       userChallenges: [],
       login: (token: string) => {
-        Cookies.set("token", token, {
-          expires: 365 * 24 * 60 * 60 * 1000,
-          httpOnly: true, // The cookie is only accessible by the web server
-          secure: true,
-          sameSite: "None",
-        });
+        // Cookies.set("token", token, {
+        //   expires: 365 * 24 * 60 * 60 * 1000,
+        //   httpOnly: true, // The cookie is only accessible by the web server
+        //   secure: true,
+        //   sameSite: "None",
+        // });
+        // Cookies.set("refreshToken", refreshToken, {
+        //   expires: 365 * 24 * 60 * 60 * 1000,
+        //   httpOnly: true, // The cookie is only accessible by the web server
+        //   secure: true,
+        //   sameSite: "None",
+        // });
 
         set({ token, isAuthenticated: true });
       },
