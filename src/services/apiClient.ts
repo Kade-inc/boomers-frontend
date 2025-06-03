@@ -130,13 +130,13 @@ class APIClient {
 
     try {
       const response = await this.axiosInstance.post(this.endpoint, data);
-      const { accessToken } = response.data;
+      const { accessToken, refreshToken } = response.data;
 
       // Set token in cookie and update auth state
       Cookies.set("token", accessToken, { expires: 365 * 24 * 60 * 60 * 1000 });
-      // Cookies.set("refreshToken", refreshToken, {
-      //   expires: 365 * 24 * 60 * 60 * 1000,
-      // });
+      Cookies.set("refreshToken", refreshToken, {
+        expires: 365 * 24 * 60 * 60 * 1000,
+      });
       login(accessToken);
 
       // Decode token to extract userId and set in auth state
@@ -149,7 +149,7 @@ class APIClient {
         const teams = teamsResponse.data || teamsResponse;
         setUserTeams(teams);
       }
-      this.getUserProfile();
+      await this.getUserProfile();
       toast.success("Login successful");
       return response.data;
     } catch (error: any) {
