@@ -43,6 +43,7 @@ const Dashboard = () => {
     isPending: adviceLoading,
     error: adviceError,
     refetch: refetchAdvice,
+    isRefetching: adviceRefetching,
   } = useAdvice();
 
   const {
@@ -388,6 +389,7 @@ const Dashboard = () => {
             isPending={adviceLoading}
             error={adviceError}
             refetch={refetchAdvice}
+            isRefetching={adviceRefetching}
           />
           {!pendingSpotlight && teamSpotlight && (
             <>
@@ -434,6 +436,7 @@ const Dashboard = () => {
             isPending={adviceLoading}
             error={adviceError}
             refetch={refetchAdvice}
+            isRefetching={adviceRefetching}
           />
           <PendingRequests
             requests={requests}

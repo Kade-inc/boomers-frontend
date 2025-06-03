@@ -133,7 +133,10 @@ const TeamDetailsPage = () => {
   if (isTeamPending || isChallengesPending || isTeamMemberRequestsPending) {
     return (
       <div className="flex justify-center items-center h-screen bg-base-100">
-        <span className="loading loading-dots loading-lg text-base-content"></span>
+        <div className="flex flex-col items-center gap-4">
+          <span className="loading loading-dots loading-lg text-base-content"></span>
+          <p className="font-body text-base-content">Loading...</p>
+        </div>
       </div>
     );
   }

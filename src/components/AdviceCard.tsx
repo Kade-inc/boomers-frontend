@@ -1,9 +1,12 @@
+import { MdErrorOutline } from "react-icons/md";
+
 interface AdviceCardProps {
   advice: string | undefined;
   isPending: boolean;
   error: Error | null;
   className?: string;
   refetch: () => void;
+  isRefetching: boolean;
 }
 
 const AdviceCard = ({
@@ -12,6 +15,7 @@ const AdviceCard = ({
   isPending,
   error,
   refetch,
+  isRefetching,
 }: AdviceCardProps) => {
   if (isPending) {
     return (
@@ -43,9 +47,9 @@ const AdviceCard = ({
       className={`container mx-auto gap-5 w-[90%] py-6 flex flex-col items-center justify-center bg-darkgrey rounded-[5px] mt-5 ${className}`}
     >
       <div className="text-center text-white text-[18px] font-semibold font-body">
-        Today’s advice
+        Today&apos;s advice
       </div>
-      {advice && (
+      {advice && !error && (
         <>
           <div className="text-center text-white text-[14px] xl:text-[15px] font-regular font-body px-6">
             {advice}
@@ -61,14 +65,29 @@ const AdviceCard = ({
           </div>
         </>
       )}
-      {error && (
+      {!advice && error && (
         <div className="text-center text-white text-[14px] xl:text-[15px] font-regular font-body px-6">
-          Failed to fetch advice
-          <button className="bg-yellow text-darkgrey font-body font-medium px-6 py-2 rounded-sm text-[14px] mt-2" 
-          disabled={isPending} 
-          onClick={refetch}>
-            {isPending ? <span className="loading loading-dots loading-sm"></span> : "Refetch"}
-            </button>
+          <MdErrorOutline className="w-10 h-10" />
+          <span>No advice available</span>
+        </div>
+      )}
+      {error && (
+        <div className="text-center text-white text-[14px] xl:text-[15px] font-regular font-body px-6 flex flex-col items-center justify-center gap-2 mt-2">
+          <MdErrorOutline className="w-10 h-10" />
+          <p>Failed to fetch advice</p>
+          <button
+            className="bg-yellow text-darkgrey font-body font-medium px-6 py-2 rounded-sm text-[14px] mt-2"
+            disabled={isRefetching}
+            onClick={refetch}
+          >
+            {isRefetching ? (
+              <div className="flex items-center justify-center">
+                <span className="loading loading-dots loading-md text-darkgrey"></span>
+              </div>
+            ) : (
+              <span>Refetch</span>
+            )}
+          </button>
         </div>
       )}
     </div>
