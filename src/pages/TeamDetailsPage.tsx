@@ -17,6 +17,8 @@ import React from "react";
 import useSendTeamRequest from "../hooks/useSendTeamRequest";
 import useDeleteChallenges from "../hooks/Challenges/useDeleteChallenges";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
+import { HiOutlineUserGroup } from "react-icons/hi2";
+import { GrTest } from "react-icons/gr";
 
 const TeamDetailsPage = () => {
   const [activeTab, setActiveTab] = useState("members");
@@ -131,7 +133,10 @@ const TeamDetailsPage = () => {
   if (isTeamPending || isChallengesPending || isTeamMemberRequestsPending) {
     return (
       <div className="flex justify-center items-center h-screen bg-base-100">
-        <span className="loading loading-dots loading-lg text-base-content"></span>
+        <div className="flex flex-col items-center gap-4">
+          <span className="loading loading-dots loading-lg text-base-content"></span>
+          <p className="font-body text-base-content">Loading...</p>
+        </div>
       </div>
     );
   }
@@ -337,23 +342,34 @@ const TeamDetailsPage = () => {
 
             <div className="mt-5">
               {activeTab === "members" && (
-                <div className="flex gap-6 flex-wrap justify-center sm:justify-start">
-                  {team?.members.slice(1).map((member: TeamMember) => (
-                    <MemberCard
-                      key={member._id}
-                      member={member}
-                      imgUrl={member.profile_picture}
-                      onClick={() => {
-                        if (user.user_id === team?.members[0]?._id) {
-                          setSelectedTeamMember(member);
-                          openMemberDialog("member");
-                        } else {
-                          navigate(`/profile/${member._id}`);
-                        }
-                      }}
-                    />
-                  ))}
-                </div>
+                <>
+                  {team?.members.length > 1 ? (
+                    <div className="flex gap-6 flex-wrap justify-center sm:justify-start">
+                      {team?.members.slice(1).map((member: TeamMember) => (
+                        <MemberCard
+                          key={member._id}
+                          member={member}
+                          imgUrl={member.profile_picture}
+                          onClick={() => {
+                            if (user.user_id === team?.members[0]?._id) {
+                              setSelectedTeamMember(member);
+                              openMemberDialog("member");
+                            } else {
+                              navigate(`/profile/${member._id}`);
+                            }
+                          }}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center mt-2 w-full gap-4">
+                      <HiOutlineUserGroup className="w-20 h-20 text-base-content" />
+                      <p className="font-body text-base-content">
+                        No team members
+                      </p>
+                    </div>
+                  )}
+                </>
               )}
               {activeTab === "challenges" && (
                 <div>
@@ -466,7 +482,10 @@ const TeamDetailsPage = () => {
                         />
                       ))
                     ) : (
-                      <p className="font-body">No Challenges to display</p>
+                      <div className="flex flex-col items-center mt-2 w-full gap-4">
+                        <GrTest className="w-20 h-20 text-base-content" />
+                        <p className="font-body">No Challenges to display</p>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -498,7 +517,12 @@ const TeamDetailsPage = () => {
                           />
                         ))
                     ) : (
-                      <p className="font-body">No Member Requests</p>
+                      <div className="flex flex-col items-center mt-2 w-full gap-4">
+                        <HiOutlineUserGroup className="w-20 h-20 text-base-content" />
+                        <p className="font-body text-base-content">
+                          No Member Requests
+                        </p>
+                      </div>
                     )}
                   </div>
                 )}

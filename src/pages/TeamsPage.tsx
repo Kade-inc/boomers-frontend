@@ -16,6 +16,9 @@ import SubDomain from "../entities/SubDomain";
 import MultiSelect from "../components/MultiSelect";
 import DomainTopic from "../entities/DomainTopic";
 import { useDebounce } from "../hooks/useDebounce";
+import { HiOutlineUserGroup } from "react-icons/hi2";
+import { TbFaceIdError } from "react-icons/tb";
+import { LiaFilterSolid } from "react-icons/lia";
 
 const TeamsPage = () => {
   const [showFilters, setShowFilters] = useState(false);
@@ -47,16 +50,19 @@ const TeamsPage = () => {
   const {
     data: domains,
     isPending: isDomainsPending,
+    refetch: refetchDomains,
     error: domainsError,
   } = useDomains();
   const {
     data: subDomains,
     isPending: isSubDomainsPending,
+    refetch: refetchSubDomains,
     error: subDomainsError,
   } = useSubDomains(selectedDomainId);
   const {
     data: subTopics,
     isPending: isSubTopicsPending,
+    refetch: refetchSubTopics,
     error: subTopicsError,
   } = useDomainTopics();
   const navigate = useNavigate();
@@ -89,10 +95,23 @@ const TeamsPage = () => {
     });
   };
 
-  if (error || domainsError || subTopicsError || subDomainsError) {
+  const handleRefreshFilters = () => {
+    refetchDomains();
+    refetchSubDomains();
+    refetchSubTopics();
+  };
+
+  if (error) {
     return (
-      <div className="flex justify-center items-center h-screen bg-base-100">
-        <div>Error</div>
+      <div className="flex flex-col justify-center items-center h-screen bg-base-100">
+        <TbFaceIdError className="w-20 h-20 text-base-content" />
+        <div>Error loading page</div>
+        <button
+          className="btn btn-primary bg-yellow text-darkgrey"
+          onClick={() => window.location.reload()}
+        >
+          Refresh
+        </button>
       </div>
     );
   }
@@ -100,7 +119,10 @@ const TeamsPage = () => {
   if (teams && !Array.isArray(teams.data)) {
     return (
       <div className="flex justify-center items-center h-screen bg-base-100 font-body">
-        <p>No teams</p>
+        <div className="flex flex-col items-center mt-2 w-full gap-4">
+          <HiOutlineUserGroup className="w-20 h-20 text-base-content" />
+          <p className="font-body text-base-content">No teams</p>
+        </div>
       </div>
     );
   }
@@ -108,8 +130,8 @@ const TeamsPage = () => {
   return (
     <div className="h-screen text-base-content bg-base-100 px-2 md:px-10">
       {!teamId ? (
-        <>
-          <p className="text-[20px] pt-3 mb-3 font-bold font-heading">Teams</p>
+        <div className="pt-10">
+          {/* <p className="text-[20px] pt-3 mb-3 font-bold font-heading">Teams</p> */}
           {(isDomainsPending || isSubDomainsPending || isSubTopicsPending) && (
             <div>
               <p className="font-body text-[14px] flex items-center">
@@ -119,115 +141,143 @@ const TeamsPage = () => {
             </div>
           )}
           {!isDomainsPending && !isSubDomainsPending && !isSubTopicsPending && (
-            <div className="flex flex-col sm:flex-row gap-2 flex-wrap items-start sm:items-center justify-between">
-              <div className="flex flex-col sm:flex-row gap-2 flex-wrap items-start sm:items-center font-body w-full sm:w-auto mb-2 md:mb-0">
-                <div className="flex items-center gap-2">
-                  <p>Filters:</p>
-                  {(selectedDomain ||
-                    selectedSubDomain ||
-                    selectedTopics.length > 0) && (
-                    <span className="text-base-content font-semibold text-sm">
-                      (
-                      {
-                        [
-                          selectedDomain,
-                          selectedSubDomain,
-                          selectedTopics.length,
-                        ].filter(Boolean).length
-                      }
-                      )
-                    </span>
-                  )}
+            <>
+              {domainsError || subTopicsError || subDomainsError ? (
+                <div className="flex flex-col items-center mt-2 w-full gap-4">
+                  <LiaFilterSolid className="w-6 h-6 text-base-content" />
+                  <p className="font-body text-base-content">
+                    Error loading filters
+                  </p>
+                  <button
+                    className="bg-yellow text-darkgrey font-body font-medium px-6 py-2 rounded-sm text-[14px]"
+                    disabled={
+                      isDomainsPending ||
+                      isSubDomainsPending ||
+                      isSubTopicsPending
+                    }
+                    onClick={handleRefreshFilters}
+                  >
+                    {isDomainsPending ||
+                    isSubDomainsPending ||
+                    isSubTopicsPending ? (
+                      <span className="loading loading-dots loading-sm"></span>
+                    ) : (
+                      "Refresh"
+                    )}
+                  </button>
                 </div>
-                <button
-                  className="text-[14px] py-1 px-4 text-darkgrey bg-yellow sm:hidden md:w-[98px] rounded-sm w-full"
-                  onClick={() => {
-                    setShowFilters(!showFilters);
-                  }}
-                >
-                  {!showFilters ? "Show Filters" : "Hide Filters"}
-                </button>
-                <div
-                  className={`flex flex-col sm:flex-row gap-2 flex-wrap w-full sm:w-auto`}
-                >
-                  <select
-                    className={`bg-transparent border p-1 border-1 rounded w-full sm:w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
-                    style={{ borderColor: "rgba(204, 205, 207, 1)" }}
-                    value={selectedDomain}
-                    onChange={(e) => setSelectedDomain(e.target.value)}
-                  >
-                    <option value="" disabled>
-                      Domain
-                    </option>
-                    {domainOptions.map((domain) => (
-                      <option key={domain._id} value={domain.name}>
-                        {domain.name}
-                      </option>
-                    ))}
-                  </select>
-                  <select
-                    className={`bg-transparent border p-1 border-1 rounded w-full sm:w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
-                    style={{ borderColor: "rgba(204, 205, 207, 1)" }}
-                    value={selectedSubDomain}
-                    onChange={(e) => setSelectedSubDomain(e.target.value)}
-                  >
-                    <option value="" disabled>
-                      Sub domain
-                    </option>
-                    {subDomainOptions.map((subDomain) => (
-                      <option key={subDomain._id} value={subDomain.name}>
-                        {subDomain.name}
-                      </option>
-                    ))}
-                  </select>
-                  <div
-                    className={`${showFilters ? "block" : "hidden"} sm:block w-full sm:w-[143px]`}
-                  >
-                    <MultiSelect
-                      options={subTopics || []}
-                      selected={selectedTopics}
-                      onChange={setSelectedTopics}
-                      parentContainerWidth="w-full sm:w-[143px]"
-                    />
+              ) : (
+                <div className="flex flex-col sm:flex-row gap-2 flex-wrap items-start sm:items-center justify-between">
+                  <div className="flex flex-col sm:flex-row gap-2 flex-wrap items-start sm:items-center font-body w-full sm:w-auto mb-2 md:mb-0">
+                    <div className="flex items-center gap-2">
+                      <p>Filters:</p>
+                      {(selectedDomain ||
+                        selectedSubDomain ||
+                        selectedTopics.length > 0) && (
+                        <span className="text-base-content font-semibold text-sm">
+                          (
+                          {
+                            [
+                              selectedDomain,
+                              selectedSubDomain,
+                              selectedTopics.length,
+                            ].filter(Boolean).length
+                          }
+                          )
+                        </span>
+                      )}
+                    </div>
+                    <button
+                      className="text-[14px] py-1 px-4 text-darkgrey bg-yellow sm:hidden md:w-[98px] rounded-sm w-full"
+                      onClick={() => {
+                        setShowFilters(!showFilters);
+                      }}
+                    >
+                      {!showFilters ? "Show Filters" : "Hide Filters"}
+                    </button>
+                    <div
+                      className={`flex flex-col sm:flex-row gap-2 flex-wrap w-full sm:w-auto`}
+                    >
+                      <select
+                        className={`bg-transparent border p-1 border-1 rounded w-full sm:w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
+                        style={{ borderColor: "rgba(204, 205, 207, 1)" }}
+                        value={selectedDomain}
+                        onChange={(e) => setSelectedDomain(e.target.value)}
+                      >
+                        <option value="" disabled>
+                          Domain
+                        </option>
+                        {domainOptions.map((domain) => (
+                          <option key={domain._id} value={domain.name}>
+                            {domain.name}
+                          </option>
+                        ))}
+                      </select>
+                      <select
+                        className={`bg-transparent border p-1 border-1 rounded w-full sm:w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
+                        style={{ borderColor: "rgba(204, 205, 207, 1)" }}
+                        value={selectedSubDomain}
+                        onChange={(e) => setSelectedSubDomain(e.target.value)}
+                      >
+                        <option value="" disabled>
+                          Sub domain
+                        </option>
+                        {subDomainOptions.map((subDomain) => (
+                          <option key={subDomain._id} value={subDomain.name}>
+                            {subDomain.name}
+                          </option>
+                        ))}
+                      </select>
+                      <div
+                        className={`${showFilters ? "block" : "hidden"} sm:block w-full sm:w-[143px]`}
+                      >
+                        <MultiSelect
+                          options={subTopics || []}
+                          selected={selectedTopics}
+                          onChange={setSelectedTopics}
+                          parentContainerWidth="w-full sm:w-[143px]"
+                        />
+                      </div>
+                    </div>
+                    <button
+                      className="text-white bg-[#FF2F2F] rounded-sm bg-redish text-[14px] py-1 px-4 w-full sm:w-auto"
+                      onClick={() => {
+                        setSelectedSubDomain("");
+                        setSelectedTopics([]);
+                        setSearchName("");
+                        handlePageChange(1);
+                      }}
+                    >
+                      Clear all
+                    </button>
                   </div>
+                  <label className="input input-bordered rounded-[50px] flex items-center gap-2 h-[29px] w-full sm:w-[200px] bg-transparent border-base-content">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 16 16"
+                      fill="currentColor"
+                      className="h-4 w-4 opacity-70 flex-shrink-0"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <input
+                      type="text"
+                      className="font-body"
+                      placeholder="Search"
+                      value={searchName}
+                      onChange={(e) => setSearchName(e.target.value)}
+                    />
+                  </label>
                 </div>
-                <button
-                  className="text-white bg-[#FF2F2F] rounded-sm bg-redish text-[14px] py-1 px-4 w-full sm:w-auto"
-                  onClick={() => {
-                    setSelectedSubDomain("");
-                    setSelectedTopics([]);
-                    setSearchName("");
-                    handlePageChange(1);
-                  }}
-                >
-                  Clear all
-                </button>
-              </div>
-              <label className="input input-bordered rounded-[50px] flex items-center gap-2 h-[29px] w-full sm:w-[200px] bg-transparent border-base-content">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 16 16"
-                  fill="currentColor"
-                  className="h-4 w-4 opacity-70 flex-shrink-0"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <input
-                  type="text"
-                  className="font-body"
-                  placeholder="Search"
-                  value={searchName}
-                  onChange={(e) => setSearchName(e.target.value)}
-                />
-              </label>
-            </div>
+              )}
+            </>
           )}
           {isPending && (
-            <div className="flex justify-center h-1/2 items-center bg-base-100">
+            <div className="flex justify-center h-[80vh] items-center bg-base-100">
               <span className="loading loading-dots loading-lg"></span>
             </div>
           )}
@@ -248,7 +298,10 @@ const TeamsPage = () => {
             </div>
           )}
           {!isPending && currentTeams.length === 0 && (
-            <p className="font-body flex justify-center">No teams</p>
+            <div className="flex flex-col items-center mt-2 w-full gap-4">
+              <HiOutlineUserGroup className="w-20 h-20 text-base-content" />
+              <p className="font-body text-base-content">No teams</p>
+            </div>
           )}
 
           <div className="pb-12">
@@ -337,7 +390,7 @@ const TeamsPage = () => {
               Add team
             </button>
           </div>
-        </>
+        </div>
       ) : (
         <Outlet />
       )}

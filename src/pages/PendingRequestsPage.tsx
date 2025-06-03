@@ -10,6 +10,7 @@ import JoinRequest from "../entities/JoinRequest";
 import ActionModal from "../components/Modals/ActionModal";
 import ApprovalModal from "../components/Modals/ApprovalModal";
 import RejectedModal from "../components/Modals/RejectedModal";
+import { CiCircleQuestion } from "react-icons/ci";
 
 const PendingRequestsPage = () => {
   const [expandAction, setExpandAction] = useState(true);
@@ -100,53 +101,60 @@ const PendingRequestsPage = () => {
       </div>
       <div className="flex gap-6 mb-[50px] flex-wrap">
         {expandAction &&
-          pendingRequests.map((request) => (
-            <div
-              key={request._id}
-              className={`w-full md:w-[270px] h-[100px] rounded-[3px] pl-3 pt-3 text-white`}
-              style={{ background: request.team_id?.teamColor }}
-            >
-              <p className="font-semibold text-[14px] mb-8">
-                {request.team_id?.name || "Unknown Team"}
-              </p>
-              <div className="text-[12px] font-medium flex justify-between pr-3">
-                <p
-                  className="cursor-pointer"
-                  onClick={() => {
-                    const modal = document.getElementById(
-                      "my_modal_17",
-                    ) as HTMLDialogElement | null;
-                    if (modal) {
-                      modal.showModal();
-                    }
-                    setSelectedPendingMemberApproval(request);
-                    setApprovalModalMode("action");
-                  }}
-                >
-                  {request.user_id?.profile?.firstName &&
-                  request.user_id?.profile?.lastName
-                    ? `${request.user_id.profile.firstName} ${request.user_id.profile.lastName}`
-                    : request.user_id?.profile?.firstName ||
-                      request.user_id?.profile?.lastName ||
-                      request.user_id?.username ||
-                      "Unknown User"}
+          (pendingRequests.length > 0 ? (
+            pendingRequests.map((request) => (
+              <div
+                key={request._id}
+                className={`w-full md:w-[270px] h-[100px] rounded-[3px] pl-3 pt-3 text-white`}
+                style={{ background: request.team_id?.teamColor }}
+              >
+                <p className="font-semibold text-[14px] mb-8">
+                  {request.team_id?.name || "Unknown Team"}
                 </p>
+                <div className="text-[12px] font-medium flex justify-between pr-3">
+                  <p
+                    className="cursor-pointer"
+                    onClick={() => {
+                      const modal = document.getElementById(
+                        "my_modal_17",
+                      ) as HTMLDialogElement | null;
+                      if (modal) {
+                        modal.showModal();
+                      }
+                      setSelectedPendingMemberApproval(request);
+                      setApprovalModalMode("action");
+                    }}
+                  >
+                    {request.user_id?.profile?.firstName &&
+                    request.user_id?.profile?.lastName
+                      ? `${request.user_id.profile.firstName} ${request.user_id.profile.lastName}`
+                      : request.user_id?.profile?.firstName ||
+                        request.user_id?.profile?.lastName ||
+                        request.user_id?.username ||
+                        "Unknown User"}
+                  </p>
 
-                <button
-                  className="bg-yellow text-darkgrey w-[62px] h-[25px] rounded-[3px]"
-                  onClick={() => {
-                    const modal = document.getElementById(
-                      "my_modal_9",
-                    ) as HTMLDialogElement | null;
-                    if (modal) {
-                      modal.showModal();
-                    }
-                    setSelectedPendingMemberAction(request);
-                  }}
-                >
-                  Action
-                </button>
+                  <button
+                    className="bg-yellow text-darkgrey w-[62px] h-[25px] rounded-[3px]"
+                    onClick={() => {
+                      const modal = document.getElementById(
+                        "my_modal_9",
+                      ) as HTMLDialogElement | null;
+                      if (modal) {
+                        modal.showModal();
+                      }
+                      setSelectedPendingMemberAction(request);
+                    }}
+                  >
+                    Action
+                  </button>
+                </div>
               </div>
+            ))
+          ) : (
+            <div className="flex flex-col items-center mt-2 w-full">
+              <CiCircleQuestion className="w-10 h-10" />
+              <p className="my-6 font-body">No pending requests.</p>
             </div>
           ))}
       </div>
@@ -167,40 +175,49 @@ const PendingRequestsPage = () => {
       </div>
       <div className="flex gap-6 text-white mb-[50px] flex-wrap">
         {expandApproval &&
-          sentPendingRequests.map((request) => (
-            <div
-              key={request._id}
-              className="w-full md:w-[270px] bg-yellow h-[100px] rounded-[3px] pl-3 pt-3"
-              style={{ background: request.team_id?.teamColor }}
-            >
-              <p className="font-semibold text-[14px] mb-10">
-                {" "}
-                {request.team_id?.name || "Unknown Team"}{" "}
-              </p>
-              <div className="text-[12px] font-medium flex gap-28">
-                <p
-                  className="pr-3 text-right w-full cursor-pointer"
-                  onClick={() => {
-                    const modal = document.getElementById(
-                      "my_modal_17",
-                    ) as HTMLDialogElement | null;
-                    if (modal) {
-                      modal.showModal();
-                    }
-                    setSelectedPendingMemberApproval(request);
-                    setApprovalModalMode("approval");
-                  }}
-                >
+          (sentPendingRequests && sentPendingRequests.length > 0 ? (
+            sentPendingRequests.map((request) => (
+              <div
+                key={request._id}
+                className="w-full md:w-[270px] bg-yellow h-[100px] rounded-[3px] pl-3 pt-3"
+                style={{ background: request.team_id?.teamColor }}
+              >
+                <p className="font-semibold text-[14px] mb-10">
                   {" "}
-                  {request.owner_id.profile?.firstName &&
-                  request.owner_id.profile?.lastName
-                    ? `${request.owner_id.profile?.firstName} ${request.owner_id.profile.lastName}`
-                    : request.owner_id.profile?.firstName ||
-                      request.owner_id.profile?.lastName ||
-                      request.owner_id.profile?.username ||
-                      "Unknown User"}
+                  {request.team_id?.name || "Unknown Team"}{" "}
                 </p>
+                <div className="text-[12px] font-medium flex gap-28">
+                  <p
+                    className="pr-3 text-right w-full cursor-pointer"
+                    onClick={() => {
+                      const modal = document.getElementById(
+                        "my_modal_17",
+                      ) as HTMLDialogElement | null;
+                      if (modal) {
+                        modal.showModal();
+                      }
+                      setSelectedPendingMemberApproval(request);
+                      setApprovalModalMode("approval");
+                    }}
+                  >
+                    {" "}
+                    {request.owner_id.profile?.firstName &&
+                    request.owner_id.profile?.lastName
+                      ? `${request.owner_id.profile?.firstName} ${request.owner_id.profile.lastName}`
+                      : request.owner_id.profile?.firstName ||
+                        request.owner_id.profile?.lastName ||
+                        request.owner_id.profile?.username ||
+                        "Unknown User"}
+                  </p>
+                </div>
               </div>
+            ))
+          ) : (
+            <div className="flex flex-col items-center mt-2 w-full">
+              <CiCircleQuestion className="w-10 h-10 text-base-content" />
+              <p className="my-6 font-body text-base-content">
+                No pending approvals.
+              </p>
             </div>
           ))}
       </div>
@@ -220,12 +237,14 @@ const PendingRequestsPage = () => {
             <MdOutlineKeyboardArrowDown className="size-4" />
           )}
         </div>
-        <button className="bg-red-600 text-white text-[14px] px-4 py-1 rounded-[3px] ">
-          Clear
-        </button>
+        {declinedRequests.length > 0 && (
+          <button className="bg-red-600 text-white text-[14px] px-4 py-1 rounded-[3px] ">
+            Clear
+          </button>
+        )}
       </div>
       <div className="flex gap-6 pb-[50px] flex-wrap">
-        {expandRequest &&
+        {expandRequest && declinedRequests.length > 0 ? (
           declinedRequests.map((reject) => (
             <div
               key={reject._id}
@@ -263,7 +282,15 @@ const PendingRequestsPage = () => {
                 </button>
               </div>
             </div>
-          ))}
+          ))
+        ) : (
+          <div className="flex flex-col items-center mt-2 w-full">
+            <CiCircleQuestion className="w-10 h-10 text-base-content" />
+            <p className="my-6 font-body text-base-content">
+              No rejected requests.
+            </p>
+          </div>
+        )}
       </div>
       <ActionModal selectedPendingMemberAction={selectedPendingMemberAction} />
       <RejectedModal selectedRejectRequest={selectedRejectRequest} />
