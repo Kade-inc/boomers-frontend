@@ -426,10 +426,10 @@ function NavigationBar() {
             }
           }}
         >
-          <div className="indicator">
+          <div className="indicator relative">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
+              className="h-7 w-7"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -442,7 +442,7 @@ function NavigationBar() {
               />
             </svg>
             {unreadNotifications.length > 0 && (
-              <span className="badge badge-xs badge-error indicator-item"></span>
+              <span className="badge badge-sm badge-error indicator-item absolute top-1 right-2"></span>
             )}
           </div>
         </button>
