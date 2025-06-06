@@ -14,6 +14,14 @@ export default interface UpdatedUserProfile {
   updatedAt: string;
   location?: string | null;
   job?: string | null;
+  city?: string | null;
+  country?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  locationGeo?: {
+    type: "Point";
+    coordinates: [number, number]; // [longitude, latitude]
+  };
 }
 
 interface Interests {

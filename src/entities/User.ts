@@ -23,6 +23,14 @@ export default interface User {
   _id?: string;
   job?: string;
   location?: string;
+  city?: string;
+  country?: string;
+  latitude?: number;
+  longitude?: number;
+  locationGeo?: {
+    type: "Point";
+    coordinates: [number, number]; // [longitude, latitude]
+  };
 }
 
 interface Interest {
