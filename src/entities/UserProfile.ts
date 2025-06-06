@@ -17,6 +17,14 @@ export default interface UserProfile {
     username: string;
     gender: string | null;
     profilePicture: string | null;
+    city: string | null;
+    country: string | null;
+    latitude: number | null;
+    longitude: number | null;
+    locationGeo?: {
+      type: "Point";
+      coordinates: [number, number]; // [longitude, latitude]
+    };
     createdAt: string;
     updatedAt: string;
   };

@@ -15,6 +15,7 @@ import MultiSelect from "../../components/MultiSelect";
 import DomainTopic from "../../entities/DomainTopic";
 import useDomainTopics from "../../hooks/useDomainTopics";
 import SubDomain from "../../entities/SubDomain";
+import { Country, City } from "country-state-city";
 
 type ModalTriggerProps = {
   isOpen: boolean;
@@ -45,6 +46,8 @@ const schema = z.object({
     .string()
     .min(1, { message: "Location is required" })
     .max(10, { message: "Location must be 10 characters or less" }),
+  country: z.string().min(1, { message: "Country is required" }),
+  city: z.string().min(1, { message: "City is required" }),
   phoneNumber: z.string().regex(/^\+?\d{10,15}$/, {
     message:
       "Phone number must be between 10 and 15 digits, and can start with +",
@@ -76,6 +79,10 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
   const [showPopup, setShowPopup] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
   const [selectedDomainId, setSelectedDomainId] = useState<string | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<string>(
+    user.country || "",
+  );
+  const [selectedCity, setSelectedCity] = useState<string>(user.city || "");
 
   const {
     data: domains,
@@ -158,6 +165,8 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
       email: user.email,
       job: user.job || "",
       location: user.location || "",
+      country: user.country || "",
+      city: user.city || "",
       phoneNumber: user.phoneNumber,
       interests: {
         domain: user.interests?.domain ?? [],
@@ -185,6 +194,30 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
       });
     }
   }, [subDomains, setValue, user.interests?.subdomain]);
+
+  // Get all countries
+  const countries = Country.getAllCountries();
+
+  // Get cities for selected country
+  const cities = selectedCountry
+    ? City.getCitiesOfCountry(
+        countries.find((c) => c.name === selectedCountry)?.isoCode || "",
+      ) || []
+    : [];
+
+  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const countryName = e.target.value;
+    setSelectedCountry(countryName);
+    setSelectedCity(""); // Reset city when country changes
+    setValue("city", ""); // Reset form value
+    setValue("country", countryName);
+  };
+
+  const handleCityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const cityName = e.target.value;
+    setSelectedCity(cityName);
+    setValue("city", cityName);
+  };
 
   const onSubmit = async (updatedProfile: FormData) => {
     const newForm = new FormData();
@@ -493,17 +526,49 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                 )}
               </div>
               <div className="space-y-2">
-                <label className="block font-body font-semibold text-[13px] md:text-base  ">
-                  Current Location
+                <label className="block font-body font-semibold text-[13px] md:text-base">
+                  Current Country
                 </label>
-                <input
-                  type="text"
-                  {...register("location")}
-                  className="bg-transparent border-base-content block w-full px-3 py-2 border-[1px] rounded-[5px] font-body font-semibold text-sm "
-                />
-                {errors.location && (
+                <select
+                  {...register("country")}
+                  className="bg-transparent border-base-content block w-full px-3 py-2 border-[1px] rounded-[5px] font-body font-semibold text-sm"
+                  onChange={handleCountryChange}
+                  value={selectedCountry}
+                >
+                  <option value="">Select a country</option>
+                  {countries.map((country) => (
+                    <option key={country.isoCode} value={country.name}>
+                      {country.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.country && (
                   <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
-                    {errors.location.message}
+                    {errors.country.message}
+                  </p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <label className="block font-body font-semibold text-[13px] md:text-base">
+                  Current City
+                </label>
+                <select
+                  {...register("city")}
+                  className="bg-transparent border-base-content block w-full px-3 py-2 border-[1px] rounded-[5px] font-body font-semibold text-sm"
+                  disabled={!selectedCountry}
+                  onChange={handleCityChange}
+                  value={selectedCity}
+                >
+                  <option value="">Select a city</option>
+                  {cities.map((city) => (
+                    <option key={city.name} value={city.name}>
+                      {city.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.city && (
+                  <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
+                    {errors.city.message}
                   </p>
                 )}
               </div>
