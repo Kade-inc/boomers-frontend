@@ -114,7 +114,7 @@ const ProfilePage = () => {
                 </h1>
                 {profileData?.country && profileData?.city && (
                   <div className="flex items-center font-body font-normal text-[13px] md:text-base mb-2">
-                    <img src={location} className="w-[11px] h-[11px] mr-2" />
+                    <img src={location} className="w-[14px] h-[14px] mr-2" />
                     <p>
                       {profileData?.country}, {profileData?.city}
                     </p>
