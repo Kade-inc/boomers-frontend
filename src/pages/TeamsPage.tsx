@@ -26,7 +26,7 @@ const TeamsPage = () => {
   const [subDomainOptions, setSubDomainOptions] = useState<SubDomain[]>([]);
   const [selectedDomain, setSelectedDomain] = useState<string>("");
   const [selectedSubDomain, setSelectedSubDomain] = useState<string>("");
-  const [selectedDomainId, setSelectedDomainId] = useState<string | null>("");
+  const [selectedDomainId] = useState<string | null>(null);
   const [selectedTopics, setSelectedTopics] = useState<DomainTopic[]>([]);
   const [currentTeams, setCurrentTeams] = useState<Team[]>([]);
   const [searchName, setSearchName] = useState("");
@@ -75,9 +75,8 @@ const TeamsPage = () => {
 
   useEffect(() => {
     if (domains && domains.length > 0) {
+      console.log("DOMAINS", domains);
       setDomainOptions(domains);
-      setSelectedDomain(domains[0]);
-      setSelectedDomainId(domains[0]?._id);
     }
   }, [domains]);
 

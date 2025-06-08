@@ -4,4 +4,5 @@ export default interface DomainTopic {
   createdAt: string;
   updatedAt: string;
   __v: number;
+  parentSubdomain?: string;
 }

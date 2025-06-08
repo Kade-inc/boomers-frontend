@@ -515,7 +515,7 @@ class APIClient {
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(
-        "Error fetching Sub domains",
+        "Error fetching Domain Topics",
         axiosError.response?.data ?? axiosError.message,
       );
     }

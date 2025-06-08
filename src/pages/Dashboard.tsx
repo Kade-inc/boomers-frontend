@@ -142,7 +142,7 @@ const Dashboard = () => {
   return (
     <>
       <div className="h-screen w-full px-5 md:px-10 pt-10 lg:flex lg:justify-between font-body bg-base-100 text-base-content">
-        <div className="min-h-80 xl:w-[75%] lg:w-4/5 md:w-full">
+        <div className="min-h-80 xl:w-[75%] md:w-full">
           <div>
             <p className="font-body text-[16px]">
               Hi, {user.firstName ? <>{user.firstName}</> : user.username}
@@ -418,7 +418,7 @@ const Dashboard = () => {
           )}
         </div>
         <div
-          className="flex justify-center h-[55px] w-[55px] bg-gradient-to-b from-[#00989B] to-[#005E78] bottom-16  md:hidden z-30 right-3 rounded-full fixed"
+          className="flex justify-center h-[55px] w-[55px] bg-gradient-to-b from-[#00989B] to-[#005E78] bottom-16  xl:hidden z-30 right-3 rounded-full fixed"
           onClick={() => setShowActionCenterModal(!showActionCenterModal)}
         >
           <button className="">

@@ -18,7 +18,6 @@ import MultiSelect from "../components/MultiSelect";
 
 interface FormInputs {
   name: string;
-  username: string;
   domain: string;
   subDomain: string;
   topic: string[];
@@ -30,17 +29,9 @@ const schema = z.object({
     .trim()
     .min(3, "Name should have a minimum of 3 characters")
     .max(30, "Name can be a max of 30 characters"),
-  username: z
-    .string()
-    .trim()
-    .min(3, "Nick name should have a minimum of 3 characters")
-    .max(30, "Nick name can be a max of 30 characters"),
   domain: z.string().nonempty("Please select a domain"),
   subDomain: z.string().nonempty("Please select a Sub Domain"),
-  topic: z
-    .array(z.string())
-    .min(1, "Please select at least one topic")
-    .default([]),
+  topic: z.array(z.string()).optional().default([]),
 });
 
 function CreateTeam() {
@@ -55,6 +46,9 @@ function CreateTeam() {
 
   const { data: domains, isPending: domainsPending } = useDomains();
   const [selectedDomainId, setSelectedDomainId] = useState<string | null>(null);
+  const [selectedSubdomainId, setSelectedSubdomainId] = useState<string | null>(
+    null,
+  );
   const { data: subdomains, isPending: subdomainsPending } =
     useSubDomains(selectedDomainId);
   const [domainOptions, setDomainOptions] = useState<Domain[]>([]);
@@ -81,14 +75,13 @@ function CreateTeam() {
     register,
     handleSubmit,
     setValue,
-    formState: { errors, isSubmitted },
+    formState: { errors },
     watch,
     control,
   } = useForm<FormInputs>({
     resolver: zodResolver(schema),
     defaultValues: {
       name: "",
-      username: "",
       domain: "",
       subDomain: "",
       topic: [],
@@ -106,13 +99,7 @@ function CreateTeam() {
     name: "subDomain",
     defaultValue: "",
   });
-  const topic = useWatch({
-    control,
-    name: "topic",
-    defaultValue: [],
-  });
   const name = watch("name");
-  const username = watch("username");
 
   const [selectedTopics, setSelectedTopics] = useState<DomainTopic[]>([]);
 
@@ -144,7 +131,6 @@ function CreateTeam() {
     const response = await mutation.mutateAsync(
       {
         name: name,
-        teamUsername: username,
         domain: domain,
         subdomain: subDomain,
         subdomainTopics: team.subdomainTopics,
@@ -170,15 +156,7 @@ function CreateTeam() {
     );
     setCreatedTeamId(response.data._id);
     setIsTeamSuccess(true);
-  }, [
-    mutation,
-    name,
-    username,
-    domain,
-    subDomain,
-    team.subdomainTopics,
-    team.teamColor,
-  ]);
+  }, [mutation, name, domain, subDomain, team.subdomainTopics, team.teamColor]);
 
   // Memoize filtered options
   const filteredDomainOptions = useMemo(() => {
@@ -196,11 +174,13 @@ function CreateTeam() {
   }, [subdomains]);
 
   const filteredDomainTopics = useMemo(() => {
-    if (fetchedDomainTopics) {
-      return fetchedDomainTopics;
+    if (fetchedDomainTopics && subDomain) {
+      return fetchedDomainTopics.filter(
+        (topic) => topic.parentSubdomain === selectedSubdomainId,
+      );
     }
     return [];
-  }, [fetchedDomainTopics]);
+  }, [fetchedDomainTopics, subDomain, selectedSubdomainId]);
 
   // Update options when data changes
   useEffect(() => {
@@ -213,6 +193,12 @@ function CreateTeam() {
 
   useEffect(() => {
     setDomainTopics(filteredDomainTopics);
+    // Reset selected topics when subdomain changes
+    setSelectedTopics([]);
+    setTeam((prevTeam) => ({
+      ...prevTeam,
+      subdomainTopics: [],
+    }));
   }, [filteredDomainTopics]);
 
   // Update selected domain ID when domain changes
@@ -220,8 +206,43 @@ function CreateTeam() {
     const selectedDomain = domainOptions.find(
       (domains: Domain) => domains.name === domain,
     );
-    setSelectedDomainId(selectedDomain ? selectedDomain._id : "");
-  }, [domain, domainOptions]);
+
+    if (selectedDomain) {
+      setSelectedDomainId(selectedDomain._id);
+      // Reset subdomain selection when domain changes
+      setValue("subDomain", "");
+      setTeam((prevTeam) => ({
+        ...prevTeam,
+        subdomain: "",
+        subdomainTopics: [],
+      }));
+      setSelectedTopics([]);
+    } else {
+      setSelectedDomainId(null);
+    }
+  }, [domain, domainOptions, setValue]);
+
+  // Update subdomain options when selectedDomainId changes
+  useEffect(() => {
+    if (selectedDomainId) {
+      setSubdomainOptions(filteredSubdomainOptions);
+    } else {
+      setSubdomainOptions([]);
+    }
+  }, [selectedDomainId, filteredSubdomainOptions]);
+
+  // Update selected subdomain ID when subdomain changes
+  useEffect(() => {
+    const selectedSubdomain = subdomainOptions.find(
+      (subdomain: SubDomain) => subdomain.name === subDomain,
+    );
+
+    if (selectedSubdomain) {
+      setSelectedSubdomainId(selectedSubdomain._id);
+    } else {
+      setSelectedSubdomainId(null);
+    }
+  }, [subDomain, subdomainOptions]);
 
   if (domainsPending || domainTopicsPending) {
     return (
@@ -307,7 +328,7 @@ function CreateTeam() {
               </div>
             </div>
             <div className="min-h-80 md:w-full xl:w-2/4 w-full flex justify-center pb-8 md:pb-0">
-              <div className="w-full md:w-[70%] bg-base-200 pt-10 flex justify-center md:h-[85vh] xl:h-[85vh] shadow-lg rounded-md pb-8 md:pb-0 overflow-y-auto">
+              <div className="w-full md:w-[70%] bg-base-200 pt-10 flex justify-center md:min-h-[600px] h-[650px] shadow-lg rounded-md pb-8 md:pb-0 overflow-y-auto">
                 <form className="w-[80%]" onSubmit={handleSubmit(onSubmit)}>
                   <div className="mb-6">
                     <label
@@ -336,32 +357,6 @@ function CreateTeam() {
                     )}
                   </div>
 
-                  <div className="mb-6">
-                    <label
-                      className="block text-base-content mb-[1%] text-[16px]"
-                      htmlFor="username"
-                    >
-                      Team Nickname
-                      {errors.username && (
-                        <span className="text-error text-[13px] ml-[5px]">
-                          required*
-                        </span>
-                      )}
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Team Nickname"
-                      className="input w-full border border-base-content focus:outline-none bg-transparent rounded-[5px] placeholder-gray-300 mt-[5px] h-[40px] text-[16px]"
-                      style={{ backgroundColor: "transparent" }}
-                      {...register("username")}
-                      id="username"
-                    />
-                    {errors.username && (
-                      <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
-                        {errors.username?.message}
-                      </p>
-                    )}
-                  </div>
                   <div className="mb-6">
                     <label
                       className="block text-base-content mb-[1%] text-[16px]"
@@ -450,11 +445,6 @@ function CreateTeam() {
                       htmlFor="topics"
                     >
                       Topics
-                      {isSubmitted && topic.length === 0 && (
-                        <span className="text-error text-[13px] ml-[5px]">
-                          required*
-                        </span>
-                      )}
                     </label>
                     <MultiSelect
                       options={subDomainTopics || []}
@@ -464,11 +454,6 @@ function CreateTeam() {
                       inputStyles="w-full border border-base-content focus:outline-none rounded-[5px] placeholder-gray-300 mt-[5px] bg-transparent text-[16px] flex items-center justify-between px-4 py-2"
                       disabled={!subDomain}
                     />
-                    {isSubmitted && topic.length === 0 && (
-                      <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
-                        Please select at least one topic
-                      </p>
-                    )}
                   </div>
 
                   <div className="mb-6">
