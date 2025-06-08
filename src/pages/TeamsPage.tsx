@@ -102,9 +102,9 @@ const TeamsPage = () => {
     return (
       <div className="flex flex-col justify-center items-center h-screen bg-base-100">
         <TbFaceIdError className="w-20 h-20 text-base-content" />
-        <div>Error loading page</div>
+        <div className="font-body text-base-content">Error loading page</div>
         <button
-          className="btn btn-primary bg-yellow text-darkgrey"
+          className="btn btn-primary bg-yellow text-darkgrey font-body"
           onClick={() => window.location.reload()}
         >
           Refresh
