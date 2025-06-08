@@ -175,7 +175,7 @@ function NavigationBar() {
                           <span className="loading loading-spinner loading-md"></span>
                         </div>
                       ) : searchHistoryError ? (
-                        <div className="text-error text-center">
+                        <div className="text-error text-center font-body">
                           Error loading search history
                         </div>
                       ) : searchHistory && searchHistory.length > 0 ? (
@@ -204,7 +204,7 @@ function NavigationBar() {
                       <span className="loading loading-spinner loading-md"></span>
                     </div>
                   ) : searchResultError ? (
-                    <div className="p-4 text-error">
+                    <div className="p-4 text-error font-body text-center">
                       Error loading search results
                     </div>
                   ) : searchResult ? (

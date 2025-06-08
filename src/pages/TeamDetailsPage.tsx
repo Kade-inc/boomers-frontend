@@ -16,7 +16,7 @@ import MemberRequestDialog from "../components/Modals/MemberRequestDialog";
 import React from "react";
 import useSendTeamRequest from "../hooks/useSendTeamRequest";
 import useDeleteChallenges from "../hooks/Challenges/useDeleteChallenges";
-import { UserCircleIcon } from "@heroicons/react/24/solid";
+import { FaceFrownIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { GrTest } from "react-icons/gr";
 
@@ -139,7 +139,20 @@ const TeamDetailsPage = () => {
   }
 
   if (teamError) {
-    return <p>Error loading page.</p>;
+    return (
+      <div className="flex flex-col justify-center items-center h-screen bg-base-100">
+        <FaceFrownIcon className="w-20 h-20 text-base-content" />
+        <p className="font-body text-base-content text-center">
+          Error loading page. Please try again later.
+        </p>
+        <button
+          className="btn bg-yellow font-medium mt-5 hover:bg-yellow text-darkgrey font-body"
+          onClick={() => navigate("/")}
+        >
+          Home
+        </button>
+      </div>
+    );
   }
 
   // Function to get filtered challenges
@@ -558,7 +571,7 @@ const TeamDetailsPage = () => {
                         (member: TeamMember) => member._id === user.user_id,
                       ) ? (
                     <button
-                      className="text-white text-[14px] bg-red-600 font-body rounded px-4 py-2"
+                      className="text-white text-[14px] bg-[#C83A3A] font-body rounded px-4 py-2"
                       onClick={() => {
                         const modal = document.getElementById(
                           "my_modal_5",

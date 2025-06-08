@@ -335,7 +335,7 @@ const MemberRequestDialog = ({
             <div className="modal-action flex flex-col">
               {mode === "member" && !selectedMember ? (
                 <div
-                  className=" w-full text-white bg-[#C83A3A] rounded-none hover:bg-[#C83A3A] py-4 flex justify-center cursor-pointer"
+                  className=" w-full text-white bg-[#C83A3A] rounded-none py-4 flex justify-center cursor-pointer"
                   onClick={() => setSelectedMember(true)}
                 >
                   Remove Team Member

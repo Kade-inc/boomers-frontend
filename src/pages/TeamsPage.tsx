@@ -240,7 +240,7 @@ const TeamsPage = () => {
                       </div>
                     </div>
                     <button
-                      className="text-white bg-[#FF2F2F] rounded-sm bg-redish text-[14px] py-1 px-4 w-full sm:w-auto"
+                      className="text-white bg-[#C83A3A] rounded-sm text-[14px] py-1 px-4 w-full sm:w-auto"
                       onClick={() => {
                         setSelectedSubDomain("");
                         setSelectedTopics([]);
