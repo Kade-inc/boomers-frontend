@@ -9,7 +9,7 @@ const useSubDomains = (
   parentDomain: string | null,
 ): UseQueryResult<any, SubDomain> => {
   return useQuery({
-    queryKey: ["sub-domains"],
+    queryKey: ["sub-domains", parentDomain],
     queryFn: () => apiClient.getSubDomains(parentDomain!),
     enabled: !!parentDomain, // Only enable when parentDomain has a value
     staleTime: 1000 * 60 * 60 * 24, // 24 hours

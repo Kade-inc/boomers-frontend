@@ -442,7 +442,7 @@ function NavigationBar() {
               />
             </svg>
             {unreadNotifications.length > 0 && (
-              <span className="badge badge-sm badge-error indicator-item absolute top-1 right-2"></span>
+              <span className="badge badge-xs badge-error indicator-item absolute top-1 right-2"></span>
             )}
           </div>
         </button>

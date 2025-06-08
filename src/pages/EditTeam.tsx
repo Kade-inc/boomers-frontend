@@ -20,7 +20,6 @@ import useAuthStore from "../stores/useAuthStore";
 
 interface FormInputs {
   name: string;
-  username: string;
   domain: string;
   subDomain: string;
   topic: string[];
@@ -32,17 +31,9 @@ const schema = z.object({
     .trim()
     .min(3, "Name should have a minimum of 3 characters")
     .max(30, "Name can be a max of 30 characters"),
-  username: z
-    .string()
-    .trim()
-    .min(3, "Nick name should have a minimum of 3 characters")
-    .max(30, "Nick name can be a max of 30 characters"),
   domain: z.string().nonempty("Please select a domain"),
   subDomain: z.string().nonempty("Please select a Sub Domain"),
-  topic: z
-    .array(z.string())
-    .min(1, "Please select at least one topic")
-    .default([]),
+  topic: z.array(z.string()).optional().default([]),
 });
 
 function EditTeam() {
@@ -72,6 +63,9 @@ function EditTeam() {
 
   const { data: domains, isPending: domainsPending } = useDomains();
   const [selectedDomainId, setSelectedDomainId] = useState<string | null>(null);
+  const [selectedSubdomainId, setSelectedSubdomainId] = useState<string | null>(
+    null,
+  );
   const { data: subdomains, isPending: subdomainsPending } =
     useSubDomains(selectedDomainId);
   const [domainOptions, setDomainOptions] = useState<Domain[]>([]);
@@ -97,14 +91,13 @@ function EditTeam() {
     register,
     handleSubmit,
     setValue,
-    formState: { errors, isSubmitted },
+    formState: { errors },
     watch,
     control,
   } = useForm<FormInputs>({
     resolver: zodResolver(schema),
     defaultValues: {
       name: "",
-      username: "",
       domain: "",
       subDomain: "",
       topic: [],
@@ -122,13 +115,8 @@ function EditTeam() {
     name: "subDomain",
     defaultValue: "",
   });
-  const topic = useWatch({
-    control,
-    name: "topic",
-    defaultValue: [],
-  });
+
   const name = watch("name");
-  const username = watch("username");
 
   const [selectedTopics, setSelectedTopics] = useState<DomainTopic[]>([]);
 
@@ -164,7 +152,7 @@ function EditTeam() {
         teamId,
         payload: {
           name: name,
-          teamUsername: username,
+          teamUsername: team.teamUsername, // Keep existing username
           domain: domain,
           subdomain: subDomain,
           subdomainTopics: team.subdomainTopics,
@@ -196,7 +184,7 @@ function EditTeam() {
     mutation,
     teamId,
     name,
-    username,
+    team.teamUsername,
     domain,
     subDomain,
     team.subdomainTopics,
@@ -219,11 +207,13 @@ function EditTeam() {
   }, [subdomains]);
 
   const filteredDomainTopics = useMemo(() => {
-    if (fetchedDomainTopics) {
-      return fetchedDomainTopics;
+    if (fetchedDomainTopics && subDomain) {
+      return fetchedDomainTopics.filter(
+        (topic) => topic.parentSubdomain === selectedSubdomainId,
+      );
     }
     return [];
-  }, [fetchedDomainTopics]);
+  }, [fetchedDomainTopics, subDomain, selectedSubdomainId]);
 
   // Update options when data changes
   useEffect(() => {
@@ -236,6 +226,12 @@ function EditTeam() {
 
   useEffect(() => {
     setDomainTopics(filteredDomainTopics);
+    // Reset selected topics when subdomain changes
+    setSelectedTopics([]);
+    setTeam((prevTeam) => ({
+      ...prevTeam,
+      subdomainTopics: [],
+    }));
   }, [filteredDomainTopics]);
 
   // Update selected domain ID when domain changes
@@ -243,16 +239,25 @@ function EditTeam() {
     const selectedDomain = domainOptions.find(
       (domains: Domain) => domains.name === domain,
     );
-    setSelectedDomainId(selectedDomain ? selectedDomain._id : "");
+    if (selectedDomain) {
+      setSelectedDomainId(selectedDomain._id);
+    } else {
+      setSelectedDomainId(null);
+    }
   }, [domain, domainOptions]);
 
-  // Update team state when subdomain changes
+  // Update selected subdomain ID when subdomain changes
   useEffect(() => {
-    setTeam((prevTeam) => ({
-      ...prevTeam,
-      subdomain: subDomain,
-    }));
-  }, [subDomain]);
+    const selectedSubdomain = subdomainOptions.find(
+      (subdomain: SubDomain) => subdomain.name === subDomain,
+    );
+
+    if (selectedSubdomain) {
+      setSelectedSubdomainId(selectedSubdomain._id);
+    } else {
+      setSelectedSubdomainId(null);
+    }
+  }, [subDomain, subdomainOptions]);
 
   // Initialize form with team data
   useEffect(() => {
@@ -260,7 +265,6 @@ function EditTeam() {
       setTeam(teamData);
       setSelectedColor(teamData.teamColor);
       setValue("name", teamData.name);
-      setValue("username", teamData.teamUsername);
       setValue("domain", teamData.domain);
       setValue("subDomain", teamData.subdomain);
       setValue("topic", teamData.subdomainTopics);
@@ -358,7 +362,7 @@ function EditTeam() {
               </div>
             </div>
             <div className="min-h-80 md:w-full xl:w-2/4 w-full flex justify-center pb-8 md:pb-0">
-              <div className="w-full md:w-[70%] bg-base-200 pt-10 flex justify-center md:h-[85vh] xl:h-[85vh] shadow-lg rounded-md pb-8 md:pb-0 overflow-y-auto">
+              <div className="w-full md:w-[70%] bg-base-200 pt-10 flex justify-center md:min-h-[600px] h-[650px] shadow-lg rounded-md pb-8 md:pb-0 overflow-y-auto">
                 <form className="w-[80%]" onSubmit={handleSubmit(onSubmit)}>
                   <div className="mb-6">
                     <label
@@ -387,32 +391,6 @@ function EditTeam() {
                     )}
                   </div>
 
-                  <div className="mb-6">
-                    <label
-                      className="block text-base-content mb-[1%] text-[16px]"
-                      htmlFor="username"
-                    >
-                      Team Nickname
-                      {errors.username && (
-                        <span className="text-error text-[13px] ml-[5px]">
-                          required*
-                        </span>
-                      )}
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Team Nickname"
-                      className="input w-full border border-base-content focus:outline-none bg-transparent rounded-[5px] placeholder-gray-300 mt-[5px] h-[40px] text-[16px]"
-                      style={{ backgroundColor: "transparent" }}
-                      {...register("username")}
-                      id="username"
-                    />
-                    {errors.username && (
-                      <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
-                        {errors.username?.message}
-                      </p>
-                    )}
-                  </div>
                   <div className="mb-6">
                     <label
                       className="block text-base-content mb-[1%] text-[16px]"
@@ -501,11 +479,6 @@ function EditTeam() {
                       htmlFor="topics"
                     >
                       Topics
-                      {isSubmitted && topic.length === 0 && (
-                        <span className="text-error text-[13px] ml-[5px]">
-                          required*
-                        </span>
-                      )}
                     </label>
                     <MultiSelect
                       options={subDomainTopics || []}
@@ -515,11 +488,6 @@ function EditTeam() {
                       inputStyles="w-full border border-base-content focus:outline-none rounded-[5px] placeholder-gray-300 mt-[5px] bg-transparent text-[16px] flex items-center justify-between px-4 py-2"
                       disabled={!subDomain}
                     />
-                    {isSubmitted && topic.length === 0 && (
-                      <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
-                        Please select at least one topic
-                      </p>
-                    )}
                   </div>
 
                   <div className="mb-6">

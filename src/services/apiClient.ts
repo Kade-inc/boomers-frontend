@@ -503,6 +503,27 @@ class APIClient {
     }
   };
 
+  getAllSubDomains = async (requiresAuth = true) => {
+    try {
+      const response = await this.axiosInstance.get(
+        `${this.endpoint}/subdomains`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching all subdomains",
+        axiosError.response?.data ?? axiosError.message,
+      );
+    }
+  };
+
   getDomainTopics = async (requiresAuth = true) => {
     try {
       const response = await this.axiosInstance.get(`${this.endpoint}`, {
@@ -515,7 +536,7 @@ class APIClient {
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
       toast.error(
-        "Error fetching Sub domains",
+        "Error fetching Domain Topics",
         axiosError.response?.data ?? axiosError.message,
       );
     }
