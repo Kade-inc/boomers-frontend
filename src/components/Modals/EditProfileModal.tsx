@@ -536,14 +536,14 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                         <button
                           type="button"
                           onClick={handleCropCancel}
-                          className="px-4 py-2 bg-error text-white rounded"
+                          className="px-4 py-2 bg-error text-white rounded font-body font-medium"
                         >
                           Cancel
                         </button>
                         <button
                           type="button"
                           onClick={handleCropSave}
-                          className="px-4 py-2 bg-yellow text-darkgrey rounded"
+                          className="px-4 py-2 bg-yellow text-darkgrey rounded font-body font-medium"
                         >
                           Save Crop
                         </button>
