@@ -26,7 +26,6 @@ import SubDomain from "../../entities/SubDomain";
 import { Country, City } from "country-state-city";
 import ViewProfilePicture from "./ViewProfilePictureModal";
 import { canvasPreview } from "../../utils/canvasPreview";
-// import useGetUser from "../../hooks/useGetUser";
 
 type ModalTriggerProps = {
   isOpen: boolean;
@@ -82,21 +81,17 @@ type FormData = z.infer<typeof schema>;
 const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
   const mutation = useUpdateUser(user.user_id!);
   const { setUser } = useAuthStore();
-  // const { refetch } = useGetUser(user.user_id!);
-  //state for profile picture management
   const deletePictureMutation = useDeleteProfilePicture();
   const [imageFile, setImageFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [showPopup, setShowPopup] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
-
   const [selectedDomainId, setSelectedDomainId] = useState<string | null>(null);
   const [selectedCountry, setSelectedCountry] = useState<string>(
     user.country || "",
   );
   const [selectedCity, setSelectedCity] = useState<string>(user.city || "");
-  //state for cropping functionality
   const [showCropModal, setShowCropModal] = useState(false);
   const [imgSrc, setImgSrc] = useState("");
   const [crop, setCrop] = useState<Crop>();
@@ -128,7 +123,6 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
     setShowPopup(false);
   };
 
-  // handle file selection
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -168,7 +162,6 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
     setCrop(crop);
   };
 
-  //update completed state
   const handleCropComplete = useCallback((crop: PixelCrop) => {
     setCompletedCrop(crop);
   }, []);
@@ -316,13 +309,7 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
       newForm.append("interests", JSON.stringify(payload));
     }
 
-    // Call the mutation to update user profile
     await mutation.mutateAsync(newForm);
-
-    // Refetch user data to ensure the latest data from backend is available
-    //we need to update the global user state after mutation
-    // const { data: updatedUser } = await refetch();
-    // if ( updatedUser) setUser(updatedUser);
 
     const updateData = await mutation.mutateAsync(newForm);
     setUser(updateData);
@@ -478,7 +465,6 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                 </div>
               </div>
 
-              {/* // Crop modal */}
               {showCropModal && (
                 <Modal
                   isOpen={showCropModal}
