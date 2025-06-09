@@ -14,6 +14,7 @@ import UpdatedUserProfile from "../entities/UpdatedUserProfile";
 import { RiMessageLine } from "react-icons/ri";
 import { MdOutlineInterests } from "react-icons/md";
 import { HiOutlineUserGroup } from "react-icons/hi2";
+import ViewProfilePicture from "../components/Modals/ViewProfilePictureModal";
 
 const ProfilePage = () => {
   const { userId } = useParams();
@@ -98,7 +99,7 @@ const ProfilePage = () => {
           <div className="pl-6">
             <div className="rounded-full overflow-hidden absolute top-[40px] md:top-[110px] w-24 h-24">
               {profileData?.profile_picture ? (
-                <img
+                <ViewProfilePicture
                   src={profileData.profile_picture}
                   alt="Profile picture"
                   className="w-full h-full object-cover"

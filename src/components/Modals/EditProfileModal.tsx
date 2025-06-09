@@ -1,5 +1,8 @@
 import Modal from "react-modal";
 import User from "../../entities/User";
+import ReactCrop, { Crop, PixelCrop, centerCrop, makeAspectCrop } from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
+import { useCallback } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,6 +19,10 @@ import DomainTopic from "../../entities/DomainTopic";
 import useDomainTopics from "../../hooks/useDomainTopics";
 import SubDomain from "../../entities/SubDomain";
 import { Country, City } from "country-state-city";
+import ViewProfilePicture from "./ViewProfilePictureModal";
+import { canvasPreview } from "../../utils/canvasPreview";
+// import useGetUser from "../../hooks/useGetUser";
+
 
 type ModalTriggerProps = {
   isOpen: boolean;
@@ -71,18 +78,27 @@ type FormData = z.infer<typeof schema>;
 const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
   const mutation = useUpdateUser(user.user_id!);
   const { setUser } = useAuthStore();
-
+  // const { refetch } = useGetUser(user.user_id!);
+  //state for profile picture management
   const deletePictureMutation = useDeleteProfilePicture();
   const [imageFile, setImageFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [previewImage, setPreviewImage] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [showPopup, setShowPopup] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
+
   const [selectedDomainId, setSelectedDomainId] = useState<string | null>(null);
   const [selectedCountry, setSelectedCountry] = useState<string>(
     user.country || "",
   );
   const [selectedCity, setSelectedCity] = useState<string>(user.city || "");
+  //state for cropping functionality
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [imgSrc, setImgSrc] = useState("");
+  const [crop, setCrop] = useState<Crop>();
+  const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
+  const imgRef = useRef<HTMLImageElement>(null);
+  const previewCanvasRef = useRef<HTMLCanvasElement>(null);
 
   const {
     data: domains,
@@ -108,34 +124,91 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
     setShowPopup(false);
   };
 
+  // handle file selection
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     const allowed = ["image/jpeg", "image/png", "image/webp"];
-    // (in case someone renames a .exe to .jpg, etc.)
     if (!allowed.includes(file.type)) {
       alert("Only JPG, PNG or WEBP files are allowed.");
       event.target.value = ""; // reset the input
       return;
     }
 
-    setImageFile(file);
-    if (file) {
-      const reader = new FileReader();
-      // Create a preview URL when the file is read
-      reader.onloadend = () => {
-        setPreviewImage(file); // Set the file itself as state
-      };
+    setCrop(undefined); // Reset crop state
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      setImgSrc(reader.result?.toString() || "");
+      setShowCropModal(true); // Show crop modal
+    });
+    reader.readAsDataURL(file);
+  };
 
-      reader.readAsDataURL(file); // Convert the file to a data URL
-    } else {
-      setPreviewImage(null); // Reset if no file selected
+    // initializes crop when image loads
+  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const { width, height } = e.currentTarget;
+    const crop = centerCrop(
+      makeAspectCrop(
+        {
+          unit: "%",
+          width: 100, // Start with a 100% width crop
+        },
+        1, // Aspect ratio 1:1 for square crop
+        width,
+        height,
+      ),
+      width,
+      height,
+    );
+    setCrop(crop);
+  };
+
+  //update completed state
+  const handleCropComplete = useCallback((crop: PixelCrop) => {
+    setCompletedCrop(crop);
+  }, []);
+
+  const handleCropCancel = () => {
+    setShowCropModal(false);
+    setImgSrc(""); // Reset image source
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""; // Reset file input
     }
   };
 
+  const handleCropSave = () => {
+    if (!completedCrop || !imgRef.current || !previewCanvasRef.current) {
+      return;
+  }
+
+  // Create canvas preview of cropped image
+  canvasPreview(imgRef.current, previewCanvasRef.current, completedCrop);
+
+    // Convert canvas to webp
+    previewCanvasRef.current.toBlob(
+      (blob) => {
+        if (!blob) {
+          return;
+        }
+        // Create a new webp file
+        const croppedFile = new File([blob], "profile-picture.webp", {
+          type: "image/webp",
+          lastModified: Date.now(),
+        });
+
+        // Update state with cropped image
+        setImageFile(croppedFile);
+        setPreviewImage(URL.createObjectURL(blob));
+        setShowCropModal(false);
+      },
+      "image/webp",
+      0.9, // 90% quality
+    );
+  };
+
   const handleButtonClick = () => {
-    // Trigger the hidden file input click using the ref
+    // Trigger the hidden file input click
     fileInputRef.current?.click();
   };
 
@@ -238,6 +311,15 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
       };
       newForm.append("interests", JSON.stringify(payload));
     }
+
+    // Call the mutation to update user profile
+    await mutation.mutateAsync(newForm);
+
+    // Refetch user data to ensure the latest data from backend is available
+    //we need to update the global user state after mutation
+    // const { data: updatedUser } = await refetch();
+    // if ( updatedUser) setUser(updatedUser);
+
     const updateData = await mutation.mutateAsync(newForm);
     setUser(updateData);
     onClose();
@@ -319,14 +401,10 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
               <div className="flex flex-row items-center">
                 <div className="rounded-full overflow-hidden w-2/6">
                   {previewImage || user.profile_picture ? (
-                    <img
-                      src={
-                        (previewImage && URL.createObjectURL(previewImage)) ||
-                        user.profile_picture ||
-                        undefined
-                      }
+                    <ViewProfilePicture //click to open
+                      src={previewImage || user.profile_picture || undefined}
                       alt="Profile picture"
-                      className="rounded-full w-[80px] h-[80px] object-cover"
+                      imgClassName="rounded-full w-[80px] h-[80px] object-cover"
                     />
                   ) : (
                     <UserCircleIcon className="rounded-full w-[90px] h-[90px] object-cover text-base-content" />
@@ -395,6 +473,81 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                   )}
                 </div>
               </div>
+
+              {/* // Crop modal */}
+              {showCropModal && (
+                <Modal
+                  isOpen={showCropModal}
+                  onRequestClose={handleCropCancel}
+                  className="flex items-center justify-center fixed inset-0"
+                  overlayClassName="fixed inset-0 z-50 backdrop-blur-sm bg-[#00000033] bg-opacity-30"
+                >
+                  <div className="bg-base-100 p-6 rounded-lg max-w-[90%] max-h-[90vh] overflow-auto">
+                    <div className="flex justify-end mb-4">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="#D92D2D"
+                        className="size-8 cursor-pointer"
+                        onClick={handleCropCancel}
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      {imgSrc && (
+                        <ReactCrop
+                          crop={crop}
+                          onChange={(c) => setCrop(c)}
+                          onComplete={handleCropComplete}
+                          circularCrop={true}
+                          className="max-w-full max-h-[60vh]"
+                        >
+                          <img
+                            src={imgSrc}
+                            ref={imgRef}
+                            onLoad={handleImageLoad}
+                            alt="Crop preview"
+                            style={{ maxWidth: "100%", maxHeight: "60vh" }}
+                          />
+                        </ReactCrop>
+                      )}
+                      <div className="mt-4">
+                        <canvas
+                          ref={previewCanvasRef}
+                          style={{
+                            display: "none",
+                            border: "1px solid black",
+                            objectFit: "contain",
+                            width: "100%",
+                            height: "100px",
+                          }}
+                        />
+                      </div>
+                      <div className="flex gap-4 mt-4">
+                        <button
+                          type="button"
+                          onClick={handleCropCancel}
+                          className="px-4 py-2 bg-error text-white rounded"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleCropSave}
+                          className="px-4 py-2 bg-yellow text-darkgrey rounded"
+                        >
+                          Save Crop
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </Modal>
+              )}
               {showPopup && (
                 <Modal
                   isOpen={showPopup}
@@ -427,8 +580,7 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                           {previewImage || user.profile_picture ? (
                             <img
                               src={
-                                (previewImage &&
-                                  URL.createObjectURL(previewImage)) ||
+                                previewImage ||
                                 user.profile_picture ||
                                 undefined
                               }
@@ -466,7 +618,6 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                   </div>
                 </Modal>
               )}
-
               <div className="space-y-2">
                 <label className="block font-body font-semibold text-[13px] md:text-base  ">
                   Username
