@@ -1,6 +1,7 @@
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import User from "../entities/User";
 import { Link } from "react-router-dom";
+import ViewProfilePicture from "./Modals/ViewProfilePictureModal";
 
 interface ProfileCardProps {
   user?: User;
@@ -14,10 +15,10 @@ const ProfileCard = ({ user, className }: ProfileCardProps) => {
     >
       <div className="rounded-full w-32 h-32 overflow-hidden ">
         {user?.profile_picture ? (
-          <img
+          <ViewProfilePicture //when clicked opens the ViewProfilePictureModal
             src={user.profile_picture}
             alt="profile Picture"
-            className="w-full h-full object-cover"
+            imgClassName="w-full h-full object-cover"
           />
         ) : (
           <UserCircleIcon className="w-full h-full text-darkgrey" />
