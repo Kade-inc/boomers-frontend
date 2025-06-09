@@ -1,6 +1,11 @@
 import Modal from "react-modal";
 import User from "../../entities/User";
-import ReactCrop, { Crop, PixelCrop, centerCrop, makeAspectCrop } from "react-image-crop";
+import ReactCrop, {
+  Crop,
+  PixelCrop,
+  centerCrop,
+  makeAspectCrop,
+} from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import { useCallback } from "react";
 import { z } from "zod";
@@ -22,7 +27,6 @@ import { Country, City } from "country-state-city";
 import ViewProfilePicture from "./ViewProfilePictureModal";
 import { canvasPreview } from "../../utils/canvasPreview";
 // import useGetUser from "../../hooks/useGetUser";
-
 
 type ModalTriggerProps = {
   isOpen: boolean;
@@ -145,7 +149,7 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
     reader.readAsDataURL(file);
   };
 
-    // initializes crop when image loads
+  // initializes crop when image loads
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const { width, height } = e.currentTarget;
     const crop = centerCrop(
@@ -180,10 +184,10 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
   const handleCropSave = () => {
     if (!completedCrop || !imgRef.current || !previewCanvasRef.current) {
       return;
-  }
+    }
 
-  // Create canvas preview of cropped image
-  canvasPreview(imgRef.current, previewCanvasRef.current, completedCrop);
+    // Create canvas preview of cropped image
+    canvasPreview(imgRef.current, previewCanvasRef.current, completedCrop);
 
     // Convert canvas to webp
     previewCanvasRef.current.toBlob(

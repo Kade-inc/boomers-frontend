@@ -1,4 +1,4 @@
-import {  PixelCrop } from "react-image-crop";
+import { PixelCrop } from "react-image-crop";
 
 // helper function for canvas preview
 export function canvasPreview(
