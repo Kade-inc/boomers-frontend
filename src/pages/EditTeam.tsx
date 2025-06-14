@@ -209,7 +209,7 @@ function EditTeam() {
   const filteredDomainTopics = useMemo(() => {
     if (fetchedDomainTopics && subDomain) {
       return fetchedDomainTopics.filter(
-        (topic) => topic.parentSubdomain === selectedSubdomainId,
+        (topic) => topic.parentSubdomain?._id === selectedSubdomainId,
       );
     }
     return [];
