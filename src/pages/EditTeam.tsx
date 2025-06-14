@@ -208,9 +208,17 @@ function EditTeam() {
 
   const filteredDomainTopics = useMemo(() => {
     if (fetchedDomainTopics && subDomain) {
-      return fetchedDomainTopics.filter(
-        (topic) => topic.parentSubdomain?._id === selectedSubdomainId,
-      );
+      if (subDomain.toLowerCase() === "full stack") {
+        return fetchedDomainTopics.filter(
+          (topic) =>
+            topic.parentSubdomain?.name !== "Motion Graphics" &&
+            topic.parentSubdomain?.name !== "Cyber Security",
+        );
+      } else {
+        return fetchedDomainTopics.filter(
+          (topic) => topic.parentSubdomain?._id === selectedSubdomainId,
+        );
+      }
     }
     return [];
   }, [fetchedDomainTopics, subDomain, selectedSubdomainId]);
