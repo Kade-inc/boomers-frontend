@@ -14,6 +14,9 @@ import Domain from "../../entities/Domain";
 import { useUpdateDomain } from "../../hooks/useUpdateDomain";
 import { useUpdateSubdomain } from "../../hooks/useUpdateSubdomain";
 import { useUpdateDomainTopic } from "../../hooks/useUpdateDomainTopic";
+import { useDeleteDomain } from "../../hooks/useDeleteDomain";
+import { useDeleteSubdomain } from "../../hooks/useDeleteSubdomain";
+import { useDeleteDomainTopic } from "../../hooks/useDeleteDomainTopic";
 
 const DomainsAdminView = () => {
   const {
@@ -47,12 +50,26 @@ const DomainsAdminView = () => {
   const updateDomainMutation = useUpdateDomain();
   const updateSubdomainMutation = useUpdateSubdomain();
   const updateDomainTopicMutation = useUpdateDomainTopic();
+  const deleteDomainMutation = useDeleteDomain();
+  const deleteSubdomainMutation = useDeleteSubdomain();
+  const deleteDomainTopicMutation = useDeleteDomainTopic();
   // Edit states
   const [editingDomain, setEditingDomain] = useState<Domain | null>(null);
   const [editingSubdomain, setEditingSubdomain] = useState<SubDomain | null>(
     null,
   );
   const [editingTopic, setEditingTopic] = useState<DomainTopic | null>(null);
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{
+    isOpen: boolean;
+    type: "domain" | "subdomain" | "topic" | null;
+    id: string | null;
+    name: string;
+  }>({
+    isOpen: false,
+    type: null,
+    id: null,
+    name: "",
+  });
 
   useEffect(() => {
     if (domainsData) {
@@ -189,86 +206,81 @@ const DomainsAdminView = () => {
     }
   };
 
-  const handleDeleteDomain = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this domain?")) return;
+  const handleDeleteDomain = async (id: string, name: string) => {
+    setDeleteConfirmation({
+      isOpen: true,
+      type: "domain",
+      id,
+      name,
+    });
+  };
+
+  const handleDeleteSubdomain = async (id: string, name: string) => {
+    setDeleteConfirmation({
+      isOpen: true,
+      type: "subdomain",
+      id,
+      name,
+    });
+  };
+
+  const handleDeleteTopic = async (id: string, name: string) => {
+    setDeleteConfirmation({
+      isOpen: true,
+      type: "topic",
+      id,
+      name,
+    });
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteConfirmation.id || !deleteConfirmation.type) return;
 
     try {
-      const response = await fetch(`/api/domains/${id}`, {
-        method: "DELETE",
-        headers: {
-          requiresAuth: "true",
-        },
-      });
+      switch (deleteConfirmation.type) {
+        case "domain":
+          await deleteDomainMutation.mutateAsync(deleteConfirmation.id);
+          break;
+        case "subdomain":
+          console.log("HERE");
+          await deleteSubdomainMutation.mutateAsync(deleteConfirmation.id);
+          break;
+        case "topic":
+          await deleteDomainTopicMutation.mutateAsync(deleteConfirmation.id);
+          break;
+      }
 
-      if (response.ok) {
-        toast.success("Domain deleted successfully");
-        refetchDomains();
-      } else {
-        toast.error("Failed to delete domain");
+      toast.success(
+        `${deleteConfirmation.type.charAt(0).toUpperCase() + deleteConfirmation.type.slice(1)} deleted successfully`,
+      );
+      switch (deleteConfirmation.type) {
+        case "domain":
+          refetchDomains();
+          refetchSubdomains();
+          refetchTopics();
+          break;
+        case "subdomain":
+          refetchSubdomains();
+          refetchTopics();
+          break;
+        case "topic":
+          refetchTopics();
+          break;
       }
     } catch (error) {
-      toast.error("Error deleting domain: " + error);
+      toast.error(`Error deleting ${deleteConfirmation.type}: ${error}`);
+    } finally {
+      setDeleteConfirmation({
+        isOpen: false,
+        type: null,
+        id: null,
+        name: "",
+      });
     }
   };
 
-  const handleDeleteSubdomain = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this subdomain?")) return;
-
-    try {
-      const response = await fetch(`/api/subdomains/${id}`, {
-        method: "DELETE",
-        headers: {
-          requiresAuth: "true",
-        },
-      });
-
-      if (response.ok) {
-        toast.success("Subdomain deleted successfully");
-        refetchSubdomains();
-      } else {
-        toast.error("Failed to delete subdomain");
-      }
-    } catch (error) {
-      toast.error("Error deleting subdomain: " + error);
-    }
-  };
-
-  const handleDeleteTopic = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this topic?")) return;
-
-    try {
-      const response = await fetch(`/api/domains/domainTopics/${id}`, {
-        method: "DELETE",
-        headers: {
-          requiresAuth: "true",
-        },
-      });
-
-      if (response.ok) {
-        toast.success("Topic deleted successfully");
-        refetchTopics();
-      } else {
-        toast.error("Failed to delete topic");
-      }
-    } catch (error) {
-      toast.error("Error deleting topic: " + error);
-    }
-  };
-
-  const isLoading =
-    domainsLoading ||
-    subdomainsLoading ||
-    topicsLoading ||
-    domainMutation.isPending ||
-    subdomainMutation.isPending ||
-    topicMutation.isPending;
-  const hasError =
-    domainsError ||
-    subdomainsError ||
-    topicsError ||
-    domainMutation.error ||
-    subdomainMutation.error ||
-    topicMutation.error;
+  const isLoading = domainsLoading || subdomainsLoading || topicsLoading;
+  const hasError = domainsError || subdomainsError || topicsError;
 
   if (isLoading) {
     return (
@@ -336,7 +348,9 @@ const DomainsAdminView = () => {
                                 <FaEdit />
                               </button>
                               <button
-                                onClick={() => handleDeleteDomain(domain._id)}
+                                onClick={() =>
+                                  handleDeleteDomain(domain._id, domain.name)
+                                }
                                 className="btn btn-sm btn-ghost text-error"
                               >
                                 <FaTrash />
@@ -383,7 +397,10 @@ const DomainsAdminView = () => {
                               </button>
                               <button
                                 onClick={() =>
-                                  handleDeleteSubdomain(subdomain._id)
+                                  handleDeleteSubdomain(
+                                    subdomain._id,
+                                    subdomain.name,
+                                  )
                                 }
                                 className="btn btn-sm btn-ghost text-error"
                               >
@@ -425,7 +442,9 @@ const DomainsAdminView = () => {
                                 <FaEdit />
                               </button>
                               <button
-                                onClick={() => handleDeleteTopic(topic._id)}
+                                onClick={() =>
+                                  handleDeleteTopic(topic._id, topic.name)
+                                }
                                 className="btn btn-sm btn-ghost text-error"
                               >
                                 <FaTrash />
@@ -702,6 +721,41 @@ const DomainsAdminView = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Modal */}
+      {deleteConfirmation.isOpen && (
+        <div className="modal modal-open">
+          <div className="modal-box rounded-md">
+            <h3 className="font-bold text-lg mb-4">Confirm Deletion</h3>
+            <p className="mb-4">
+              Are you sure you want to delete this {deleteConfirmation.type}?
+              <br />
+              <span className="font-semibold">{deleteConfirmation.name}</span>
+            </p>
+            <div className="modal-action">
+              <button
+                onClick={confirmDelete}
+                className="btn bg-error text-white"
+              >
+                Delete
+              </button>
+              <button
+                onClick={() =>
+                  setDeleteConfirmation({
+                    isOpen: false,
+                    type: null,
+                    id: null,
+                    name: "",
+                  })
+                }
+                className="btn"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}

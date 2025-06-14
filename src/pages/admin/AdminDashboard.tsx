@@ -10,13 +10,11 @@ const AdminDashboard = () => {
 
   const handleLogout = async () => {
     try {
-      const res = await logout();
-      console.log(res);
+    await logout();
       storeLogout();
       navigate("/admin");
     } catch (err) {
-      console.log(err);
-      toast.error("Failed to logout");
+      toast.error("Failed to logout: " + err);
     }
   };
 

@@ -1938,7 +1938,7 @@ class APIClient {
   deleteSubdomain = async (subdomainId: string) => {
     try {
       const response = await this.axiosInstance.delete(
-        `${this.endpoint}/${subdomainId}`,
+        `${this.endpoint}/subdomains/${subdomainId}`,
         {
           headers: {
             requiresAuth: true,
