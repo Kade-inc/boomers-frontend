@@ -31,6 +31,7 @@ export default interface User {
     type: "Point";
     coordinates: [number, number]; // [longitude, latitude]
   };
+  role?: string;
 }
 
 interface Interest {

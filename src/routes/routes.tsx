@@ -5,6 +5,7 @@ import Layout from "../pages/Layout";
 import ProtectedRoute from "./ProtectedRoute";
 import HomePage from "../pages/HomePage";
 import ErrorPage from "../pages/ErrorPage";
+import AdminLayout from "../pages/AdminLayout";
 
 // Lazy loaded pages
 const SignupForm = lazy(() => import("../components/SignupForm"));
@@ -34,6 +35,8 @@ const AllSearchResultsPage = lazy(
 const ChallengeSolutionPage = lazy(
   () => import("../pages/ChallengeSolutionPage"),
 );
+const AdminLogin = lazy(() => import("../pages/AdminLogin"));
+const AdminDashboard = lazy(() => import("../pages/AdminDashboard"));
 
 const loadingDots = (
   <div className="flex justify-center items-center h-screen bg-base-100">
@@ -119,6 +122,25 @@ const router = createBrowserRouter([
     path: "/signup-verification",
     element: withSuspense(<SignupVerificationSuccess />),
     errorElement: <ErrorPage />,
+  },
+  {
+    path: "/admin",
+    element: withSuspense(<AdminLayout />),
+    errorElement: <ErrorPage />,
+    children: [
+      { index: true, element: withSuspense(<AdminLogin />) },
+      { path: "login", element: withSuspense(<AdminLogin />) },
+      {
+        path: "dashboard",
+        element: (
+          <ProtectedRoute
+            element={withSuspense(<AdminDashboard />)}
+            fallback={<AdminLogin />}
+            requireAdmin={true}
+          />
+        ),
+      },
+    ],
   },
 ]);
 
