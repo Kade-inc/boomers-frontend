@@ -5,6 +5,10 @@ import Layout from "../pages/Layout";
 import ProtectedRoute from "./ProtectedRoute";
 import HomePage from "../pages/HomePage";
 import ErrorPage from "../pages/ErrorPage";
+import AdminLayout from "../pages/AdminLayout";
+import AdminDashboard from "../pages/admin/AdminDashboard";
+import DashboardOverview from "../pages/admin/DashboardOverview";
+import DomainsAdminView from "../pages/admin/DomainsAdminView";
 
 // Lazy loaded pages
 const SignupForm = lazy(() => import("../components/SignupForm"));
@@ -34,6 +38,7 @@ const AllSearchResultsPage = lazy(
 const ChallengeSolutionPage = lazy(
   () => import("../pages/ChallengeSolutionPage"),
 );
+const AdminLogin = lazy(() => import("../pages/AdminLogin"));
 
 const loadingDots = (
   <div className="flex justify-center items-center h-screen bg-base-100">
@@ -119,6 +124,49 @@ const router = createBrowserRouter([
     path: "/signup-verification",
     element: withSuspense(<SignupVerificationSuccess />),
     errorElement: <ErrorPage />,
+  },
+  {
+    path: "/admin",
+    element: withSuspense(<AdminLayout />),
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <AdminLogin />,
+      },
+      {
+        path: "dashboard",
+        element: (
+          <ProtectedRoute
+            element={<AdminDashboard />}
+            fallback={<AdminLogin />}
+            requireAdmin={true}
+          />
+        ),
+        children: [
+          {
+            index: true,
+            element: <DashboardOverview />,
+          },
+          {
+            path: "teams",
+            element: <div>Teams Management</div>,
+          },
+          {
+            path: "challenges",
+            element: <div>Challenges Management</div>,
+          },
+          {
+            path: "users",
+            element: <div>Users Management</div>,
+          },
+          {
+            path: "domains",
+            element: <DomainsAdminView />,
+          },
+        ],
+      },
+    ],
   },
 ]);
 

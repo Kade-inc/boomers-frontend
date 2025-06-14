@@ -1781,6 +1781,201 @@ class APIClient {
       throw axiosError;
     }
   };
+
+  addDomain = async (domain: string) => {
+    try {
+      const response = await this.axiosInstance.post(
+        "/api/domains",
+        { name: domain },
+        {
+          headers: {
+            requiresAuth: true,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error adding domain:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  addSubdomain = async (subdomain: string, parentId: string) => {
+    try {
+      const response = await this.axiosInstance.post(
+        `${this.endpoint}/${parentId}/subdomains`,
+        { name: subdomain },
+        {
+          headers: {
+            requiresAuth: true,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error adding subdomain:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  addDomainTopic = async (topic: string, parentId: string) => {
+    try {
+      const response = await this.axiosInstance.post(
+        `${this.endpoint}/domainTopics`,
+        { name: topic, parentSubdomain: parentId },
+        {
+          headers: {
+            requiresAuth: true,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error adding domain topic:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  updateDomain = async (domainId: string, domain: string) => {
+    try {
+      const response = await this.axiosInstance.put(
+        `${this.endpoint}/${domainId}`,
+        { name: domain },
+        {
+          headers: {
+            requiresAuth: true,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error updating domain:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  updateSubdomain = async (subdomainId: string, subdomain: string) => {
+    try {
+      const response = await this.axiosInstance.put(
+        `${this.endpoint}/subdomains/${subdomainId}`,
+        { name: subdomain },
+        {
+          headers: {
+            requiresAuth: true,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error updating subdomain:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  updateDomainTopic = async (topicId: string, topic: string) => {
+    try {
+      const response = await this.axiosInstance.put(
+        `${this.endpoint}/domainTopics/${topicId}`,
+        { name: topic },
+        {
+          headers: {
+            requiresAuth: true,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error updating domain topic:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  deleteDomain = async (domainId: string) => {
+    try {
+      const response = await this.axiosInstance.delete(
+        `${this.endpoint}/${domainId}`,
+        {
+          headers: {
+            requiresAuth: true,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error deleting domain:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  deleteSubdomain = async (subdomainId: string) => {
+    try {
+      const response = await this.axiosInstance.delete(
+        `${this.endpoint}/subdomains/${subdomainId}`,
+        {
+          headers: {
+            requiresAuth: true,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error deleting subdomain:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  deleteDomainTopic = async (topicId: string) => {
+    try {
+      const response = await this.axiosInstance.delete(
+        `${this.endpoint}/domainTopics/${topicId}`,
+        {
+          headers: {
+            requiresAuth: true,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error deleting domain topic:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
 }
 
 export default APIClient;
