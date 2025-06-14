@@ -313,7 +313,7 @@ const DomainsAdminView = () => {
       <div className="container mx-auto p-4">
         <h1 className="text-2xl font-bold mb-6">Domain Management</h1>
 
-        <div className="flex gap-6">
+        <div className="hidden md:flex gap-6">
           {/* Left side - Data Tables */}
           <div className="w-2/3 space-y-6 h-[85vh] overflow-y-auto">
             {/* Domains Table */}
@@ -602,6 +602,9 @@ const DomainsAdminView = () => {
               </div>
             </div>
           </div>
+        </div>
+        <div className="md:hidden flex justify-center items-center h-[50vh] font-semibold text-base-content">
+          <p>For the better experience, please use a desktop browser.</p>
         </div>
       </div>
 

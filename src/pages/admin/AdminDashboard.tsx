@@ -10,7 +10,7 @@ const AdminDashboard = () => {
 
   const handleLogout = async () => {
     try {
-    await logout();
+      await logout();
       storeLogout();
       navigate("/admin");
     } catch (err) {
@@ -39,7 +39,7 @@ const AdminDashboard = () => {
               ></path>
             </svg>
           </label>
-          <div className="flex-1 px-2 mx-2 text-xl font-bold">
+          <div className="flex-1 px-2 mx-2 text-xl font-bold text-white xl:text-base-content">
             Admin Dashboard
           </div>
         </div>
