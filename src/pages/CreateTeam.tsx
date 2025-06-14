@@ -175,8 +175,6 @@ function CreateTeam() {
 
   const filteredDomainTopics = useMemo(() => {
     if (fetchedDomainTopics && subDomain) {
-      console.log(subDomain);
-      console.log(fetchedDomainTopics);
       if (subDomain.toLowerCase() === "full stack") {
         return fetchedDomainTopics.filter(
           (topic) =>
