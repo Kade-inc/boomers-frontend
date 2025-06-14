@@ -6,6 +6,7 @@ const apiClient = new APIClient("/api/domains");
 export const useUpdateDomain = () => {
   return useMutation({
     mutationKey: ["update-domain"],
-    mutationFn: ({ id, name }: { id: string; name: string }) => apiClient.updateDomain(id, name),
+    mutationFn: ({ id, name }: { id: string; name: string }) =>
+      apiClient.updateDomain(id, name),
   });
 };

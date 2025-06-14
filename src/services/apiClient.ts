@@ -1870,7 +1870,7 @@ class APIClient {
     }
   };
 
-  updateSubdomain = async (subdomainId: string, subdomain: string) => { 
+  updateSubdomain = async (subdomainId: string, subdomain: string) => {
     try {
       const response = await this.axiosInstance.put(
         `${this.endpoint}/subdomains/${subdomainId}`,
@@ -1892,7 +1892,7 @@ class APIClient {
     }
   };
 
-  updateDomainTopic = async (topicId: string, topic: string) => { 
+  updateDomainTopic = async (topicId: string, topic: string) => {
     try {
       const response = await this.axiosInstance.put(
         `${this.endpoint}/domainTopics/${topicId}`,
@@ -1914,7 +1914,7 @@ class APIClient {
     }
   };
 
-  deleteDomain = async (domainId: string) => {  
+  deleteDomain = async (domainId: string) => {
     try {
       const response = await this.axiosInstance.delete(
         `${this.endpoint}/${domainId}`,
@@ -1935,13 +1935,16 @@ class APIClient {
     }
   };
 
-  deleteSubdomain = async (subdomainId: string) => {  
+  deleteSubdomain = async (subdomainId: string) => {
     try {
-      const response = await this.axiosInstance.delete(`${this.endpoint}/${subdomainId}`, {
-        headers: {
-          requiresAuth: true,
+      const response = await this.axiosInstance.delete(
+        `${this.endpoint}/${subdomainId}`,
+        {
+          headers: {
+            requiresAuth: true,
+          },
         },
-      });  
+      );
       return response.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
@@ -1953,13 +1956,16 @@ class APIClient {
     }
   };
 
-  deleteDomainTopic = async (topicId: string) => {    
+  deleteDomainTopic = async (topicId: string) => {
     try {
-      const response = await this.axiosInstance.delete(`${this.endpoint}/domainTopics/${topicId}`, {
-        headers: {
-          requiresAuth: true,
+      const response = await this.axiosInstance.delete(
+        `${this.endpoint}/domainTopics/${topicId}`,
+        {
+          headers: {
+            requiresAuth: true,
+          },
         },
-      }); 
+      );
       return response.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import useDomains from "../../hooks/useDomains";
-import useSubDomains from "../../hooks/useSubDomains";
 import useGetAllSubdomains from "../../hooks/useGetAllSubdomains";
 import SubDomain from "../../entities/SubDomain";
 import DomainTopic from "../../entities/DomainTopic";
@@ -50,7 +49,9 @@ const DomainsAdminView = () => {
   const updateDomainTopicMutation = useUpdateDomainTopic();
   // Edit states
   const [editingDomain, setEditingDomain] = useState<Domain | null>(null);
-  const [editingSubdomain, setEditingSubdomain] = useState<SubDomain | null>(null);
+  const [editingSubdomain, setEditingSubdomain] = useState<SubDomain | null>(
+    null,
+  );
   const [editingTopic, setEditingTopic] = useState<DomainTopic | null>(null);
 
   useEffect(() => {
@@ -78,7 +79,7 @@ const DomainsAdminView = () => {
       setNewDomain("");
       refetchDomains();
     } catch (error) {
-      toast.error("Failed to add domain");
+      toast.error("Failed to add domain: " + error);
     }
   };
 
@@ -92,13 +93,13 @@ const DomainsAdminView = () => {
     try {
       await subdomainMutation.mutateAsync({
         subdomain: newSubdomain.name,
-        parentId: newSubdomain.parentId
+        parentId: newSubdomain.parentId,
       });
       toast.success("Subdomain added successfully");
       setNewSubdomain({ name: "", parentId: "" });
       refetchSubdomains();
     } catch (error) {
-      toast.error("Failed to add subdomain");
+      toast.error("Failed to add subdomain: " + error);
     }
   };
 
@@ -112,13 +113,13 @@ const DomainsAdminView = () => {
     try {
       await topicMutation.mutateAsync({
         topic: newTopic.name,
-        parentId: newTopic.parentId
+        parentId: newTopic.parentId,
       });
       toast.success("Topic added successfully");
       setNewTopic({ name: "", parentId: "" });
       refetchTopics();
     } catch (error) {
-      toast.error("Failed to add topic");
+      toast.error("Failed to add topic: " + error);
     }
   };
 
@@ -129,7 +130,7 @@ const DomainsAdminView = () => {
     try {
       const response = await updateDomainMutation.mutateAsync({
         id: editingDomain._id,
-        name: editingDomain.name
+        name: editingDomain.name,
       });
 
       if (response) {
@@ -140,7 +141,7 @@ const DomainsAdminView = () => {
         toast.error("Failed to update domain");
       }
     } catch (error) {
-      toast.error("Error updating domain");
+      toast.error("Error updating domain: " + error);
     }
   };
 
@@ -151,7 +152,7 @@ const DomainsAdminView = () => {
     try {
       const response = await updateSubdomainMutation.mutateAsync({
         id: editingSubdomain._id,
-        name: editingSubdomain.name
+        name: editingSubdomain.name,
       });
 
       if (response) {
@@ -162,7 +163,7 @@ const DomainsAdminView = () => {
         toast.error("Failed to update subdomain");
       }
     } catch (error) {
-      toast.error("Error updating subdomain");
+      toast.error("Error updating subdomain: " + error);
     }
   };
 
@@ -173,18 +174,18 @@ const DomainsAdminView = () => {
     try {
       const response = await updateDomainTopicMutation.mutateAsync({
         id: editingTopic._id,
-        name: editingTopic.name
+        name: editingTopic.name,
       });
 
       if (response) {
         toast.success("Topic updated successfully");
         setEditingTopic(null);
         refetchTopics();
-      } else { 
+      } else {
         toast.error("Failed to update topic");
       }
     } catch (error) {
-      toast.error("Error updating topic");
+      toast.error("Error updating topic: " + error);
     }
   };
 
@@ -193,10 +194,10 @@ const DomainsAdminView = () => {
 
     try {
       const response = await fetch(`/api/domains/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'requiresAuth': 'true'
-        }
+          requiresAuth: "true",
+        },
       });
 
       if (response.ok) {
@@ -206,7 +207,7 @@ const DomainsAdminView = () => {
         toast.error("Failed to delete domain");
       }
     } catch (error) {
-      toast.error("Error deleting domain");
+      toast.error("Error deleting domain: " + error);
     }
   };
 
@@ -215,10 +216,10 @@ const DomainsAdminView = () => {
 
     try {
       const response = await fetch(`/api/subdomains/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'requiresAuth': 'true'
-        }
+          requiresAuth: "true",
+        },
       });
 
       if (response.ok) {
@@ -228,7 +229,7 @@ const DomainsAdminView = () => {
         toast.error("Failed to delete subdomain");
       }
     } catch (error) {
-      toast.error("Error deleting subdomain");
+      toast.error("Error deleting subdomain: " + error);
     }
   };
 
@@ -237,10 +238,10 @@ const DomainsAdminView = () => {
 
     try {
       const response = await fetch(`/api/domains/domainTopics/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'requiresAuth': 'true'
-        }
+          requiresAuth: "true",
+        },
       });
 
       if (response.ok) {
@@ -250,12 +251,24 @@ const DomainsAdminView = () => {
         toast.error("Failed to delete topic");
       }
     } catch (error) {
-      toast.error("Error deleting topic");
+      toast.error("Error deleting topic: " + error);
     }
   };
 
-  const isLoading = domainsLoading || subdomainsLoading || topicsLoading || domainMutation.isPending || subdomainMutation.isPending || topicMutation.isPending;
-  const hasError = domainsError || subdomainsError || topicsError || domainMutation.error || subdomainMutation.error || topicMutation.error;
+  const isLoading =
+    domainsLoading ||
+    subdomainsLoading ||
+    topicsLoading ||
+    domainMutation.isPending ||
+    subdomainMutation.isPending ||
+    topicMutation.isPending;
+  const hasError =
+    domainsError ||
+    subdomainsError ||
+    topicsError ||
+    domainMutation.error ||
+    subdomainMutation.error ||
+    topicMutation.error;
 
   if (isLoading) {
     return (
@@ -369,7 +382,9 @@ const DomainsAdminView = () => {
                                 <FaEdit />
                               </button>
                               <button
-                                onClick={() => handleDeleteSubdomain(subdomain._id)}
+                                onClick={() =>
+                                  handleDeleteSubdomain(subdomain._id)
+                                }
                                 className="btn btn-sm btn-ghost text-error"
                               >
                                 <FaTrash />
@@ -397,26 +412,27 @@ const DomainsAdminView = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {topics && topics.map(topic => (
-                        <tr key={topic._id}>
-                          <td>{topic.name}</td>
-                          <td>{topic.parentSubdomain?.name}</td>
-                          <td className="flex gap-2">
-                            <button 
-                              onClick={() => setEditingTopic(topic)}
-                              className="btn btn-sm btn-ghost"
-                            >
-                              <FaEdit />
-                            </button>
-                            <button 
-                              onClick={() => handleDeleteTopic(topic._id)}
-                              className="btn btn-sm btn-ghost text-error"
-                            >
-                              <FaTrash />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                      {topics &&
+                        topics.map((topic) => (
+                          <tr key={topic._id}>
+                            <td>{topic.name}</td>
+                            <td>{topic.parentSubdomain?.name}</td>
+                            <td className="flex gap-2">
+                              <button
+                                onClick={() => setEditingTopic(topic)}
+                                className="btn btn-sm btn-ghost"
+                              >
+                                <FaEdit />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteTopic(topic._id)}
+                                className="btn btn-sm btn-ghost text-error"
+                              >
+                                <FaTrash />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 </div>
@@ -579,18 +595,30 @@ const DomainsAdminView = () => {
               <input
                 type="text"
                 value={editingDomain.name}
-                onChange={(e) => setEditingDomain({ ...editingDomain, name: e.target.value })}
+                onChange={(e) =>
+                  setEditingDomain({ ...editingDomain, name: e.target.value })
+                }
                 className="input input-bordered w-full mb-4"
               />
               <div className="modal-action">
-                <button type="submit" className="btn bg-yellow text-darkgrey" disabled={updateDomainMutation.isPending}>
+                <button
+                  type="submit"
+                  className="btn bg-yellow text-darkgrey"
+                  disabled={updateDomainMutation.isPending}
+                >
                   {updateDomainMutation.isPending ? (
                     <span className="loading loading-dots loading-sm"></span>
                   ) : (
                     "Save"
                   )}
                 </button>
-                <button type="button" className="btn" onClick={() => setEditingDomain(null)}>Cancel</button>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => setEditingDomain(null)}
+                >
+                  Cancel
+                </button>
               </div>
             </form>
           </div>
@@ -606,18 +634,33 @@ const DomainsAdminView = () => {
               <input
                 type="text"
                 value={editingSubdomain.name}
-                onChange={(e) => setEditingSubdomain({ ...editingSubdomain, name: e.target.value })}
+                onChange={(e) =>
+                  setEditingSubdomain({
+                    ...editingSubdomain,
+                    name: e.target.value,
+                  })
+                }
                 className="input input-bordered w-full mb-4"
               />
               <div className="modal-action">
-                <button type="submit" className="btn bg-yellow text-darkgrey" disabled={updateSubdomainMutation.isPending}>
+                <button
+                  type="submit"
+                  className="btn bg-yellow text-darkgrey"
+                  disabled={updateSubdomainMutation.isPending}
+                >
                   {updateSubdomainMutation.isPending ? (
                     <span className="loading loading-dots loading-sm"></span>
                   ) : (
                     "Save"
                   )}
                 </button>
-                <button type="button" className="btn" onClick={() => setEditingSubdomain(null)}>Cancel</button>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => setEditingSubdomain(null)}
+                >
+                  Cancel
+                </button>
               </div>
             </form>
           </div>
@@ -633,13 +676,15 @@ const DomainsAdminView = () => {
               <input
                 type="text"
                 value={editingTopic.name}
-                onChange={(e) => setEditingTopic({ ...editingTopic, name: e.target.value })}
+                onChange={(e) =>
+                  setEditingTopic({ ...editingTopic, name: e.target.value })
+                }
                 className="input input-bordered w-full mb-4"
               />
               <div className="modal-action">
-                <button 
-                  type="submit" 
-                  className="btn bg-yellow text-darkgrey" 
+                <button
+                  type="submit"
+                  className="btn bg-yellow text-darkgrey"
                   disabled={updateDomainTopicMutation.isPending}
                 >
                   {updateDomainTopicMutation.isPending ? (
@@ -648,7 +693,13 @@ const DomainsAdminView = () => {
                     "Save"
                   )}
                 </button>
-                <button type="button" className="btn" onClick={() => setEditingTopic(null)}>Cancel</button>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => setEditingTopic(null)}
+                >
+                  Cancel
+                </button>
               </div>
             </form>
           </div>
