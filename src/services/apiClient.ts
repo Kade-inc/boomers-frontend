@@ -1781,6 +1781,72 @@ class APIClient {
       throw axiosError;
     }
   };
+
+  addDomain = async (domain: string) => {
+    try {
+      const response = await this.axiosInstance.post(
+        "/api/domains",
+        { name: domain },
+        {
+          headers: {
+            requiresAuth: true,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error adding domain:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  addSubdomain = async (subdomain: string, parentId: string) => {
+    try {
+      const response = await this.axiosInstance.post(
+        `${this.endpoint}/${parentId}/subdomains`,
+        { name: subdomain },
+        {
+          headers: {
+            requiresAuth: true,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error adding subdomain:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
+  addDomainTopic = async (topic: string, parentId: string) => {
+    try {
+      const response = await this.axiosInstance.post(
+        `${this.endpoint}/domainTopics`,
+        { name: topic, parentSubdomain: parentId },
+        {
+          headers: {
+            requiresAuth: true,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error adding domain topic:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
 }
 
 export default APIClient;

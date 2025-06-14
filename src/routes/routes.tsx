@@ -8,6 +8,7 @@ import ErrorPage from "../pages/ErrorPage";
 import AdminLayout from "../pages/AdminLayout";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import DashboardOverview from "../pages/admin/DashboardOverview";
+import DomainsAdminView from "../pages/admin/DomainsAdminView";
 
 // Lazy loaded pages
 const SignupForm = lazy(() => import("../components/SignupForm"));
@@ -161,7 +162,7 @@ const router = createBrowserRouter([
           },
           {
             path: "domains",
-            element: <div>Domains Management</div>,
+            element: <DomainsAdminView />,
           },
         ],
       },
