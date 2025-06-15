@@ -25,8 +25,8 @@ const MemberCard: React.FC<MemberCardProps> = ({
 
   return (
     <div
-      className="card w-[166px] h-[170px] bg-base-100 font-body cursor-pointer 
-  border border-base-200 shadow-md shadow-base-content/10"
+      className="card w-[166px] h-[180px]  bg-base-100 font-body cursor-pointer 
+  border border-base-200 shadow-md shadow-base-content/10 rounded-lg"
       onClick={onClick}
     >
       <div className="card-body flex flex-col justify-center items-center">
