@@ -14,6 +14,7 @@ interface TeamFilters {
   subdomain?: string;
   subdomainTopics?: DomainTopic[]; // We'll convert this to a comma-separated string.
   name?: string;
+  enabled?: boolean;
 }
 
 const useTeams = (filters: TeamFilters = {}): UseQueryResult<any, Team[]> => {
@@ -25,6 +26,7 @@ const useTeams = (filters: TeamFilters = {}): UseQueryResult<any, Team[]> => {
     subdomain,
     subdomainTopics,
     name,
+    enabled = true,
   } = filters;
 
   const domainQuery =
@@ -57,6 +59,7 @@ const useTeams = (filters: TeamFilters = {}): UseQueryResult<any, Team[]> => {
         name,
       }),
     staleTime: 1000 * 60 * 5, // 5 minutes
+    enabled: enabled, // Only run when enabled is true
   });
 };
 

@@ -80,7 +80,10 @@ const MemberRequestDialog = ({
     data: teams,
     isLoading,
     isError,
-  } = useTeams({ userId: activeUserId || "" });
+  } = useTeams({
+    userId: activeUserId || "",
+    enabled: !!dialogRef.current?.open,
+  });
 
   // console.log("DATA: ", teams);
 
