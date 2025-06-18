@@ -1994,6 +1994,28 @@ class APIClient {
       throw axiosError;
     }
   };
+
+  searchUsersAndTeams = async (query: string, page: number, pageSize: number) => {
+    try {
+      const response = await this.axiosInstance.get(`/api/search/chat?q=${query}`, {
+        headers: {
+          requiresAuth: true,
+        },
+        params: {
+          page,
+          pageSize,
+        },
+      }); 
+      return response.data.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error searching for users and teams:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
 }
 
 export default APIClient;

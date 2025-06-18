@@ -1,5 +1,7 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
 import Modal from "react-modal";
+import useSearchUserAndTeams from "../../hooks/Chats/useSearchUserAndTeams";
 
 type ModalTriggerProps = {
   isOpen: boolean;
@@ -7,6 +9,19 @@ type ModalTriggerProps = {
 };
 
 const ChatSearchModal = ({ isOpen, onClose }: ModalTriggerProps) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  const { data, isLoading, isError } = useSearchUserAndTeams(searchQuery.length > 0, searchQuery, page, pageSize);
+
+  console.log(data);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setPage(1);
+  };
+
   return (
     <>
       <Modal
@@ -22,8 +37,13 @@ const ChatSearchModal = ({ isOpen, onClose }: ModalTriggerProps) => {
               type="text"
               placeholder="Search"
               className="input w-full rounded-full pl-10 text-[12px] md:text-base font-body bg-grey input-bordered"
+              value={searchQuery}
+              onChange={handleSearch}
             />
           </div>
+          {isLoading && <div>Loading...</div>}
+          {isError && <div>Error searching for users and teams</div>}
+          {data && <div>{data.results.length} results</div>}
         </div>
       </Modal>
     </>
