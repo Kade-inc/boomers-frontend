@@ -1976,6 +1976,24 @@ class APIClient {
       throw axiosError;
     }
   };
+
+  getChats = async (userId: string) => {
+    try {
+      const response = await this.axiosInstance.get(`/api/chats/${userId}`, {
+        headers: {
+          requiresAuth: true,
+        },
+      });
+      return response.data.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error fetching chats:",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
 }
 
 export default APIClient;

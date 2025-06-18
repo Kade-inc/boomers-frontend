@@ -360,14 +360,14 @@ function NavigationBar() {
           </Link>
           <Link
             className={
-              pathname === "/messages"
+              pathname === "/chat"
                 ? "btn btn-ghost bg-yellow rounded-full"
                 : "flex items-center"
             }
-            to="/messages"
+            to="/chat"
           >
             <div
-              className={`flex items-center text-[16px] font-body font-normal ${pathname === "/messages" ? "text-darkgrey" : ""}`}
+              className={`flex items-center text-[16px] font-body font-normal ${pathname === "/chat" ? "text-darkgrey" : ""}`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -496,11 +496,11 @@ function NavigationBar() {
             <li className="lg:hidden">
               <Link
                 className={
-                  pathname === "/messages"
+                  pathname === "/chat"
                     ? "bg-yellow font-semibold py-4 my-1 text-darkgrey"
                     : "py-4 my-1 hover:bg-yellow"
                 }
-                to="/messages"
+                to="/chat"
               >
                 <div className="flex items-center">
                   <svg

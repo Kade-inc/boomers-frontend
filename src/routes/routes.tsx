@@ -39,6 +39,7 @@ const ChallengeSolutionPage = lazy(
   () => import("../pages/ChallengeSolutionPage"),
 );
 const AdminLogin = lazy(() => import("../pages/AdminLogin"));
+const ChatLayout = lazy(() => import("../pages/ChatLayout"));
 
 const loadingDots = (
   <div className="flex justify-center items-center h-screen bg-base-100">
@@ -101,6 +102,10 @@ const router = createBrowserRouter([
       {
         path: "search/results/people",
         element: withSuspense(<AllSearchResultsPage />),
+      },
+      {
+        path: "chat",
+        element: withSuspense(<ChatLayout />),
       },
     ],
   },
