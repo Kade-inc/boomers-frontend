@@ -49,18 +49,24 @@ const ChatLayout = () => {
           </div>
         )}
         {chats && chats.length === 0 && (
-          <div className="flex items-center justify-center h-screen flex-col gap-2">
-            <FiInbox className="text-base-content w-20 h-20" />
-            <p className="text-center text-base-content font-semibold">
-              No chats found
-            </p>
-            <button
-              onClick={handleStartNewChat}
-              className="bg-yellow text-darkgrey font-medium py-2 px-4 rounded-md"
-            >
-              New chat
-            </button>
-          </div>
+          <>
+            {isChildRoute ? (
+              <Outlet />
+            ) : (
+              <div className="flex items-center justify-center h-screen flex-col gap-2">
+                <FiInbox className="text-base-content w-20 h-20" />
+                <p className="text-center text-base-content font-semibold">
+                  No chats found
+                </p>
+                <button
+                  onClick={handleStartNewChat}
+                  className="bg-yellow text-darkgrey font-medium py-2 px-4 rounded-md"
+                >
+                  New chat
+                </button>
+              </div>
+            )}
+          </>
         )}
         {chats && chats.length > 0 && (
           <>
