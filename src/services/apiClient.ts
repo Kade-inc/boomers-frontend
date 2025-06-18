@@ -1995,17 +1995,24 @@ class APIClient {
     }
   };
 
-  searchUsersAndTeams = async (query: string, page: number, pageSize: number) => {
+  searchUsersAndTeams = async (
+    query: string,
+    page: number,
+    pageSize: number,
+  ) => {
     try {
-      const response = await this.axiosInstance.get(`/api/search/chat?q=${query}`, {
-        headers: {
-          requiresAuth: true,
+      const response = await this.axiosInstance.get(
+        `/api/search/chat?q=${query}`,
+        {
+          headers: {
+            requiresAuth: true,
+          },
+          params: {
+            page,
+            pageSize,
+          },
         },
-        params: {
-          page,
-          pageSize,
-        },
-      }); 
+      );
       return response.data.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
