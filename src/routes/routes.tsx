@@ -14,6 +14,7 @@ const SignupVerificationSuccess = lazy(
   () => import("../pages/SignupVerificationSuccess"),
 );
 const ForgotPassword = lazy(() => import("../pages/ForgotPasswordPage"));
+const LandingPage = lazy(() => import("../pages/LandingPage"));
 const Dashboard = lazy(() => import("../pages/Dashboard"));
 const TeamsPage = lazy(() => import("../pages/TeamsPage"));
 const AppLayout = lazy(() => import("../pages/AppLayout"));
@@ -98,6 +99,10 @@ const router = createBrowserRouter([
         element: withSuspense(<AllSearchResultsPage />),
       },
     ],
+  },
+  {
+    path: "/welcome",
+    element: withSuspense(<LandingPage/>)
   },
   {
     path: "/auth",

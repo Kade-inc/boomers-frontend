@@ -6,6 +6,9 @@
 @tailwind utilities;
 
 @layer base {
+  * {
+    @apply border-border;
+  }
   body {
     @apply bg-slate-50;
   }

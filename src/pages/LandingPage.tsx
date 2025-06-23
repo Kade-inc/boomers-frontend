@@ -1,28 +1,28 @@
 import React from "react";
-import HeroSection from "./HeroSection";
-import FeatureSection from "./FeatureSection";
+// import HeroSection from "./HeroSection";
+// import FeatureSection from "./FeatureSection";
 // Import TestimonialSection component - assuming it's a default export
 // If TestimonialSection is not available, this component would need to be created
-import TestimonialSection from "./TestimonialSection";
-import MethodologyAnimation from "./MethodologyAnimation";
+// import TestimonialSection from "./TestimonialSection";
+// import MethodologyAnimation from "./MethodologyAnimation";
 
 const LandingPage = () => {
   return (
     <div className="min-h-screen text-white bg-[#44e2e8]">
       {/* Hero Section */}
-      <HeroSection />
+      {/* <HeroSection /> */}
       {/* Feature Section */}
-      <FeatureSection />
+      {/* <FeatureSection /> */}
       {/* Testimonial Section */}
-      <TestimonialSection />
+      {/* <TestimonialSection /> */}
       {/* Methodology Animation */}
-      <MethodologyAnimation />
+      {/* <MethodologyAnimation /> */}
       {/* Mobile App Section */}
       <section className="py-20 px-4 md:px-8 lg:px-16 bg-gray-900">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
           <div className="flex-1 order-2 md:order-1">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Take DevMentor With You
+              Take Ceembl With You
             </h2>
             <p className="text-lg text-gray-300 mb-8">
               Track your coding challenges, connect with mentors, and continue
@@ -81,19 +81,19 @@ const LandingPage = () => {
           </div>
           <div className="flex-1 order-1 md:order-2">
             <div className="relative mx-auto max-w-xs">
-              <div className="absolute inset-0 bg-yellow-500 rounded-3xl blur-xl opacity-20 transform rotate-6"></div>
+              <div className="absolute inset-0 bg-yellow rounded-3xl blur-xl opacity-20 transform rotate-6"></div>
               <div className="relative bg-gray-800 border-4 border-gray-700 rounded-3xl overflow-hidden shadow-2xl">
                 <div className="pt-8 px-2 bg-gray-800 rounded-t-3xl">
-                  <div className="w-16 h-1 mx-auto bg-gray-600 rounded-full mb-2"></div>
+                  <div className="w-16 h-1 mx-auto bg-yellow rounded-full mb-2"></div>
                   <img
                     src="https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?w=400&q=80"
-                    alt="DevMentor mobile app"
+                    alt="Ceembl mobile app"
                     className="rounded-lg shadow-lg"
                   />
                 </div>
                 <div className="p-4 bg-gray-800">
                   <div className="flex justify-between items-center">
-                    <div className="w-12 h-12 bg-yellow-500 rounded-full flex items-center justify-center">
+                    <div className="w-12 h-12 bg-yellow rounded-full flex items-center justify-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="20"
@@ -114,7 +114,7 @@ const LandingPage = () => {
                     <div className="flex gap-2">
                       <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
                       <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
-                      <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                      <div className="w-2 h-2 bg-yellow rounded-full"></div>
                     </div>
                   </div>
                 </div>
@@ -136,7 +136,7 @@ const LandingPage = () => {
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <a
               href="#"
-              className="px-8 py-4 bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded-md text-lg transition-colors duration-300"
+              className="px-8 py-4 bg-yellow hover:bg-yellow-100 text-black font-bold rounded-md text-lg transition-colors duration-300"
             >
               Find a Mentor
             </a>
@@ -156,7 +156,7 @@ const LandingPage = () => {
             {/* Brand Section */}
             <div className="md:col-span-2">
               <h3 className="text-3xl font-bold text-yellow-500 mb-4">
-                DevMentor
+                LOGO
               </h3>
               <p className="text-gray-400 text-lg mb-6 max-w-md">
                 Accelerate your development journey through structured
