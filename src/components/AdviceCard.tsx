@@ -44,7 +44,7 @@ const AdviceCard = ({
 
   return (
     <div
-      className={`container mx-auto gap-5 w-[90%] py-6 flex flex-col items-center justify-center bg-darkgrey rounded-[5px] mt-5 ${className}`}
+      className={`container mx-auto gap-5 w-[90%] py-6 flex flex-col items-center justify-center bg-darkgrey border-[1px] border-white rounded-[5px] mt-2 mb-6 ${className} `}
     >
       <div className="text-center text-white text-[18px] font-semibold font-body">
         Today&apos;s advice

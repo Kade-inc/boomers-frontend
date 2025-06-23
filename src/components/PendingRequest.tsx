@@ -23,9 +23,9 @@ const PendingRequest = ({ requests, user, error }: Props) => {
     );
   }
   return (
-    <Link to="/pending-requests">
-      <div className="border-[1px] w-[90%] mr-auto ml-auto border-yellow mt-8 py-2 flex items-center rounded-sm hover:bg-yellow bg-yellow md:bg-transparent">
-        <div className="flex justify-between items-center w-full px-4">
+    <div className="border-[1px] w-[90%] mr-auto ml-auto border-yellow mt-8 py-2 flex items-center justify-between rounded-sm hover:bg-yellow bg-yellow md:bg-transparent">
+      <Link to="/pending-requests" className="mx-auto">
+        <div className="flex justify-between items-center w-full gap-4">
           <div className="font-body font-semibold text-[14px] xl:text-[15px] text-base-content hover:text-darkgrey">
             Pending Requests{" "}
             <span className="md:hidden">({pendingRequests.length})</span>
@@ -37,8 +37,8 @@ const PendingRequest = ({ requests, user, error }: Props) => {
             View
           </button>
         </div>
-      </div>
-    </Link>
+      </Link>
+    </div>
   );
 };
 

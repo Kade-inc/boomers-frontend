@@ -19,16 +19,18 @@ const ActionCenterModal = ({
         isOpen={isOpen}
         onRequestClose={onClose}
         className="z-50"
-        overlayClassName="fixed inset-0 z-50 backdrop-blur-sm bg-[#00000033] bg-opacity-30"
+        overlayClassName="fixed inset-0 z-50 backdrop-blur-sm bg-[#00000033] bg-opacity-30 min-h-screen overflow-scroll pb-20"
       >
-        <div className="flex justify-end mt-4 mr-8">
+        <div className="top-5 right-5 fixed">
           <XCircleIcon width={36} height={36} onClick={onClose} color="red" />
         </div>
         <div className="flex flex-col items-center mt-10 gap-6">
-          <div className="text-center font-body font-semibold text-base-content bg-yellow w-1/2 p-3 rounded-md">
+          <div className="text-center font-body font-semibold text-white w-1/2 p-3 rounded-md">
             Action Center
           </div>
-          <div className="flex flex-col justify-center gap-4">{children}</div>
+          <div className="flex flex-col justify-center items-center gap-4">
+            {children}
+          </div>
         </div>
       </Modal>
     </>

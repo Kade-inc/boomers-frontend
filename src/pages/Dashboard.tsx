@@ -381,7 +381,7 @@ const Dashboard = () => {
           </div>
         </div>
         <div
-          className={`shadow-slate-300 rounded h-5/6 xl:w-[260px] xl:flex xl:flex xl:right-3 xl:top-15 hidden py-5 flex-col bg-base-200 shadow-sm  min-h-max`}
+          className={`shadow-slate-300 rounded h-5/6 xl:w-[260px] xl:flex xl:right-3 xl:top-15 hidden py-5 flex-col items-center bg-base-200 shadow-sm  min-h-max`}
         >
           <ProfileCard user={user} className="mb-5" />
           <AdviceCard
@@ -438,6 +438,18 @@ const Dashboard = () => {
             refetch={refetchAdvice}
             isRefetching={adviceRefetching}
           />
+          {!pendingSpotlight && teamSpotlight && (
+            <>
+              <p className="font-bold text-base-content flex justify-center mb-2 font-body">
+                Team Spotlight
+              </p>
+              <SpotlightCard
+                team={teamSpotlight}
+                styles={`w-[90%] h-[150px]`}
+                onClick={() => navigate(`/teams/${teamSpotlight._id}`)}
+              />
+            </>
+          )}
           <PendingRequests
             requests={requests}
             user={user}
