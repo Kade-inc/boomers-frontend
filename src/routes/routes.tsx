@@ -128,7 +128,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/about",
-    element: withSuspense(<AboutPage/>)
+    element: withSuspense(<AboutPage />),
   },
 ]);
 

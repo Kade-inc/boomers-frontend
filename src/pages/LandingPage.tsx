@@ -1,5 +1,5 @@
 import React from "react";
-// import HeroSection from "./HeroSection";
+import HeroSection from "../components/HeroSection";
 // import FeatureSection from "./FeatureSection";
 // Import TestimonialSection component - assuming it's a default export
 // If TestimonialSection is not available, this component would need to be created
@@ -10,7 +10,7 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen text-white bg-[#44e2e8]">
       {/* Hero Section */}
-      {/* <HeroSection /> */}
+      <HeroSection />
       {/* Feature Section */}
       {/* <FeatureSection /> */}
       {/* Testimonial Section */}
@@ -314,7 +314,14 @@ const LandingPage = () => {
           <div className="pt-8 border-t border-gray-800">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <div className="text-gray-500 text-sm mb-4 md:mb-0">
-                © {new Date().getFullYear()} <a href="https://teamkade.com" className="text-blue-300 hover:text-blue-600">KADE</a>. All rights reserved.
+                © {new Date().getFullYear()}{" "}
+                <a
+                  href="https://teamkade.com"
+                  className="text-blue-300 hover:text-blue-600"
+                >
+                  KADE
+                </a>
+                . All rights reserved.
               </div>
               <div className="flex items-center gap-6 text-sm">
                 <span className="text-gray-500">Made with</span>
