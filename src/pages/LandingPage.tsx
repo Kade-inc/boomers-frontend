@@ -135,13 +135,13 @@ const LandingPage = () => {
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <a
-              href="#"
+              href="/auth"
               className="px-8 py-4 bg-yellow hover:bg-yellow-100 text-black font-bold rounded-md text-lg transition-colors duration-300"
             >
               Find a Mentor
             </a>
             <a
-              href="#"
+              href="/auth"
               className="px-8 py-4 bg-transparent hover:bg-gray-700 border-2 border-yellow-500 text-yellow-500 font-bold rounded-md text-lg transition-colors duration-300"
             >
               Join as a Mentor
@@ -155,9 +155,7 @@ const LandingPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
             {/* Brand Section */}
             <div className="md:col-span-2">
-              <h3 className="text-3xl font-bold text-yellow-500 mb-4">
-                LOGO
-              </h3>
+              <h3 className="text-3xl font-bold text-yellow-500 mb-4">LOGO</h3>
               <p className="text-gray-400 text-lg mb-6 max-w-md">
                 Accelerate your development journey through structured
                 challenges and expert mentorship. Join our community of learners
@@ -231,7 +229,7 @@ const LandingPage = () => {
                 </li>
                 <li>
                   <a
-                    href="#"
+                    href="/auth"
                     className="text-gray-400 hover:text-yellow-500 transition-colors duration-300"
                   >
                     Find a Mentor
@@ -239,7 +237,7 @@ const LandingPage = () => {
                 </li>
                 <li>
                   <a
-                    href="#"
+                    href="/auth"
                     className="text-gray-400 hover:text-yellow-500 transition-colors duration-300"
                   >
                     Join as Mentor
@@ -247,7 +245,7 @@ const LandingPage = () => {
                 </li>
                 <li>
                   <a
-                    href="#"
+                    href="/challenges"
                     className="text-gray-400 hover:text-yellow-500 transition-colors duration-300"
                   >
                     Challenges
@@ -255,7 +253,7 @@ const LandingPage = () => {
                 </li>
                 <li>
                   <a
-                    href="#"
+                    href="/community"
                     className="text-gray-400 hover:text-yellow-500 transition-colors duration-300"
                   >
                     Community
@@ -316,7 +314,7 @@ const LandingPage = () => {
           <div className="pt-8 border-t border-gray-800">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <div className="text-gray-500 text-sm mb-4 md:mb-0">
-                © {new Date().getFullYear()} DevMentor. All rights reserved.
+                © {new Date().getFullYear()} <a href="https://teamkade.com" className="text-blue-300 hover:text-blue-600">KADE</a>. All rights reserved.
               </div>
               <div className="flex items-center gap-6 text-sm">
                 <span className="text-gray-500">Made with</span>

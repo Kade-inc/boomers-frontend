@@ -5,6 +5,7 @@ import Layout from "../pages/Layout";
 import ProtectedRoute from "./ProtectedRoute";
 import HomePage from "../pages/HomePage";
 import ErrorPage from "../pages/ErrorPage";
+import AboutPage from "../components/AboutPage";
 
 // Lazy loaded pages
 const SignupForm = lazy(() => import("../components/SignupForm"));
@@ -102,7 +103,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/welcome",
-    element: withSuspense(<LandingPage/>)
+    element: withSuspense(<LandingPage />),
   },
   {
     path: "/auth",
@@ -124,6 +125,10 @@ const router = createBrowserRouter([
     path: "/signup-verification",
     element: withSuspense(<SignupVerificationSuccess />),
     errorElement: <ErrorPage />,
+  },
+  {
+    path: "/about",
+    element: withSuspense(<AboutPage/>)
   },
 ]);
 
