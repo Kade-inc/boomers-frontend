@@ -1,6 +1,6 @@
 import React from "react";
 import HeroSection from "../components/HeroSection";
-// import FeatureSection from "./FeatureSection";
+import FeatureSection from "../components/FeatureSection";
 // Import TestimonialSection component - assuming it's a default export
 // If TestimonialSection is not available, this component would need to be created
 // import TestimonialSection from "./TestimonialSection";
@@ -12,7 +12,7 @@ const LandingPage = () => {
       {/* Hero Section */}
       <HeroSection />
       {/* Feature Section */}
-      {/* <FeatureSection /> */}
+      <FeatureSection />
       {/* Testimonial Section */}
       {/* <TestimonialSection /> */}
       {/* Methodology Animation */}
