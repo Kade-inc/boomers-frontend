@@ -4,7 +4,7 @@ import FeatureSection from "../components/FeatureSection";
 // Import TestimonialSection component - assuming it's a default export
 // If TestimonialSection is not available, this component would need to be created
 // import TestimonialSection from "./TestimonialSection";
-// import MethodologyAnimation from "./MethodologyAnimation";
+import MethodologyAnimation from "../components/MethodologyAnimation";
 
 const LandingPage = () => {
   return (
@@ -16,7 +16,7 @@ const LandingPage = () => {
       {/* Testimonial Section */}
       {/* <TestimonialSection /> */}
       {/* Methodology Animation */}
-      {/* <MethodologyAnimation /> */}
+      <MethodologyAnimation />
       {/* Mobile App Section */}
       <section className="py-20 px-4 md:px-8 lg:px-16 bg-gray-900">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">

@@ -18,7 +18,7 @@ const HeroSection = ({
   // ctaPrimaryText = "Join the Community",
   // ctaSecondaryText = "Learn More",
   onPrimaryClick = () => {
-    window.location.href = "/auth"
+    window.location.href = "/auth";
   },
   onSecondaryClick = () => {
     window.location.href = "/about";
