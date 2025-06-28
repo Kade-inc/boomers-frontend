@@ -4,6 +4,8 @@ import Modal from "react-modal";
 import useSearchUserAndTeams from "../../hooks/Chats/useSearchUserAndTeams";
 import { useNavigate } from "react-router-dom";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
+import { FiInbox } from "react-icons/fi";
+import { IoIosSearch } from "react-icons/io";
 
 type ModalTriggerProps = {
   isOpen: boolean;
@@ -149,8 +151,23 @@ const ChatSearchModal = ({ isOpen, onClose }: ModalTriggerProps) => {
             )}
 
             {!isLoading && allResults.length === 0 && (
-              <div className="text-center py-4 text-base-contentfont-body">
-                No results found
+              <div className="text-center py-4 text-base-content font-body flex flex-col items-center justify-center">
+                {searchQuery && (
+                  <>
+                    <FiInbox className="text-base-content w-20 h-20" />
+                    <p className="text-center text-base-content font-body py-4">
+                      No results found for &quot;{searchQuery}&quot;
+                    </p>
+                  </>
+                )}
+                {!searchQuery && (
+                  <>
+                    <IoIosSearch className="text-base-content w-20 h-20" />
+                    <p className="text-center text-base-content font-body py-4">
+                      Search for users and teams
+                    </p>
+                  </>
+                )}
               </div>
             )}
           </div>
