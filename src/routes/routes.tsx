@@ -5,10 +5,6 @@ import Layout from "../pages/Layout";
 import ProtectedRoute from "./ProtectedRoute";
 import HomePage from "../pages/HomePage";
 import ErrorPage from "../pages/ErrorPage";
-import AdminLayout from "../pages/AdminLayout";
-import AdminDashboard from "../pages/admin/AdminDashboard";
-import DashboardOverview from "../pages/admin/DashboardOverview";
-import DomainsAdminView from "../pages/admin/DomainsAdminView";
 
 // Lazy loaded pages
 const SignupForm = lazy(() => import("../components/SignupForm"));
@@ -32,6 +28,13 @@ const EditChallengePage = lazy(() => import("../pages/EditChallengePage"));
 const EditTeam = lazy(() => import("../pages/EditTeam"));
 const PendingRequestsPage = lazy(() => import("../pages/PendingRequestsPage"));
 const SearchResultsPage = lazy(() => import("../pages/SearchResultsPage"));
+const AdminLayout = lazy(() => import("../pages/AdminLayout"));
+const AdminDashboard = lazy(() => import("../pages/admin/AdminDashboard"));
+const DashboardOverview = lazy(
+  () => import("../pages/admin/DashboardOverview"),
+);
+const DomainsAdminView = lazy(() => import("../pages/admin/DomainsAdminView"));
+const Chat = lazy(() => import("../components/Chat"));
 const AllSearchResultsPage = lazy(
   () => import("../pages/AllSearchResultsPage"),
 );
@@ -39,6 +42,7 @@ const ChallengeSolutionPage = lazy(
   () => import("../pages/ChallengeSolutionPage"),
 );
 const AdminLogin = lazy(() => import("../pages/AdminLogin"));
+const ChatLayout = lazy(() => import("../pages/ChatLayout"));
 
 const loadingDots = (
   <div className="flex justify-center items-center h-screen bg-base-100">
@@ -101,6 +105,16 @@ const router = createBrowserRouter([
       {
         path: "search/results/people",
         element: withSuspense(<AllSearchResultsPage />),
+      },
+      {
+        path: "chat",
+        element: withSuspense(<ChatLayout />),
+        children: [
+          {
+            path: ":chatId",
+            element: withSuspense(<Chat />),
+          },
+        ],
       },
     ],
   },
