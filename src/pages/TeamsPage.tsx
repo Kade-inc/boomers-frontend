@@ -32,7 +32,7 @@ const TeamsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
 
-  const debouncedSearchName = useDebounce(searchName, 500);
+  const debouncedSearchName = useDebounce(searchName.trim(), 500);
 
   const { teamId } = useParams();
   const {
