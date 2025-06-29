@@ -50,8 +50,8 @@ const AboutPage = () => {
                 Our Mission
               </h2>
               <p className="text-lg font-body text-gray-300 mb-6">
-                Ceembl was founded with a simple yet powerful idea: everyone
-                has something to teach, and everyone has something to learn.
+                Ceembl was founded with a simple yet powerful idea: everyone has
+                something to teach, and everyone has something to learn.
               </p>
               <p className="text-lg text-gray-300 font-body mb-6">
                 We believe that the best way to master software development is
