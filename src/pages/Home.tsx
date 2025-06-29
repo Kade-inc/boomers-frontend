@@ -163,7 +163,9 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
             {/* Brand Section */}
             <div className="md:col-span-2">
-              <h3 className="text-3xl font-bold text-yellow mb-4">LOGO</h3>
+              <h3 className="font-heading text-[30px] mt-5text-3xl font-bold text-yellow mb-4">
+                LOGO
+              </h3>
               <p className="text-gray-400 font-body text-lg mb-6 max-w-md">
                 Accelerate your development journey through structured
                 challenges and expert mentorship. Join our community of learners

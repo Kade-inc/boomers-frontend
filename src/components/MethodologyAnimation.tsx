@@ -139,7 +139,7 @@ const Methodology = () => {
               <Button
                 variant="outline"
                 size="icon"
-                className="rounded-full bg-white/80 font-body backdrop-blur-sm hover:bg-white"
+                className="btn rounded-full bg-white/80 font-body backdrop-blur-sm hover:bg-white"
                 onClick={handlePrev}
               >
                 <ChevronLeft className="h-5 text-darkgrey font-body w-5" />
@@ -147,7 +147,7 @@ const Methodology = () => {
               <Button
                 variant="outline"
                 size="icon"
-                className="rounded-full bg-white/80 backdrop-blur-sm hover:bg-white"
+                className="btn rounded-full bg-white/80 backdrop-blur-sm hover:bg-white"
                 onClick={handleNext}
               >
                 <ChevronRight className="h-5 font-body text-darkgrey w-5" />

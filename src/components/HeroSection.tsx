@@ -138,7 +138,7 @@ const HeroSection = ({
               <Button
                 onClick={onSecondaryClick}
                 variant={"outline"}
-                className="border-yellow text-yellow bg-white hover:bg-white/90 font-body font-medium px-8 py-6 h-auto text-lg flex items-center gap-2"
+                className="btn border-yellow text-yellow bg-white hover:bg-white/90 font-body font-medium px-8 py-6 h-auto text-lg flex items-center gap-2"
               >
                 <span>Learn More</span>
                 <svg
