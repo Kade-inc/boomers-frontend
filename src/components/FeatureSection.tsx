@@ -5,8 +5,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "./ui/card";
+} from "./ui/Card";
 import { Code, Lightbulb, Users, BookOpen } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface FeatureCardProps {
   icon: React.ReactNode;
@@ -22,15 +23,15 @@ const FeatureCard = (
   },
 ) => {
   return (
-    <Card className="bg-gray-900 border-gray-800 hover:border-yellow-500 transition-all duration-300">
+    <Card className="bg-black border-darkgrey hover:border-yellow transition-all duration-300">
       <CardHeader>
-        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-800 mb-4">
+        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-darkgrey mb-4">
           {icon}
         </div>
-        <CardTitle className="text-white text-xl">{title}</CardTitle>
+        <CardTitle className="text-white font-body text-xl">{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <CardDescription className="text-gray-400">
+        <CardDescription className="text-gray-400 font-body">
           {description}
         </CardDescription>
       </CardContent>
@@ -67,16 +68,30 @@ const FeatureSection = () => {
   ];
 
   return (
-    <section className="w-full py-20 bg-black">
+    <section className="w-full py-28 bg-black">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            <motion.h2
+            className="text-3xl md:text-4xl font-bold text-white mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 1 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            >
             How Our Platform Works
-          </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            Our unique approach combines challenging problems with expert
-            mentorship to accelerate your growth as a developer.
-          </p>
+            </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 1 }}
+            exit={{ opacity: 0, y: 30 }}
+            transition={{ duration: 0.6, ease: "easeInOut"}}
+            className="text-gray-400 max-w-2xl mx-auto"
+            >
+              Our unique approach combines challenging problems with expert
+              mentorship to accelerate your growth as a developer.
+          </motion.p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

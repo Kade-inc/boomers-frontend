@@ -18,13 +18,13 @@ const LandingPage = () => {
       {/* Methodology Animation */}
       <MethodologyAnimation />
       {/* Mobile App Section */}
-      <section className="py-20 px-4 md:px-8 lg:px-16 bg-gray-900">
+      <section className="py-20 px-4 md:px-8 lg:px-16 bg-black">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
           <div className="flex-1 order-2 md:order-1">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            <h2 className="text-2xl md:text-4xl font-body font-bold mb-6">
               Take Ceembl With You
             </h2>
-            <p className="text-lg text-gray-300 mb-8">
+            <p className="text-lg text-gray-300 font-body mb-8">
               Track your coding challenges, connect with mentors, and continue
               your learning journey on the go with our mobile app.
             </p>
@@ -50,8 +50,12 @@ const LandingPage = () => {
                   <path d="M19 16v6"></path>
                 </svg>
                 <div className="text-left">
-                  <div className="text-xs text-gray-400">Download on the</div>
-                  <div className="text-sm font-semibold">App Store</div>
+                  <div className="text-xs text-gray-400 font-body">
+                    Download on the
+                  </div>
+                  <div className="text-sm font-semibold font-body font-body">
+                    App Store
+                  </div>
                 </div>
               </a>
               <a
@@ -73,16 +77,20 @@ const LandingPage = () => {
                   <polygon points="3 3 21 12 3 21 3 3"></polygon>
                 </svg>
                 <div className="text-left">
-                  <div className="text-xs text-gray-400">GET IT ON</div>
-                  <div className="text-sm font-semibold">Google Play</div>
+                  <div className="text-xs text-gray-400 font-body">
+                    GET IT ON
+                  </div>
+                  <div className="text-sm font-semibold font-body font-body">
+                    Google Play
+                  </div>
                 </div>
               </a>
             </div>
           </div>
-          <div className="flex-1 order-1 md:order-2">
+          <div className="flex-1 order-1 md:order-2 py-12">
             <div className="relative mx-auto max-w-xs">
               <div className="absolute inset-0 bg-yellow rounded-3xl blur-xl opacity-20 transform rotate-6"></div>
-              <div className="relative bg-gray-800 border-4 border-gray-700 rounded-3xl overflow-hidden shadow-2xl">
+              <div className="relative bg-black border-4 border-darkgrey rounded-3xl overflow-hidden shadow-2xl">
                 <div className="pt-8 px-2 bg-gray-800 rounded-t-3xl">
                   <div className="w-16 h-1 mx-auto bg-yellow rounded-full mb-2"></div>
                   <img
@@ -91,7 +99,7 @@ const LandingPage = () => {
                     className="rounded-lg shadow-lg"
                   />
                 </div>
-                <div className="p-4 bg-gray-800">
+                <div className="p-4 bg-black">
                   <div className="flex justify-between items-center">
                     <div className="w-12 h-12 bg-yellow rounded-full flex items-center justify-center">
                       <svg
@@ -124,25 +132,25 @@ const LandingPage = () => {
         </div>
       </section>
       {/* Footer CTA Section */}
-      <section className="py-20 px-4 md:px-8 lg:px-16 bg-gray-800">
+      <section className="py-20 px-4 md:px-8 lg:px-16 bg-black border-y-2 border-darkgrey">
         <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          <h2 className="text-2xl md:text-4xl font-body font-bold mb-6">
             Ready to Level Up Your Development Skills?
           </h2>
-          <p className="text-lg md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-300 font-body mb-10 max-w-3xl mx-auto">
             Join our community of developers and mentors to accelerate your
             growth through structured challenges and methodical problem-solving.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <a
               href="/auth"
-              className="px-8 py-4 bg-yellow hover:bg-yellow-100 text-black font-bold rounded-md text-lg transition-colors duration-300"
+              className="px-8 py-4 bg-yellow hover:bg-yellow/70 text-black font-bold font-body rounded-md text-lg transition-colors duration-300"
             >
               Find a Mentor
             </a>
             <a
               href="/auth"
-              className="px-8 py-4 bg-transparent hover:bg-gray-700 border-2 border-yellow-500 text-yellow-500 font-bold rounded-md text-lg transition-colors duration-300"
+              className="px-8 py-4 bg-transparent hover:bg-white hover:text-black border-2 border-yellow text-yellow font-bold font-body rounded-md text-lg transition-colors duration-300"
             >
               Join as a Mentor
             </a>
@@ -155,8 +163,8 @@ const LandingPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
             {/* Brand Section */}
             <div className="md:col-span-2">
-              <h3 className="text-3xl font-bold text-yellow-500 mb-4">LOGO</h3>
-              <p className="text-gray-400 text-lg mb-6 max-w-md">
+              <h3 className="text-3xl font-bold text-yellow mb-4">LOGO</h3>
+              <p className="text-gray-400 font-body text-lg mb-6 max-w-md">
                 Accelerate your development journey through structured
                 challenges and expert mentorship. Join our community of learners
                 and teachers.
@@ -164,7 +172,7 @@ const LandingPage = () => {
               <div className="flex gap-4">
                 <a
                   href="#"
-                  className="w-10 h-10 bg-gray-800 hover:bg-yellow-500 rounded-full flex items-center justify-center transition-colors duration-300 group"
+                  className="w-10 h-10 bg-gray-800 hover:bg-yellow font-body rounded-full flex items-center justify-center transition-colors duration-300 group"
                 >
                   <svg
                     className="w-5 h-5 text-gray-400 group-hover:text-black"
@@ -176,7 +184,7 @@ const LandingPage = () => {
                 </a>
                 <a
                   href="#"
-                  className="w-10 h-10 bg-gray-800 hover:bg-yellow-500 rounded-full flex items-center justify-center transition-colors duration-300 group"
+                  className="w-10 h-10 bg-gray-800 hover:bg-yellow font-body rounded-full flex items-center justify-center transition-colors duration-300 group"
                 >
                   <svg
                     className="w-5 h-5 text-gray-400 group-hover:text-black"
@@ -188,7 +196,7 @@ const LandingPage = () => {
                 </a>
                 <a
                   href="#"
-                  className="w-10 h-10 bg-gray-800 hover:bg-yellow-500 rounded-full flex items-center justify-center transition-colors duration-300 group"
+                  className="w-10 h-10 bg-gray-800 hover:bg-yellow font-body rounded-full flex items-center justify-center transition-colors duration-300 group"
                 >
                   <svg
                     className="w-5 h-5 text-gray-400 group-hover:text-black"
@@ -200,7 +208,7 @@ const LandingPage = () => {
                 </a>
                 <a
                   href="#"
-                  className="w-10 h-10 bg-gray-800 hover:bg-yellow-500 rounded-full flex items-center justify-center transition-colors duration-300 group"
+                  className="w-10 h-10 bg-gray-800 hover:bg-yellow font-body rounded-full flex items-center justify-center transition-colors duration-300 group"
                 >
                   <svg
                     className="w-5 h-5 text-gray-400 group-hover:text-black"
@@ -215,14 +223,14 @@ const LandingPage = () => {
 
             {/* Quick Links */}
             <div>
-              <h4 className="text-white font-semibold text-lg mb-4">
+              <h4 className="text-white font-semibold font-body text-lg mb-4">
                 Quick Links
               </h4>
               <ul className="space-y-3">
                 <li>
                   <a
                     href="/about"
-                    className="text-gray-400 hover:text-yellow-500 transition-colors duration-300"
+                    className="text-gray-400 hover:text-yellow font-body transition-colors duration-300"
                   >
                     About Us
                   </a>
@@ -230,7 +238,7 @@ const LandingPage = () => {
                 <li>
                   <a
                     href="/auth"
-                    className="text-gray-400 hover:text-yellow-500 transition-colors duration-300"
+                    className="text-gray-400 hover:text-yellow font-body transition-colors duration-300"
                   >
                     Find a Mentor
                   </a>
@@ -238,7 +246,7 @@ const LandingPage = () => {
                 <li>
                   <a
                     href="/auth"
-                    className="text-gray-400 hover:text-yellow-500 transition-colors duration-300"
+                    className="text-gray-400 hover:text-yellow font-body transition-colors duration-300"
                   >
                     Join as Mentor
                   </a>
@@ -246,7 +254,7 @@ const LandingPage = () => {
                 <li>
                   <a
                     href="/challenges"
-                    className="text-gray-400 hover:text-yellow-500 transition-colors duration-300"
+                    className="text-gray-400 hover:text-yellow font-body transition-colors duration-300"
                   >
                     Challenges
                   </a>
@@ -254,7 +262,7 @@ const LandingPage = () => {
                 <li>
                   <a
                     href="/community"
-                    className="text-gray-400 hover:text-yellow-500 transition-colors duration-300"
+                    className="text-gray-400 hover:text-yellow font-body transition-colors duration-300"
                   >
                     Community
                   </a>
@@ -264,12 +272,14 @@ const LandingPage = () => {
 
             {/* Support */}
             <div>
-              <h4 className="text-white font-semibold text-lg mb-4">Support</h4>
+              <h4 className="text-white font-semibold font-body text-lg mb-4">
+                Support
+              </h4>
               <ul className="space-y-3">
                 <li>
                   <a
                     href="#"
-                    className="text-gray-400 hover:text-yellow-500 transition-colors duration-300"
+                    className="text-gray-400 hover:text-yellow font-body transition-colors duration-300"
                   >
                     Help Center
                   </a>
@@ -277,7 +287,7 @@ const LandingPage = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-gray-400 hover:text-yellow-500 transition-colors duration-300"
+                    className="text-gray-400 hover:text-yellow font-body transition-colors duration-300"
                   >
                     Contact Us
                   </a>
@@ -285,7 +295,7 @@ const LandingPage = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-gray-400 hover:text-yellow-500 transition-colors duration-300"
+                    className="text-gray-400 hover:text-yellow font-body transition-colors duration-300"
                   >
                     Privacy Policy
                   </a>
@@ -293,7 +303,7 @@ const LandingPage = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-gray-400 hover:text-yellow-500 transition-colors duration-300"
+                    className="text-gray-400 hover:text-yellow font-body transition-colors duration-300"
                   >
                     Terms of Service
                   </a>
@@ -301,7 +311,7 @@ const LandingPage = () => {
                 <li>
                   <a
                     href="#"
-                    className="text-gray-400 hover:text-yellow-500 transition-colors duration-300"
+                    className="text-gray-400 hover:text-yellow font-body transition-colors duration-300"
                   >
                     Cookie Policy
                   </a>
@@ -313,7 +323,7 @@ const LandingPage = () => {
           {/* Bottom Section */}
           <div className="pt-8 border-t border-gray-800">
             <div className="flex flex-col md:flex-row justify-between items-center">
-              <div className="text-gray-500 text-sm mb-4 md:mb-0">
+              <div className="text-gray-500 text-sm font-body mb-4 md:mb-0">
                 © {new Date().getFullYear()}{" "}
                 <a
                   href="https://teamkade.com"
@@ -324,9 +334,7 @@ const LandingPage = () => {
                 . All rights reserved.
               </div>
               <div className="flex items-center gap-6 text-sm">
-                <span className="text-gray-500">Made with</span>
-                <span className="text-yellow-500">❤️</span>
-                <span className="text-gray-500">for developers</span>
+                <span className="text-gray-500 font-body">Made with ❤️ for developers.</span>
               </div>
             </div>
           </div>
