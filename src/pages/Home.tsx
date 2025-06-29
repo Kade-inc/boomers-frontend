@@ -6,7 +6,7 @@ import FeatureSection from "../components/FeatureSection";
 // import TestimonialSection from "./TestimonialSection";
 import MethodologyAnimation from "../components/MethodologyAnimation";
 
-const LandingPage = () => {
+const Home = () => {
   return (
     <div className="min-h-screen text-white bg-[#44e2e8]">
       {/* Hero Section */}
@@ -334,7 +334,9 @@ const LandingPage = () => {
                 . All rights reserved.
               </div>
               <div className="flex items-center gap-6 text-sm">
-                <span className="text-gray-500 font-body">Made with ❤️ for developers.</span>
+                <span className="text-gray-500 font-body">
+                  Made with ❤️ for developers.
+                </span>
               </div>
             </div>
           </div>
@@ -344,4 +346,4 @@ const LandingPage = () => {
   );
 };
 
-export default LandingPage;
+export default Home;

@@ -187,7 +187,7 @@ const Methodology = () => {
                         <Card className="w-full md:w-auto bg-gray-50 border-yellow border-l-4">
                           <CardContent className="p-4">
                             <p className="text-sm text-darkgrey">
-                              &quot;What contraints do we have?&quot;
+                              &quot;What constraints do we have?&quot;
                             </p>
                           </CardContent>
                         </Card>

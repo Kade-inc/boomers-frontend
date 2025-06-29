@@ -123,7 +123,9 @@ const HeroSection = ({
               </span>
             </h1>
 
-            <p className="text-lg md:text-xl text-gray-100 font-body mb-8">{subtitle}</p>
+            <p className="text-lg md:text-xl text-gray-100 font-body mb-8">
+              {subtitle}
+            </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <Button

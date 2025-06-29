@@ -3,9 +3,10 @@ import { lazy, Suspense } from "react";
 
 import Layout from "../pages/Layout";
 import ProtectedRoute from "./ProtectedRoute";
-import HomePage from "../pages/HomePage";
+// import HomePage from "../pages/HomePage";
 import ErrorPage from "../pages/ErrorPage";
 import AboutPage from "../components/AboutPage";
+import Home from "../pages/Home";
 
 // Lazy loaded pages
 const SignupForm = lazy(() => import("../components/SignupForm"));
@@ -15,7 +16,6 @@ const SignupVerificationSuccess = lazy(
   () => import("../pages/SignupVerificationSuccess"),
 );
 const ForgotPassword = lazy(() => import("../pages/ForgotPasswordPage"));
-const LandingPage = lazy(() => import("../pages/LandingPage"));
 const Dashboard = lazy(() => import("../pages/Dashboard"));
 const TeamsPage = lazy(() => import("../pages/TeamsPage"));
 const AppLayout = lazy(() => import("../pages/AppLayout"));
@@ -53,7 +53,7 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute
         element={withSuspense(<AppLayout />)}
-        fallback={<HomePage />}
+        fallback={<Home />}
       />
     ),
     errorElement: <ErrorPage />,
@@ -100,10 +100,6 @@ const router = createBrowserRouter([
         element: withSuspense(<AllSearchResultsPage />),
       },
     ],
-  },
-  {
-    path: "/welcome",
-    element: withSuspense(<LandingPage />),
   },
   {
     path: "/auth",

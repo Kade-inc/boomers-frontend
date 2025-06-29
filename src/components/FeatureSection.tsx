@@ -71,26 +71,26 @@ const FeatureSection = () => {
     <section className="w-full py-28 bg-black">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-            <motion.h2
+          <motion.h2
             className="text-3xl md:text-4xl font-bold text-white mb-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false, amount: 1 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
-            >
+          >
             How Our Platform Works
-            </motion.h2>
+          </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false, amount: 1 }}
             exit={{ opacity: 0, y: 30 }}
-            transition={{ duration: 0.6, ease: "easeInOut"}}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
             className="text-gray-400 max-w-2xl mx-auto"
-            >
-              Our unique approach combines challenging problems with expert
-              mentorship to accelerate your growth as a developer.
+          >
+            Our unique approach combines challenging problems with expert
+            mentorship to accelerate your growth as a developer.
           </motion.p>
         </div>
 
