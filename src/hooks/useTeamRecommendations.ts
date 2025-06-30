@@ -3,7 +3,7 @@ import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import APIClient from "../services/apiClient";
 import Team from "../entities/Team";
 
-const apiClient = new APIClient("/api/teams/recommendations");
+const apiClient = new APIClient("/api/recommendations");
 
 const useTeamRecommendations = (): UseQueryResult<any, Team[]> => {
   return useQuery({
