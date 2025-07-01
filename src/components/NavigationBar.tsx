@@ -358,7 +358,7 @@ function NavigationBar() {
               <span className={"ml-[10px]"}>Dashboard</span>
             </div>
           </Link>
-          <Link
+          {/* <Link
             className={
               pathname === "/chat"
                 ? "btn btn-ghost bg-yellow rounded-full"
@@ -380,7 +380,7 @@ function NavigationBar() {
               </svg>
               <span className={"ml-[10px]"}>Messages</span>
             </div>
-          </Link>
+          </Link> */}
 
           <Link
             className={
@@ -493,7 +493,7 @@ function NavigationBar() {
                 </div>
               </Link>
             </li>
-            <li className="lg:hidden">
+            {/* <li className="lg:hidden">
               <Link
                 className={
                   pathname === "/chat"
@@ -515,7 +515,7 @@ function NavigationBar() {
                   <p className="text-sm font-body font-normal ml-4">Messages</p>
                 </div>
               </Link>
-            </li>
+            </li> */}
             <li className="lg:hidden">
               <Link
                 className={
