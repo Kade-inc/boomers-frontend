@@ -128,7 +128,7 @@ function NavigationBar() {
             <div className="fixed top-[72px] left-0 right-0 bottom-0 bg-black/30 animate-fade-in" />
             <div
               ref={searchResultsRef}
-              className="fixed xl:absolute top-[72px] xl:top-14 left-0 right-0 xl:right-auto bottom-0 xl:bottom-auto bg-base-100 min-h-[100px] xl:min-h-[100px] max-h-[calc(100vh-72px)] xl:max-h-[750px] w-full xl:w-3/4 rounded-none xl:rounded overflow-hidden z-50 flex flex-col"
+              className="fixed xl:absolute top-[72px] xl:top-14 left-0 right-0 xl:right-auto bottom-0 xl:bottom-auto bg-base-100 min-h-[100px] xl:min-h-[100px] max-h-[calc(100vh-72px)] xl:max-h-[700px] w-full xl:w-3/4 rounded-none xl:rounded overflow-hidden z-50 flex flex-col"
             >
               <div className="overflow-y-auto flex-1">
                 <div className="p-4">
@@ -208,7 +208,7 @@ function NavigationBar() {
                       Error loading search results
                     </div>
                   ) : searchResult ? (
-                    <div className="p-4">
+                    <div className="px-2">
                       {/* Teams Section */}
                       {searchResult.teams.results.length > 0 && (
                         <div className="mb-4">
