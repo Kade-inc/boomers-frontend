@@ -137,8 +137,13 @@ const AboutPage = () => {
       <footer className="bg-black py-12 mt-20">
         <div className="container mx-auto max-w-7xl px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="font-heading text-[30px] mt-5 text-2xl font-bold text-yellow mb-6 md:mb-0">
-              LOGO
+            <div className="">
+              <Link
+                to="/"
+                className="font-heading text-[30px] mt-5 text-2xl font-bold text-yellow"
+              >
+                LOGO
+              </Link>
             </div>
             <div className="flex gap-8">
               <Link

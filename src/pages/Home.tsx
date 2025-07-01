@@ -53,7 +53,7 @@ const Home = () => {
                   <div className="text-xs text-gray-400 font-body">
                     Download on the
                   </div>
-                  <div className="text-sm font-semibold font-body font-body">
+                  <div className="text-sm font-semibold font-body">
                     App Store
                   </div>
                 </div>
@@ -80,7 +80,7 @@ const Home = () => {
                   <div className="text-xs text-gray-400 font-body">
                     GET IT ON
                   </div>
-                  <div className="text-sm font-semibold font-body font-body">
+                  <div className="text-sm font-semibold font-body">
                     Google Play
                   </div>
                 </div>
@@ -89,9 +89,9 @@ const Home = () => {
           </div>
           <div className="flex-1 order-1 md:order-2 py-12">
             <div className="relative mx-auto max-w-xs">
-              <div className="absolute inset-0 bg-yellow rounded-3xl blur-xl opacity-20 transform rotate-6"></div>
+              <div className="absolute inset-0 bg-yellow rounded-3xl blur-xl opacity-30 transform rotate-6"></div>
               <div className="relative bg-black border-4 border-darkgrey rounded-3xl overflow-hidden shadow-2xl">
-                <div className="pt-8 px-2 bg-gray-800 rounded-t-3xl">
+                <div className="pt-8 px-2 bg-black rounded-t-3xl">
                   <div className="w-16 h-1 mx-auto bg-yellow rounded-full mb-2"></div>
                   <img
                     src="https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?w=400&q=80"
@@ -144,7 +144,7 @@ const Home = () => {
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <a
               href="/auth"
-              className="px-8 py-4 bg-yellow hover:bg-yellow/70 text-black font-bold font-body rounded-md text-lg transition-colors duration-300"
+              className="px-8 py-4 bg-yellow hover:bg-yellow/80 text-black font-bold font-body rounded-md text-lg transition-colors duration-300"
             >
               Find a Mentor
             </a>

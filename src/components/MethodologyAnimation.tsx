@@ -139,7 +139,7 @@ const Methodology = () => {
               <Button
                 variant="outline"
                 size="icon"
-                className="btn rounded-full bg-white/80 font-body backdrop-blur-sm hover:bg-white"
+                className="rounded-full bg-white/80 font-body backdrop-blur-sm hover:bg-gray-100"
                 onClick={handlePrev}
               >
                 <ChevronLeft className="h-5 text-darkgrey font-body w-5" />
@@ -147,7 +147,7 @@ const Methodology = () => {
               <Button
                 variant="outline"
                 size="icon"
-                className="btn rounded-full bg-white/80 backdrop-blur-sm hover:bg-white"
+                className="rounded-full bg-white/80 backdrop-blur-sm hover:bg-gray-100"
                 onClick={handleNext}
               >
                 <ChevronRight className="h-5 font-body text-darkgrey w-5" />
@@ -218,9 +218,10 @@ const Methodology = () => {
                       <>
                         <Card className="w-full md:auto bg-gray-50 border-yellow border-l-4">
                           <CardContent className="p-4">
-                            <p className="text-sm font-mono text-violet-400">
+                            <p className="text-sm font-mono">
                               <span className="text-blue-400">function</span>{" "}
-                              <span className="text-green-300">solve</span>()
+                              <span className="text-yellow">solve</span>
+                              <span className="text-purple-600"> ()</span>
                             </p>
                           </CardContent>
                         </Card>
@@ -229,7 +230,7 @@ const Methodology = () => {
 
                     {activeStep === 3 && (
                       <>
-                        <Card className="w-full md:w-auto bg-gray-50 border-yellow border-l-4 border-yellow border-l-4">
+                        <Card className="w-full md:w-auto bg-gray-50 border-yellow border-l-4">
                           <CardContent className="p-4">
                             <p className="text-sm text-darkgrey">
                               &apos;Lets optimize this loop for better

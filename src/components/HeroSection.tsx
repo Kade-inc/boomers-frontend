@@ -74,7 +74,7 @@ const HeroSection = ({
         <Link to="/auth/login">
           <Button
             variant="ghost"
-            className="btn bg-yellow  text-darkgrey border-none text-[16px] font-body font-medium px-4 rounded py-0 hover:bg-yellow/70  mt-5"
+            className="btn bg-yellow  text-darkgrey border-none text-[16px] font-body font-medium px-4 rounded py-0 hover:bg-yellow/80 mt-5"
           >
             Login
           </Button>
@@ -130,7 +130,7 @@ const HeroSection = ({
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <Button
                 onClick={onPrimaryClick}
-                className="btn bg-yellow hover:bg-yellow/70 text-darkgrey font-medium font-body border-none px-8 py-6 h-auto text-lg"
+                className="btn bg-yellow hover:bg-yellow/80 text-darkgrey font-medium font-body border-none px-8 py-6 h-auto text-lg"
               >
                 Join The Community
               </Button>
