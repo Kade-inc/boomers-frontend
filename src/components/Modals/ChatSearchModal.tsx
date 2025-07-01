@@ -24,6 +24,7 @@ interface SearchResult {
   lastName?: string;
   username?: string;
   profile_picture?: string;
+  user_id?: string;
 }
 
 const ChatSearchModal = ({ isOpen, onClose }: ModalTriggerProps) => {
@@ -66,7 +67,11 @@ const ChatSearchModal = ({ isOpen, onClose }: ModalTriggerProps) => {
 
   const handleResultClick = (result: SearchResult) => {
     onClose();
-    navigate(`/chat/${result._id}`);
+    if (result.type === "team") {
+      navigate(`/chat/${result._id}`);
+    } else {
+      navigate(`/chat/${result.user_id}`);
+    }
   };
 
   return (
