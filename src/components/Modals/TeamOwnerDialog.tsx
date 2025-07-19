@@ -10,8 +10,6 @@ interface TeamOwnerDialogProps {
 }
 
 const TeamOwnerDialog = ({ selectedTeamMember }: TeamOwnerDialogProps) => {
-  console.log("NOW: ", selectedTeamMember);
-
   return (
     <dialog id="team_owner_modal" className="modal modal-middle font-body">
       <div

@@ -83,7 +83,6 @@ const TeamDetailsPage = () => {
     setSelectedChallenges([]);
   };
 
-  console.log("USER: ", isAuthenticated);
   const {
     data: team,
     isPending: isTeamPending,
@@ -639,7 +638,7 @@ const TeamDetailsPage = () => {
                       ) : isClicked || userRequest ? (
                         "Requested"
                       ) : (
-                        "Request"
+                        "Request to join"
                       )}
                     </button>
                   )}
