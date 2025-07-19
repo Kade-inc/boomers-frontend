@@ -98,7 +98,7 @@ function NavigationBar() {
     <div className="navbar bg-base-100 flex md:px-10 justify-between px-5 md:pt-4 fixed z-40">
       <div className="flex p-0 w-[20%] md:w-[20%]">
         <Link
-          to="/"
+          to="/dashboard"
           className="btn btn-ghost text-xl font-heading p-0 text-base-content"
         >
           LOGO
@@ -336,9 +336,9 @@ function NavigationBar() {
       <div className="flex">
         <div className="hidden lg:grid  lg:grid-flow-col lg:gap-8 lg:auto-rows-max lg:mr-[70px]">
           <Link
-            to="/"
+            to="/dashboard"
             className={
-              pathname === "/" || pathname === "/dashboard"
+              pathname === "/dashboard"
                 ? "btn btn-ghost bg-yellow rounded-full"
                 : "flex items-center"
             }
@@ -471,11 +471,11 @@ function NavigationBar() {
             <li className="lg:hidden">
               <Link
                 className={
-                  pathname === "/" || pathname === "/dashboard"
+                  pathname === "/dashboard"
                     ? "bg-yellow font-semibold py-4 my-1 text-darkgrey"
                     : "py-4 my-1 hover:bg-yellow"
                 }
-                to="/"
+                to="/dashboard"
               >
                 <div className="flex items-center">
                   <svg

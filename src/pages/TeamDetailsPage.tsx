@@ -19,6 +19,7 @@ import useDeleteChallenges from "../hooks/Challenges/useDeleteChallenges";
 import { FaceFrownIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { GrTest } from "react-icons/gr";
+import TeamOwnerDialog from "../components/Modals/TeamOwnerDialog";
 
 const TeamDetailsPage = () => {
   const [activeTab, setActiveTab] = useState("members");
@@ -45,8 +46,17 @@ const TeamDetailsPage = () => {
     }
   };
 
+  const openTeamOwnerDialog = () => {
+    const modal = document.getElementById(
+      "team_owner_modal",
+    ) as HTMLDialogElement | null;
+    if (modal) {
+      modal.showModal();
+    }
+  };
+
   //user
-  const { user } = useAuthStore.getState();
+  const { user, isAuthenticated } = useAuthStore.getState();
 
   const { mutate: deleteChallenges, isPending: isDeleting } =
     useDeleteChallenges();
@@ -73,6 +83,7 @@ const TeamDetailsPage = () => {
     setSelectedChallenges([]);
   };
 
+  console.log("USER: ", isAuthenticated);
   const {
     data: team,
     isPending: isTeamPending,
@@ -82,12 +93,12 @@ const TeamDetailsPage = () => {
     data: challenges,
     isPending: isChallengesPending,
     error: challengesError,
-  } = useTeamChallenges(teamId || "");
+  } = useTeamChallenges(teamId || "", isAuthenticated);
   const {
     data: requests,
     isPending: isTeamMemberRequestsPending,
     error: teamMemberRequestsError,
-  } = useTeamMemberRequests(teamId || "");
+  } = useTeamMemberRequests(teamId || "", isAuthenticated);
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
@@ -130,7 +141,11 @@ const TeamDetailsPage = () => {
     );
   };
 
-  if (isTeamPending || isChallengesPending || isTeamMemberRequestsPending) {
+  if (
+    isTeamPending ||
+    (isChallengesPending && isAuthenticated) ||
+    (isTeamMemberRequestsPending && isAuthenticated)
+  ) {
     return (
       <div className="flex justify-center items-center h-screen bg-base-100">
         <span className="loading loading-dots loading-lg text-base-content"></span>
@@ -286,9 +301,13 @@ const TeamDetailsPage = () => {
                   </div>
                   <div
                     className="text-center flex flex-col items-center justify-center cursor-pointer"
-                    onClick={() =>
-                      navigate(`/profile/${team?.members[0]?._id}`)
-                    }
+                    onClick={() => {
+                      if (isAuthenticated) {
+                        navigate(`/profile/${team?.members[0]?._id}`);
+                      } else {
+                        openTeamOwnerDialog();
+                      }
+                    }}
                   >
                     {team?.members[0]?.profile_picture ? (
                       <img
@@ -310,26 +329,43 @@ const TeamDetailsPage = () => {
               role="tablist"
               className="tabs tabs-bordered max-w-md ml-0 mt-4"
             >
-              {["members", "challenges"].map((tab) => (
+              <button
+                role="tab"
+                className={`tab font-body border-b-2 ${
+                  activeTab === "members" ? "border-b-4" : "border-transparent"
+                }`}
+                style={{
+                  borderColor:
+                    activeTab === "members"
+                      ? "rgba(248, 181, 0, 1)"
+                      : "transparent",
+                }}
+                onClick={() => handleTabClick("members")}
+              >
+                Members
+              </button>
+
+              {isAuthenticated && (
                 <button
-                  key={tab}
                   role="tab"
                   className={`tab font-body border-b-2 ${
-                    activeTab === tab ? "border-b-4" : "border-transparent"
+                    activeTab === "challenges"
+                      ? "border-b-4"
+                      : "border-transparent"
                   }`}
                   style={{
                     borderColor:
-                      activeTab === tab
+                      activeTab === "challenges"
                         ? "rgba(248, 181, 0, 1)"
                         : "transparent",
                   }}
-                  onClick={() => handleTabClick(tab)}
+                  onClick={() => handleTabClick("challenges")}
                 >
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  Challenges
                 </button>
-              ))}
+              )}
 
-              {user.user_id === team?.members[0]?._id && (
+              {user?.user_id === team?.members[0]?._id && (
                 <button
                   role="tab"
                   className={`tab font-body border-b-2 ${
@@ -361,6 +397,9 @@ const TeamDetailsPage = () => {
                           member={member}
                           imgUrl={member.profile_picture}
                           onClick={() => {
+                            if (!isAuthenticated) {
+                              return;
+                            }
                             if (user.user_id === team?.members[0]?._id) {
                               setSelectedTeamMember(member);
                               openMemberDialog("member");
@@ -617,6 +656,7 @@ const TeamDetailsPage = () => {
           selectedTeamMember={selectedTeamMember}
           selectedRequest={selectedRequest}
         />
+        <TeamOwnerDialog selectedTeamMember={team.members[0]} />
       </>
     </div>
   );

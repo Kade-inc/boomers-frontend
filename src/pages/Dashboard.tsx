@@ -35,8 +35,8 @@ const Dashboard = () => {
   const { data: challengesData, isPending: challengesLoading } = useChallenges(
     user.user_id || "",
   );
-  // const { data: teamSpotlight, isPending: pendingSpotlight } =
-  //   useTeamSpotlight();
+  const { data: teamSpotlight, isPending: pendingSpotlight } =
+    useTeamSpotlight();
 
   const {
     data: advice,
@@ -391,7 +391,7 @@ const Dashboard = () => {
             refetch={refetchAdvice}
             isRefetching={adviceRefetching}
           />
-          {/* {!pendingSpotlight && teamSpotlight && (
+          {!pendingSpotlight && teamSpotlight && (
             <>
               <p className="font-bold text-base-content flex justify-center mb-2">
                 Team Spotlight
@@ -402,7 +402,7 @@ const Dashboard = () => {
                 onClick={() => navigate(`/teams/${teamSpotlight._id}`)}
               />
             </>
-          )} */}
+          )}
 
           {!requestsLoading ? (
             <PendingRequests
@@ -438,7 +438,7 @@ const Dashboard = () => {
             refetch={refetchAdvice}
             isRefetching={adviceRefetching}
           />
-          {/* {!pendingSpotlight && teamSpotlight && (
+          {!pendingSpotlight && teamSpotlight && (
             <>
               <p className="font-bold text-base-content flex justify-center mb-2 font-body">
                 Team Spotlight
@@ -449,7 +449,7 @@ const Dashboard = () => {
                 onClick={() => navigate(`/teams/${teamSpotlight._id}`)}
               />
             </>
-          )} */}
+          )}
           <PendingRequests
             requests={requests}
             user={user}

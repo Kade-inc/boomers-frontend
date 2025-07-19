@@ -26,7 +26,7 @@ const LoginForm = () => {
 
   const onSubmit = async (data: FormData) => {
     await mutation.mutateAsync(data);
-    navigate("/");
+    navigate("/dashboard");
   };
 
   const [showPassword, setShowPassword] = useState(false);

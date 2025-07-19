@@ -55,56 +55,165 @@ const withSuspense = (component: React.ReactNode) => (
 );
 
 const router = createBrowserRouter([
+  // HomePage at root, no AppLayout
   {
     path: "/",
-    element: (
-      <ProtectedRoute
-        element={withSuspense(<AppLayout />)}
-        fallback={<HomePage />}
-      />
-    ),
+    element: <HomePage />,
+    errorElement: <ErrorPage />,
+    index: true,
+  },
+  // Main app layout for all other routes
+  {
+    path: "/",
+    element: withSuspense(<AppLayout />),
     errorElement: <ErrorPage />,
     children: [
-      { index: true, element: withSuspense(<Dashboard />) },
-      { path: "dashboard", element: withSuspense(<Dashboard />) },
-      { path: "teams", element: withSuspense(<TeamsPage />) },
+      // Public route
       { path: "teams/:teamId", element: withSuspense(<TeamDetailsPage />) },
-      { path: "teams/:teamId/edit", element: withSuspense(<EditTeam />) },
-      { path: "profile/:userId?", element: withSuspense(<ProfilePage />) },
+      // Protected routes
+      {
+        index: true,
+        element: (
+          <ProtectedRoute
+            element={withSuspense(<Dashboard />)}
+            fallback={<HomePage />}
+          />
+        ),
+      },
+      {
+        path: "dashboard",
+        element: (
+          <ProtectedRoute
+            element={withSuspense(<Dashboard />)}
+            fallback={<HomePage />}
+          />
+        ),
+      },
+      {
+        path: "teams",
+        element: (
+          <ProtectedRoute
+            element={withSuspense(<TeamsPage />)}
+            fallback={<HomePage />}
+          />
+        ),
+      },
+      {
+        path: "teams/:teamId/edit",
+        element: (
+          <ProtectedRoute
+            element={withSuspense(<EditTeam />)}
+            fallback={<HomePage />}
+          />
+        ),
+      },
+      {
+        path: "profile/:userId?",
+        element: (
+          <ProtectedRoute
+            element={withSuspense(<ProfilePage />)}
+            fallback={<HomePage />}
+          />
+        ),
+      },
       {
         path: "recommendations",
-        element: withSuspense(<RecommendationsPage />),
+        element: (
+          <ProtectedRoute
+            element={withSuspense(<RecommendationsPage />)}
+            fallback={<HomePage />}
+          />
+        ),
       },
-      { path: "create-team", element: withSuspense(<CreateTeam />) },
-      { path: "create-challenge", element: withSuspense(<CreateChallenge />) },
+      {
+        path: "create-team",
+        element: (
+          <ProtectedRoute
+            element={withSuspense(<CreateTeam />)}
+            fallback={<HomePage />}
+          />
+        ),
+      },
+      {
+        path: "create-challenge",
+        element: (
+          <ProtectedRoute
+            element={withSuspense(<CreateChallenge />)}
+            fallback={<HomePage />}
+          />
+        ),
+      },
       {
         path: "challenge/:challengeId",
-        element: withSuspense(<ChallengePage />),
+        element: (
+          <ProtectedRoute
+            element={withSuspense(<ChallengePage />)}
+            fallback={<HomePage />}
+          />
+        ),
       },
       {
         path: "challenge/:challengeId/solution/:solutionId",
-        element: withSuspense(<ChallengeSolutionPage />),
+        element: (
+          <ProtectedRoute
+            element={withSuspense(<ChallengeSolutionPage />)}
+            fallback={<HomePage />}
+          />
+        ),
       },
       {
         path: "edit-challenge/:challengeId",
-        element: withSuspense(<EditChallengePage />),
+        element: (
+          <ProtectedRoute
+            element={withSuspense(<EditChallengePage />)}
+            fallback={<HomePage />}
+          />
+        ),
       },
       {
         path: "pending-requests",
-        element: withSuspense(<PendingRequestsPage />),
+        element: (
+          <ProtectedRoute
+            element={withSuspense(<PendingRequestsPage />)}
+            fallback={<HomePage />}
+          />
+        ),
       },
-      { path: "search", element: withSuspense(<SearchResultsPage />) },
+      {
+        path: "search",
+        element: (
+          <ProtectedRoute
+            element={withSuspense(<SearchResultsPage />)}
+            fallback={<HomePage />}
+          />
+        ),
+      },
       {
         path: "search/results/teams",
-        element: withSuspense(<AllSearchResultsPage />),
+        element: (
+          <ProtectedRoute
+            element={withSuspense(<AllSearchResultsPage />)}
+            fallback={<HomePage />}
+          />
+        ),
       },
       {
         path: "search/results/challenges",
-        element: withSuspense(<AllSearchResultsPage />),
+        element: (
+          <ProtectedRoute
+            element={withSuspense(<AllSearchResultsPage />)}
+            fallback={<HomePage />}
+          />
+        ),
       },
       {
         path: "search/results/people",
-        element: withSuspense(<AllSearchResultsPage />),
+        element: (
+          <ProtectedRoute
+            element={withSuspense(<AllSearchResultsPage />)}
+            fallback={<HomePage />}
+          />
+        ),
       },
       // {
       //   path: "chat",

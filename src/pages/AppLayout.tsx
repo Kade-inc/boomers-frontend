@@ -2,7 +2,6 @@ import { Outlet, useNavigate } from "react-router-dom";
 import NavigationBar from "../components/NavigationBar";
 import useAuthStore from "../stores/useAuthStore";
 import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
 import useLoadingStore from "../stores/useLoadingStore";
 import Loader from "../components/Loader/Loader";
 import { BellIcon } from "@heroicons/react/24/solid";
@@ -102,10 +101,10 @@ function AppLayout() {
     mutate({});
   };
 
-  useEffect(() => {
-    const token = Cookies.get("token");
-    if (!token) navigate("/");
-  }, []);
+  // useEffect(() => {
+  //   const token = Cookies.get("token");
+  //   if (!token) navigate("/");
+  // }, []);
 
   const handleNotificationRedirect = (notification: Notification) => {
     if (

@@ -7,11 +7,13 @@ const apiClient = new APIClient("/api/team-member");
 
 const useTeamMemberRequests = (
   teamId: string,
+  isAuthenticated: boolean,
 ): UseQueryResult<any, TeamMember[]> => {
   return useQuery({
     queryKey: ["team-member-requests", teamId],
     queryFn: () => apiClient.getTeamMemberRequests(teamId),
     staleTime: 1000 * 60 * 5, // 5 minutes
+    enabled: isAuthenticated,
   });
 };
 
