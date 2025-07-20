@@ -653,7 +653,7 @@ const ChallengeSolutionPage = () => {
             </h2>
 
             <div className="flex gap-2">
-              <p className="text-6xl font-semibold flex items-end">
+              <p className="text-6xl font-bold flex items-end">
                 {solution.percentageCompleted}
               </p>
               <p className="flex items-end">% Complete</p>
@@ -809,7 +809,7 @@ const ChallengeSolutionPage = () => {
         {!solutionDeleted && solution?.status === 2 && !submittedSolution && (
           <div className="flex flex-col items-center justify-center mb-10 relative gap-4 pb-10">
             <div className="flex gap-2">
-              <p className="text-6xl font-semibold flex items-end">
+              <p className="text-6xl font-bold flex items-end">
                 {solution.percentageCompleted}
               </p>
               <p className="flex items-end">% Complete</p>
