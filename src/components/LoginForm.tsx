@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
 import { Toaster } from "react-hot-toast";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import useSignin from "../hooks/useSignin";
 import { useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
@@ -24,9 +24,19 @@ const LoginForm = () => {
     resolver: zodResolver(schema),
   });
 
+  const location = useLocation();
+
+  const queryParams = new URLSearchParams(location.search);
+  const tId = queryParams.get("tId");
+
   const onSubmit = async (data: FormData) => {
     await mutation.mutateAsync(data);
-    navigate("/dashboard");
+
+    if (tId) {
+      navigate(`/teams/${tId}`);
+    } else {
+      navigate("/dashboard");
+    }
   };
 
   const [showPassword, setShowPassword] = useState(false);
