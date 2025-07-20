@@ -2,7 +2,6 @@ import { Outlet, useNavigate } from "react-router-dom";
 import NavigationBar from "../components/NavigationBar";
 import useAuthStore from "../stores/useAuthStore";
 import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
 import useLoadingStore from "../stores/useLoadingStore";
 import Loader from "../components/Loader/Loader";
 import { BellIcon } from "@heroicons/react/24/solid";
@@ -20,7 +19,7 @@ const serverUrl = "http://localhost:5001";
 const socket: Socket = io(serverUrl);
 
 function AppLayout() {
-  const { userTeams, user, userChallenges } = useAuthStore();
+  const { userTeams, user, userChallenges, isAuthenticated } = useAuthStore();
   const notifications = useNotificationsStore((state) => state.notifications);
   const setNotifications = useNotificationsStore(
     (state) => state.setNotifications,
@@ -35,7 +34,8 @@ function AppLayout() {
 
   // Fetch initial notifications.
   // Here we assume that the user is authenticated if `user` exists.
-  const { data: fetchedNotifications, isSuccess } = useGetNotifications(!!user);
+  const { data: fetchedNotifications, isSuccess } =
+    useGetNotifications(isAuthenticated);
 
   // Mutation hook for marking notifications as read.
   const { mutate, status } = useMarkAllNotificationsRead();
@@ -102,10 +102,10 @@ function AppLayout() {
     mutate({});
   };
 
-  useEffect(() => {
-    const token = Cookies.get("token");
-    if (!token) navigate("/");
-  }, []);
+  // useEffect(() => {
+  //   const token = Cookies.get("token");
+  //   if (!token) navigate("/");
+  // }, []);
 
   const handleNotificationRedirect = (notification: Notification) => {
     if (

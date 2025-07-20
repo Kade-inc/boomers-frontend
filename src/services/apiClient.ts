@@ -897,7 +897,7 @@ class APIClient {
 
   // Add Team Request
   addTeamRequest = async (
-    payload: { team_id: string },
+    payload: { team_id: string; user_id?: string },
     requiresAuth = true,
   ) => {
     try {

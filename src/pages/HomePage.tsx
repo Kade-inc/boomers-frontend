@@ -2,11 +2,42 @@
 import image from "../assets/Wireframe - 1.png";
 import mobileImage from "../assets/Android Large - 1.png";
 // import tabletPotrait from "../assets/iPad Pro 11_ - 1.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
 const HomePage = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    if (!token) {
+      navigate("/");
+      setIsLoading(false);
+      return;
+    }
+    const decodedToken = jwtDecode(token || "");
+    const currentTime = Date.now() / 1000;
+    if (decodedToken.exp && decodedToken.exp < currentTime) {
+      Cookies.remove("token");
+      Cookies.remove("refreshToken");
+      navigate("/");
+      setIsLoading(false);
+    } else {
+      navigate("/dashboard");
+      setIsLoading(false);
+    }
+  }, []);
+
   return (
-    <div className="bg-black min-h-screen">
+    <div className="min-h-screen">
+      {isLoading && (
+        <div className="flex justify-center items-center min-h-screen">
+          <span className="loading loading-dots loading-lg"></span>
+        </div>
+      )}
       <div className="relative flex justify-center">
         <img
           src={image}

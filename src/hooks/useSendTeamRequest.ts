@@ -9,7 +9,11 @@ const useSendTeamRequest = () => {
 
   return useMutation({
     mutationKey: ["add-team-member"],
-    mutationFn: async ({ payload }: { payload: { team_id: string } }) => {
+    mutationFn: async ({
+      payload,
+    }: {
+      payload: { team_id: string; user_id?: string };
+    }) => {
       return apiClient.addTeamRequest(payload);
     },
     onSuccess: () => {

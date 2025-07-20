@@ -4,7 +4,7 @@ import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
 import useSignup from "../hooks/useSignup";
 import { Toaster } from "react-hot-toast";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import useSignUpStore from "../stores/signUpStore";
 import { useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
@@ -39,6 +39,11 @@ const SignupForm = () => {
   const mutation = useSignup();
   const setSignUpSuccess = useSignUpStore((s) => s.setSignUpSuccess);
 
+  const location = useLocation();
+
+  const queryParams = new URLSearchParams(location.search);
+  const tId = queryParams.get("tId");
+
   const {
     register,
     handleSubmit,
@@ -47,7 +52,19 @@ const SignupForm = () => {
 
   const onSubmit = async (data: FormData) => {
     const { confirmpassword, ...userData } = data; // eslint-disable-line @typescript-eslint/no-unused-vars
-    await mutation.mutateAsync(userData);
+
+    let payload = {};
+
+    if (tId) {
+      payload = {
+        ...userData,
+        teamId: tId,
+      };
+    } else {
+      payload = userData;
+    }
+
+    await mutation.mutateAsync(payload);
     setSignUpSuccess(true);
     navigate("/auth/signup-success");
   };
