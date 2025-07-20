@@ -10,11 +10,11 @@ const AuthenticationModal = ({ team }: ModalTriggerProps) => {
   const navigate = useNavigate();
 
   const handleSignUp = () => {
-    navigate(`/auth?${team._id}`);
+    navigate(`/auth?tId=${team._id}`);
   };
 
   const handleSignIn = () => {
-    navigate(`/auth/login?${team._id}`);
+    navigate(`/auth/login?tId=${team._id}`);
   };
   return (
     <>

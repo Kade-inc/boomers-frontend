@@ -21,15 +21,15 @@ const SignupSuccess = () => {
   }
 
   return (
-    <div className="text-center text-[#393E46] mx-2 mt-[40px]">
-      <p className="mt-9 mb-9 font-bold text-3xl font-body">
+    <div className="text-darkgrey flex flex-col items-center min-h-screen justify-center">
+      <p className="mt-9 mb-9 font-bold text-2xl md:text-3xl font-body">
         Thank you for Signing Up!
       </p>
       <div className="flex justify-center items-center">
         <img src={success} alt="success" className="w-40 h-40" />
       </div>
       <p className="mt-7 text-2xl font-semibold font-body">You've got mail!</p>
-      <p className="w-[47%] mx-auto mt-[40px] font-medium text-[18px] font-body">
+      <p className="md:w-[47%] mx-auto mt-[40px] font-medium text-[18px] font-body text-center">
         Check your email for a verification link to verify your account before
         signing in.
       </p>
