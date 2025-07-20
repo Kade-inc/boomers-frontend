@@ -10,6 +10,7 @@ const useTeamSpotlight = (): UseQueryResult<any, Team> => {
     queryKey: ["spotlight"],
     queryFn: () => apiClient.getTeamSpotlight(),
     staleTime: 1000 * 60 * 1, // 5 minutes
+    enabled: false,
   });
 };
 
