@@ -98,16 +98,10 @@ const TeamDetailsPage = () => {
     isPending: isTeamPending,
     error: teamError,
   } = useTeam(teamId || "");
-  const {
-    data: challenges,
-    isPending: isChallengesPending,
-    error: challengesError,
-  } = useTeamChallenges(teamId || "", isAuthenticated);
-  const {
-    data: requests,
-    isPending: isTeamMemberRequestsPending,
-    error: teamMemberRequestsError,
-  } = useTeamMemberRequests(teamId || "", isAuthenticated);
+  const { data: challenges, isPending: isChallengesPending } =
+    useTeamChallenges(teamId || "", isAuthenticated);
+  const { data: requests, isPending: isTeamMemberRequestsPending } =
+    useTeamMemberRequests(teamId || "", isAuthenticated);
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
@@ -142,7 +136,7 @@ const TeamDetailsPage = () => {
     }
 
     sendRequest(
-      { payload: { team_id: teamId } },
+      { payload: { team_id: teamId, user_id: user.user_id } },
       {
         onSuccess: () => {
           setIsClicked(true);
@@ -220,7 +214,23 @@ const TeamDetailsPage = () => {
   return (
     <div className="h-screen bg-base-100 py-[8px] px-[8px] sm:py-10 sm:px-[40px]">
       <>
-        {teamError && (
+        <Toaster
+          position="bottom-center"
+          reverseOrder={true}
+          toastOptions={{
+            error: {
+              style: {
+                background: "#D92D2D",
+                color: "white",
+              },
+              iconTheme: {
+                primary: "white",
+                secondary: "#D92D2D",
+              },
+            },
+          }}
+        />
+        {/* {teamError && (
           <Toaster
             position="bottom-center"
             reverseOrder={true}
@@ -273,7 +283,7 @@ const TeamDetailsPage = () => {
               },
             }}
           />
-        )}
+        )} */}
         {team && (
           <>
             <div
