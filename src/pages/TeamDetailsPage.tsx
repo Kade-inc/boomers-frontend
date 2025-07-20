@@ -20,6 +20,7 @@ import { FaceFrownIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { GrTest } from "react-icons/gr";
 import TeamOwnerDialog from "../components/Modals/TeamOwnerDialog";
+import AuthenticationModal from "../components/Modals/AuthenticationModal";
 
 const TeamDetailsPage = () => {
   const [activeTab, setActiveTab] = useState("members");
@@ -49,6 +50,15 @@ const TeamDetailsPage = () => {
   const openTeamOwnerDialog = () => {
     const modal = document.getElementById(
       "team_owner_modal",
+    ) as HTMLDialogElement | null;
+    if (modal) {
+      modal.showModal();
+    }
+  };
+
+  const openAuthenticationDialog = () => {
+    const modal = document.getElementById(
+      "authentication_modal",
     ) as HTMLDialogElement | null;
     if (modal) {
       modal.showModal();
@@ -123,6 +133,11 @@ const TeamDetailsPage = () => {
   const handleRequestClick = () => {
     if (!teamId) {
       console.error("teamId is undefined");
+      return;
+    }
+
+    if (!isAuthenticated) {
+      openAuthenticationDialog();
       return;
     }
 
@@ -656,6 +671,7 @@ const TeamDetailsPage = () => {
           selectedRequest={selectedRequest}
         />
         <TeamOwnerDialog selectedTeamMember={team.members[0]} />
+        <AuthenticationModal team={team} />
       </>
     </div>
   );
