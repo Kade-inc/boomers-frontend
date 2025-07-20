@@ -241,7 +241,7 @@ const ChallengeSolutionPage = () => {
             refetchSolution();
           },
           onError: (error) => {
-            alert(error.message);
+            toast.error(error.message);
           },
         },
       );
@@ -267,7 +267,7 @@ const ChallengeSolutionPage = () => {
         },
         onError: (error) => {
           setDeletingStepIndex(null);
-          alert(error.message);
+          toast.error(error.message);
         },
       },
     );
@@ -287,7 +287,7 @@ const ChallengeSolutionPage = () => {
           toast.success("Comment deleted successfully");
         },
         onError: (error) => {
-          alert(error.message);
+          toast.error(error.message);
         },
       },
     );
@@ -307,7 +307,7 @@ const ChallengeSolutionPage = () => {
           toast.success("Comment deleted successfully");
         },
         onError: (error) => {
-          alert(error.message);
+          toast.error(error.message);
         },
       },
     );
@@ -327,7 +327,7 @@ const ChallengeSolutionPage = () => {
           toast.success("Comment added successfully");
         },
         onError: (error) => {
-          alert(error.message);
+          toast.error(error.message);
         },
       },
     );
@@ -356,7 +356,7 @@ const ChallengeSolutionPage = () => {
             refetchSolution();
           },
           onError: (error) => {
-            alert(error.message);
+            toast.error(error.message);
           },
         },
       );
@@ -394,7 +394,7 @@ const ChallengeSolutionPage = () => {
           toast.success("Comment added successfully");
         },
         onError: (error) => {
-          alert(error.message);
+          toast.error(error.message);
         },
       },
     );
@@ -423,7 +423,7 @@ const ChallengeSolutionPage = () => {
           toast.success("Solution committed successfully");
         },
         onError: (error) => {
-          alert(error.message);
+          toast.error(error.message);
         },
       },
     );
@@ -451,7 +451,7 @@ const ChallengeSolutionPage = () => {
         },
         onError: (error) => {
           setUpdatingStepId(null);
-          alert(error.message);
+          toast.error(error.message);
         },
       },
     );
