@@ -70,6 +70,14 @@ const router = createBrowserRouter([
     children: [
       // Public route
       { path: "teams/:teamId", element: withSuspense(<TeamDetailsPage />) },
+      {
+        path: "challenge/:challengeId",
+        element: withSuspense(<ChallengePage />),
+      },
+      {
+        path: "challenge/:challengeId/solution/:solutionId",
+        element: withSuspense(<ChallengeSolutionPage />),
+      },
       // Protected routes
       {
         index: true,
@@ -143,24 +151,7 @@ const router = createBrowserRouter([
           />
         ),
       },
-      {
-        path: "challenge/:challengeId",
-        element: (
-          <ProtectedRoute
-            element={withSuspense(<ChallengePage />)}
-            fallback={<HomePage />}
-          />
-        ),
-      },
-      {
-        path: "challenge/:challengeId/solution/:solutionId",
-        element: (
-          <ProtectedRoute
-            element={withSuspense(<ChallengeSolutionPage />)}
-            fallback={<HomePage />}
-          />
-        ),
-      },
+
       {
         path: "edit-challenge/:challengeId",
         element: (
