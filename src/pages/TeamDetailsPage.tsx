@@ -29,7 +29,11 @@ const TeamDetailsPage = () => {
     useState<TeamMember | null>(null);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
   const [isClicked, setIsClicked] = useState(false);
-  const { mutate: sendRequest, isPending } = useSendTeamRequest();
+  const {
+    mutate: sendRequest,
+    isPending,
+    isError: sendRequestError,
+  } = useSendTeamRequest();
   const navigate = useNavigate();
   const [filter, setFilter] = useState<"all" | "drafts" | "completed">("all");
   const [dialogMode, setDialogMode] = useState<"request" | "member">("request");
@@ -660,7 +664,7 @@ const TeamDetailsPage = () => {
                         <div className="flex justify-center">
                           <span className="loading loading-dots loading-xs"></span>
                         </div>
-                      ) : isClicked || userRequest ? (
+                      ) : (isClicked && !sendRequestError) || userRequest ? (
                         "Requested"
                       ) : (
                         "Request to join"
