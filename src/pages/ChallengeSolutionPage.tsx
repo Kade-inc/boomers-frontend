@@ -44,7 +44,7 @@ import useUpdateSolutionRating from "../hooks/ChallengeSolution/useUpdateSolutio
 const ChallengeSolutionPage = () => {
   const navigate = useNavigate();
   const { challengeId, solutionId } = useParams();
-  const { user } = useAuthStore();
+  const { user, isAuthenticated } = useAuthStore();
   const [stepId, setStepId] = useState<string | null>(null);
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
   const {
@@ -937,54 +937,61 @@ const ChallengeSolutionPage = () => {
                   </p>
                   {user.user_id !== solution.user._id && (
                     <div className="flex flex-col gap-2">
-                      <p className="text-white font-medium">Your Rating</p>
-                      <div className="flex flex-row gap-2">
-                        {[...Array(5)].map((_, index) => {
-                          const currentRate = index + 1;
-                          return (
-                            <div key={index}>
-                              <>
-                                <label>
-                                  {isRating ? (
-                                    isUpdatingSolutionRating ||
-                                    isPostingSolutionRating ? (
-                                      <FaStar
-                                        size={30}
-                                        color={
-                                          currentRate <= rating!
-                                            ? "#F8B500"
-                                            : "white"
-                                        }
-                                      />
-                                    ) : (
-                                      <FaStar
-                                        size={30}
-                                        color={
-                                          currentRate <= rating!
-                                            ? "#F8B500"
-                                            : "white"
-                                        }
-                                        onClick={() => setRating(currentRate)}
-                                        className="cursor-pointer"
-                                      />
-                                    )
-                                  ) : (
-                                    <FaStar
-                                      size={30}
-                                      color={
-                                        currentRate <= rating!
-                                          ? "#F8B500"
-                                          : "white"
-                                      }
-                                    />
-                                  )}
-                                </label>
-                              </>
-                            </div>
-                          );
-                        })}
-                      </div>
-                      {!isRating && (
+                      {isAuthenticated && (
+                        <>
+                          <p className="text-white font-medium">Your Rating</p>
+                          <div className="flex flex-row gap-2">
+                            {[...Array(5)].map((_, index) => {
+                              const currentRate = index + 1;
+                              return (
+                                <div key={index}>
+                                  <>
+                                    <label>
+                                      {isRating ? (
+                                        isUpdatingSolutionRating ||
+                                        isPostingSolutionRating ? (
+                                          <FaStar
+                                            size={30}
+                                            color={
+                                              currentRate <= rating!
+                                                ? "#F8B500"
+                                                : "white"
+                                            }
+                                          />
+                                        ) : (
+                                          <FaStar
+                                            size={30}
+                                            color={
+                                              currentRate <= rating!
+                                                ? "#F8B500"
+                                                : "white"
+                                            }
+                                            onClick={() =>
+                                              setRating(currentRate)
+                                            }
+                                            className="cursor-pointer"
+                                          />
+                                        )
+                                      ) : (
+                                        <FaStar
+                                          size={30}
+                                          color={
+                                            currentRate <= rating!
+                                              ? "#F8B500"
+                                              : "white"
+                                          }
+                                        />
+                                      )}
+                                    </label>
+                                  </>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </>
+                      )}
+
+                      {!isRating && isAuthenticated && (
                         <button
                           className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium mt-4"
                           onClick={() => setIsRating(true)}
@@ -1176,7 +1183,9 @@ const ChallengeSolutionPage = () => {
               </>
             ) : (
               <>
-                <div className={`py-2 overflow-scroll "h-[90vh]"}`}>
+                <div
+                  className={`py-2 overflow-scroll ${isAuthenticated ? "max-h-[78vh]" : "h-screen"}`}
+                >
                   {stepComments.map((comment, index) => (
                     <div className="py-2" key={`${comment._id}-${index}`}>
                       <div className="relative flex items-center p-0">
@@ -1258,26 +1267,28 @@ const ChallengeSolutionPage = () => {
                 </div>
               </>
             )}
-            <label className="form-control absolute w-[85%] bottom-2">
-              <div className="relative flex flex-col bg-base-100 rounded-md">
-                <textarea
-                  className="textarea h-24 text-[13px] focus:border-none focus:outline-none w-full mb-2"
-                  placeholder="Add comment..."
-                  onChange={handleStepCommentChange}
-                  value={stepComment}
-                ></textarea>
-                <div className="flex justify-end border-t-2 w-[90%] mx-auto">
-                  <button
-                    className="btn btn-sm bg-yellow text-darkgrey rounded-md text-[13px] font-medium mt-2 mb-2 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-yellow"
-                    type="submit"
-                    onClick={handlePostStepComment}
-                    disabled={isAddingStepComment}
-                  >
-                    {isAddingStepComment ? "Posting..." : "Send"}
-                  </button>
+            {isAuthenticated && (
+              <label className="form-control absolute w-[85%] bottom-2">
+                <div className="relative flex flex-col bg-base-100 rounded-md">
+                  <textarea
+                    className="textarea h-24 text-[13px] focus:border-none focus:outline-none w-full mb-2"
+                    placeholder="Add comment..."
+                    onChange={handleStepCommentChange}
+                    value={stepComment}
+                  ></textarea>
+                  <div className="flex justify-end border-t-2 w-[90%] mx-auto">
+                    <button
+                      className="btn btn-sm bg-yellow text-darkgrey rounded-md text-[13px] font-medium mt-2 mb-2 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-yellow"
+                      type="submit"
+                      onClick={handlePostStepComment}
+                      disabled={isAddingStepComment}
+                    >
+                      {isAddingStepComment ? "Posting..." : "Send"}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </label>
+              </label>
+            )}
           </ul>
         </div>
       </div>
@@ -1350,7 +1361,9 @@ const ChallengeSolutionPage = () => {
               </>
             ) : (
               <>
-                <div className={`py-2 overflow-scroll "h-[90vh]"}`}>
+                <div
+                  className={`py-2 overflow-scroll ${isAuthenticated ? "max-h-[78vh]" : "h-screen"}`}
+                >
                   {solutionComments.map((comment, index) => (
                     <div className="py-2" key={`${comment._id}-${index}`}>
                       <div className="relative flex items-center p-0">
@@ -1433,26 +1446,28 @@ const ChallengeSolutionPage = () => {
               </>
             )}
 
-            <label className="form-control absolute w-[85%] bottom-2">
-              <div className="relative flex flex-col bg-base-100 rounded-md">
-                <textarea
-                  className="textarea h-24 text-[13px] focus:border-none focus:outline-none w-full mb-2"
-                  placeholder="Add comment..."
-                  onChange={handleSolutionCommentChange}
-                  value={solutionComment}
-                ></textarea>
-                <div className="flex justify-end border-t-2 w-[90%] mx-auto">
-                  <button
-                    className="btn btn-sm bg-yellow text-darkgrey rounded-md text-[13px] font-medium mt-2 mb-2 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-yellow"
-                    type="submit"
-                    onClick={handleAddSolutionComment}
-                    disabled={isAddingSolutionComment}
-                  >
-                    {isAddingSolutionComment ? "Posting..." : "Send"}
-                  </button>
+            {isAuthenticated && (
+              <label className="form-control absolute w-[85%] bottom-2">
+                <div className="relative flex flex-col bg-base-100 rounded-md">
+                  <textarea
+                    className="textarea h-24 text-[13px] focus:border-none focus:outline-none w-full mb-2"
+                    placeholder="Add comment..."
+                    onChange={handleSolutionCommentChange}
+                    value={solutionComment}
+                  ></textarea>
+                  <div className="flex justify-end border-t-2 w-[90%] mx-auto">
+                    <button
+                      className="btn btn-sm bg-yellow text-darkgrey rounded-md text-[13px] font-medium mt-2 mb-2 transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-yellow"
+                      type="submit"
+                      onClick={handleAddSolutionComment}
+                      disabled={isAddingSolutionComment}
+                    >
+                      {isAddingSolutionComment ? "Posting..." : "Send"}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </label>
+              </label>
+            )}
           </ul>
         </div>
       </div>

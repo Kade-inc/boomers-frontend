@@ -50,7 +50,7 @@ function ChallengePage() {
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
   const [comment, setComment] = useState("");
 
-  const { user } = useAuthStore();
+  const { user, isAuthenticated } = useAuthStore();
 
   const navigate = useNavigate();
   const { challengeId } = useParams<{ challengeId: string }>();
@@ -773,7 +773,7 @@ function ChallengePage() {
             ) : (
               <>
                 <div
-                  className={`py-2 overflow-scroll ${isOwner() || isTeamMember() ? "h-[70vh]" : "h-[90vh]"}`}
+                  className={`py-2 overflow-scroll ${isOwner() || isTeamMember() ? "h-[75vh]" : "h-[90vh]"}`}
                 >
                   {comments.map((comment, index) => (
                     <div className="py-2" key={`${comment._id}-${index}`}>
@@ -856,7 +856,7 @@ function ChallengePage() {
                 </div>
               </>
             )}
-            {(isOwner() || isTeamMember()) && (
+            {(isOwner() || isTeamMember()) && isAuthenticated && (
               <label className="form-control absolute w-[85%] bottom-2">
                 <div className="relative flex flex-col bg-base-100 rounded-md">
                   <textarea
