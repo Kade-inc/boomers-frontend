@@ -32,6 +32,7 @@ export default interface User {
     coordinates: [number, number]; // [longitude, latitude]
   };
   role?: string;
+  website?: string | null;
 }
 
 interface Interest {

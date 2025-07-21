@@ -22,6 +22,7 @@ export default interface UpdatedUserProfile {
     type: "Point";
     coordinates: [number, number]; // [longitude, latitude]
   };
+  website?: string | null;
 }
 
 interface Interests {

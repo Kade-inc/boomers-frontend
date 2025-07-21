@@ -15,4 +15,5 @@ export default interface Profile {
   createdAt: string;
   updatedAt: string;
   __v: number;
+  website?: string | null;
 }

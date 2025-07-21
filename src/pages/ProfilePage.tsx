@@ -15,6 +15,7 @@ import { RiMessageLine } from "react-icons/ri";
 import { MdOutlineInterests } from "react-icons/md";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import ViewProfilePicture from "../components/Modals/ViewProfilePictureModal";
+import { TbWorld } from "react-icons/tb";
 
 const ProfilePage = () => {
   const { userId } = useParams();
@@ -133,6 +134,19 @@ const ProfilePage = () => {
                     </>
                   )}
                 </div>
+                {profileData?.website && (
+                  <div className="flex items-center gap-2">
+                    <TbWorld size={22} className="text-teal-500" />
+                    <a
+                      href={`${profileData?.website}`}
+                      target="_blank"
+                      className="text-teal-500 font-body font-semibold cursor-pointer text-[13px] md:text-[16px]"
+                      rel="noreferrer"
+                    >
+                      {profileData?.website}
+                    </a>
+                  </div>
+                )}
               </div>
               <div>
                 {(!userId || userId === user.user_id) && (

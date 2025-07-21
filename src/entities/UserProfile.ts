@@ -27,6 +27,7 @@ export default interface UserProfile {
     };
     createdAt: string;
     updatedAt: string;
+    website?: string | null;
   };
 }
 interface Interest {

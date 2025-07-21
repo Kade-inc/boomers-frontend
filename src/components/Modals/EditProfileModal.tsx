@@ -74,6 +74,11 @@ const schema = z.object({
       ),
     })
     .optional(),
+  website: z
+    .string()
+    .min(1, { message: "Website is required" })
+    .max(255, { message: "Website must be 255 characters or less" })
+    .url({ message: "Please enter a valid URL (e.g., https://example.com)" }),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -243,6 +248,7 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
         subdomain: user.interests?.subdomain ?? [],
         domainTopics: user.interests?.domainTopics ?? [],
       },
+      website: user?.website || "",
     },
   });
 
@@ -663,6 +669,21 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
                 {errors.job && (
                   <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
                     {errors.job.message}
+                  </p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <label className="block font-body font-semibold text-[13px] md:text-base  ">
+                  Website
+                </label>
+                <input
+                  type="text"
+                  {...register("website")}
+                  className="bg-transparent border-base-content block w-full px-3 py-2 border-[1px] rounded-[5px] font-body font-semibold text-sm "
+                />
+                {errors.website && (
+                  <p className="text-white text-[12px] font-body bg-error pl-3 py-2 rounded-md mt-2">
+                    {errors.website.message}
                   </p>
                 )}
               </div>
