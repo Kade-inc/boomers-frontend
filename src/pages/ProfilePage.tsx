@@ -15,7 +15,7 @@ import { RiMessageLine } from "react-icons/ri";
 import { MdOutlineInterests } from "react-icons/md";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import ViewProfilePicture from "../components/Modals/ViewProfilePictureModal";
-import { TbWorld } from "react-icons/tb";
+import { TbPhone, TbWorld } from "react-icons/tb";
 
 const ProfilePage = () => {
   const { userId } = useParams();
@@ -114,11 +114,12 @@ const ProfilePage = () => {
                 <h1 className="font-body font-bold text-base md:text-lg my-2 md:mt-0">
                   {profileData?.firstName} {profileData?.lastName}
                 </h1>
-                {profileData?.country && profileData?.city && (
+                {(profileData?.country || profileData?.city) && (
                   <div className="flex items-center font-body font-normal text-[13px] md:text-base mb-2">
                     <img src={location} className="w-[14px] h-[14px] mr-2" />
                     <p>
-                      {profileData?.country}, {profileData?.city}
+                      {profileData?.country}{" "}
+                      {profileData?.city && `, ${profileData?.city}`}
                     </p>
                   </div>
                 )}
@@ -144,6 +145,19 @@ const ProfilePage = () => {
                       rel="noreferrer"
                     >
                       {profileData?.website}
+                    </a>
+                  </div>
+                )}
+                {profileData?.phoneNumber && (
+                  <div className="flex items-center gap-2 mt-2">
+                    <TbPhone size={22} className="text-teal-500" />
+                    <a
+                      href={`tel:${profileData?.phoneNumber}`}
+                      target="_blank"
+                      className="text-teal-500 font-body font-medium cursor-pointer text-[13px] md:text-[16px]"
+                      rel="noreferrer"
+                    >
+                      {profileData?.phoneNumber}
                     </a>
                   </div>
                 )}

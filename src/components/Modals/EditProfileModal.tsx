@@ -36,12 +36,14 @@ type ModalTriggerProps = {
 const schema = z.object({
   firstName: z
     .string()
-    .min(1, { message: "First name is required" })
-    .max(15, { message: "First name must be 15 characters or less" }),
+    .max(15, { message: "First name must be 15 characters or less" })
+    .optional()
+    .or(z.literal("")),
   lastName: z
     .string()
-    .min(1, { message: "Last name is required" })
-    .max(15, { message: "Last name must be 15 characters or less" }),
+    .max(15, { message: "Last name must be 15 characters or less" })
+    .optional()
+    .or(z.literal("")),
   bio: z
     .string()
     .max(200, { message: "Bio must be 200 characters or less" })
@@ -50,18 +52,32 @@ const schema = z.object({
   email: z.string(),
   job: z
     .string()
-    .min(1, { message: "Job title is required" })
-    .max(50, { message: "Job title must be 50 characters or less" }),
+    .max(50, { message: "Job title must be 50 characters or less" })
+    .optional()
+    .or(z.literal("")),
   location: z
     .string()
-    .min(1, { message: "Location is required" })
-    .max(10, { message: "Location must be 10 characters or less" }),
-  country: z.string().min(1, { message: "Country is required" }),
-  city: z.string().min(1, { message: "City is required" }),
-  phoneNumber: z.string().regex(/^\+?\d{10,15}$/, {
-    message:
-      "Phone number must be between 10 and 15 digits, and can start with +",
-  }),
+    .max(10, { message: "Location must be 10 characters or less" })
+    .optional()
+    .or(z.literal("")),
+  country: z.string().optional().or(z.literal("")),
+  city: z.string().optional().or(z.literal("")),
+  phoneNumber: z
+    .string()
+    .nullable()
+    .refine(
+      (value) => {
+        if (!value || value.trim() === "") return true; // Allow empty
+        return /^\+?\d{10,15}$/.test(value);
+      },
+      {
+        message:
+          "Phone number must be between 10 and 15 digits, and can start with +",
+      },
+    )
+    .optional()
+    .or(z.literal(""))
+    .or(z.null()),
   interests: z
     .object({
       domain: z.array(z.string()),
@@ -76,9 +92,10 @@ const schema = z.object({
     .optional(),
   website: z
     .string()
-    .min(1, { message: "Website is required" })
     .max(255, { message: "Website must be 255 characters or less" })
-    .url({ message: "Please enter a valid URL (e.g., https://example.com)" }),
+    .url({ message: "Please enter a valid URL (e.g., https://example.com)" })
+    .optional()
+    .or(z.literal("")),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -242,7 +259,7 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
       location: user.location || "",
       country: user.country || "",
       city: user.city || "",
-      phoneNumber: user.phoneNumber,
+      phoneNumber: user.phoneNumber || "",
       interests: {
         domain: user.interests?.domain ?? [],
         subdomain: user.interests?.subdomain ?? [],
