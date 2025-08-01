@@ -106,7 +106,7 @@ const ProfilePage = () => {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <UserCircleIcon className="w-full h-full text-yellow" />
+                <UserCircleIcon className="w-full h-full text-base-content" />
               )}
             </div>
             <div className="flex justify-between mt-16">
