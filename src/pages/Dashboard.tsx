@@ -238,7 +238,7 @@ const Dashboard = () => {
 
                 <div className="flex items-center flex-col text-[16px] mt-10">
                   <p className="font-semibold mb-6">Team Recommendations</p>
-                  {user.interests?.domain?.length === 0 && (
+                  {!user.interests && (
                     <>
                       <div className="flex flex-col items-center justify-center">
                         <GrAnnounce className="w-14 h-14" />

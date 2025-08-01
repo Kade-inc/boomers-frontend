@@ -186,7 +186,7 @@ export default function AllResultsAllPage() {
                       </div>
                     </div>
                     <Link to={`/teams/${team._id}`}>
-                      <button className="font-medium px-6 font-body bg-yellow border-none py-2 text-sm text-darkgrey rounded-full">
+                      <button className="font-medium px-6 font-body bg-yellow border-none py-2 text-sm text-darkgrey rounded-sm">
                         View
                       </button>
                     </Link>
@@ -226,7 +226,7 @@ export default function AllResultsAllPage() {
                       )}
                     </div>
                     <Link to={`/challenge/${challenge._id}`}>
-                      <button className="font-medium px-6 font-body bg-yellow border-none py-2 text-sm text-darkgrey rounded-full">
+                      <button className="font-medium px-6 font-body bg-yellow border-none py-2 text-sm text-darkgrey rounded-sm">
                         View
                       </button>
                     </Link>
@@ -284,7 +284,7 @@ export default function AllResultsAllPage() {
                       </div>
                     </div>
                     <Link to={`/profile/${profile.user_id}`}>
-                      <button className="font-medium px-6 font-body bg-yellow border-none py-2 text-sm text-darkgrey rounded-full">
+                      <button className="font-medium px-6 font-body bg-yellow border-none py-2 text-sm text-darkgrey rounded-sm">
                         View
                       </button>
                     </Link>
