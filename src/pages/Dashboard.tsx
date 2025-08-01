@@ -237,7 +237,8 @@ const Dashboard = () => {
                 </div>
 
                 <div className="flex items-center flex-col text-[16px] mt-10">
-                  {teamRecommendations?.length === 0 && (
+                  <p className="font-semibold mb-6">Team Recommendations</p>
+                  {user.interests?.domain?.length === 0 && (
                     <>
                       <div className="flex flex-col items-center justify-center">
                         <GrAnnounce className="w-14 h-14" />
@@ -256,6 +257,16 @@ const Dashboard = () => {
                       </div>
                     </>
                   )}
+                  {user.interests?.domain?.length &&
+                    user.interests?.domain?.length > 0 &&
+                    teamRecommendations?.length === 0 && (
+                      <>
+                        <div className="flex flex-col items-center justify-center">
+                          <GrAnnounce className="w-14 h-14" />
+                          <p className="mt-6">No recommendations found.</p>
+                        </div>
+                      </>
+                    )}
                   {teamRecommendations && teamRecommendations?.length > 0 && (
                     <>
                       <p className="mb-6 font-semibold">
