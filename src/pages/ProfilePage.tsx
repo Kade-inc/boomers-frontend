@@ -194,7 +194,7 @@ const ProfilePage = () => {
               <div className="flex flex-col items-center mt-2">
                 <RiMessageLine className="w-10 h-10" />
                 <p className="font-medium text-[13px] md:text-base  mt-2">
-                  No bio found
+                  No bio
                 </p>
               </div>
             )}
