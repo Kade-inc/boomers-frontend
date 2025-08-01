@@ -291,12 +291,14 @@ const Dashboard = () => {
                           modalData={selectedRecommendation}
                         />
                       )}
+                      {teamRecommendations?.length > 2 && (
                       <button
                         className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-8"
                         onClick={navigateToRecommendations}
-                      >
-                        View more
-                      </button>
+                        >
+                          View more
+                        </button>
+                      )}
                     </>
                   )}
                 </div>
