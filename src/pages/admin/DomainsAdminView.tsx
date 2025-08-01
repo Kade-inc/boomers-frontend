@@ -478,7 +478,7 @@ const DomainsAdminView = () => {
                   />
                   <button
                     type="submit"
-                    className="btn bg-yellow btn-ghost w-full text-darkgrey"
+                    className="btn bg-yellow hover:bg-yellow/80 w-full text-darkgrey"
                     disabled={domainMutation.isPending || !newDomain.trim()}
                   >
                     {" "}
@@ -532,7 +532,7 @@ const DomainsAdminView = () => {
                   />
                   <button
                     type="submit"
-                    className="btn bg-yellow btn-ghost w-full text-darkgrey"
+                    className="btn bg-yellow hover:bg-yellow/80 w-full text-darkgrey"
                     disabled={
                       subdomainMutation.isPending ||
                       !newSubdomain.name.trim() ||
@@ -584,7 +584,7 @@ const DomainsAdminView = () => {
                   />
                   <button
                     type="submit"
-                    className="btn bg-yellow btn-ghost w-full text-darkgrey"
+                    className="btn bg-yellow hover:bg-yellow/80 w-full text-darkgrey"
                     disabled={
                       topicMutation.isPending ||
                       !newTopic.name.trim() ||

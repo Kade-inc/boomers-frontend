@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { FcGoogle } from "react-icons/fc";
+// import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
 import useSignup from "../hooks/useSignup";
 import { Toaster } from "react-hot-toast";
@@ -119,7 +119,7 @@ const SignupForm = () => {
           <input
             type="text"
             placeholder="Enter your email"
-            className="input w-full border border-gray-700 hover:border-gray-700 focus:outline-none bg-transparent rounded-md font-body placeholder-gray-600"
+            className="input w-full border border-gray-700 bg-transparent rounded-md font-body placeholder-gray-600 hover:border-gray-700 focus:outline-none focus:border-gray-700"
             style={{ backgroundColor: "transparent" }}
             {...register("email")}
             id="email"
@@ -142,7 +142,7 @@ const SignupForm = () => {
             type="text"
             id="username"
             placeholder="Enter your username"
-            className="input w-full border border-gray-700 bg-transparent rounded-md font-body placeholder-gray-600 hover:border-gray-700 focus:outline-none"
+            className="input w-full border border-gray-700 bg-transparent rounded-md font-body placeholder-gray-600 focus:outline-none focus:border-gray-700"
             style={{ backgroundColor: "transparent" }}
             {...register("username")}
           />
@@ -177,7 +177,7 @@ const SignupForm = () => {
               autoComplete="on"
               id="password"
               placeholder="Create a password"
-              className="input w-full border border-gray-700 bg-transparent rounded-md font-body placeholder-gray-600 hover:border-gray-700 focus:outline-none"
+              className="input w-full border border-gray-700 bg-transparent rounded-md font-body placeholder-gray-600 focus:outline-none focus:border-gray-700"
               style={{ backgroundColor: "transparent" }}
               {...register("password")}
             />
@@ -213,7 +213,7 @@ const SignupForm = () => {
               autoComplete="on"
               id="confirmpassword"
               placeholder="Confirm your password"
-              className="input w-full border border-gray-700  rounded-md font-body placeholder-gray-600 hover:border-gray-700 focus:outline-none"
+              className="input w-full border border-gray-700  rounded-md font-body placeholder-gray-600 focus:outline-none focus:border-gray-700"
               style={{ backgroundColor: "transparent" }}
               {...register("confirmpassword")}
             />
@@ -236,19 +236,19 @@ const SignupForm = () => {
           )}
         </button>
 
-        <div className="flex items-center gap-5 justify-center text-center mb-[3%]">
+        {/* <div className="flex items-center gap-5 justify-center text-center mb-[3%]">
           <div className="border-t-2 border-darkgrey my-4 flex-grow w-200"></div>
 
           <p className="font-semibold font-body">Or sign up with</p>
           <div className="border-t-2 border-darkgrey my-4 flex-grow w-200"></div>
-        </div>
-
+        </div> */}
+        {/* 
         <button
           className="btn bg-white w-full text-[#393E46] text-[17px] border-none mb-[3%] font-body"
           type="button"
         >
           <FcGoogle style={{ fontSize: "1.5em" }} /> Google
-        </button>
+        </button> */}
 
         <p className="text-center font-regular text-darkgrey font-body">
           Already have an account?{" "}
