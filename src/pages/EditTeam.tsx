@@ -234,13 +234,15 @@ function EditTeam() {
 
   useEffect(() => {
     setDomainTopics(filteredDomainTopics);
-    // Reset selected topics when subdomain changes
-    setSelectedTopics([]);
-    setTeam((prevTeam) => ({
-      ...prevTeam,
-      subdomainTopics: [],
-    }));
-  }, [filteredDomainTopics]);
+    // Reset selected topics when subdomain changes, but only if not initializing from team data
+    if (filteredDomainTopics.length > 0 && !teamData) {
+      setSelectedTopics([]);
+      setTeam((prevTeam) => ({
+        ...prevTeam,
+        subdomainTopics: [],
+      }));
+    }
+  }, [filteredDomainTopics, teamData]);
 
   // Update selected domain ID when domain changes
   useEffect(() => {
@@ -276,15 +278,30 @@ function EditTeam() {
       setValue("domain", teamData.domain);
       setValue("subDomain", teamData.subdomain);
       setValue("topic", teamData.subdomainTopics);
-
-      // Set selected topics
-      const topics = teamData.subdomainTopics.map((topicName: string) => {
-        const topic = fetchedDomainTopics?.find((t) => t.name === topicName);
-        return topic || { name: topicName };
-      });
-      setSelectedTopics(topics);
     }
-  }, [teamData, setValue, fetchedDomainTopics]);
+  }, [teamData, setValue]);
+
+  // Set selected topics after both team data and filtered topics are available
+  useEffect(() => {
+    if (
+      teamData &&
+      teamData.subdomainTopics &&
+      filteredDomainTopics.length > 0
+    ) {
+      const topics = teamData.subdomainTopics
+        .map((topicName: string) => {
+          const topic = filteredDomainTopics.find((t) => t.name === topicName);
+          return topic;
+        })
+        .filter(Boolean) as DomainTopic[]; // Remove undefined values and cast to DomainTopic[]
+
+      setSelectedTopics(topics);
+      setTeam((prevTeam) => ({
+        ...prevTeam,
+        subdomainTopics: topics.map((topic) => topic.name),
+      }));
+    }
+  }, [teamData, filteredDomainTopics]);
 
   if (domainsPending || domainTopicsPending || isTeamLoading) {
     return (
