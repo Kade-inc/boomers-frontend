@@ -42,7 +42,8 @@ function EditTeam() {
   const { userId } = useAuthStore();
   const navigate = useNavigate();
   const { data: domains, isPending: domainsPending } = useDomains();
-  const { data: fetchedDomainTopics, isPending: domainTopicsPending } = useDomainTopics();
+  const { data: fetchedDomainTopics, isPending: domainTopicsPending } =
+    useDomainTopics();
 
   // Add authorization check
   useEffect(() => {
@@ -61,7 +62,7 @@ function EditTeam() {
     "greenish-gradient": "linear-gradient(0deg, #589FD6, #43CCBA)",
     "dreamy-gradient": "linear-gradient(180deg, #7b4dbb, #d97b98, #f3aa75)",
   });
-  
+
   const mutation = useUpdateTeam();
   const [selectedColor, setSelectedColor] = useState<string>(
     "linear-gradient(0deg, #00989B, #005E78)",
@@ -107,13 +108,12 @@ function EditTeam() {
   }, [domains]);
 
   const selectedDomainId = useMemo(() => {
-    const selectedDomain = domainOptions.find(
-      (d: Domain) => d.name === domain,
-    );
+    const selectedDomain = domainOptions.find((d: Domain) => d.name === domain);
     return selectedDomain?._id || null;
   }, [domain, domainOptions]);
 
-  const { data: subdomains, isPending: subdomainsPending } = useSubDomains(selectedDomainId);
+  const { data: subdomains, isPending: subdomainsPending } =
+    useSubDomains(selectedDomainId);
 
   const subdomainOptions = useMemo(() => {
     return subdomains || [];
@@ -136,14 +136,24 @@ function EditTeam() {
   }, [fetchedDomainTopics, subDomain, selectedSubdomainId]);
 
   // Compute team object for display
-  const team = useMemo<Team>(() => ({
-    name: name || "",
-    teamUsername: teamData?.teamUsername || "",
-    domain: domain || "",
-    subdomain: subDomain || "",
-    subdomainTopics: selectedTopics.map((topic) => topic.name),
-    teamColor: selectedColor,
-  }), [name, teamData?.teamUsername, domain, subDomain, selectedTopics, selectedColor]);
+  const team = useMemo<Team>(
+    () => ({
+      name: name || "",
+      teamUsername: teamData?.teamUsername || "",
+      domain: domain || "",
+      subdomain: subDomain || "",
+      subdomainTopics: selectedTopics.map((topic) => topic.name),
+      teamColor: selectedColor,
+    }),
+    [
+      name,
+      teamData?.teamUsername,
+      domain,
+      subDomain,
+      selectedTopics,
+      selectedColor,
+    ],
+  );
 
   // Initialize form with team data
   useEffect(() => {

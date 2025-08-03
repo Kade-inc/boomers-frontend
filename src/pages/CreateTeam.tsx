@@ -36,8 +36,9 @@ const schema = z.object({
 
 function CreateTeam() {
   const { data: domains, isPending: domainsPending } = useDomains();
-  const { data: fetchedDomainTopics, isPending: domainTopicsPending } = useDomainTopics();
-  
+  const { data: fetchedDomainTopics, isPending: domainTopicsPending } =
+    useDomainTopics();
+
   const [teamColors] = useState({
     "teal-gradient": "linear-gradient(0deg, #00989B, #005E78)",
     "kinda-orange-gradient": "linear-gradient(0deg, #D9436D, #F26A4B)",
@@ -45,7 +46,7 @@ function CreateTeam() {
     "greenish-gradient": "linear-gradient(0deg, #589FD6, #43CCBA)",
     "dreamy-gradient": "linear-gradient(180deg, #7b4dbb, #d97b98, #f3aa75)",
   });
-  
+
   const mutation = useCreateTeam();
   const [selectedColor, setSelectedColor] = useState<string>(
     "linear-gradient(0deg, #00989B, #005E78)",
@@ -91,13 +92,12 @@ function CreateTeam() {
   }, [domains]);
 
   const selectedDomainId = useMemo(() => {
-    const selectedDomain = domainOptions.find(
-      (d: Domain) => d.name === domain,
-    );
+    const selectedDomain = domainOptions.find((d: Domain) => d.name === domain);
     return selectedDomain?._id || null;
   }, [domain, domainOptions]);
 
-  const { data: subdomains, isPending: subdomainsPending } = useSubDomains(selectedDomainId);
+  const { data: subdomains, isPending: subdomainsPending } =
+    useSubDomains(selectedDomainId);
 
   const subdomainOptions = useMemo(() => {
     return subdomains || [];
@@ -112,22 +112,25 @@ function CreateTeam() {
 
   const availableDomainTopics = useMemo(() => {
     if (fetchedDomainTopics && subDomain) {
-        return fetchedDomainTopics.filter(
-          (topic) => topic.parentSubdomain?._id === selectedSubdomainId,
-        );
+      return fetchedDomainTopics.filter(
+        (topic) => topic.parentSubdomain?._id === selectedSubdomainId,
+      );
     }
     return [];
   }, [fetchedDomainTopics, subDomain, selectedSubdomainId]);
 
   // Compute team object for display
-  const team = useMemo<Team>(() => ({
-    name: name || "",
-    teamUsername: "",
-    domain: domain || "",
-    subdomain: subDomain || "",
-    subdomainTopics: selectedTopics.map((topic) => topic.name),
-    teamColor: selectedColor,
-  }), [name, domain, subDomain, selectedTopics, selectedColor]);
+  const team = useMemo<Team>(
+    () => ({
+      name: name || "",
+      teamUsername: "",
+      domain: domain || "",
+      subdomain: subDomain || "",
+      subdomainTopics: selectedTopics.map((topic) => topic.name),
+      teamColor: selectedColor,
+    }),
+    [name, domain, subDomain, selectedTopics, selectedColor],
+  );
 
   // Reset subdomain and topics when domain changes
   useEffect(() => {

@@ -1,6 +1,6 @@
 import location from "../assets/location-sign-svgrepo-com 1.svg";
 import ellipse from "../assets/Ellipse 81.svg";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import EditProfileModal from "../components/Modals/EditProfileModal";
 import useAuthStore from "../stores/useAuthStore";
 import useTeams from "../hooks/useTeams";
@@ -9,8 +9,6 @@ import Team from "../entities/Team";
 import TeamCardCarousel from "../components/Carousels/TeamCardCarousel";
 import { useNavigate, useParams } from "react-router-dom";
 import useGetUser from "../hooks/useGetUser";
-import User from "../entities/User";
-import UpdatedUserProfile from "../entities/UpdatedUserProfile";
 import { RiMessageLine } from "react-icons/ri";
 import { MdOutlineInterests } from "react-icons/md";
 import { HiOutlineUserGroup } from "react-icons/hi2";
@@ -24,29 +22,11 @@ const ProfilePage = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
   const { user } = useAuthStore();
-  const [profileData, setProfileData] = useState<
-    User | UpdatedUserProfile | null
-  >(null);
   const { data: teamsData, isPending: teamsPending } = useTeams({
     userId: userId || user.user_id,
   });
-  const {
-    data: userProfile,
-    isPending: userProfilePending,
-    error: userProfileError,
-  } = useGetUser(userId!);
 
-  const [teams, setTeams] = useState<Team[]>([]);
-
-  useEffect(() => {
-    if (userId && userProfile) {
-      setProfileData(userProfile);
-    } else {
-      setProfileData(user);
-    }
-  }, [userId, userProfile, user]);
-
-  useEffect(() => {
+  const teams = useMemo(() => {
     if (teamsData?.data) {
       let userTeams: Team[] = [];
       if (userId) {
@@ -56,10 +36,23 @@ const ProfilePage = () => {
           (team: Team) => team.owner_id === user.user_id,
         );
       }
-
-      setTeams(userTeams);
+      return userTeams;
     }
+    return [];
   }, [teamsData, userId, user.user_id]);
+
+  const {
+    data: userProfile,
+    isPending: userProfilePending,
+    error: userProfileError,
+  } = useGetUser(userId!);
+
+  const profileData = useMemo(() => {
+    if (userId && userProfile) {
+      return userProfile;
+    }
+    return user;
+  }, [userId, userProfile, user]);
 
   if (userId && userProfilePending)
     return (

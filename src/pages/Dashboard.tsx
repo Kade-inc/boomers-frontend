@@ -30,7 +30,6 @@ const Dashboard = () => {
     userId: user.user_id,
   });
 
-
   const teams = useMemo(() => {
     if (teamsData) {
       return teamsData.data;
@@ -60,7 +59,6 @@ const Dashboard = () => {
     error: requestsError,
   } = useGetJoinRequests();
 
-  // const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [teamsFilter, setTeamsFilter] = useState("AllTeams");
   const [challengesFilter, setChallengesFilter] = useState("AllChallenges");
   const [showActionCenterModal, setShowActionCenterModal] = useState(false);
@@ -73,7 +71,6 @@ const Dashboard = () => {
   const navigateToRecommendations = () => {
     navigate("/recommendations");
   };
-
 
   const challenges = useMemo(() => {
     if (challengesData) {
@@ -94,10 +91,7 @@ const Dashboard = () => {
       return freshChallenges;
     }
     return [];
-  }, 
-  [challengesData, setUserChallenges]
-)
-
+  }, [challengesData, setUserChallenges]);
 
   useEffect(() => {
     if (teamRecommendations) {
@@ -298,9 +292,9 @@ const Dashboard = () => {
                         />
                       )}
                       {teamRecommendations?.length > 2 && (
-                      <button
-                        className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-8"
-                        onClick={navigateToRecommendations}
+                        <button
+                          className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-8"
+                          onClick={navigateToRecommendations}
                         >
                           View more
                         </button>

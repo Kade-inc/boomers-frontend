@@ -50,7 +50,8 @@ function EditChallengePage() {
 
   const [description, setDescription] = useState("");
   const [isCompleted, setIsCompleted] = useState(false);
-  const [updatedChallenge, setUpdatedChallenge] = useState<ExtendedChallengeInterface>();
+  const [updatedChallenge, setUpdatedChallenge] =
+    useState<ExtendedChallengeInterface>();
 
   const navigate = useNavigate();
 
@@ -84,7 +85,7 @@ function EditChallengePage() {
   const getDescription = (description: string) => {
     setDescription(description);
   };
-  
+
   const goToPreviousStep = () => {
     setSteps((prevSteps) =>
       prevSteps.map((step, index) =>
@@ -128,11 +129,15 @@ function EditChallengePage() {
         challenge_name: fetchedChallenge.challenge_name || "",
         due_date: fetchedChallenge.due_date || "",
         difficulty:
-          fetchedChallenge.difficulty !== null ? String(fetchedChallenge.difficulty) : "",
+          fetchedChallenge.difficulty !== null
+            ? String(fetchedChallenge.difficulty)
+            : "",
       });
       setDescription(fetchedChallenge.description || "");
       const extendedChallenge = fetchedChallenge as ExtendedChallengeInterface;
-      const stepIndex = extendedChallenge.currentStep ? extendedChallenge.currentStep - 1 : 0;
+      const stepIndex = extendedChallenge.currentStep
+        ? extendedChallenge.currentStep - 1
+        : 0;
       setCurrentStep(extendedChallenge.currentStep || 1);
 
       // Update steps state, marking previous steps as complete

@@ -90,7 +90,9 @@ function CreateChallenge() {
   // Compute owned teams directly from teamsData
   const ownedTeams = useMemo(() => {
     if (teamsData?.data) {
-      return teamsData.data.filter((team: Team) => team.owner_id === user.user_id);
+      return teamsData.data.filter(
+        (team: Team) => team.owner_id === user.user_id,
+      );
     }
     return [];
   }, [teamsData, user.user_id]);
@@ -208,8 +210,6 @@ function CreateChallenge() {
     setSelectedTeams([team]);
     setSelectedChallengeId(challenge._id);
   };
-
-
 
   useEffect(() => {
     if (draftChallenges && draftChallenges.length > 0) {

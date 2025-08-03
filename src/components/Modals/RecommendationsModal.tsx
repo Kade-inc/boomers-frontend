@@ -29,18 +29,14 @@ const RecommendationsModal = ({
 }: ModalTriggerProps) => {
   const { data: team, isPending, error } = useTeam(modalData?._id || "");
 
-  const {
-    mutate: sendRequest,
-    isPending: isSendingRequest,
-    isError: sendRequestError,
-  } = useSendTeamRequest();
+  const { mutate: sendRequest, isPending: isSendingRequest } =
+    useSendTeamRequest();
   const user = useAuthStore((s) => s.user);
   const handleRequestClick = () => {
     sendRequest(
       { payload: { team_id: team?._id, user_id: user.user_id } },
       {
         onSuccess: () => {
-       
           //invalidate
         },
         onError: (error) => {
@@ -103,49 +99,57 @@ const RecommendationsModal = ({
                 <p className="font-semibold text-[20px] ">Owner</p>
               </div>
               <div className="mt-6 flex flex-row items-center">
-              <div className="w-10 h-10 rounded-full overflow-hidden">
-                      {team.members[0]?.profile_picture ? (
-                        <img
-                          src={team.members[0]?.profile_picture}
-                          alt="Profile picture"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <UserCircleIcon className="w-full h-full text-darkgrey" />
-                      )}
-                    </div>
-                <p className="ml-5">{team.members[0].firstName + (team.members[0].lastName ? " " + team.members[0]?.lastName : "") || team.members[0].username}</p>
+                <div className="w-10 h-10 rounded-full overflow-hidden">
+                  {team.members[0]?.profile_picture ? (
+                    <img
+                      src={team.members[0]?.profile_picture}
+                      alt="Profile picture"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <UserCircleIcon className="w-full h-full text-darkgrey" />
+                  )}
+                </div>
+                <p className="ml-5">
+                  {team.members[0].firstName +
+                    (team.members[0].lastName
+                      ? " " + team.members[0]?.lastName
+                      : "") || team.members[0].username}
+                </p>
               </div>
               {team && team.members && team.members.length > 1 && (
                 <>
-              <div className="relative mt-5">
-                <div className="absolute bottom-0 top-8 left-3 transform -translate-x-1/2 w-6 h-[6px] bg-base-content rounded "></div>
-                <p className="font-semibold text-[20px] ">House Mates</p>
-              </div>
-              <div className="mt-6 grid grid-cols-3 gap-12">
-                {team.members.slice(1).map((member: Member) => (
-                  <div className="flex flex-row items-center" key={member._id}>
-                    <div className="w-10 h-10 rounded-full overflow-hidden">
-                      {member?.profile_picture ? (
-                        <img
-                          src={member.profile_picture}
-                          alt="Profile picture"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <UserCircleIcon className="w-full h-full text-darkgrey" />
-                      )}
-                    </div>
-                    <p className="ml-5">{member.username}</p>
+                  <div className="relative mt-5">
+                    <div className="absolute bottom-0 top-8 left-3 transform -translate-x-1/2 w-6 h-[6px] bg-base-content rounded "></div>
+                    <p className="font-semibold text-[20px] ">House Mates</p>
+                  </div>
+                  <div className="mt-6 grid grid-cols-3 gap-12">
+                    {team.members.slice(1).map((member: Member) => (
+                      <div
+                        className="flex flex-row items-center"
+                        key={member._id}
+                      >
+                        <div className="w-10 h-10 rounded-full overflow-hidden">
+                          {member?.profile_picture ? (
+                            <img
+                              src={member.profile_picture}
+                              alt="Profile picture"
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <UserCircleIcon className="w-full h-full text-darkgrey" />
+                          )}
+                        </div>
+                        <p className="ml-5">{member.username}</p>
                       </div>
                     ))}
                   </div>
                 </>
               )}
               <div className="mt-10">
-                <div className="relative"> 
-                <div className="absolute bottom-0 top-8 left-3 transform -translate-x-1/2 w-6 h-[6px] bg-base-content rounded "></div>
-                <p className="font-semibold text-[20px] ">Specialities</p>
+                <div className="relative">
+                  <div className="absolute bottom-0 top-8 left-3 transform -translate-x-1/2 w-6 h-[6px] bg-base-content rounded "></div>
+                  <p className="font-semibold text-[20px] ">Specialities</p>
                 </div>
 
                 <div className="flex flex-row items-center mt-6">
@@ -174,8 +178,16 @@ const RecommendationsModal = ({
                 </div>
               </div>
               <div className="flex justify-end">
-                <button className="btn bg-yellow hover:bg-yellow/80 text-darkgrey border-none text-[16px] px-10" onClick={handleRequestClick} disabled={isSendingRequest}>
-                  {isSendingRequest ? <span className="loading loading-dots loading-md"></span> : "Request to join"}
+                <button
+                  className="btn bg-yellow hover:bg-yellow/80 text-darkgrey border-none text-[16px] px-10"
+                  onClick={handleRequestClick}
+                  disabled={isSendingRequest}
+                >
+                  {isSendingRequest ? (
+                    <span className="loading loading-dots loading-md"></span>
+                  ) : (
+                    "Request to join"
+                  )}
                 </button>
               </div>
             </>
