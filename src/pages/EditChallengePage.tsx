@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Stepper from "../components/Stepper/Stepper";
 import Team from "../entities/Team";
 import { Toaster } from "react-hot-toast";
@@ -41,7 +41,6 @@ function EditChallengePage() {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [steps, setSteps] = useState(stepsList);
-  const [team, setTeam] = useState<Team>();
   const [challengeNameItems, setChallengeNameItems] =
     useState<ChallengeNameItems>({
       challenge_name: "",
@@ -51,7 +50,7 @@ function EditChallengePage() {
 
   const [description, setDescription] = useState("");
   const [isCompleted, setIsCompleted] = useState(false);
-  const [challenge, setChallenge] = useState<ExtendedChallengeInterface>();
+  const [updatedChallenge, setUpdatedChallenge] = useState<ExtendedChallengeInterface>();
 
   const navigate = useNavigate();
 
@@ -60,6 +59,18 @@ function EditChallengePage() {
   const { data: fetchedChallenge, isPending: challengePending } = useChallenge(
     challengeId || "",
   );
+
+  // Compute team object from fetched challenge
+  const team = useMemo<Team | undefined>(() => {
+    if (fetchedChallenge) {
+      return {
+        _id: fetchedChallenge.team_id,
+        owner_id: fetchedChallenge.owner_id,
+        name: fetchedChallenge.teamName || "",
+      };
+    }
+    return undefined;
+  }, [fetchedChallenge]);
 
   const getChallengeNameItems = (
     updatedValues: Partial<typeof challengeNameItems>,
@@ -73,6 +84,7 @@ function EditChallengePage() {
   const getDescription = (description: string) => {
     setDescription(description);
   };
+  
   const goToPreviousStep = () => {
     setSteps((prevSteps) =>
       prevSteps.map((step, index) =>
@@ -85,7 +97,7 @@ function EditChallengePage() {
 
   const goToNextStep = async () => {
     if (currentStep === 3) {
-      const updatedChallenge = await updateChallengeMutation.mutateAsync({
+      const updatedChallengeData = await updateChallengeMutation.mutateAsync({
         challengeId: fetchedChallenge?._id || "",
         teamId: fetchedChallenge?.team_id || "",
         payload: {
@@ -97,7 +109,7 @@ function EditChallengePage() {
       });
 
       setIsCompleted(true);
-      setChallenge(updatedChallenge);
+      setUpdatedChallenge(updatedChallengeData);
     }
 
     setSteps((prevSteps) =>
@@ -109,27 +121,19 @@ function EditChallengePage() {
     setCurrentStep((prev) => Math.min(prev + 1, steps.length));
   };
 
+  // Initialize form data when challenge loads
   useEffect(() => {
-    setChallenge(fetchedChallenge);
-  }, [fetchedChallenge]);
-
-  useEffect(() => {
-    if (challenge) {
-      const team = {
-        _id: challenge.team_id,
-        owner_id: challenge.owner_id,
-        name: challenge.teamName || "",
-      };
-      setTeam(team);
+    if (fetchedChallenge) {
       setChallengeNameItems({
-        challenge_name: challenge.challenge_name || "",
-        due_date: challenge.due_date || "",
+        challenge_name: fetchedChallenge.challenge_name || "",
+        due_date: fetchedChallenge.due_date || "",
         difficulty:
-          challenge.difficulty !== null ? String(challenge.difficulty) : "",
+          fetchedChallenge.difficulty !== null ? String(fetchedChallenge.difficulty) : "",
       });
-      setDescription(challenge.description || "");
-      const stepIndex = challenge.currentStep ? challenge.currentStep - 1 : 0;
-      setCurrentStep(challenge.currentStep || 1);
+      setDescription(fetchedChallenge.description || "");
+      const extendedChallenge = fetchedChallenge as ExtendedChallengeInterface;
+      const stepIndex = extendedChallenge.currentStep ? extendedChallenge.currentStep - 1 : 0;
+      setCurrentStep(extendedChallenge.currentStep || 1);
 
       // Update steps state, marking previous steps as complete
       const updatedSteps = stepsList.map((step, index) => ({
@@ -139,7 +143,7 @@ function EditChallengePage() {
 
       setSteps(updatedSteps);
     }
-  }, [challenge]);
+  }, [fetchedChallenge]);
 
   return (
     <>
@@ -171,7 +175,7 @@ function EditChallengePage() {
               </div>
             </>
           )}
-          {!challengePending && challenge && (
+          {!challengePending && fetchedChallenge && (
             <div className="h-screen bg-base-100 px-5 md:px-10 pt-10 font-body font-semibold text-[18px]">
               <p className="mb-8 text-[20px] font-bold text-base-300">
                 Edit Challenge
@@ -223,12 +227,12 @@ function EditChallengePage() {
           )}
         </>
       )}
-      {isCompleted && challenge && (
+      {isCompleted && updatedChallenge && (
         <>
           <div className="flex flex-col items-center pt-40 text-base-content font-body h-screen bg-base-100">
             <CheckCircleIcon height={80} width={80} fill={"#4AC565"} />
             <ChallengesCard
-              challenge={challenge}
+              challenge={updatedChallenge}
               styles={"w-[350px] h-[190px] mt-8"}
             />
             <p className="mt-8 font-semibold">
