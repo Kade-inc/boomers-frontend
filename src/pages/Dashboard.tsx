@@ -5,8 +5,7 @@ import Team from "../entities/Team";
 import useTeamRecommendations from "../hooks/useTeamRecommendations";
 import useTeams from "../hooks/useTeams";
 import useAuthStore from "../stores/useAuthStore";
-import { useEffect, useState } from "react";
-import Challenge from "../entities/Challenge";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useRecommendationStore from "../stores/useRecommendationStore";
 import RecommendationsModal from "../components/Modals/RecommendationsModal";
@@ -30,6 +29,15 @@ const Dashboard = () => {
   const { data: teamsData, isPending: teamsLoading } = useTeams({
     userId: user.user_id,
   });
+
+
+  const teams = useMemo(() => {
+    if (teamsData) {
+      return teamsData.data;
+    }
+    return [];
+  }, [teamsData]);
+
   const { data: teamRecommendations, isPending: recommendationsLoading } =
     useTeamRecommendations();
   const { data: challengesData, isPending: challengesLoading } = useChallenges(
@@ -52,8 +60,7 @@ const Dashboard = () => {
     error: requestsError,
   } = useGetJoinRequests();
 
-  const [teams, setTeams] = useState<Team[]>([]);
-  const [challenges, setChallenges] = useState<Challenge[]>([]);
+  // const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [teamsFilter, setTeamsFilter] = useState("AllTeams");
   const [challengesFilter, setChallengesFilter] = useState("AllChallenges");
   const [showActionCenterModal, setShowActionCenterModal] = useState(false);
@@ -67,13 +74,8 @@ const Dashboard = () => {
     navigate("/recommendations");
   };
 
-  useEffect(() => {
-    if (teamsData) {
-      setTeams(teamsData.data);
-    }
-  }, [teamsData]);
 
-  useEffect(() => {
+  const challenges = useMemo(() => {
     if (challengesData) {
       const freshChallenges = challengesData
         .filter((challenge) => {
@@ -88,10 +90,14 @@ const Dashboard = () => {
           const dateB = new Date(b.due_date!);
           return dateA.getTime() - dateB.getTime();
         });
-      setChallenges(freshChallenges);
       setUserChallenges(freshChallenges);
+      return freshChallenges;
     }
-  }, [challengesData]);
+    return [];
+  }, 
+  [challengesData, setUserChallenges]
+)
+
 
   useEffect(() => {
     if (teamRecommendations) {
@@ -99,7 +105,7 @@ const Dashboard = () => {
     }
   }, [teamRecommendations]);
 
-  const filteredTeams = teams.filter((team) => {
+  const filteredTeams = teams.filter((team: Team) => {
     if (teamsFilter === "AllTeams") return true;
     if (teamsFilter === "Owner") return team.owner_id === user.user_id;
     if (teamsFilter === "Member") return team.owner_id !== user.user_id;
