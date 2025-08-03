@@ -1,5 +1,5 @@
 import TeamCard from "../components/TeamCard";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Outlet,
   useNavigate,
@@ -22,12 +22,9 @@ import { LiaFilterSolid } from "react-icons/lia";
 
 const TeamsPage = () => {
   const [showFilters, setShowFilters] = useState(false);
-  const [domainOptions, setDomainOptions] = useState<Domain[]>([]);
-  const [subDomainOptions, setSubDomainOptions] = useState<SubDomain[]>([]);
   const [selectedDomain, setSelectedDomain] = useState<string>("");
   const [selectedSubDomain, setSelectedSubDomain] = useState<string>("");
   const [selectedTopics, setSelectedTopics] = useState<DomainTopic[]>([]);
-  const [currentTeams, setCurrentTeams] = useState<Team[]>([]);
   const [searchName, setSearchName] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
@@ -46,18 +43,42 @@ const TeamsPage = () => {
     subdomainTopics: selectedTopics,
     name: debouncedSearchName,
   });
+
+  const currentTeams = useMemo(() => {
+    if (teams) {
+      return teams.data;
+    }
+    return [];
+  }, [teams]);
+
   const {
     data: domains,
     isPending: isDomainsPending,
     refetch: refetchDomains,
     error: domainsError,
   } = useDomains();
+
+  const domainOptions = useMemo(() => {
+    if (domains && domains.length > 0) {
+      return domains;
+    }
+    return [];
+  }, [domains]);
+
   const {
     data: allSubDomains,
     isPending: isAllSubDomainsPending,
     refetch: refetchAllSubDomains,
     error: allSubDomainsError,
   } = useGetAllSubdomains();
+
+  const subDomainOptions = useMemo(() => {
+    if (allSubDomains && allSubDomains.length > 0) {
+      return allSubDomains;
+    }
+    return [];
+  }, [allSubDomains]);
+
   const {
     data: subTopics,
     isPending: isSubTopicsPending,
@@ -65,24 +86,6 @@ const TeamsPage = () => {
     error: subTopicsError,
   } = useDomainTopics();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (teams) {
-      setCurrentTeams(teams.data);
-    }
-  }, [teams, isPending, error]);
-
-  useEffect(() => {
-    if (domains && domains.length > 0) {
-      setDomainOptions(domains);
-    }
-  }, [domains]);
-
-  useEffect(() => {
-    if (allSubDomains && allSubDomains.length > 0) {
-      setSubDomainOptions(allSubDomains);
-    }
-  }, [allSubDomains]);
 
   // Update URL when page changes
   const handlePageChange = (newPage: number) => {
@@ -207,7 +210,7 @@ const TeamsPage = () => {
                           <option value="" disabled>
                             Domain
                           </option>
-                          {domainOptions.map((domain) => (
+                          {domainOptions.map((domain: Domain) => (
                             <option key={domain._id} value={domain.name}>
                               {domain.name}
                             </option>
@@ -222,7 +225,7 @@ const TeamsPage = () => {
                           <option value="" disabled>
                             Sub domain
                           </option>
-                          {subDomainOptions.map((subDomain) => (
+                          {subDomainOptions.map((subDomain: SubDomain) => (
                             <option key={subDomain._id} value={subDomain.name}>
                               {subDomain.name}
                             </option>
