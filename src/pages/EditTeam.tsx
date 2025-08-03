@@ -68,6 +68,7 @@ function EditTeam() {
   );
   const [selectedTopics, setSelectedTopics] = useState<DomainTopic[]>([]);
   const [isTeamSuccess, setIsTeamSuccess] = useState<boolean>(false);
+  const [isFormInitialized, setIsFormInitialized] = useState<boolean>(false);
 
   const {
     register,
@@ -152,8 +153,24 @@ function EditTeam() {
       setValue("domain", teamData.domain);
       setValue("subDomain", teamData.subdomain);
       setValue("topic", teamData.subdomainTopics);
+      setIsFormInitialized(true);
     }
   }, [teamData, setValue]);
+
+  // Reset subdomain and topics when domain changes (only after form is initialized)
+  useEffect(() => {
+    if (isFormInitialized && teamData && domain !== teamData.domain) {
+      setValue("subDomain", "");
+      setSelectedTopics([]);
+    }
+  }, [domain, teamData, setValue, isFormInitialized]);
+
+  // Reset topics when subdomain changes (only after form is initialized)
+  useEffect(() => {
+    if (isFormInitialized && teamData && subDomain !== teamData.subdomain) {
+      setSelectedTopics([]);
+    }
+  }, [subDomain, teamData, isFormInitialized]);
 
   // Set selected topics when team data and available topics are ready
   useEffect(() => {
