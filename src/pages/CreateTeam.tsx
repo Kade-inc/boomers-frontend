@@ -35,27 +35,9 @@ const schema = z.object({
 });
 
 function CreateTeam() {
-  const [team, setTeam] = useState<Team>({
-    name: "",
-    teamUsername: "",
-    domain: "",
-    subdomain: "",
-    subdomainTopics: [],
-    teamColor: "linear-gradient(0deg, #00989B, #005E78)",
-  });
-
   const { data: domains, isPending: domainsPending } = useDomains();
-  const [selectedDomainId, setSelectedDomainId] = useState<string | null>(null);
-  const [selectedSubdomainId, setSelectedSubdomainId] = useState<string | null>(
-    null,
-  );
-  const { data: subdomains, isPending: subdomainsPending } =
-    useSubDomains(selectedDomainId);
-  const [domainOptions, setDomainOptions] = useState<Domain[]>([]);
-  const [subdomainOptions, setSubdomainOptions] = useState<SubDomain[]>([]);
-  const { data: fetchedDomainTopics, isPending: domainTopicsPending } =
-    useDomainTopics();
-  const [subDomainTopics, setDomainTopics] = useState<DomainTopic[]>([]);
+  const { data: fetchedDomainTopics, isPending: domainTopicsPending } = useDomainTopics();
+  
   const [teamColors] = useState({
     "teal-gradient": "linear-gradient(0deg, #00989B, #005E78)",
     "kinda-orange-gradient": "linear-gradient(0deg, #D9436D, #F26A4B)",
@@ -63,14 +45,16 @@ function CreateTeam() {
     "greenish-gradient": "linear-gradient(0deg, #589FD6, #43CCBA)",
     "dreamy-gradient": "linear-gradient(180deg, #7b4dbb, #d97b98, #f3aa75)",
   });
+  
   const mutation = useCreateTeam();
-
-  const [selectedColor, setSelectedColor] = useState<string | null>(
+  const [selectedColor, setSelectedColor] = useState<string>(
     "linear-gradient(0deg, #00989B, #005E78)",
   );
+  const [selectedTopics, setSelectedTopics] = useState<DomainTopic[]>([]);
   const [isTeamSuccess, setIsTeamSuccess] = useState<boolean>(false);
   const [createdTeamId, setCreatedTeamId] = useState("");
   const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -101,24 +85,71 @@ function CreateTeam() {
   });
   const name = watch("name");
 
-  const [selectedTopics, setSelectedTopics] = useState<DomainTopic[]>([]);
+  // Compute derived values directly instead of using state + useEffect
+  const domainOptions = useMemo(() => {
+    return domains || [];
+  }, [domains]);
+
+  const selectedDomainId = useMemo(() => {
+    const selectedDomain = domainOptions.find(
+      (d: Domain) => d.name === domain,
+    );
+    return selectedDomain?._id || null;
+  }, [domain, domainOptions]);
+
+  const { data: subdomains, isPending: subdomainsPending } = useSubDomains(selectedDomainId);
+
+  const subdomainOptions = useMemo(() => {
+    return subdomains || [];
+  }, [subdomains]);
+
+  const selectedSubdomainId = useMemo(() => {
+    const selectedSubdomain = subdomainOptions.find(
+      (subdomain: SubDomain) => subdomain.name === subDomain,
+    );
+    return selectedSubdomain?._id || null;
+  }, [subDomain, subdomainOptions]);
+
+  const availableDomainTopics = useMemo(() => {
+    if (fetchedDomainTopics && subDomain) {
+        return fetchedDomainTopics.filter(
+          (topic) => topic.parentSubdomain?._id === selectedSubdomainId,
+        );
+    }
+    return [];
+  }, [fetchedDomainTopics, subDomain, selectedSubdomainId]);
+
+  // Compute team object for display
+  const team = useMemo<Team>(() => ({
+    name: name || "",
+    teamUsername: "",
+    domain: domain || "",
+    subdomain: subDomain || "",
+    subdomainTopics: selectedTopics.map((topic) => topic.name),
+    teamColor: selectedColor,
+  }), [name, domain, subDomain, selectedTopics, selectedColor]);
+
+  // Reset subdomain and topics when domain changes
+  useEffect(() => {
+    if (domain) {
+      setValue("subDomain", "");
+      setSelectedTopics([]);
+    }
+  }, [domain, setValue]);
+
+  // Reset topics when subdomain changes
+  useEffect(() => {
+    setSelectedTopics([]);
+  }, [subDomain]);
 
   // Memoize handlers
   const handleColorSelect = useCallback((colorName: string) => {
     setSelectedColor(colorName);
-    setTeam((prevTeam) => ({
-      ...prevTeam,
-      teamColor: colorName,
-    }));
   }, []);
 
   const handleTopicChange = useCallback(
     (selected: DomainTopic[]) => {
       setSelectedTopics(selected);
-      setTeam((prevTeam) => ({
-        ...prevTeam,
-        subdomainTopics: selected.map((topic) => topic.name),
-      }));
       setValue(
         "topic",
         selected.map((topic) => topic.name),
@@ -133,8 +164,8 @@ function CreateTeam() {
         name: name,
         domain: domain,
         subdomain: subDomain,
-        subdomainTopics: team.subdomainTopics,
-        teamColor: team.teamColor,
+        subdomainTopics: selectedTopics.map((topic) => topic.name),
+        teamColor: selectedColor,
       },
       {
         onError: (error: Error) => {
@@ -156,101 +187,7 @@ function CreateTeam() {
     );
     setCreatedTeamId(response.data._id);
     setIsTeamSuccess(true);
-  }, [mutation, name, domain, subDomain, team.subdomainTopics, team.teamColor]);
-
-  // Memoize filtered options
-  const filteredDomainOptions = useMemo(() => {
-    if (domains && domains.length > 0) {
-      return domains;
-    }
-    return [];
-  }, [domains]);
-
-  const filteredSubdomainOptions = useMemo(() => {
-    if (subdomains && subdomains.length > 0) {
-      return subdomains;
-    }
-    return [];
-  }, [subdomains]);
-
-  const filteredDomainTopics = useMemo(() => {
-    if (fetchedDomainTopics && subDomain) {
-      if (subDomain.toLowerCase() === "full stack") {
-        return fetchedDomainTopics.filter(
-          (topic) =>
-            topic.parentSubdomain?.name !== "Motion Graphics" &&
-            topic.parentSubdomain?.name !== "Cyber Security",
-        );
-      } else {
-        return fetchedDomainTopics.filter(
-          (topic) => topic.parentSubdomain?._id === selectedSubdomainId,
-        );
-      }
-    }
-    return [];
-  }, [fetchedDomainTopics, subDomain, selectedSubdomainId]);
-
-  // Update options when data changes
-  useEffect(() => {
-    setDomainOptions(filteredDomainOptions);
-  }, [filteredDomainOptions]);
-
-  useEffect(() => {
-    setSubdomainOptions(filteredSubdomainOptions);
-  }, [filteredSubdomainOptions]);
-
-  useEffect(() => {
-    setDomainTopics(filteredDomainTopics);
-    // Reset selected topics when subdomain changes
-    setSelectedTopics([]);
-    setTeam((prevTeam) => ({
-      ...prevTeam,
-      subdomainTopics: [],
-    }));
-  }, [filteredDomainTopics]);
-
-  // Update selected domain ID when domain changes
-  useEffect(() => {
-    const selectedDomain = domainOptions.find(
-      (domains: Domain) => domains.name === domain,
-    );
-
-    if (selectedDomain) {
-      setSelectedDomainId(selectedDomain._id);
-      // Reset subdomain selection when domain changes
-      setValue("subDomain", "");
-      setTeam((prevTeam) => ({
-        ...prevTeam,
-        subdomain: "",
-        subdomainTopics: [],
-      }));
-      setSelectedTopics([]);
-    } else {
-      setSelectedDomainId(null);
-    }
-  }, [domain, domainOptions, setValue]);
-
-  // Update subdomain options when selectedDomainId changes
-  useEffect(() => {
-    if (selectedDomainId) {
-      setSubdomainOptions(filteredSubdomainOptions);
-    } else {
-      setSubdomainOptions([]);
-    }
-  }, [selectedDomainId, filteredSubdomainOptions]);
-
-  // Update selected subdomain ID when subdomain changes
-  useEffect(() => {
-    const selectedSubdomain = subdomainOptions.find(
-      (subdomain: SubDomain) => subdomain.name === subDomain,
-    );
-
-    if (selectedSubdomain) {
-      setSelectedSubdomainId(selectedSubdomain._id);
-    } else {
-      setSelectedSubdomainId(null);
-    }
-  }, [subDomain, subdomainOptions]);
+  }, [mutation, name, domain, subDomain, selectedTopics, selectedColor]);
 
   if (domainsPending || domainTopicsPending) {
     return (
@@ -392,7 +329,7 @@ function CreateTeam() {
                       <option value="" disabled>
                         Domain
                       </option>
-                      {domainOptions.map((domain) => (
+                      {domainOptions.map((domain: Domain) => (
                         <option key={domain._id} value={domain.name}>
                           {domain.name}
                         </option>
@@ -434,7 +371,7 @@ function CreateTeam() {
                           ? "Loading..."
                           : "Sub Domain"}
                       </option>
-                      {subdomainOptions.map((subdomain) => (
+                      {subdomainOptions.map((subdomain: SubDomain) => (
                         <option key={subdomain._id} value={subdomain.name}>
                           {subdomain.name}
                         </option>
@@ -455,7 +392,7 @@ function CreateTeam() {
                       Topics
                     </label>
                     <MultiSelect
-                      options={subDomainTopics || []}
+                      options={availableDomainTopics || []}
                       selected={selectedTopics}
                       onChange={handleTopicChange}
                       parentContainerWidth="w-full"
