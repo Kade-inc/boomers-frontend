@@ -1,0 +1,405 @@
+import TeamCard from "../components/TeamCard";
+import { useMemo, useState } from "react";
+import {
+  Outlet,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
+import useTeams from "../hooks/useTeams";
+import Team from "../entities/Team";
+import useDomains from "../hooks/useDomains";
+import useDomainTopics from "../hooks/useDomainTopics";
+import useGetAllSubdomains from "../hooks/useGetAllSubdomains";
+import Domain from "../entities/Domain";
+import SubDomain from "../entities/SubDomain";
+import MultiSelect from "../components/MultiSelect";
+import DomainTopic from "../entities/DomainTopic";
+import { useDebounce } from "../hooks/useDebounce";
+import { HiOutlineUserGroup } from "react-icons/hi2";
+import { TbFaceIdError } from "react-icons/tb";
+import { LiaFilterSolid } from "react-icons/lia";
+
+const TeamsPage = () => {
+  const [showFilters, setShowFilters] = useState(false);
+  const [selectedDomain, setSelectedDomain] = useState<string>("");
+  const [selectedSubDomain, setSelectedSubDomain] = useState<string>("");
+  const [selectedTopics, setSelectedTopics] = useState<DomainTopic[]>([]);
+  const [searchName, setSearchName] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = Number(searchParams.get("page")) || 1;
+
+  const debouncedSearchName = useDebounce(searchName.trim(), 500);
+
+  const { teamId } = useParams();
+  const {
+    data: teams,
+    isPending,
+    error,
+  } = useTeams({
+    page: currentPage,
+    domain: selectedDomain,
+    subdomain: selectedSubDomain,
+    subdomainTopics: selectedTopics,
+    name: debouncedSearchName,
+  });
+
+  const currentTeams = useMemo(() => {
+    if (teams) {
+      return teams.data;
+    }
+    return [];
+  }, [teams]);
+
+  const {
+    data: domains,
+    isPending: isDomainsPending,
+    refetch: refetchDomains,
+    error: domainsError,
+  } = useDomains();
+
+  const domainOptions = useMemo(() => {
+    if (domains && domains.length > 0) {
+      return domains;
+    }
+    return [];
+  }, [domains]);
+
+  const {
+    data: allSubDomains,
+    isPending: isAllSubDomainsPending,
+    refetch: refetchAllSubDomains,
+    error: allSubDomainsError,
+  } = useGetAllSubdomains();
+
+  const subDomainOptions = useMemo(() => {
+    if (allSubDomains && allSubDomains.length > 0) {
+      return allSubDomains;
+    }
+    return [];
+  }, [allSubDomains]);
+
+  const {
+    data: subTopics,
+    isPending: isSubTopicsPending,
+    refetch: refetchSubTopics,
+    error: subTopicsError,
+  } = useDomainTopics();
+  const navigate = useNavigate();
+
+  // Update URL when page changes
+  const handlePageChange = (newPage: number) => {
+    setSearchParams((prev) => {
+      prev.set("page", newPage.toString());
+      return prev;
+    });
+  };
+
+  const handleRefreshFilters = () => {
+    refetchDomains();
+    refetchSubTopics();
+    refetchAllSubDomains();
+  };
+
+  if (error) {
+    return (
+      <div className="flex flex-col justify-center items-center h-screen bg-base-100">
+        <TbFaceIdError className="w-20 h-20 text-base-content" />
+        <div className="font-body text-base-content">Error loading page</div>
+        <button
+          className="btn btn-primary bg-yellow text-darkgrey font-body"
+          onClick={() => window.location.reload()}
+        >
+          Refresh
+        </button>
+      </div>
+    );
+  }
+
+  if (teams && !Array.isArray(teams.data)) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-base-100 font-body">
+        <div className="flex flex-col items-center mt-2 w-full gap-4">
+          <HiOutlineUserGroup className="w-20 h-20 text-base-content" />
+          <p className="font-body text-base-content">No teams</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="h-screen text-base-content bg-base-100 px-2 md:px-10">
+      {!teamId ? (
+        <div className="pt-10">
+          {(isDomainsPending ||
+            isAllSubDomainsPending ||
+            isSubTopicsPending) && (
+            <div>
+              <p className="font-body text-[14px] flex items-center">
+                <span className="loading loading-spinner loading-xs mr-1"></span>{" "}
+                Loading filters...
+              </p>
+            </div>
+          )}
+          {!isDomainsPending &&
+            !isAllSubDomainsPending &&
+            !isSubTopicsPending && (
+              <>
+                {domainsError || subTopicsError || allSubDomainsError ? (
+                  <div className="flex flex-col items-center mt-2 w-full gap-4">
+                    <LiaFilterSolid className="w-6 h-6 text-base-content" />
+                    <p className="font-body text-base-content">
+                      Error loading filters
+                    </p>
+                    <button
+                      className="bg-yellow text-darkgrey font-body font-medium px-6 py-2 rounded-sm text-[14px]"
+                      disabled={
+                        isDomainsPending ||
+                        isAllSubDomainsPending ||
+                        isSubTopicsPending
+                      }
+                      onClick={handleRefreshFilters}
+                    >
+                      {isDomainsPending ||
+                      isAllSubDomainsPending ||
+                      isSubTopicsPending ? (
+                        <span className="loading loading-dots loading-sm"></span>
+                      ) : (
+                        "Refresh"
+                      )}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col sm:flex-row gap-2 flex-wrap items-start sm:items-center justify-between">
+                    <div className="flex flex-col sm:flex-row gap-2 flex-wrap items-start sm:items-center font-body w-full sm:w-auto mb-2 md:mb-0">
+                      <div className="flex items-center gap-2">
+                        <p>Filters:</p>
+                        {(selectedDomain ||
+                          selectedSubDomain ||
+                          selectedTopics.length > 0) && (
+                          <span className="text-base-content font-semibold text-sm">
+                            (
+                            {
+                              [
+                                selectedDomain,
+                                selectedSubDomain,
+                                selectedTopics.length,
+                              ].filter(Boolean).length
+                            }
+                            )
+                          </span>
+                        )}
+                      </div>
+                      <button
+                        className="text-[14px] py-1 px-4 text-darkgrey bg-yellow sm:hidden md:w-[98px] rounded-sm w-full"
+                        onClick={() => {
+                          setShowFilters(!showFilters);
+                        }}
+                      >
+                        {!showFilters ? "Show Filters" : "Hide Filters"}
+                      </button>
+                      <div
+                        className={`flex flex-col sm:flex-row gap-2 flex-wrap w-full sm:w-auto`}
+                      >
+                        <select
+                          className={`bg-transparent border p-1 border-1 rounded w-full sm:w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
+                          style={{ borderColor: "rgba(204, 205, 207, 1)" }}
+                          value={selectedDomain}
+                          onChange={(e) => setSelectedDomain(e.target.value)}
+                        >
+                          <option value="" disabled>
+                            Domain
+                          </option>
+                          {domainOptions.map((domain: Domain) => (
+                            <option key={domain._id} value={domain.name}>
+                              {domain.name}
+                            </option>
+                          ))}
+                        </select>
+                        <select
+                          className={`bg-transparent border p-1 border-1 rounded w-full sm:w-[143px] text-[14px] ${showFilters ? "block" : "hidden"} sm:block`}
+                          style={{ borderColor: "rgba(204, 205, 207, 1)" }}
+                          value={selectedSubDomain}
+                          onChange={(e) => setSelectedSubDomain(e.target.value)}
+                        >
+                          <option value="" disabled>
+                            Sub domain
+                          </option>
+                          {subDomainOptions.map((subDomain: SubDomain) => (
+                            <option key={subDomain._id} value={subDomain.name}>
+                              {subDomain.name}
+                            </option>
+                          ))}
+                        </select>
+                        <div
+                          className={`${showFilters ? "block" : "hidden"} sm:block w-full sm:w-[143px]`}
+                        >
+                          <MultiSelect
+                            options={subTopics || []}
+                            selected={selectedTopics}
+                            onChange={setSelectedTopics}
+                            parentContainerWidth="w-full sm:w-[143px]"
+                          />
+                        </div>
+                      </div>
+                      <button
+                        className="text-white bg-[#C83A3A] rounded-sm text-[14px] py-1 px-4 w-full sm:w-auto"
+                        onClick={() => {
+                          setSelectedDomain("");
+                          setSelectedSubDomain("");
+                          setSelectedTopics([]);
+                          setSearchName("");
+                          handlePageChange(1);
+                        }}
+                      >
+                        Clear all
+                      </button>
+                    </div>
+                    <label className="input input-bordered rounded-[50px] flex items-center gap-2 h-[29px] w-full sm:w-[200px] bg-transparent border-base-content">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 16 16"
+                        fill="currentColor"
+                        className="h-4 w-4 opacity-70 flex-shrink-0"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <input
+                        type="text"
+                        className="font-body"
+                        placeholder="Search"
+                        value={searchName}
+                        onChange={(e) => setSearchName(e.target.value)}
+                      />
+                    </label>
+                  </div>
+                )}
+              </>
+            )}
+          {isPending && (
+            <div className="flex justify-center h-[80vh] items-center bg-base-100">
+              <span className="loading loading-dots loading-lg"></span>
+            </div>
+          )}
+          {!isPending && (
+            <div className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-12 mt-10 mb-12 pb-12">
+              {currentTeams.map((team: Team) => {
+                return (
+                  <TeamCard
+                    key={team._id}
+                    team={team}
+                    section="allTeams-section"
+                    onClick={() => navigate(`/teams/${team._id}`)}
+                    styles={"h-[165px] w-full md:w-[330px]"}
+                    subStyles="px-4"
+                  />
+                );
+              })}
+            </div>
+          )}
+          {!isPending && currentTeams.length === 0 && (
+            <div className="flex flex-col items-center mt-2 w-full gap-4">
+              <HiOutlineUserGroup className="w-20 h-20 text-base-content" />
+              <p className="font-body text-base-content">No teams</p>
+            </div>
+          )}
+
+          <div className="pb-12">
+            {teams && teams.totalPages > 1 && (
+              <div className="flex justify-center mt-8">
+                <div className="join">
+                  {/* Previous button */}
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    className={`join-item btn ${currentPage === 1 ? "btn-disabled" : ""}`}
+                    disabled={currentPage === 1}
+                  >
+                    «
+                  </button>
+
+                  {/* First page */}
+                  {currentPage > 3 && (
+                    <>
+                      <button
+                        onClick={() => handlePageChange(1)}
+                        className="join-item btn"
+                      >
+                        1
+                      </button>
+                      {currentPage > 4 && (
+                        <span className="join-item btn btn-disabled">...</span>
+                      )}
+                    </>
+                  )}
+
+                  {/* Page numbers */}
+                  {Array.from({ length: 5 }, (_, i) => {
+                    const pageNumber = currentPage - 2 + i;
+                    if (pageNumber > 0 && pageNumber <= teams.totalPages) {
+                      return (
+                        <button
+                          key={pageNumber}
+                          onClick={() => handlePageChange(pageNumber)}
+                          className={`join-item btn font-body ${
+                            currentPage === pageNumber
+                              ? "bg-yellow text-darkgrey"
+                              : ""
+                          }`}
+                        >
+                          {pageNumber}
+                        </button>
+                      );
+                    }
+                    return null;
+                  })}
+
+                  {/* Last page */}
+                  {currentPage < teams.totalPages - 2 && (
+                    <>
+                      {currentPage < teams.totalPages - 3 && (
+                        <span className="join-item btn btn-disabled">...</span>
+                      )}
+                      <button
+                        onClick={() => handlePageChange(teams.totalPages)}
+                        className="join-item btn"
+                      >
+                        {teams.totalPages}
+                      </button>
+                    </>
+                  )}
+
+                  {/* Next button */}
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    className={`join-item btn ${
+                      currentPage === teams.totalPages ? "btn-disabled" : ""
+                    }`}
+                    disabled={currentPage === teams.totalPages}
+                  >
+                    »
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="fixed bottom-0 right-0 m-4">
+            <button
+              className="px-8 py-1 font-body text-darkgrey bg-yellow rounded-sm"
+              onClick={() => navigate("/create-team")}
+            >
+              Add team
+            </button>
+          </div>
+        </div>
+      ) : (
+        <Outlet />
+      )}
+    </div>
+  );
+};
+
+export default TeamsPage;
