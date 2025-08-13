@@ -8,7 +8,6 @@ import useAuthStore from "../stores/useAuthStore";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useRecommendationStore from "../stores/useRecommendationStore";
-// import RecommendationsModal from "../components/Modals/RecommendationsModal";
 import TeamCardCarousel from "../components/Carousels/TeamCardCarousel";
 import ChallengeCardCarousel from "../components/Carousels/ChallengeCardCarousel";
 import useChallenges from "../hooks/Challenges/useChallenges";
@@ -17,10 +16,11 @@ import useTeamSpotlight from "../hooks/useTeamSpotlight";
 import SpotlightCard from "../components/Cards/SpotlightCard";
 import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
 import { HiUserGroup } from "react-icons/hi2";
-import { GrAnnounce, GrTest } from "react-icons/gr";
+import { GrAnnounce } from "react-icons/gr";
 import ActionCenterModal from "../components/Modals/ActionCenterModal";
 import useAdvice from "../hooks/useAdvice";
 import useGetJoinRequests from "../hooks/useGetJoinRequests";
+import { MdOutlineImportantDevices } from "react-icons/md";
 
 const Dashboard = () => {
   const user = useAuthStore((s) => s.user);
@@ -122,15 +122,6 @@ const Dashboard = () => {
   const handleChallengesFilter = (filter: string) => {
     setChallengesFilter(filter);
   };
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-  // const [selectedRecommendation, setSelectedRecommendation] =
-  //   useState<Team | null>(null);
-
-  // const openModal = (team: Team) => {
-  //   setIsModalOpen(true);
-  //   setSelectedRecommendation(team);
-  // };
-  // const closeModal = () => setIsModalOpen(false);
 
   if (teamsLoading || recommendationsLoading || challengesLoading) {
     return (
@@ -288,13 +279,6 @@ const Dashboard = () => {
                             />
                           ))}
                       </div>
-                      {/* {selectedRecommendation !== null && (
-                        <RecommendationsModal
-                          isOpen={isModalOpen}
-                          onClose={closeModal}
-                          modalData={selectedRecommendation}
-                        />
-                      )} */}
                       {teamRecommendations?.length > 2 && (
                         <button
                           className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-8"
@@ -380,10 +364,8 @@ const Dashboard = () => {
             )}
             {teamsData.data.length > 0 && challengesData?.length == 0 && (
               <div className="flex items-center flex-col text-[16px] mt-10 gap-4">
-                <GrTest className="w-16 h-16 text-base-content" />
-                <p className="mb-6">
-                  You&apos;re all caught up! No challenges to display.
-                </p>
+                <MdOutlineImportantDevices className="w-16 h-16 text-base-content" />
+                <p className="mb-6">No challenges to display.</p>
               </div>
             )}
 
