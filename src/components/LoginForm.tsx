@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { FcGoogle } from "react-icons/fc";
+// import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
 import { Toaster } from "react-hot-toast";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -67,7 +67,7 @@ const LoginForm = () => {
               type="text"
               {...register("accountId")}
               placeholder="Enter email or username"
-              className="input w-full border border-gray-700 hover:border-gray-700 focus:outline-none bg-transparent rounded-md font-body placeholder-gray-600"
+              className="input w-full border border-gray-700 bg-transparent rounded-md font-body placeholder-gray-600 focus:outline-none focus:border-gray-700"
               style={{ backgroundColor: "transparent" }}
               id="emailOrUsername"
             />
@@ -99,7 +99,7 @@ const LoginForm = () => {
                 id="password"
                 {...register("password")}
                 placeholder="Enter password"
-                className="input w-full border border-gray-700 bg-transparent rounded-md font-body placeholder-gray-600 hover:border-gray-700 focus:outline-none"
+                className="input w-full border border-gray-700 bg-transparent rounded-md font-body placeholder-gray-600 focus:outline-none focus:border-gray-700"
                 style={{ backgroundColor: "transparent" }}
               />
             </div>
@@ -117,19 +117,19 @@ const LoginForm = () => {
             )}
           </button>
 
-          <div className="flex items-center gap-5 justify-center text-center mb-[3%]">
+          {/* <div className="flex items-center gap-5 justify-center text-center mb-[3%]">
             <div className="border-t-2 border-darkgrey my-4 flex-grow w-200"></div>
 
             <p className="font-semibold font-body">Or sign up with</p>
             <div className="border-t-2 border-darkgrey my-4 flex-grow w-200"></div>
-          </div>
+          </div> */}
 
-          <button
+          {/* <button
             className="btn bg-white w-full text-darkgrey border-none text-[17px] mb-[3%] font-body"
             type="button"
           >
             <FcGoogle style={{ fontSize: "1.5em" }} /> Google
-          </button>
+          </button> */}
 
           <p className="text-center font-regular text-darkgrey font-body">
             Don't have an account?

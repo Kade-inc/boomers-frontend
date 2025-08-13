@@ -1,6 +1,6 @@
 import location from "../assets/location-sign-svgrepo-com 1.svg";
 import ellipse from "../assets/Ellipse 81.svg";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import EditProfileModal from "../components/Modals/EditProfileModal";
 import useAuthStore from "../stores/useAuthStore";
 import useTeams from "../hooks/useTeams";
@@ -9,13 +9,11 @@ import Team from "../entities/Team";
 import TeamCardCarousel from "../components/Carousels/TeamCardCarousel";
 import { useNavigate, useParams } from "react-router-dom";
 import useGetUser from "../hooks/useGetUser";
-import User from "../entities/User";
-import UpdatedUserProfile from "../entities/UpdatedUserProfile";
 import { RiMessageLine } from "react-icons/ri";
 import { MdOutlineInterests } from "react-icons/md";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import ViewProfilePicture from "../components/Modals/ViewProfilePictureModal";
-import { TbWorld } from "react-icons/tb";
+import { TbPhone, TbWorld } from "react-icons/tb";
 
 const ProfilePage = () => {
   const { userId } = useParams();
@@ -24,29 +22,11 @@ const ProfilePage = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
   const { user } = useAuthStore();
-  const [profileData, setProfileData] = useState<
-    User | UpdatedUserProfile | null
-  >(null);
   const { data: teamsData, isPending: teamsPending } = useTeams({
     userId: userId || user.user_id,
   });
-  const {
-    data: userProfile,
-    isPending: userProfilePending,
-    error: userProfileError,
-  } = useGetUser(userId!);
 
-  const [teams, setTeams] = useState<Team[]>([]);
-
-  useEffect(() => {
-    if (userId && userProfile) {
-      setProfileData(userProfile);
-    } else {
-      setProfileData(user);
-    }
-  }, [userId, userProfile, user]);
-
-  useEffect(() => {
+  const teams = useMemo(() => {
     if (teamsData?.data) {
       let userTeams: Team[] = [];
       if (userId) {
@@ -56,10 +36,23 @@ const ProfilePage = () => {
           (team: Team) => team.owner_id === user.user_id,
         );
       }
-
-      setTeams(userTeams);
+      return userTeams;
     }
+    return [];
   }, [teamsData, userId, user.user_id]);
+
+  const {
+    data: userProfile,
+    isPending: userProfilePending,
+    error: userProfileError,
+  } = useGetUser(userId!);
+
+  const profileData = useMemo(() => {
+    if (userId && userProfile) {
+      return userProfile;
+    }
+    return user;
+  }, [userId, userProfile, user]);
 
   if (userId && userProfilePending)
     return (
@@ -106,7 +99,7 @@ const ProfilePage = () => {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <UserCircleIcon className="w-full h-full text-yellow" />
+                <UserCircleIcon className="w-full h-full text-base-content" />
               )}
             </div>
             <div className="flex justify-between mt-16">
@@ -114,11 +107,12 @@ const ProfilePage = () => {
                 <h1 className="font-body font-bold text-base md:text-lg my-2 md:mt-0">
                   {profileData?.firstName} {profileData?.lastName}
                 </h1>
-                {profileData?.country && profileData?.city && (
+                {(profileData?.country || profileData?.city) && (
                   <div className="flex items-center font-body font-normal text-[13px] md:text-base mb-2">
                     <img src={location} className="w-[14px] h-[14px] mr-2" />
                     <p>
-                      {profileData?.country}, {profileData?.city}
+                      {profileData?.country}{" "}
+                      {profileData?.city && `, ${profileData?.city}`}
                     </p>
                   </div>
                 )}
@@ -144,6 +138,19 @@ const ProfilePage = () => {
                       rel="noreferrer"
                     >
                       {profileData?.website}
+                    </a>
+                  </div>
+                )}
+                {profileData?.phoneNumber && (
+                  <div className="flex items-center gap-2 mt-2">
+                    <TbPhone size={22} className="text-teal-500" />
+                    <a
+                      href={`tel:${profileData?.phoneNumber}`}
+                      target="_blank"
+                      className="text-teal-500 font-body font-medium cursor-pointer text-[13px] md:text-[16px]"
+                      rel="noreferrer"
+                    >
+                      {profileData?.phoneNumber}
                     </a>
                   </div>
                 )}
@@ -180,7 +187,7 @@ const ProfilePage = () => {
               <div className="flex flex-col items-center mt-2">
                 <RiMessageLine className="w-10 h-10" />
                 <p className="font-medium text-[13px] md:text-base  mt-2">
-                  No bio found
+                  No bio
                 </p>
               </div>
             )}

@@ -344,7 +344,7 @@ function NavigationBar() {
                 to="/dashboard"
                 className={
                   pathname === "/dashboard"
-                    ? "btn btn-ghost bg-yellow rounded-full"
+                    ? "btn bg-yellow rounded-full hover:bg-yellow"
                     : "flex items-center"
                 }
               >
@@ -390,7 +390,7 @@ function NavigationBar() {
               <Link
                 className={
                   pathname === "/teams"
-                    ? "btn btn-ghost bg-yellow rounded-full"
+                    ? "btn bg-yellow rounded-full hover:bg-yellow"
                     : "flex items-center"
                 }
                 to="/teams"

@@ -159,7 +159,7 @@ export default function SearchResultsPage() {
                         </div>
                       </div>
                       <Link to={`/challenge/${challenge._id}`}>
-                        <button className="font-medium px-6 font-body bg-yellow border-none py-2 text-sm text-darkgrey rounded-full">
+                        <button className="font-medium px-6 font-body bg-yellow border-none py-2 text-sm text-darkgrey rounded-[5px]">
                           View
                         </button>
                       </Link>
@@ -219,7 +219,7 @@ export default function SearchResultsPage() {
                         </div>
                       </div>
                       <Link to={`/profile/${profile.user_id}`}>
-                        <button className="font-medium px-6 font-body bg-yellow border-none py-2 text-sm text-darkgrey rounded-full">
+                        <button className="font-medium px-6 font-body bg-yellow border-none py-2 text-sm text-darkgrey rounded-[5px]">
                           View
                         </button>
                       </Link>
@@ -296,7 +296,7 @@ export default function SearchResultsPage() {
                         </div>
                       </div>
                       <Link to={`/teams/${team._id}`}>
-                        <button className="font-medium px-6 font-body bg-yellow border-none py-2 text-sm text-darkgrey rounded-full">
+                        <button className="font-medium px-6 font-body bg-transparent border border-white py-2 text-sm text-white rounded-[5px]">
                           View
                         </button>
                       </Link>

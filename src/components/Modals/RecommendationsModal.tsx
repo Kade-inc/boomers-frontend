@@ -3,6 +3,8 @@ import { Toaster } from "react-hot-toast";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import useTeam from "../../hooks/useTeam";
 import Team from "../../entities/Team";
+import useSendTeamRequest from "../../hooks/useSendTeamRequest";
+import useAuthStore from "../../stores/useAuthStore";
 
 type ModalTriggerProps = {
   isOpen: boolean;
@@ -26,6 +28,23 @@ const RecommendationsModal = ({
   modalData,
 }: ModalTriggerProps) => {
   const { data: team, isPending, error } = useTeam(modalData?._id || "");
+
+  const { mutate: sendRequest, isPending: isSendingRequest } =
+    useSendTeamRequest();
+  const user = useAuthStore((s) => s.user);
+  const handleRequestClick = () => {
+    sendRequest(
+      { payload: { team_id: team?._id, user_id: user.user_id } },
+      {
+        onSuccess: () => {
+          //invalidate
+        },
+        onError: (error) => {
+          console.error("Request failed:", error);
+        },
+      },
+    );
+  };
 
   return (
     <>
@@ -80,47 +99,60 @@ const RecommendationsModal = ({
                 <p className="font-semibold text-[20px] ">Owner</p>
               </div>
               <div className="mt-6 flex flex-row items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="size-10"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <p className="ml-5">{team.members[0].username}</p>
+                <div className="w-10 h-10 rounded-full overflow-hidden">
+                  {team.members[0]?.profile_picture ? (
+                    <img
+                      src={team.members[0]?.profile_picture}
+                      alt="Profile picture"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <UserCircleIcon className="w-full h-full text-darkgrey" />
+                  )}
+                </div>
+                <p className="ml-5">
+                  {team.members[0].firstName +
+                    (team.members[0].lastName
+                      ? " " + team.members[0]?.lastName
+                      : "") || team.members[0].username}
+                </p>
               </div>
-
-              <div className="relative mt-5">
-                <div className="absolute bottom-0 top-8 left-3 transform -translate-x-1/2 w-6 h-[6px] bg-base-content rounded "></div>
-                <p className="font-semibold text-[20px] ">House Mates</p>
-              </div>
-              <div className="mt-6 grid grid-cols-3 gap-12">
-                {team.members.map((member: Member) => (
-                  <div className="flex flex-row items-center" key={member._id}>
-                    <div className="w-10 h-10 rounded-full overflow-hidden">
-                      {member?.profile_picture ? (
-                        <img
-                          src={member.profile_picture}
-                          alt="Profile picture"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <UserCircleIcon className="w-full h-full text-darkgrey" />
-                      )}
-                    </div>
-                    <p className="ml-5">{member.username}</p>
+              {team && team.members && team.members.length > 1 && (
+                <>
+                  <div className="relative mt-5">
+                    <div className="absolute bottom-0 top-8 left-3 transform -translate-x-1/2 w-6 h-[6px] bg-base-content rounded "></div>
+                    <p className="font-semibold text-[20px] ">House Mates</p>
                   </div>
-                ))}
-              </div>
+                  <div className="mt-6 grid grid-cols-3 gap-12">
+                    {team.members.slice(1).map((member: Member) => (
+                      <div
+                        className="flex flex-row items-center"
+                        key={member._id}
+                      >
+                        <div className="w-10 h-10 rounded-full overflow-hidden">
+                          {member?.profile_picture ? (
+                            <img
+                              src={member.profile_picture}
+                              alt="Profile picture"
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <UserCircleIcon className="w-full h-full text-darkgrey" />
+                          )}
+                        </div>
+                        <p className="ml-5">{member.username}</p>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
               <div className="mt-10">
-                <p className="font-semibold text-[20px] ">Specialities</p>
+                <div className="relative">
+                  <div className="absolute bottom-0 top-8 left-3 transform -translate-x-1/2 w-6 h-[6px] bg-base-content rounded "></div>
+                  <p className="font-semibold text-[20px] ">Specialities</p>
+                </div>
 
-                <div className="flex flex-row items-center">
+                <div className="flex flex-row items-center mt-6">
                   <div className="mx-1 text-base-content">{team.domain}</div>
                   <div className="bg-base-content rounded-full w-1 h-1 mx-1"></div>
                   <div className="mx-1 text-base-content">{team.subdomain}</div>
@@ -145,9 +177,17 @@ const RecommendationsModal = ({
                   </div>
                 </div>
               </div>
-              <div className="flex justify-end h-[35vh] items-end">
-                <button className="btn bg-yellow text-darkgrey border-none text-[17px] px-10">
-                  Request to join
+              <div className="flex justify-end">
+                <button
+                  className="btn bg-yellow hover:bg-yellow/80 text-darkgrey border-none text-[16px] px-10"
+                  onClick={handleRequestClick}
+                  disabled={isSendingRequest}
+                >
+                  {isSendingRequest ? (
+                    <span className="loading loading-dots loading-md"></span>
+                  ) : (
+                    "Request to join"
+                  )}
                 </button>
               </div>
             </>

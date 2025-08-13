@@ -6,6 +6,12 @@ import MessageComponent from "../components/MessageComponent";
 import { useEffect, useState } from "react";
 import useSendTeamRequest from "../hooks/useSendTeamRequest";
 import { toast } from "react-hot-toast";
+import { AxiosError } from "axios";
+
+interface ErrorResponse {
+  error?: string;
+  message?: string;
+}
 
 const SignupVerificationSuccess = () => {
   const location = useLocation();
@@ -85,7 +91,33 @@ const SignupVerificationSuccess = () => {
   }
 
   if (verifyUserError) {
-    return <MessageComponent img={alert} message="Error verifying user." />;
+    const axiosError = verifyUserError as AxiosError<ErrorResponse>;
+    const errorData = axiosError.response?.data;
+    return (
+      <div className="flex flex-col justify-center">
+        <MessageComponent
+          img={alert}
+          message="Error verifying user."
+          submessage={String(errorData?.error || "Please try again.")}
+          height={
+            errorData?.error === "Error joining team" ? "h-1/2" : "h-screen"
+          }
+        />
+        {errorData?.error === "Error joining team" && (
+          <button
+            className="btn bg-yellow text-base-content w-1/4 mx-auto"
+            onClick={() => handleJoinTeam}
+            disabled={isJoiningTeam}
+          >
+            {isJoiningTeam ? (
+              <span>Retry</span>
+            ) : (
+              <span className="loading loading-dots loading-md"></span>
+            )}
+          </button>
+        )}
+      </div>
+    );
   }
 
   if (joinTeamError && !verifyUserError) {
@@ -112,10 +144,7 @@ const SignupVerificationSuccess = () => {
 
   if (verifySuccess && !teamId) {
     return (
-      <MessageComponent
-        img={success}
-        message="Your Boomer account is now verified!"
-      />
+      <MessageComponent img={success} message="Your account is now verified!" />
     );
   }
 
@@ -123,7 +152,7 @@ const SignupVerificationSuccess = () => {
     return (
       <MessageComponent
         img={success}
-        message="Your Boomer account is now verified and your request to join the team has been sent! Kindly log in to view the status of your request"
+        message="Your account is now verified and your request to join the team has been sent! Kindly log in to view the status of your request"
       />
     );
   }

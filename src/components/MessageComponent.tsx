@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import Message from "../entities/message";
 
-const MessageComponent = ({ img, message }: Message) => {
+const MessageComponent = ({ img, message, submessage, height }: Message) => {
   return (
-    <div className="relative h-screen flex flex-col">
+    <div className={`relative ${height || "h-screen"} flex flex-col`}>
       <div className="flex items-center justify-center w-full pt-[10px]">
         <h1 className="text-2xl font-bold">
           {" "}
@@ -19,6 +19,11 @@ const MessageComponent = ({ img, message }: Message) => {
           <p className="text-center font-semibold text-lg md:text-[20px] text-darkgrey mb-8 whitespace-normal font-body">
             {message}
           </p>
+          {submessage && (
+            <p className="text-center font-medium text-lg md:text-[20px] text-error mb-8 whitespace-normal font-body">
+              {submessage}
+            </p>
+          )}
         </div>
         <button className="btn w-80 bg-darkgrey mb-[3%] text-white border-none rounded-[5px] bg-darkgrey text-[16px] text-white font-body hover:bg-black">
           <Link to={"/auth/login"}>Go to Sign In</Link>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import TeamNameForm from "../components/CreateChallenge/TeamNameForm";
 import Stepper from "../components/Stepper/Stepper";
 import useAuthStore from "../stores/useAuthStore";
@@ -52,7 +52,6 @@ function CreateChallenge() {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [steps, setSteps] = useState(stepsList);
-  const [ownedTeams, setOwnedTeams] = useState();
   const [team, setTeam] = useState<Team>();
   const [challengeNameItems, setChallengeNameItems] =
     useState<ChallengeNameItems>({
@@ -87,6 +86,16 @@ function CreateChallenge() {
   const { data: draftChallenges } = useChallenges(user.user_id, false);
   const createChallengeMutation = useCreateChallenge();
   const updateChallengeMutation = useUpdateChallenge();
+
+  // Compute owned teams directly from teamsData
+  const ownedTeams = useMemo(() => {
+    if (teamsData?.data) {
+      return teamsData.data.filter(
+        (team: Team) => team.owner_id === user.user_id,
+      );
+    }
+    return [];
+  }, [teamsData, user.user_id]);
 
   const getSelectedTeam = (team: Team) => {
     setTeam(team);
@@ -201,14 +210,6 @@ function CreateChallenge() {
     setSelectedTeams([team]);
     setSelectedChallengeId(challenge._id);
   };
-
-  useEffect(() => {
-    if (teamsData && teamsData.data) {
-      setOwnedTeams(
-        teamsData.data.filter((team: Team) => team.owner_id === user.user_id),
-      );
-    }
-  }, [teamsData]);
 
   useEffect(() => {
     if (draftChallenges && draftChallenges.length > 0) {

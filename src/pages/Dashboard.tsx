@@ -5,11 +5,9 @@ import Team from "../entities/Team";
 import useTeamRecommendations from "../hooks/useTeamRecommendations";
 import useTeams from "../hooks/useTeams";
 import useAuthStore from "../stores/useAuthStore";
-import { useEffect, useState } from "react";
-import Challenge from "../entities/Challenge";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useRecommendationStore from "../stores/useRecommendationStore";
-import RecommendationsModal from "../components/Modals/RecommendationsModal";
 import TeamCardCarousel from "../components/Carousels/TeamCardCarousel";
 import ChallengeCardCarousel from "../components/Carousels/ChallengeCardCarousel";
 import useChallenges from "../hooks/Challenges/useChallenges";
@@ -18,10 +16,11 @@ import useTeamSpotlight from "../hooks/useTeamSpotlight";
 import SpotlightCard from "../components/Cards/SpotlightCard";
 import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
 import { HiUserGroup } from "react-icons/hi2";
-import { GrAnnounce, GrTest } from "react-icons/gr";
+import { GrAnnounce } from "react-icons/gr";
 import ActionCenterModal from "../components/Modals/ActionCenterModal";
 import useAdvice from "../hooks/useAdvice";
 import useGetJoinRequests from "../hooks/useGetJoinRequests";
+import { MdOutlineImportantDevices } from "react-icons/md";
 
 const Dashboard = () => {
   const user = useAuthStore((s) => s.user);
@@ -30,6 +29,14 @@ const Dashboard = () => {
   const { data: teamsData, isPending: teamsLoading } = useTeams({
     userId: user.user_id,
   });
+
+  const teams = useMemo(() => {
+    if (teamsData) {
+      return teamsData.data;
+    }
+    return [];
+  }, [teamsData]);
+
   const { data: teamRecommendations, isPending: recommendationsLoading } =
     useTeamRecommendations();
   const { data: challengesData, isPending: challengesLoading } = useChallenges(
@@ -52,8 +59,6 @@ const Dashboard = () => {
     error: requestsError,
   } = useGetJoinRequests();
 
-  const [teams, setTeams] = useState<Team[]>([]);
-  const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [teamsFilter, setTeamsFilter] = useState("AllTeams");
   const [challengesFilter, setChallengesFilter] = useState("AllChallenges");
   const [showActionCenterModal, setShowActionCenterModal] = useState(false);
@@ -67,13 +72,7 @@ const Dashboard = () => {
     navigate("/recommendations");
   };
 
-  useEffect(() => {
-    if (teamsData) {
-      setTeams(teamsData.data);
-    }
-  }, [teamsData]);
-
-  useEffect(() => {
+  const challenges = useMemo(() => {
     if (challengesData) {
       const freshChallenges = challengesData
         .filter((challenge) => {
@@ -88,10 +87,11 @@ const Dashboard = () => {
           const dateB = new Date(b.due_date!);
           return dateA.getTime() - dateB.getTime();
         });
-      setChallenges(freshChallenges);
       setUserChallenges(freshChallenges);
+      return freshChallenges;
     }
-  }, [challengesData]);
+    return [];
+  }, [challengesData, setUserChallenges]);
 
   useEffect(() => {
     if (teamRecommendations) {
@@ -99,7 +99,7 @@ const Dashboard = () => {
     }
   }, [teamRecommendations]);
 
-  const filteredTeams = teams.filter((team) => {
+  const filteredTeams = teams.filter((team: Team) => {
     if (teamsFilter === "AllTeams") return true;
     if (teamsFilter === "Owner") return team.owner_id === user.user_id;
     if (teamsFilter === "Member") return team.owner_id !== user.user_id;
@@ -122,15 +122,6 @@ const Dashboard = () => {
   const handleChallengesFilter = (filter: string) => {
     setChallengesFilter(filter);
   };
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedRecommendation, setSelectedRecommendation] =
-    useState<Team | null>(null);
-
-  const openModal = (team: Team) => {
-    setIsModalOpen(true);
-    setSelectedRecommendation(team);
-  };
-  const closeModal = () => setIsModalOpen(false);
 
   if (teamsLoading || recommendationsLoading || challengesLoading) {
     return (
@@ -237,7 +228,8 @@ const Dashboard = () => {
                 </div>
 
                 <div className="flex items-center flex-col text-[16px] mt-10">
-                  {teamRecommendations?.length === 0 && (
+                  <p className="font-semibold mb-6">Team Recommendations</p>
+                  {!user.interests && (
                     <>
                       <div className="flex flex-col items-center justify-center">
                         <GrAnnounce className="w-14 h-14" />
@@ -256,6 +248,16 @@ const Dashboard = () => {
                       </div>
                     </>
                   )}
+                  {user.interests?.domain?.length &&
+                    user.interests?.domain?.length > 0 &&
+                    teamRecommendations?.length === 0 && (
+                      <>
+                        <div className="flex flex-col items-center justify-center">
+                          <GrAnnounce className="w-14 h-14" />
+                          <p className="mt-6">No recommendations found.</p>
+                        </div>
+                      </>
+                    )}
                   {teamRecommendations && teamRecommendations?.length > 0 && (
                     <>
                       <p className="mb-6 font-semibold">
@@ -269,23 +271,22 @@ const Dashboard = () => {
                               key={recommendation._id}
                               team={recommendation}
                               styles={`w-full h-[180px] md:w-[290px] md:h-[150px] 2xl:w-[360px] 2xl:h-[180px] mb-3 md:mb-0 md:ml-6`}
-                              onClick={() => openModal(recommendation)}
+                              onClick={() =>
+                                navigate(
+                                  `/teams/${recommendation._id}?recommendation=true`,
+                                )
+                              }
                             />
                           ))}
                       </div>
-                      {selectedRecommendation !== null && (
-                        <RecommendationsModal
-                          isOpen={isModalOpen}
-                          onClose={closeModal}
-                          modalData={selectedRecommendation}
-                        />
+                      {teamRecommendations?.length > 2 && (
+                        <button
+                          className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-8"
+                          onClick={navigateToRecommendations}
+                        >
+                          View more
+                        </button>
                       )}
-                      <button
-                        className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-8"
-                        onClick={navigateToRecommendations}
-                      >
-                        View more
-                      </button>
                     </>
                   )}
                 </div>
@@ -363,10 +364,8 @@ const Dashboard = () => {
             )}
             {teamsData.data.length > 0 && challengesData?.length == 0 && (
               <div className="flex items-center flex-col text-[16px] mt-10 gap-4">
-                <GrTest className="w-16 h-16 text-base-content" />
-                <p className="mb-6">
-                  You&apos;re all caught up! No challenges to display.
-                </p>
+                <MdOutlineImportantDevices className="w-16 h-16 text-base-content" />
+                <p className="mb-6">No challenges to display.</p>
               </div>
             )}
 

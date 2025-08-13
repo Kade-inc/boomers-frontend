@@ -535,7 +535,6 @@ function ChallengePage() {
                                       solution.user.profile.lastName
                                         ? `${solution.user.profile.firstName} ${solution.user.profile.lastName}`
                                         : solution.user.profile.username}
-                                      &apos;s Solution
                                     </p>
                                   </div>
                                 </Link>

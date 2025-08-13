@@ -84,27 +84,33 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
 
       {/* Dropdown Panel */}
       {isOpen && !disabled && (
-        <div className="absolute z-10 border mt-1 p-2 w-full max-h-60 overflow-auto text-base-content bg-base-100">
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search topics"
-            className="w-full p-1 border mb-2 text-[14px] bg-transparent font-body"
-          />
-          {filteredOptions.map((option) => (
-            <label key={option._id} className="block text-[14px]">
-              <input
-                type="checkbox"
-                checked={selected.some((item) => item._id === option._id)}
-                onChange={() => toggleOption(option)}
-              />
-              <span className="ml-1 font-body">{option.name}</span>
-            </label>
-          ))}
-          {filteredOptions.length === 0 && (
-            <p className="text-[12px] text-base-content">No topics found</p>
-          )}
+        <div className="absolute z-10 border mt-1 w-full max-h-60 text-base-content bg-base-100">
+          {/* Fixed Search Input */}
+          <div className="p-2 border-b bg-base-100 sticky top-0 z-20">
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search topics"
+              className="w-full p-1 border text-[14px] bg-transparent font-body"
+            />
+          </div>
+          {/* Scrollable Options */}
+          <div className="p-2 max-h-48 overflow-auto">
+            {filteredOptions.map((option) => (
+              <label key={option._id} className="block text-[14px]">
+                <input
+                  type="checkbox"
+                  checked={selected.some((item) => item._id === option._id)}
+                  onChange={() => toggleOption(option)}
+                />
+                <span className="ml-1 font-body">{option.name}</span>
+              </label>
+            ))}
+            {filteredOptions.length === 0 && (
+              <p className="text-[12px] text-base-content">No topics found</p>
+            )}
+          </div>
         </div>
       )}
     </div>

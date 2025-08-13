@@ -10,7 +10,8 @@ import JoinRequest from "../entities/JoinRequest";
 import ActionModal from "../components/Modals/ActionModal";
 import ApprovalModal from "../components/Modals/ApprovalModal";
 import RejectedModal from "../components/Modals/RejectedModal";
-import { CiCircleQuestion } from "react-icons/ci";
+import { FaUserCheck, FaUserClock } from "react-icons/fa";
+import { IoMdCloseCircleOutline } from "react-icons/io";
 
 const PendingRequestsPage = () => {
   const [expandAction, setExpandAction] = useState(true);
@@ -79,7 +80,7 @@ const PendingRequestsPage = () => {
               Dashboard
             </Link>
           </li>
-          <li>Recommendations</li>
+          <li>Requests</li>
         </ul>
       </div>
       <p className="text-[30px] font-semibold mb-[30px] mt-4">
@@ -88,7 +89,7 @@ const PendingRequestsPage = () => {
       <div className="flex gap-8 mb-[30px] justify-between md:justify-start">
         <p className="text-[18px] font-semibold">Pending your action</p>
         <div
-          className="border-[1px] border-yellow w-[100px] flex items-center gap-3 text-[12px] justify-center rounded-[1px] cursor-pointer"
+          className="border-[1px] border-base-content w-[100px] flex items-center gap-3 text-[12px] justify-center rounded-[1px] cursor-pointer"
           onClick={() => setExpandAction(!expandAction)}
         >
           {expandAction ? "Collapse" : "Expand"}
@@ -128,14 +129,11 @@ const PendingRequestsPage = () => {
                     {request.user_id?.profile?.firstName &&
                     request.user_id?.profile?.lastName
                       ? `${request.user_id.profile.firstName} ${request.user_id.profile.lastName}`
-                      : request.user_id?.profile?.firstName ||
-                        request.user_id?.profile?.lastName ||
-                        request.user_id?.username ||
-                        "Unknown User"}
+                      : request.user_id?.profile?.username || "Unknown User"}
                   </p>
 
                   <button
-                    className="bg-yellow text-darkgrey w-[62px] h-[25px] rounded-[3px]"
+                    className="bg-transparent border-[1px] border-white text-white w-[62px] h-[25px] rounded-[3px] hover:bg-white hover:text-darkgrey"
                     onClick={() => {
                       const modal = document.getElementById(
                         "my_modal_9",
@@ -153,7 +151,7 @@ const PendingRequestsPage = () => {
             ))
           ) : (
             <div className="flex flex-col items-center mt-2 w-full">
-              <CiCircleQuestion className="w-10 h-10" />
+              <FaUserClock className="w-10 h-10" />
               <p className="my-6 font-body">No pending requests.</p>
             </div>
           ))}
@@ -162,7 +160,7 @@ const PendingRequestsPage = () => {
       <div className="flex gap-8 mb-[30px] justify-between md:justify-start ">
         <p className="text-[18px] font-semibold">Pending approvals</p>
         <div
-          className="border-[1px] border-yellow w-[100px] flex items-center gap-3 text-[12px] justify-center rounded-[1px] cursor-pointer"
+          className="border-[1px] border-base-content w-[100px] flex items-center gap-3 text-[12px] justify-center rounded-[1px] cursor-pointer"
           onClick={() => setExpandApproval(!expandApproval)}
         >
           {expandApproval ? "Collapse" : "Expand"}
@@ -204,17 +202,14 @@ const PendingRequestsPage = () => {
                     {request.owner_id.profile?.firstName &&
                     request.owner_id.profile?.lastName
                       ? `${request.owner_id.profile?.firstName} ${request.owner_id.profile.lastName}`
-                      : request.owner_id.profile?.firstName ||
-                        request.owner_id.profile?.lastName ||
-                        request.owner_id.profile?.username ||
-                        "Unknown User"}
+                      : request.owner_id.profile?.username || "Unknown User"}
                   </p>
                 </div>
               </div>
             ))
           ) : (
             <div className="flex flex-col items-center mt-2 w-full">
-              <CiCircleQuestion className="w-10 h-10 text-base-content" />
+              <FaUserCheck className="w-10 h-10 text-base-content" />
               <p className="my-6 font-body text-base-content">
                 No pending approvals.
               </p>
@@ -227,7 +222,7 @@ const PendingRequestsPage = () => {
           Rejected Requests
         </p>
         <div
-          className="border-[1px] border-yellow flex items-center gap-3 text-[12px] justify-center rounded-[1px] cursor-pointer w-2/6 md:w-[100px] py-1"
+          className="border-[1px] border-base-content flex items-center gap-3 text-[12px] justify-center rounded-[1px] cursor-pointer w-2/6 md:w-[100px] py-1"
           onClick={() => setExpandRequest(!expandRequest)}
         >
           {expandRequest ? "Collapse" : "Expand"}
@@ -237,11 +232,11 @@ const PendingRequestsPage = () => {
             <MdOutlineKeyboardArrowDown className="size-4" />
           )}
         </div>
-        {declinedRequests.length > 0 && (
+        {/* {declinedRequests.length > 0 && (
           <button className="bg-red-600 text-white text-[14px] px-4 py-1 rounded-[3px] ">
             Clear
           </button>
-        )}
+        )} */}
       </div>
       <div className="flex gap-6 pb-[50px] flex-wrap">
         {expandRequest && declinedRequests.length > 0 ? (
@@ -261,13 +256,10 @@ const PendingRequestsPage = () => {
                   {reject.owner_id.profile?.firstName &&
                   reject.owner_id.profile?.lastName
                     ? `${reject.owner_id.profile?.firstName} ${reject.owner_id.profile.lastName}`
-                    : reject.owner_id.profile?.firstName ||
-                      reject.owner_id.profile?.lastName ||
-                      reject.owner_id.profile?.username ||
-                      "Unknown User"}
+                    : reject.owner_id.profile?.username || "Unknown User"}
                 </p>
                 <button
-                  className="bg-yellow text-darkgrey w-[62px] h-[25px] rounded-[3px]"
+                  className="bg-transparent border-[1px] border-white text-white w-[62px] h-[25px] rounded-[3px] hover:bg-white hover:text-darkgrey"
                   onClick={() => {
                     const modal = document.getElementById(
                       "my_modal_15",
@@ -285,7 +277,7 @@ const PendingRequestsPage = () => {
           ))
         ) : (
           <div className="flex flex-col items-center mt-2 w-full">
-            <CiCircleQuestion className="w-10 h-10 text-base-content" />
+            <IoMdCloseCircleOutline className="w-10 h-10 text-base-content" />
             <p className="my-6 font-body text-base-content">
               No rejected requests.
             </p>
