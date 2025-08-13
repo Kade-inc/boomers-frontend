@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import ChallengesCard from "../components/ChallengesCard";
 import MemberCard from "../components/MemberCard";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import TeamMember from "../entities/TeamMember";
 import useTeam from "../hooks/useTeam";
 import useTeamChallenges from "../hooks/Challenges/useTeamChallenges";
@@ -21,8 +21,16 @@ import { HiOutlineUserGroup } from "react-icons/hi2";
 import { GrTest } from "react-icons/gr";
 import TeamOwnerDialog from "../components/Modals/TeamOwnerDialog";
 import AuthenticationModal from "../components/Modals/AuthenticationModal";
+import { IoArrowBack } from "react-icons/io5";
 
 const TeamDetailsPage = () => {
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+
+  const isRecommendation = useMemo(() => {
+    return params.get("recommendation") || false;
+  }, [params]);
+
   const [activeTab, setActiveTab] = useState("members");
   const { teamId } = useParams<{ teamId: string }>();
   const [selectedTeamMember, setSelectedTeamMember] =
@@ -290,6 +298,14 @@ const TeamDetailsPage = () => {
         )} */}
         {team && (
           <>
+            {isRecommendation && (
+              <Link to={`/dashboard`} className="text-base-content font-body">
+                <div className="flex items-center gap-2 mb-2 mt-4 md:mt-0">
+                  <IoArrowBack />
+                  <span>Back</span>
+                </div>
+              </Link>
+            )}
             <div
               className="card bg-gradient-to-b from-[#005E78] to-[#00989B] text-white p-0 w-full h-[200px] rounded-[3px] font-body"
               style={{ background: team?.teamColor }}

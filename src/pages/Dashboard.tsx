@@ -8,7 +8,7 @@ import useAuthStore from "../stores/useAuthStore";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useRecommendationStore from "../stores/useRecommendationStore";
-import RecommendationsModal from "../components/Modals/RecommendationsModal";
+// import RecommendationsModal from "../components/Modals/RecommendationsModal";
 import TeamCardCarousel from "../components/Carousels/TeamCardCarousel";
 import ChallengeCardCarousel from "../components/Carousels/ChallengeCardCarousel";
 import useChallenges from "../hooks/Challenges/useChallenges";
@@ -122,15 +122,15 @@ const Dashboard = () => {
   const handleChallengesFilter = (filter: string) => {
     setChallengesFilter(filter);
   };
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedRecommendation, setSelectedRecommendation] =
-    useState<Team | null>(null);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [selectedRecommendation, setSelectedRecommendation] =
+  //   useState<Team | null>(null);
 
-  const openModal = (team: Team) => {
-    setIsModalOpen(true);
-    setSelectedRecommendation(team);
-  };
-  const closeModal = () => setIsModalOpen(false);
+  // const openModal = (team: Team) => {
+  //   setIsModalOpen(true);
+  //   setSelectedRecommendation(team);
+  // };
+  // const closeModal = () => setIsModalOpen(false);
 
   if (teamsLoading || recommendationsLoading || challengesLoading) {
     return (
@@ -280,17 +280,21 @@ const Dashboard = () => {
                               key={recommendation._id}
                               team={recommendation}
                               styles={`w-full h-[180px] md:w-[290px] md:h-[150px] 2xl:w-[360px] 2xl:h-[180px] mb-3 md:mb-0 md:ml-6`}
-                              onClick={() => openModal(recommendation)}
+                              onClick={() =>
+                                navigate(
+                                  `/teams/${recommendation._id}?recommendation=true`,
+                                )
+                              }
                             />
                           ))}
                       </div>
-                      {selectedRecommendation !== null && (
+                      {/* {selectedRecommendation !== null && (
                         <RecommendationsModal
                           isOpen={isModalOpen}
                           onClose={closeModal}
                           modalData={selectedRecommendation}
                         />
-                      )}
+                      )} */}
                       {teamRecommendations?.length > 2 && (
                         <button
                           className="px-8 py-2.5 text-[14px] font-regular bg-[#000] rounded-[4px] text-white mt-8"
