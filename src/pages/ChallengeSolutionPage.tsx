@@ -1003,7 +1003,7 @@ const ChallengeSolutionPage = () => {
                           className="bg-yellow text-darkgrey px-8 py-2 rounded font-medium mt-4"
                           onClick={() => setIsRating(true)}
                         >
-                          Rate Solution
+                          Click to Rate
                         </button>
                       )}
                       {isRating && (
@@ -1059,7 +1059,7 @@ const ChallengeSolutionPage = () => {
                     })}
                   </div>
 
-                  <p className="text-white font-medium">Mentor Rating</p>
+                  <p className="text-white font-medium">Team Owner Rating</p>
                   <div className="flex flex-row gap-2">
                     {[...Array(5)].map((_, index) => {
                       const currentRate = index + 1;
