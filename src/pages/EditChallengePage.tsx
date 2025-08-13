@@ -106,6 +106,7 @@ function EditChallengePage() {
           due_date: challengeNameItems.due_date,
           difficulty: Number(challengeNameItems.difficulty),
           description: description,
+          valid: true,
         },
       });
 
