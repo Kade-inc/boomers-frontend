@@ -54,6 +54,8 @@ const ChallengeSolutionPage = () => {
     refetch: refetchSolution,
   } = useGetSolution(challengeId!, solutionId!);
 
+  console.log("SOL: ", solution);
+
   useEffect(() => {
     if (
       solutionError instanceof AxiosError &&
@@ -602,7 +604,7 @@ const ChallengeSolutionPage = () => {
                   onChange={(e) => setStepInput(e.target.value)}
                 />
                 <button
-                  className="bg-purple-700 text-white px-8 py-2 rounded font-medium"
+                  className="bg-[#00989B] text-white px-8 py-2 rounded font-medium"
                   onClick={handleAddStep}
                   disabled={!stepInput.trim() || isAddingStep}
                 >
@@ -645,10 +647,11 @@ const ChallengeSolutionPage = () => {
               solution={solution}
             />
             <h2 className="text-md font-bold">
-              {solution.user.profile.firstName +
-                " " +
-                solution.user.profile.lastName ||
-                solution.user.profile.username}
+              {solution.user.profile.firstName && solution.user.profile.lastName
+                ? solution.user.profile.firstName +
+                  " " +
+                  solution.user.profile.lastName
+                : solution.user.profile.username}
               &apos;s solution
             </h2>
 
@@ -705,20 +708,22 @@ const ChallengeSolutionPage = () => {
                               <FaCheck />
                             </div>
                           ) : (
-                            <button
-                              className="bg-yellow text-darkgrey px-6 py-1 text-sm rounded font-medium"
-                              onClick={() => handleCompleteStep(step._id)}
-                              title="Edit"
-                              disabled={updatingStepId === step._id}
-                            >
-                              {updatingStepId === step._id ? (
-                                <span className="loading loading-dots loading-xs"></span>
-                              ) : (
-                                "Complete"
-                              )}
-                            </button>
+                            isOwner() && (
+                              <button
+                                className="bg-yellow text-darkgrey px-6 py-1 text-sm rounded font-medium"
+                                onClick={() => handleCompleteStep(step._id)}
+                                title="Edit"
+                                disabled={updatingStepId === step._id}
+                              >
+                                {updatingStepId === step._id ? (
+                                  <span className="loading loading-dots loading-xs"></span>
+                                ) : (
+                                  "Complete"
+                                )}
+                              </button>
+                            )
                           )}
-                          {!step.completed && (
+                          {!step.completed && isOwner() && (
                             <button
                               className="ml-2 text-teal-500"
                               onClick={() => handleEditStep(idx)}
@@ -885,20 +890,22 @@ const ChallengeSolutionPage = () => {
                                 <FaCheck />
                               </div>
                             ) : (
-                              <button
-                                className="bg-yellow text-darkgrey px-6 py-1 text-sm rounded font-medium"
-                                onClick={() => handleCompleteStep(step._id)}
-                                title="Edit"
-                                disabled={updatingStepId === step._id}
-                              >
-                                {updatingStepId === step._id ? (
-                                  <span className="loading loading-dots loading-xs"></span>
-                                ) : (
-                                  "Complete"
-                                )}
-                              </button>
+                              isOwner() && (
+                                <button
+                                  className="bg-yellow text-darkgrey px-6 py-1 text-sm rounded font-medium"
+                                  onClick={() => handleCompleteStep(step._id)}
+                                  title="Edit"
+                                  disabled={updatingStepId === step._id}
+                                >
+                                  {updatingStepId === step._id ? (
+                                    <span className="loading loading-dots loading-xs"></span>
+                                  ) : (
+                                    "Complete"
+                                  )}
+                                </button>
+                              )
                             )}
-                            {!step.completed && (
+                            {!step.completed && isOwner() && (
                               <button
                                 className="ml-2 text-teal-500"
                                 onClick={() => handleEditStep(idx)}
