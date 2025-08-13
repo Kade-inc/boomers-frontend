@@ -4,23 +4,27 @@ import useGetUser from "../../hooks/useGetUser";
 import React from "react";
 import useAddTeamMember from "../../hooks/useAddTeamMember";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
+import useAuthStore from "../../stores/useAuthStore";
 
 interface AddMemberDialogProps {
   teamId: string;
 }
 
 const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
+  const { user } = useAuthStore();
   const [viewClicked, setViewClicked] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [userId, setUserId] = useState<string>("");
   const [userName, setUserName] = useState<string>("");
   const [isAdding, setIsAdding] = useState(false);
 
-  const { data: user, isLoading: isUserLoading } = useGetUser(userId);
+  const { data: currentUser, isLoading: isUserLoading } = useGetUser(userId);
 
   // Only fetch users when searchQuery is not empty
   const { data, isLoading, error } = useGetAllUsers(searchQuery);
-  const users = Array.isArray(data) ? data : [];
+  const users = Array.isArray(data)
+    ? data.filter((dataUser) => dataUser._id !== user.user_id)
+    : [];
   const { mutate: addTeamMember } = useAddTeamMember();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -179,20 +183,31 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
             </a>
             {isUserLoading ? (
               <p className="text-white">Loading user details...</p>
-            ) : user ? (
+            ) : currentUser ? (
               <>
+                <div className="h-[95px] flex mt-6 mb-3">
+                  {currentUser?.profile_picture ? (
+                    <img
+                      className="h-[81px] w-[81px] rounded-full bg-white"
+                      src={currentUser?.profile_picture}
+                      alt="User avatar"
+                    />
+                  ) : (
+                    <UserCircleIcon className="h-[81px] w-[81px] text-white rounded-full" />
+                  )}
+                </div>
                 <p className="text-white mb-6">
-                  {user?.firstName && user?.lastName
-                    ? `${user?.firstName} ${user?.lastName}`
-                    : user?.username || "Username not available"}
+                  {currentUser?.firstName && currentUser?.lastName
+                    ? `${currentUser?.firstName} ${currentUser?.lastName}`
+                    : currentUser?.username || "Username not available"}
                 </p>
 
-                {user.interests && (
+                {currentUser.interests && (
                   <div className="flex items-center mb-2 font-regular text-[14px] text-white">
-                    Interests: {user?.interests?.domain}{" "}
+                    Interests: {currentUser?.interests?.domain}{" "}
                     <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
-                    {user?.interests?.subdomain}{" "}
-                    {user?.interests?.domainTopics.map(
+                    {currentUser?.interests?.subdomain}{" "}
+                    {currentUser?.interests?.domainTopics.map(
                       (topic: string, index: number) => (
                         <React.Fragment key={index}>
                           <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
@@ -202,7 +217,7 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({ teamId }) => {
                     )}
                   </div>
                 )}
-                {!user.interests && (
+                {!currentUser.interests && (
                   <p className="flex items-center mb-2 font-regular text-[14px] text-white">
                     No interests
                   </p>
