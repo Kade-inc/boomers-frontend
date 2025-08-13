@@ -79,7 +79,7 @@ const PendingRequestsPage = () => {
               Dashboard
             </Link>
           </li>
-          <li>Recommendations</li>
+          <li>Requests</li>
         </ul>
       </div>
       <p className="text-[30px] font-semibold mb-[30px] mt-4">
