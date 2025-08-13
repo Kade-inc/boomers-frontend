@@ -237,11 +237,11 @@ const PendingRequestsPage = () => {
             <MdOutlineKeyboardArrowDown className="size-4" />
           )}
         </div>
-        {declinedRequests.length > 0 && (
+        {/* {declinedRequests.length > 0 && (
           <button className="bg-red-600 text-white text-[14px] px-4 py-1 rounded-[3px] ">
             Clear
           </button>
-        )}
+        )} */}
       </div>
       <div className="flex gap-6 pb-[50px] flex-wrap">
         {expandRequest && declinedRequests.length > 0 ? (
