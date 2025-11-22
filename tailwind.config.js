@@ -16,13 +16,14 @@ export default {
       },
       fontFamily: {
         body: ["Montserrat", "sans-serif"],
-        heading: ["Changa One", "sans-serif"],
+        heading: ["Bebas Neue", "sans-serif"],
       },
       colors: {
         error: "#D92D2D",
         darkgrey: "#393E46",
         lightgrey: "#5C636E",
         yellow: "#F8B500",
+        green: "#34A853",
         success: "#1AC171",
         redish: "FF2F2F",
       },
