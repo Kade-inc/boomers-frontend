@@ -12,6 +12,7 @@ import {
   EllipsisHorizontalIcon,
   PresentationChartBarIcon,
   TrashIcon,
+  ShareIcon,
 } from "@heroicons/react/24/outline";
 import { FaRegEdit } from "react-icons/fa";
 import ChallengeStatsModal from "../components/Modals/ChallengeStatsModal";
@@ -29,6 +30,7 @@ import toast, { Toaster } from "react-hot-toast";
 import usePostChallengeComment from "../hooks/Challenges/usePostChallengeComment";
 import SolutionDisclaimer from "../components/Modals/SolutionDisclaimer";
 import useGetAllChallengeSolutions from "../hooks/ChallengeSolution/useGetAllChallengeSolutions";
+import useShareUrl from "../hooks/useShareUrl";
 
 function ChallengePage() {
   const [showStatsModal, setShowStatsModal] = useState(false);
@@ -99,6 +101,13 @@ function ChallengePage() {
     usePostChallengeComment();
 
   const deleteCommentMutation = useDeleteComment();
+
+  // Share URL hook
+  const { share: handleShare, isLoading: isShareLoading } = useShareUrl({
+    resourceType: "challenge",
+    resourceId: challengeId || "",
+    frontendPath: `/challenge/${challengeId}`,
+  });
 
   const isOwner = () => {
     return user.user_id === team?.members[0]._id;
@@ -424,6 +433,20 @@ function ChallengePage() {
                   </div>
                 </div>
               )}
+              <button
+                className="btn bg-transparent border-yellow hover:bg-yellow/80 hover:text-darkgrey"
+                onClick={handleShare}
+                disabled={isShareLoading}
+              >
+                {isShareLoading ? (
+                  <span className="loading loading-spinner loading-sm"></span>
+                ) : (
+                  <>
+                    Share
+                    <ShareIcon className="w-5 h-5" />
+                  </>
+                )}
+              </button>
             </div>
             <div className="flex justify-between mt-10">
               <div className="w-full md:w-[55%] xl:w-[60%]">

@@ -22,6 +22,8 @@ import { GrTest } from "react-icons/gr";
 import TeamOwnerDialog from "../components/Modals/TeamOwnerDialog";
 import AuthenticationModal from "../components/Modals/AuthenticationModal";
 import { IoArrowBack } from "react-icons/io5";
+import useShareUrl from "../hooks/useShareUrl";
+import { ShareIcon } from "@heroicons/react/24/outline";
 
 const TeamDetailsPage = () => {
   const location = useLocation();
@@ -82,6 +84,13 @@ const TeamDetailsPage = () => {
 
   const { mutate: deleteChallenges, isPending: isDeleting } =
     useDeleteChallenges();
+
+  // Share URL hook
+  const { share: handleShare, isLoading: isShareLoading } = useShareUrl({
+    resourceType: "team",
+    resourceId: teamId || "",
+    frontendPath: `/teams/${teamId}`,
+  });
 
   // Delete selected challenges
   const handleDeleteDrafts = () => {
@@ -323,6 +332,20 @@ const TeamDetailsPage = () => {
                           Edit
                         </button>
                       )}
+                      <button
+                        className="text-white text-[14px] bg-transparent border border-white font-body font-medium rounded px-4 py-1 hover:bg-white hover:text-darkgrey"
+                        onClick={handleShare}
+                        disabled={isShareLoading}
+                      >
+                        {isShareLoading ? (
+                          <span className="loading loading-spinner loading-xs"></span>
+                        ) : (
+                          <span className="flex items-center gap-1">
+                            Share
+                            <ShareIcon className="w-4 h-4" />
+                          </span>
+                        )}
+                      </button>
                     </div>
 
                     <p className="mb-3 text-[18px] font-medium">
