@@ -16,7 +16,7 @@ import { TbEdit } from "react-icons/tb";
 import { IoIosClose } from "react-icons/io";
 import useDeleteSolutionStep from "../hooks/ChallengeSolution/useDeleteSolutionStep";
 import useUpdateSolution from "../hooks/ChallengeSolution/useUpdateSolution";
-import { toast } from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast";
 import { PiChatsBold, PiConfettiDuotone } from "react-icons/pi";
 import {
   EllipsisHorizontalIcon,
@@ -40,6 +40,7 @@ import { AxiosError } from "axios";
 import useGetAllSolutionRatings from "../hooks/ChallengeSolution/useGetAllSolutionRatings";
 import usePostSolutionRating from "../hooks/ChallengeSolution/usePostSolutionRating";
 import useUpdateSolutionRating from "../hooks/ChallengeSolution/useUpdateSolutionRating";
+import useShareUrl from "../hooks/useShareUrl";
 
 const ChallengeSolutionPage = () => {
   const navigate = useNavigate();
@@ -144,6 +145,13 @@ const ChallengeSolutionPage = () => {
 
   const { mutate: updateSolutionRating, isPending: isUpdatingSolutionRating } =
     useUpdateSolutionRating();
+
+  // Share URL hook
+  const { share: handleShare, isLoading: isShareLoading } = useShareUrl({
+    resourceType: "solution",
+    resourceId: solutionId || "",
+    frontendPath: `/challenge/${challengeId}/solution/${solutionId}`,
+  });
 
   const handleRateSolution = (currentRate: number | null) => {
     if (!currentRate) return;
@@ -470,6 +478,32 @@ const ChallengeSolutionPage = () => {
 
   return (
     <>
+      <Toaster
+        position="bottom-center"
+        reverseOrder={true}
+        toastOptions={{
+          success: {
+            style: {
+              background: "#1AC171",
+              color: "white",
+            },
+            iconTheme: {
+              primary: "white",
+              secondary: "#1AC171",
+            },
+          },
+          error: {
+            style: {
+              background: "#D92D2D",
+              color: "white",
+            },
+            iconTheme: {
+              primary: "white",
+              secondary: "#D92D2D",
+            },
+          },
+        }}
+      />
       <div className="h-screen bg-base-100 px-5 md:px-10 pt-10 font-body font-semibold">
         <div>
           <Link
@@ -480,10 +514,21 @@ const ChallengeSolutionPage = () => {
           </Link>
         </div>
 
-        <div className="flex items-center justify-center mb-10">
+        <div className="flex items-center justify-center mb-10 gap-4">
           <h1 className="font-heading text-4xl">
             <span>{solution?.challenge.challenge_name}</span>
           </h1>
+          <button
+            className="btn bg-transparent border-yellow hover:bg-yellow/80 hover:text-darkgrey px-10"
+            onClick={handleShare}
+            disabled={isShareLoading}
+          >
+            {isShareLoading ? (
+              <span className="loading loading-spinner loading-xs"></span>
+            ) : (
+              "Share"
+            )}
+          </button>
         </div>
 
         {!solutionDeleted && solution?.status === 0 && (

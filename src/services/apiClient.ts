@@ -2023,6 +2023,26 @@ class APIClient {
       throw axiosError;
     }
   };
+
+  // Create a short URL for sharing
+  createShortUrl = async (
+    originalUrl: string,
+    resourceType: "challenge" | "solution" | "team",
+    resourceId: string,
+  ): Promise<{ shortUrl: string; code: string; isExisting: boolean }> => {
+    try {
+      const response = await this.axiosInstance.post("/api/short-urls", {
+        originalUrl,
+        resourceType,
+        resourceId,
+      });
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error("Error creating short URL");
+      throw axiosError;
+    }
+  };
 }
 
 export default APIClient;
