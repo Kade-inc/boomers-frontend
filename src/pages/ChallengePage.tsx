@@ -12,6 +12,7 @@ import {
   EllipsisHorizontalIcon,
   PresentationChartBarIcon,
   TrashIcon,
+  ShareIcon,
 } from "@heroicons/react/24/outline";
 import { FaRegEdit } from "react-icons/fa";
 import ChallengeStatsModal from "../components/Modals/ChallengeStatsModal";
@@ -433,14 +434,17 @@ function ChallengePage() {
                 </div>
               )}
               <button
-                className="btn bg-transparent border-yellow hover:bg-yellow/80 hover:text-darkgrey px-10"
+                className="btn bg-transparent border-yellow hover:bg-yellow/80 hover:text-darkgrey"
                 onClick={handleShare}
                 disabled={isShareLoading}
               >
                 {isShareLoading ? (
                   <span className="loading loading-spinner loading-sm"></span>
                 ) : (
-                  "Share"
+                  <>
+                    Share
+                    <ShareIcon className="w-5 h-5" />
+                  </>
                 )}
               </button>
             </div>

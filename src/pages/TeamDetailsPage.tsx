@@ -23,6 +23,7 @@ import TeamOwnerDialog from "../components/Modals/TeamOwnerDialog";
 import AuthenticationModal from "../components/Modals/AuthenticationModal";
 import { IoArrowBack } from "react-icons/io5";
 import useShareUrl from "../hooks/useShareUrl";
+import { ShareIcon } from "@heroicons/react/24/outline";
 
 const TeamDetailsPage = () => {
   const location = useLocation();
@@ -339,7 +340,10 @@ const TeamDetailsPage = () => {
                         {isShareLoading ? (
                           <span className="loading loading-spinner loading-xs"></span>
                         ) : (
-                          "Share"
+                          <span className="flex items-center gap-1">
+                            Share
+                            <ShareIcon className="w-4 h-4" />
+                          </span>
                         )}
                       </button>
                     </div>

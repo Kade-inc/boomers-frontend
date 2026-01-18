@@ -24,6 +24,7 @@ import {
   ChatBubbleOvalLeftIcon,
 } from "@heroicons/react/24/outline";
 import { UserCircleIcon, XCircleIcon } from "@heroicons/react/24/solid";
+import { ShareIcon } from "@heroicons/react/24/outline";
 import { useGetSolutionStepComments } from "../hooks/ChallengeSolution/useGetSolutionStepComments";
 import useAuthStore from "../stores/useAuthStore";
 import { useDeleteSolutionStepComment } from "../hooks/ChallengeSolution/useDeleteSolutionStepComment";
@@ -519,14 +520,17 @@ const ChallengeSolutionPage = () => {
             <span>{solution?.challenge.challenge_name}</span>
           </h1>
           <button
-            className="btn bg-transparent border-yellow hover:bg-yellow/80 hover:text-darkgrey px-10"
+            className="btn bg-transparent border-yellow hover:bg-yellow/80 hover:text-darkgrey"
             onClick={handleShare}
             disabled={isShareLoading}
           >
             {isShareLoading ? (
               <span className="loading loading-spinner loading-xs"></span>
             ) : (
-              "Share"
+              <>
+                Share
+                <ShareIcon className="w-5 h-5" />
+              </>
             )}
           </button>
         </div>
