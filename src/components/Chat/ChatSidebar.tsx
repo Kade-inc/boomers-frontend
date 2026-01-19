@@ -46,7 +46,7 @@ const ChatSidebar = ({ onNewChatClick, userProfiles }: ChatSidebarProps) => {
         name: chat.groupName || "Group Chat",
         avatarUrl: undefined,
         isGroup: true,
-        groupColor: "#6366f1", // default group color
+        groupColor: chat.teamColor || "#6366f1", // use team color if available, fallback to default
       };
     }
 

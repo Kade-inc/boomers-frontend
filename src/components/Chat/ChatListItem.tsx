@@ -59,10 +59,10 @@ const ChatListItem = ({
             alt={name}
             className="w-12 h-12 rounded-full object-cover"
           />
-        ) : isGroup && groupColor ? (
+        ) : isGroup ? (
           <div
             className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold"
-            style={{ backgroundColor: groupColor }}
+            style={{ backgroundColor: groupColor || "#6366f1" }}
           >
             {name.charAt(0).toUpperCase()}
           </div>
@@ -90,7 +90,7 @@ const ChatListItem = ({
               <span className="bg-yellow text-darkgrey text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                 {unreadCount > 9 ? "9+" : unreadCount}
               </span>
-            ) : (
+            ) : lastMessage ? (
               <svg
                 className="w-4 h-4 text-base-content/40"
                 fill="currentColor"
@@ -98,7 +98,7 @@ const ChatListItem = ({
               >
                 <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
               </svg>
-            )}
+            ) : null}
           </div>
         </div>
       </div>

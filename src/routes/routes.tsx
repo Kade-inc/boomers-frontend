@@ -208,7 +208,12 @@ const router = createBrowserRouter([
       },
       {
         path: "chat",
-        element: withSuspense(<ChatLayout />),
+        element: (
+          <ProtectedRoute
+            element={withSuspense(<ChatLayout />)}
+            fallback={<HomePage />}
+          />
+        ),
         children: [
           {
             path: ":chatId",

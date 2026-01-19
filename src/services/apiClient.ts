@@ -2103,6 +2103,30 @@ class APIClient {
     }
   };
 
+  // Create a group chat for a team
+  createGroupChat = async (
+    teamId: string,
+    groupName: string,
+    teamColor?: string,
+  ) => {
+    try {
+      const response = await this.axiosInstance.post(
+        `/api/chats/group`,
+        { teamId, groupName, teamColor },
+        {
+          headers: {
+            requiresAuth: true,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error("Error creating group chat");
+      throw axiosError;
+    }
+  };
+
   // Find a chat by members
   findChat = async (members: string[]) => {
     try {

@@ -122,8 +122,27 @@ const ChatSearchModal = ({ isOpen, onClose }: ModalTriggerProps) => {
           }
         }
       } else {
-        // For teams, implement group chat logic later
-        toast.error("Team chats coming soon!");
+        // For teams, create a group chat with all team members
+        try {
+          const response = await apiClient.createGroupChat(
+            result._id,
+            result.name,
+            result.teamColor,
+          );
+          onClose();
+
+          // Navigate to the chat (either newly created or existing)
+          const chatId = response.data?._id || response._id;
+          if (response.isExisting) {
+            toast.success("Opening existing team chat");
+          } else {
+            toast.success("Team chat created!");
+          }
+          navigate(`/chat/${chatId}`);
+        } catch (error) {
+          console.error("Error creating group chat:", error);
+          throw error;
+        }
       }
     } catch (error) {
       console.error("Error creating chat:", error);
