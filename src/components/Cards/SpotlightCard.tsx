@@ -36,7 +36,7 @@ const SpotlightCard = ({
       >
         <div className={`card-body py-4 px-4 justify-between ${subStyles}`}>
           <div className="flex justify-between w-full">
-            <h2 className="font-medium w-[65%] break-words">
+            <h2 className="font-medium w-[85%] break-words">
               {team.name || name}
             </h2>
             {section === "dashboard-section" && (
