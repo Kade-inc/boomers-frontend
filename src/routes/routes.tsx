@@ -34,7 +34,7 @@ const DashboardOverview = lazy(
   () => import("../pages/admin/DashboardOverview"),
 );
 const DomainsAdminView = lazy(() => import("../pages/admin/DomainsAdminView"));
-// const Chat = lazy(() => import("../components/Chat"));
+const Chat = lazy(() => import("../components/Chat"));
 const AllSearchResultsPage = lazy(
   () => import("../pages/AllSearchResultsPage"),
 );
@@ -42,7 +42,7 @@ const ChallengeSolutionPage = lazy(
   () => import("../pages/ChallengeSolutionPage"),
 );
 const AdminLogin = lazy(() => import("../pages/AdminLogin"));
-// const ChatLayout = lazy(() => import("../pages/ChatLayout"));
+const ChatLayout = lazy(() => import("../pages/ChatLayout"));
 
 const loadingDots = (
   <div className="flex justify-center items-center h-screen bg-base-100">
@@ -206,16 +206,16 @@ const router = createBrowserRouter([
           />
         ),
       },
-      // {
-      //   path: "chat",
-      //   element: withSuspense(<ChatLayout />),
-      //   children: [
-      //     {
-      //       path: ":chatId",
-      //       element: withSuspense(<Chat />),
-      //     },
-      //   ],
-      // },
+      {
+        path: "chat",
+        element: withSuspense(<ChatLayout />),
+        children: [
+          {
+            path: ":chatId",
+            element: withSuspense(<Chat />),
+          },
+        ],
+      },
     ],
   },
   {

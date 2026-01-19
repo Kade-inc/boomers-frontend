@@ -363,29 +363,29 @@ function NavigationBar() {
                   <span className={"ml-[10px]"}>Dashboard</span>
                 </div>
               </Link>
-              {/* <Link
-            className={
-              pathname === "/chat"
-                ? "btn btn-ghost bg-yellow rounded-full"
-                : "flex items-center"
-            }
-            to="/chat"
-          >
-            <div
-              className={`flex items-center text-[16px] font-body font-normal ${pathname === "/chat" ? "text-darkgrey" : ""}`}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="size-6"
+              <Link
+                className={
+                  pathname === "/chat"
+                    ? "btn btn-ghost bg-yellow rounded-full"
+                    : "flex items-center"
+                }
+                to="/chat"
               >
-                <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
-                <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
-              </svg>
-              <span className={"ml-[10px]"}>Messages</span>
-            </div>
-          </Link> */}
+                <div
+                  className={`flex items-center text-[16px] font-body font-normal ${pathname === "/chat" ? "text-darkgrey" : ""}`}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="size-6"
+                  >
+                    <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
+                    <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
+                  </svg>
+                  <span className={"ml-[10px]"}>Messages</span>
+                </div>
+              </Link>
 
               <Link
                 className={
@@ -498,29 +498,31 @@ function NavigationBar() {
                     </div>
                   </Link>
                 </li>
-                {/* <li className="lg:hidden">
-              <Link
-                className={
-                  pathname === "/chat"
-                    ? "bg-yellow font-semibold py-4 my-1 text-darkgrey"
-                    : "py-4 my-1 hover:bg-yellow"
-                }
-                to="/chat"
-              >
-                <div className="flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="size-6"
+                <li className="lg:hidden">
+                  <Link
+                    className={
+                      pathname === "/chat"
+                        ? "bg-yellow font-semibold py-4 my-1 text-darkgrey"
+                        : "py-4 my-1 hover:bg-yellow"
+                    }
+                    to="/chat"
                   >
-                    <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
-                    <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
-                  </svg>
-                  <p className="text-sm font-body font-normal ml-4">Messages</p>
-                </div>
-              </Link>
-            </li> */}
+                    <div className="flex items-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="size-5"
+                      >
+                        <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
+                        <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
+                      </svg>
+                      <p className="text-sm font-body font-normal ml-4">
+                        Messages
+                      </p>
+                    </div>
+                  </Link>
+                </li>
                 <li className="lg:hidden">
                   <Link
                     className={

@@ -2043,6 +2043,83 @@ class APIClient {
       throw axiosError;
     }
   };
+
+  // Get messages for a chat
+  getMessages = async (chatId: string) => {
+    try {
+      const response = await this.axiosInstance.get(`/api/messages/${chatId}`, {
+        headers: {
+          requiresAuth: true,
+        },
+      });
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error("Error fetching messages");
+      throw axiosError;
+    }
+  };
+
+  // Send a message
+  sendMessage = async (chatId: string, text: string) => {
+    try {
+      const response = await this.axiosInstance.post(
+        `/api/messages`,
+        { chatId, text },
+        {
+          headers: {
+            requiresAuth: true,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error("Error sending message");
+      throw axiosError;
+    }
+  };
+
+  // Create a new chat
+  createChat = async (members: string[]) => {
+    try {
+      const response = await this.axiosInstance.post(
+        `/api/chats`,
+        { members },
+        {
+          headers: {
+            requiresAuth: true,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      // Don't show error for existing chat (409)
+      if (axiosError.response?.status !== 409) {
+        toast.error("Error creating chat");
+      }
+      throw axiosError;
+    }
+  };
+
+  // Find a chat by members
+  findChat = async (members: string[]) => {
+    try {
+      const response = await this.axiosInstance.get(
+        `/api/chats/find?members=${members.join(",")}`,
+        {
+          headers: {
+            requiresAuth: true,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      throw axiosError;
+    }
+  };
 }
 
 export default APIClient;

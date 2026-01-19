@@ -1,3 +1,5 @@
+import { ChatMessage } from "./ChatMessage";
+
 export interface Chat {
   _id: string;
   members: string[];
@@ -7,4 +9,5 @@ export interface Chat {
   __v: number;
   groupName?: string;
   admin?: string;
+  lastMessage?: ChatMessage | null;
 }
