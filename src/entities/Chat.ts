@@ -9,5 +9,7 @@ export interface Chat {
   __v: number;
   groupName?: string;
   admin?: string;
+  teamId?: string;
+  teamColor?: string;
   lastMessage?: ChatMessage | null;
 }
