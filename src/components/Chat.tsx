@@ -1,10 +1,10 @@
 import { useParams, useOutletContext } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import ChatConversation from "./Chat/ChatConversation";
 import useAuthStore from "../stores/useAuthStore";
 import { useGetChats } from "../hooks/Chats/useGetChats";
 import { Chat as ChatType } from "../entities/Chat";
-import APIClient from "../services/apiClient";
+import { useGetUserProfileById } from "../hooks/useGetUserProfileById";
 
 interface UserProfile {
   user_id: string;
@@ -31,8 +31,6 @@ interface OutletContext {
   setDetailsProfile: (profile: DetailsProfile | null) => void;
 }
 
-const apiClient = new APIClient("/api/users");
-
 const Chat = () => {
   const { chatId } = useParams<{ chatId: string }>();
   const { user } = useAuthStore();
@@ -42,50 +40,32 @@ const Chat = () => {
   const setDetailsProfile = context?.setDetailsProfile;
 
   const { data: chats } = useGetChats(user?.user_id || "");
-  const [currentChat, setCurrentChat] = useState<ChatType | null>(null);
-  const [otherMemberProfile, setOtherMemberProfile] = useState<
-    UserProfile | undefined
-  >();
 
-  // Find the current chat
-  useEffect(() => {
-    if (chats && chatId) {
-      const chat = chats.find((c: ChatType) => c._id === chatId);
-      setCurrentChat(chat || null);
-    }
+  // Derive current chat using useMemo (no state needed for derived data)
+  const currentChat = useMemo(() => {
+    if (!chats || !chatId) return null;
+    return chats.find((c: ChatType) => c._id === chatId) || null;
   }, [chats, chatId]);
 
-  // Get other member's profile
-  useEffect(() => {
-    const fetchOtherMemberProfile = async () => {
-      if (!currentChat || !user?.user_id) return;
+  // Derive other member ID
+  const otherMemberId = useMemo(() => {
+    if (!currentChat || !user?.user_id) return undefined;
+    return currentChat.members.find((id) => id !== user.user_id);
+  }, [currentChat, user?.user_id]);
 
-      const otherMemberId = currentChat.members.find(
-        (id) => id !== user.user_id,
-      );
+  // Check cache first for the profile
+  const cachedProfile = otherMemberId
+    ? userProfiles.get(otherMemberId)
+    : undefined;
 
-      if (otherMemberId) {
-        // Check cache first
-        const cachedProfile = userProfiles.get(otherMemberId);
-        if (cachedProfile) {
-          setOtherMemberProfile(cachedProfile);
-          return;
-        }
+  // Use React Query to fetch profile if not in cache
+  const { data: fetchedProfile } = useGetUserProfileById(
+    cachedProfile ? undefined : otherMemberId
+  );
 
-        // Fetch from API
-        try {
-          const profile = await apiClient.getUserProfileById(otherMemberId);
-          if (profile) {
-            setOtherMemberProfile(profile);
-          }
-        } catch (error) {
-          console.error("Failed to fetch other member profile:", error);
-        }
-      }
-    };
-
-    fetchOtherMemberProfile();
-  }, [currentChat, user?.user_id, userProfiles]);
+  // Use cached profile if available, otherwise use fetched profile
+  // Type assertion needed because entity UserProfile differs from local interface
+  const otherMemberProfile = cachedProfile || (fetchedProfile as UserProfile | undefined);
 
   if (!chatId) {
     return (
@@ -94,8 +74,6 @@ const Chat = () => {
       </div>
     );
   }
-
-  const otherMemberId = currentChat?.members.find((id) => id !== user?.user_id);
 
   return (
     <div className="h-full">
