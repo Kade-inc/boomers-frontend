@@ -6,20 +6,9 @@ import { FiInbox, FiMessageSquare } from "react-icons/fi";
 import ChatSearchModal from "../components/Modals/ChatSearchModal";
 import ChatSidebar from "../components/Chat/ChatSidebar";
 import ChatDetailsPanel from "../components/Chat/ChatDetailsPanel";
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { Chat } from "../entities/Chat";
-import APIClient from "../services/apiClient";
-
-interface UserProfile {
-  user_id: string;
-  firstName: string;
-  lastName: string;
-  profile_picture?: string;
-  role?: string;
-  username?: string;
-}
-
-const apiClient = new APIClient("/api/users");
+import { useGetUserProfilesById } from "../hooks/useGetUserProfilesById";
 
 // Details profile info passed to sidebar
 interface DetailsProfile {
@@ -37,9 +26,6 @@ const ChatLayout = () => {
   const isChildRoute = location.pathname !== "/chat";
 
   const [isChatSearchOpen, setIsChatSearchOpen] = useState(false);
-  const [userProfiles, setUserProfiles] = useState<Map<string, UserProfile>>(
-    new Map(),
-  );
   const [showDetailsPanel, setShowDetailsPanel] = useState(false);
   const [detailsProfile, setDetailsProfile] = useState<DetailsProfile | null>(
     null,
@@ -58,38 +44,24 @@ const ChatLayout = () => {
   console.log("ChatLayout - chats:", chats);
   console.log("ChatLayout - isLoading:", isLoadingChats);
 
-  // Fetch user profiles for chat members
-  useEffect(() => {
-    const fetchProfiles = async () => {
-      if (!chats || !user?.user_id) return;
+  // Derive member IDs that need profile fetching (exclude current user)
+  const memberIdsToFetch = useMemo(() => {
+    if (!chats || !user?.user_id) return [];
 
-      const memberIds = new Set<string>();
-      chats.forEach((chat: Chat) => {
-        chat.members.forEach((memberId) => {
-          if (memberId !== user.user_id && !userProfiles.has(memberId)) {
-            memberIds.add(memberId);
-          }
-        });
-      });
-
-      const newProfiles = new Map(userProfiles);
-
-      for (const memberId of memberIds) {
-        try {
-          const profile = await apiClient.getUserProfileById(memberId);
-          if (profile) {
-            newProfiles.set(memberId, profile);
-          }
-        } catch (error) {
-          console.error(`Failed to fetch profile for ${memberId}:`, error);
+    const memberIds = new Set<string>();
+    chats.forEach((chat: Chat) => {
+      chat.members.forEach((memberId) => {
+        if (memberId !== user.user_id) {
+          memberIds.add(memberId);
         }
-      }
+      });
+    });
 
-      setUserProfiles(newProfiles);
-    };
-
-    fetchProfiles();
+    return Array.from(memberIds);
   }, [chats, user?.user_id]);
+
+  // Fetch all user profiles in parallel using React Query
+  const { profiles: userProfiles } = useGetUserProfilesById(memberIdsToFetch);
 
   const handleStartNewChat = () => {
     setIsChatSearchOpen(true);

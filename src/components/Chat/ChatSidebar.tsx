@@ -4,15 +4,7 @@ import { useGetChats } from "../../hooks/Chats/useGetChats";
 import useAuthStore from "../../stores/useAuthStore";
 import ChatListItem from "./ChatListItem";
 import { Chat } from "../../entities/Chat";
-
-interface UserProfile {
-  user_id: string;
-  firstName: string;
-  lastName: string;
-  profile_picture?: string;
-  role?: string;
-  username?: string;
-}
+import UserProfile from "../../entities/UserProfile";
 
 interface ChatSidebarProps {
   onNewChatClick: () => void;
@@ -74,7 +66,7 @@ const ChatSidebar = ({ onNewChatClick, userProfiles }: ChatSidebarProps) => {
 
     return {
       name: displayName,
-      avatarUrl: profile?.profile_picture,
+      avatarUrl: profile?.profile_picture ?? undefined,
       isGroup: false,
       groupColor: undefined,
     };
