@@ -62,7 +62,7 @@ const ChatListItem = ({
         ) : isGroup ? (
           <div
             className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold"
-            style={{ backgroundColor: groupColor || "#6366f1" }}
+            style={{ background: groupColor || "#6366f1" }}
           >
             {name.charAt(0).toUpperCase()}
           </div>
