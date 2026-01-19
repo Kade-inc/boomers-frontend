@@ -2,110 +2,204 @@ import { Outlet, useLocation } from "react-router-dom";
 import { useGetChats } from "../hooks/Chats/useGetChats";
 import useAuthStore from "../stores/useAuthStore";
 import { LuMailWarning } from "react-icons/lu";
-import { FiInbox } from "react-icons/fi";
+import { FiInbox, FiMessageSquare } from "react-icons/fi";
 import ChatSearchModal from "../components/Modals/ChatSearchModal";
-import { useState } from "react";
+import ChatSidebar from "../components/Chat/ChatSidebar";
+import { useState, useEffect } from "react";
+import { Chat } from "../entities/Chat";
+import APIClient from "../services/apiClient";
+
+interface UserProfile {
+  user_id: string;
+  firstName: string;
+  lastName: string;
+  profile_picture?: string;
+  role?: string;
+  username?: string;
+}
+
+const apiClient = new APIClient("/api/users");
 
 const ChatLayout = () => {
   const { user } = useAuthStore();
   const location = useLocation();
   const isChildRoute = location.pathname !== "/chat";
-  console.log(user);
+
+  const [isChatSearchOpen, setIsChatSearchOpen] = useState(false);
+  const [userProfiles, setUserProfiles] = useState<Map<string, UserProfile>>(
+    new Map(),
+  );
+
   const {
     data: chats,
     isLoading: isLoadingChats,
     isError: isErrorChats,
     refetch: refetchChats,
-    isRefetching: isRefetchingChats,
   } = useGetChats(user?.user_id || "");
-  console.log(chats);
+
+  // Debug logging
+  console.log("ChatLayout - user:", user);
+  console.log("ChatLayout - user_id:", user?.user_id);
+  console.log("ChatLayout - chats:", chats);
+  console.log("ChatLayout - isLoading:", isLoadingChats);
+
+  // Fetch user profiles for chat members
+  useEffect(() => {
+    const fetchProfiles = async () => {
+      if (!chats || !user?.user_id) return;
+
+      const memberIds = new Set<string>();
+      chats.forEach((chat: Chat) => {
+        chat.members.forEach((memberId) => {
+          if (memberId !== user.user_id && !userProfiles.has(memberId)) {
+            memberIds.add(memberId);
+          }
+        });
+      });
+
+      const newProfiles = new Map(userProfiles);
+
+      for (const memberId of memberIds) {
+        try {
+          const profile = await apiClient.getUserProfileById(memberId);
+          if (profile) {
+            newProfiles.set(memberId, profile);
+          }
+        } catch (error) {
+          console.error(`Failed to fetch profile for ${memberId}:`, error);
+        }
+      }
+
+      setUserProfiles(newProfiles);
+    };
+
+    fetchProfiles();
+  }, [chats, user?.user_id]);
 
   const handleStartNewChat = () => {
-    console.log("Start new chat");
     setIsChatSearchOpen(true);
   };
 
-  const [isChatSearchOpen, setIsChatSearchOpen] = useState(false);
-  return (
-    <>
-      <div className="flex flex-col h-screen bg-base-100 font-body px-10 py-10">
-        {(isLoadingChats || isRefetchingChats) && (
-          <div className="flex items-center justify-center h-screen">
-            <div className="loading loading-dots loading-lg"></div>
-          </div>
-        )}
-        {isErrorChats && !isLoadingChats && !isRefetchingChats && (
-          <div className="flex items-center justify-center h-screen flex-col gap-2">
-            <LuMailWarning className="text-base-content w-20 h-20" />
-            <p className="text-center text-base-content font-semibold">
-              Error fetching chats
+  // Loading state - only on initial load, not during refetches
+  if (isLoadingChats && !chats) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-base-100">
+        <div className="loading loading-dots loading-lg"></div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (isErrorChats) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-base-100 flex-col gap-2">
+        <LuMailWarning className="text-base-content w-20 h-20" />
+        <p className="text-center text-base-content font-semibold">
+          Error fetching chats
+        </p>
+        <button
+          onClick={() => refetchChats()}
+          className="bg-yellow text-darkgrey font-medium py-2 px-4 rounded-md"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  // Empty state - no chats
+  if (chats && chats.length === 0 && !isChildRoute) {
+    return (
+      <>
+        <div className="flex flex-col h-screen bg-base-100 font-body px-4 md:px-10 py-10">
+          <div className="flex items-center justify-center h-full flex-col gap-4">
+            <FiInbox className="text-base-content w-20 h-20" />
+            <p className="text-center text-base-content font-semibold text-lg">
+              No messages yet
+            </p>
+            <p className="text-center text-base-content/60 text-sm">
+              Start a conversation with someone
             </p>
             <button
-              onClick={() => refetchChats()}
-              className="bg-yellow text-darkgrey font-medium py-2 px-4 rounded-md"
+              onClick={handleStartNewChat}
+              className="btn bg-yellow text-darkgrey font-medium"
             >
-              Retry
+              Start chat
             </button>
           </div>
-        )}
-        {chats && chats.length === 0 && (
-          <>
+        </div>
+        <ChatSearchModal
+          isOpen={isChatSearchOpen}
+          onClose={() => setIsChatSearchOpen(false)}
+        />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div className="flex flex-col md:flex-row h-screen bg-base-100 font-body">
+        {/* Mobile View */}
+        <div className="md:hidden flex flex-col h-full">
+          {isChildRoute ? (
+            // Show conversation
+            <Outlet context={{ userProfiles }} />
+          ) : (
+            // Show chat list
+            <div className="flex flex-col h-full px-4 py-6">
+              <h1 className="text-2xl font-bold text-base-content mb-4">
+                Messages
+              </h1>
+              <ChatSidebar
+                onNewChatClick={handleStartNewChat}
+                userProfiles={userProfiles}
+              />
+              {/* Mobile Start Chat Button */}
+              <button
+                onClick={handleStartNewChat}
+                className="btn bg-yellow text-darkgrey font-medium fixed right-4 bottom-20 shadow-lg"
+              >
+                Start chat
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Desktop View */}
+        <div className="hidden md:flex gap-4 h-full w-full px-10 py-10">
+          {/* Sidebar */}
+          <div className="w-1/4 min-w-[280px] max-w-[320px]">
+            <ChatSidebar
+              onNewChatClick={handleStartNewChat}
+              userProfiles={userProfiles}
+            />
+          </div>
+
+          {/* Main Content */}
+          <div className="flex-1">
             {isChildRoute ? (
-              <Outlet />
+              <Outlet context={{ userProfiles }} />
             ) : (
-              <div className="flex items-center justify-center h-screen flex-col gap-2">
-                <FiInbox className="text-base-content w-20 h-20" />
-                <p className="text-center text-base-content font-semibold">
-                  No chats found
+              <div className="flex flex-col items-center justify-center h-full bg-base-100 rounded-lg shadow-md shadow-base-content/10">
+                <FiMessageSquare className="text-base-content/30 w-20 h-20 mb-4" />
+                <p className="text-base-content/60 text-lg">
+                  Select a conversation
+                </p>
+                <p className="text-base-content/40 text-sm mt-1">
+                  or start a new chat
                 </p>
                 <button
                   onClick={handleStartNewChat}
-                  className="bg-yellow text-darkgrey font-medium py-2 px-4 rounded-md"
+                  className="btn bg-yellow text-darkgrey font-medium mt-4"
                 >
                   New chat
                 </button>
               </div>
             )}
-          </>
-        )}
-        {chats && chats.length > 0 && (
-          <>
-            <div className="md:hidden">
-              <h2 className="text-base-content font-semibold fixed">
-                Messages
-              </h2>
-              <button
-                onClick={handleStartNewChat}
-                className="btn bg-yellow text-darkgrey font-medium py-2 px-4 rounded-md fixed right-10 bottom-20"
-              >
-                New chat
-              </button>
-            </div>
-            <div className="hidden md:flex gap-4">
-              <div className="bg-base-100 w-1/4 h-[80vh] rounded-md fixed shadow-md shadow-base-content/10 ">
-                Test
-              </div>
-
-              {isChildRoute ? (
-                <Outlet />
-              ) : (
-                <div className="w-3/4 flex flex-col items-center justify-center gap-4 h-[80vh] ml-80">
-                  <FiInbox className="text-base-content w-20 h-20" />
-                  <p className="text-center text-base-content font-semibold">
-                    Start New Chat
-                  </p>
-                  <button
-                    onClick={handleStartNewChat}
-                    className="btn bg-yellow text-darkgrey font-medium py-2 px-4 rounded-md"
-                  >
-                    New chat
-                  </button>
-                </div>
-              )}
-            </div>
-          </>
-        )}
+          </div>
+        </div>
       </div>
+
       <ChatSearchModal
         isOpen={isChatSearchOpen}
         onClose={() => setIsChatSearchOpen(false)}

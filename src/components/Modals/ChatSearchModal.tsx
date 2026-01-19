@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import { FiInbox } from "react-icons/fi";
 import { IoIosSearch } from "react-icons/io";
+import useAuthStore from "../../stores/useAuthStore";
+import APIClient from "../../services/apiClient";
+import toast from "react-hot-toast";
 
 type ModalTriggerProps = {
   isOpen: boolean;
@@ -24,13 +27,18 @@ interface SearchResult {
   lastName?: string;
   username?: string;
   profile_picture?: string;
+  user_id?: string; // For profile results
 }
+
+const apiClient = new APIClient("/api/chats");
 
 const ChatSearchModal = ({ isOpen, onClose }: ModalTriggerProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [isCreatingChat, setIsCreatingChat] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const { user } = useAuthStore();
   const { data, isLoading, isError, fetchNextPage, hasNextPage } =
     useSearchUserAndTeams(searchQuery.length > 0, searchQuery, 10);
 
@@ -64,9 +72,54 @@ const ChatSearchModal = ({ isOpen, onClose }: ModalTriggerProps) => {
 
   const allResults = data?.pages.flatMap((page) => page.results) ?? [];
 
-  const handleResultClick = (result: SearchResult) => {
-    onClose();
-    navigate(`/chat/${result._id}`);
+  const handleResultClick = async (result: SearchResult) => {
+    if (!user?.user_id) {
+      toast.error("Please log in to start a chat");
+      return;
+    }
+
+    // Prevent duplicate clicks
+    if (isCreatingChat) return;
+    setIsCreatingChat(true);
+
+    try {
+      // For profiles (users), create a one-to-one chat
+      if (result.type === "profile") {
+        // Use user_id for profiles, not _id (which is MongoDB ObjectId)
+        // The search results return both _id and user_id for profiles
+        const otherUserId = result.user_id || result._id;
+        const members = [user.user_id, otherUserId];
+
+        // Try to create or get existing chat
+        try {
+          const response = await apiClient.createChat(members);
+          onClose();
+          navigate(`/chat/${response._id}`);
+        } catch (error: unknown) {
+          // If chat already exists (409), use the returned chat
+          const axiosError = error as {
+            response?: { status?: number; data?: { data?: { _id?: string } } };
+          };
+          if (
+            axiosError.response?.status === 409 &&
+            axiosError.response?.data?.data
+          ) {
+            onClose();
+            navigate(`/chat/${axiosError.response.data.data._id}`);
+          } else {
+            throw error;
+          }
+        }
+      } else {
+        // For teams, implement group chat logic later
+        toast.error("Team chats coming soon!");
+      }
+    } catch (error) {
+      console.error("Error creating chat:", error);
+      toast.error("Failed to start chat");
+    } finally {
+      setIsCreatingChat(false);
+    }
   };
 
   return (
@@ -99,7 +152,7 @@ const ChatSearchModal = ({ isOpen, onClose }: ModalTriggerProps) => {
             {allResults.map((result: SearchResult) => (
               <div
                 key={result._id}
-                className="p-2 hover:bg-base-200 rounded-lg cursor-pointer font-body text-base-content"
+                className={`p-2 hover:bg-base-200 rounded-lg cursor-pointer font-body text-base-content ${isCreatingChat ? "opacity-50 pointer-events-none" : ""}`}
                 onClick={() => handleResultClick(result)}
               >
                 <div className="flex items-center gap-2">
