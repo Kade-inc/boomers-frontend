@@ -10,15 +10,15 @@ const apiClient = new APIClient("/api/users");
  * @returns Query result with the user profile data
  */
 export const useGetUserProfileById = (
-    userId: string | undefined
+  userId: string | undefined,
 ): UseQueryResult<UserProfile, Error> => {
-    return useQuery({
-        queryKey: ["userProfile", userId],
-        queryFn: () => apiClient.getUserProfileById(userId!),
-        enabled: !!userId, // Only run query if userId is provided
-        staleTime: 5 * 60 * 1000, // Cache for 5 minutes
-        refetchOnWindowFocus: false,
-    });
+  return useQuery({
+    queryKey: ["userProfile", userId],
+    queryFn: () => apiClient.getUserProfileById(userId!),
+    enabled: !!userId, // Only run query if userId is provided
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    refetchOnWindowFocus: false,
+  });
 };
 
 export default useGetUserProfileById;

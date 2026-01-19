@@ -60,12 +60,13 @@ const Chat = () => {
 
   // Use React Query to fetch profile if not in cache
   const { data: fetchedProfile } = useGetUserProfileById(
-    cachedProfile ? undefined : otherMemberId
+    cachedProfile ? undefined : otherMemberId,
   );
 
   // Use cached profile if available, otherwise use fetched profile
   // Type assertion needed because entity UserProfile differs from local interface
-  const otherMemberProfile = cachedProfile || (fetchedProfile as UserProfile | undefined);
+  const otherMemberProfile =
+    cachedProfile || (fetchedProfile as UserProfile | undefined);
 
   if (!chatId) {
     return (
