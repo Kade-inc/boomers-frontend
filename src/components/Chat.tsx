@@ -15,8 +15,20 @@ interface UserProfile {
   username?: string;
 }
 
+interface DetailsProfile {
+  userId?: string;
+  name: string;
+  avatarUrl?: string;
+  role?: string;
+  isGroup?: boolean;
+  groupColor?: string;
+}
+
 interface OutletContext {
   userProfiles: Map<string, UserProfile>;
+  showDetailsPanel: boolean;
+  setShowDetailsPanel: (show: boolean) => void;
+  setDetailsProfile: (profile: DetailsProfile | null) => void;
 }
 
 const apiClient = new APIClient("/api/users");
@@ -26,6 +38,8 @@ const Chat = () => {
   const { user } = useAuthStore();
   const context = useOutletContext<OutletContext>();
   const userProfiles = context?.userProfiles || new Map();
+  const setShowDetailsPanel = context?.setShowDetailsPanel;
+  const setDetailsProfile = context?.setDetailsProfile;
 
   const { data: chats } = useGetChats(user?.user_id || "");
   const [currentChat, setCurrentChat] = useState<ChatType | null>(null);
@@ -91,6 +105,8 @@ const Chat = () => {
         otherMemberProfile={otherMemberProfile}
         isGroup={currentChat?.isGroup}
         groupName={currentChat?.groupName}
+        onShowDetails={setShowDetailsPanel}
+        onSetDetailsProfile={setDetailsProfile}
       />
     </div>
   );

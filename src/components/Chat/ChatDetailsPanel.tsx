@@ -11,6 +11,7 @@ interface ChatDetailsPanelProps {
   role?: string;
   isGroup?: boolean;
   groupColor?: string;
+  mobileOnly?: boolean;
 }
 
 const ChatDetailsPanel = ({
@@ -22,6 +23,7 @@ const ChatDetailsPanel = ({
   role,
   isGroup = false,
   groupColor,
+  mobileOnly = false,
 }: ChatDetailsPanelProps) => {
   const navigate = useNavigate();
 
@@ -151,6 +153,12 @@ const ChatDetailsPanel = ({
     </div>
   );
 
+  // If mobileOnly, only render the mobile modal
+  if (mobileOnly) {
+    return <MobileModal />;
+  }
+
+  // Otherwise render both (desktop sidebar version)
   return (
     <>
       <DesktopPanel />

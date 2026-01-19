@@ -5,6 +5,7 @@ import { LuMailWarning } from "react-icons/lu";
 import { FiInbox, FiMessageSquare } from "react-icons/fi";
 import ChatSearchModal from "../components/Modals/ChatSearchModal";
 import ChatSidebar from "../components/Chat/ChatSidebar";
+import ChatDetailsPanel from "../components/Chat/ChatDetailsPanel";
 import { useState, useEffect } from "react";
 import { Chat } from "../entities/Chat";
 import APIClient from "../services/apiClient";
@@ -20,6 +21,16 @@ interface UserProfile {
 
 const apiClient = new APIClient("/api/users");
 
+// Details profile info passed to sidebar
+interface DetailsProfile {
+  userId?: string;
+  name: string;
+  avatarUrl?: string;
+  role?: string;
+  isGroup?: boolean;
+  groupColor?: string;
+}
+
 const ChatLayout = () => {
   const { user } = useAuthStore();
   const location = useLocation();
@@ -28,6 +39,10 @@ const ChatLayout = () => {
   const [isChatSearchOpen, setIsChatSearchOpen] = useState(false);
   const [userProfiles, setUserProfiles] = useState<Map<string, UserProfile>>(
     new Map(),
+  );
+  const [showDetailsPanel, setShowDetailsPanel] = useState(false);
+  const [detailsProfile, setDetailsProfile] = useState<DetailsProfile | null>(
+    null,
   );
 
   const {
@@ -176,9 +191,16 @@ const ChatLayout = () => {
           </div>
 
           {/* Main Content */}
-          <div className="flex-1">
+          <div className={`flex-1 ${showDetailsPanel ? "mr-4" : ""}`}>
             {isChildRoute ? (
-              <Outlet context={{ userProfiles }} />
+              <Outlet
+                context={{
+                  userProfiles,
+                  showDetailsPanel,
+                  setShowDetailsPanel,
+                  setDetailsProfile,
+                }}
+              />
             ) : (
               <div className="flex flex-col items-center justify-center h-full bg-base-100 rounded-lg shadow-md shadow-base-content/10">
                 <FiMessageSquare className="text-base-content/30 w-20 h-20 mb-4" />
@@ -197,6 +219,22 @@ const ChatLayout = () => {
               </div>
             )}
           </div>
+
+          {/* Details Panel Sidebar (Desktop Only) */}
+          {showDetailsPanel && detailsProfile && (
+            <div className="w-1/4 min-w-[250px] max-w-[280px]">
+              <ChatDetailsPanel
+                isOpen={showDetailsPanel}
+                onClose={() => setShowDetailsPanel(false)}
+                userId={detailsProfile.userId}
+                name={detailsProfile.name}
+                avatarUrl={detailsProfile.avatarUrl}
+                role={detailsProfile.role}
+                isGroup={detailsProfile.isGroup}
+                groupColor={detailsProfile.groupColor}
+              />
+            </div>
+          )}
         </div>
       </div>
 

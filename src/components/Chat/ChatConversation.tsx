@@ -25,6 +25,15 @@ interface UserProfile {
   username?: string;
 }
 
+interface DetailsProfile {
+  userId?: string;
+  name: string;
+  avatarUrl?: string;
+  role?: string;
+  isGroup?: boolean;
+  groupColor?: string;
+}
+
 interface ChatConversationProps {
   chatId: string;
   otherMemberId?: string;
@@ -32,6 +41,8 @@ interface ChatConversationProps {
   isGroup?: boolean;
   groupName?: string;
   groupColor?: string;
+  onShowDetails?: (show: boolean) => void;
+  onSetDetailsProfile?: (profile: DetailsProfile | null) => void;
 }
 
 const ChatConversation = ({
@@ -41,6 +52,8 @@ const ChatConversation = ({
   isGroup = false,
   groupName,
   groupColor,
+  onShowDetails,
+  onSetDetailsProfile,
 }: ChatConversationProps) => {
   const navigate = useNavigate();
   const { user } = useAuthStore();
@@ -143,6 +156,25 @@ const ChatConversation = ({
     ? undefined
     : otherMemberProfile?.profile_picture;
 
+  // Handle details button click - desktop uses parent sidebar, mobile uses local modal
+  const handleDetailsClick = () => {
+    if (onShowDetails && onSetDetailsProfile) {
+      // Desktop: update parent state to show sidebar
+      onSetDetailsProfile({
+        userId: otherMemberId,
+        name: displayName,
+        avatarUrl: displayAvatar,
+        role: otherMemberProfile?.role,
+        isGroup,
+        groupColor,
+      });
+      onShowDetails(true);
+    } else {
+      // Mobile: use local state for modal
+      setShowDetails(true);
+    }
+  };
+
   // Group messages by date
   const groupedMessages = messages?.reduce(
     (groups: { date: string; messages: ChatMessageType[] }[], message) => {
@@ -197,7 +229,7 @@ const ChatConversation = ({
 
         {/* Details button */}
         <button
-          onClick={() => setShowDetails(true)}
+          onClick={handleDetailsClick}
           className="btn btn-ghost btn-sm text-base-content/60 hover:text-base-content"
         >
           <span className="hidden md:inline mr-1">Details</span>
@@ -313,7 +345,7 @@ const ChatConversation = ({
         disabled={isSending}
       />
 
-      {/* Details Panel */}
+      {/* Details Panel (Mobile Only - Desktop uses sidebar in ChatLayout) */}
       <ChatDetailsPanel
         isOpen={showDetails}
         onClose={() => setShowDetails(false)}
@@ -323,6 +355,7 @@ const ChatConversation = ({
         role={otherMemberProfile?.role}
         isGroup={isGroup}
         groupColor={groupColor}
+        mobileOnly={true}
       />
     </div>
   );
