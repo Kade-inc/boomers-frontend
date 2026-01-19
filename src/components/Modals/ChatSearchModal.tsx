@@ -70,7 +70,18 @@ const ChatSearchModal = ({ isOpen, onClose }: ModalTriggerProps) => {
     }
   }, [handleScroll]);
 
-  const allResults = data?.pages.flatMap((page) => page.results) ?? [];
+  // Filter out the current user from results (users shouldn't be able to chat with themselves)
+  const allResults =
+    data?.pages
+      .flatMap((page) => page.results)
+      .filter((result: SearchResult) => {
+        // For profile results, exclude the current user
+        if (result.type === "profile") {
+          const resultUserId = result.user_id || result._id;
+          return resultUserId !== user?.user_id;
+        }
+        return true;
+      }) ?? [];
 
   const handleResultClick = async (result: SearchResult) => {
     if (!user?.user_id) {
