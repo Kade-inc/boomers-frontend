@@ -245,7 +245,7 @@ const ChatSearchModal = ({ isOpen, onClose }: ModalTriggerProps) => {
                 )}
                 {!searchQuery && (
                   <>
-                    <IoIosSearch className="text-base-content w-20 h-20" />
+                    <IoIosSearch className="text-lightgrey w-16 h-16" />
                     <p className="text-center text-base-content font-body py-4">
                       Search for users and teams
                     </p>

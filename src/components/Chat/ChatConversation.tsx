@@ -304,7 +304,7 @@ const ChatConversation = ({
                 />
               ) : (
                 <div className="w-8 h-8 rounded-full bg-base-300 flex items-center justify-center">
-                  <span className="text-xs text-base-content/50">
+                  <span className="text-xs text-white">
                     {displayName.charAt(0).toUpperCase()}
                   </span>
                 </div>

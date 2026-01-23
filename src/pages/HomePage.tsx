@@ -105,12 +105,12 @@ const HomePage = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/auth">
-                <button className="btn bg-yellow text-darkgrey border-none font-body font-semibold px-12 py-4 text-lg rounded hover:bg-yellow/90">
+                <button className="btn bg-yellow text-darkgrey border-none font-body font-semibold px-12 text-lg rounded hover:bg-yellow/90">
                   Get Started
                 </button>
               </Link>
               <a href="#how-it-works">
-                <button className="btn bg-transparent text-darkgrey border-2 border-darkgrey font-body font-semibold px-12 py-4 text-lg rounded hover:bg-darkgrey hover:text-white">
+                <button className="btn bg-transparent text-darkgrey border-2 border-darkgrey font-body font-semibold px-12 text-lg rounded hover:bg-darkgrey hover:text-white">
                   Learn More
                 </button>
               </a>
