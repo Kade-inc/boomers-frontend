@@ -227,7 +227,7 @@ const HomePage = () => {
               <div className="w-36 h-[4px] bg-darkgrey"></div>
             </div>
           </div>
-          <div className="grid md:grid-cols-2 gap-12 items-start">
+          <div className="grid md:grid-cols-2 gap-12 md:gap-y-40">
             {/* Steps */}
             <div className="space-y-8 hidden md:block">
               <img
@@ -242,7 +242,7 @@ const HomePage = () => {
               <p className="text-3xl font-heading text-darkgrey mb-4">
                 1. JOIN A HYVE
               </p>
-              <p className="text-[16px] font-body text-darkgrey">
+              <p className="text-[16px] font-body text-darkgrey font-medium">
                 Your Hyve is your family. Connect with other like minded
                 craftsmen within it. If you wish to be an owner and help others
                 hone their craft, create your own Hyve and mentor others.
@@ -264,7 +264,7 @@ const HomePage = () => {
               <p className="text-3xl font-heading text-darkgrey mb-4">
                 2. CHALLENGES
               </p>
-              <p className="text-[16px] font-body text-darkgrey">
+              <p className="text-[16px] font-body text-darkgrey font-medium">
                 Challenges are best for honing your craft. Choose a challenge in
                 your Hyve and give the steps you would take to accomplish the
                 challenge.
@@ -294,7 +294,7 @@ const HomePage = () => {
               <p className="text-3xl font-heading text-darkgrey mb-4">
                 3. FEEDBACK
               </p>
-              <p className="text-[16px] font-body text-darkgrey">
+              <p className="text-[16px] font-body text-darkgrey font-medium">
                 Rate your hyve mates, give feedback and have fun as you hone
                 your craft!
               </p>
