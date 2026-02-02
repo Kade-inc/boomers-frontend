@@ -218,9 +218,15 @@ const HomePage = () => {
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120px] h-auto opacity-60 pointer-events-none"
         />
         <div className="max-w-7xl mx-auto relative z-10">
-          <h2 className="text-5xl md:text-6xl font-heading text-center text-darkgrey mb-16">
-            HOW IT WORKS
-          </h2>
+          <div className="text-center mb-16">
+            <h2 className="text-5xl md:text-6xl font-heading text-darkgrey">
+              HOW IT WORKS
+            </h2>
+            <div className="flex flex-col items-center mt-2 gap-2">
+              <div className="w-36 h-[4px] bg-darkgrey ml-16 md:ml-24"></div>
+              <div className="w-36 h-[4px] bg-darkgrey"></div>
+            </div>
+          </div>
           <div className="grid md:grid-cols-2 gap-12 items-start">
             {/* Steps */}
             <div className="space-y-8 hidden md:block">
