@@ -185,6 +185,21 @@ const HomePage = () => {
             />
           </div>
         </div>
+
+        {/* Scroll Indicator */}
+        <button
+          onClick={() =>
+            document
+              .getElementById("how-it-works")
+              ?.scrollIntoView({ behavior: "smooth" })
+          }
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce cursor-pointer hover:scale-110 transition-transform"
+          aria-label="Scroll to content"
+        >
+          <div className="w-6 h-10 border-2 border-darkgrey rounded-full flex items-start justify-center p-2">
+            <div className="w-1.5 h-2 bg-darkgrey rounded-full"></div>
+          </div>
+        </button>
       </section>
 
       {/* How It Works Section */}
