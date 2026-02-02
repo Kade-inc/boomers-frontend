@@ -466,7 +466,7 @@ const HomePage = () => {
       </section>
 
       {/* Download Section - Hyve on the Go */}
-      <section id="hyve-on-the-go" className="py-20 px-8 bg-yellow">
+      <section id="hyve-on-the-go" className="pt-20 px-8 bg-yellow">
         <div className="max-w-7xl mx-auto">
           {/* Title with underlines */}
           <div className="text-center mb-12">
@@ -542,7 +542,7 @@ const HomePage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-darkgrey text-white py-8 px-8">
+      <footer className="bg-[#1F1F1F] text-white py-8 px-8">
         <div className="max-w-7xl mx-auto text-center">
           <p className="font-body text-sm">
             © 2025 Crafthyve. All rights reserved.
