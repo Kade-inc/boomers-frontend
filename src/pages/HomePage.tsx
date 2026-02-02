@@ -125,6 +125,13 @@ const HomePage = () => {
               <li className="lg:hidden">
                 <div className="">
                   <p className="text-[16px] font-body font-normal ml-8">
+                    Why CraftHyve
+                  </p>
+                </div>
+              </li>
+              <li className="lg:hidden">
+                <div className="">
+                  <p className="text-[16px] font-body font-normal ml-8">
                     Download
                   </p>
                 </div>
