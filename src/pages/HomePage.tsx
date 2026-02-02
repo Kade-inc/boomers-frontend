@@ -72,10 +72,13 @@ const HomePage = () => {
           </div>
 
           <div className="hidden lg:grid  lg:grid-flow-col lg:gap-8 lg:auto-rows-max lg:mr-[70px]">
-            <div className={`text-[16px] font-body font-normal`}>
+            <div className={`text-[16px] font-body font-normal cursor-pointer`}>
               <span className={"ml-[10px]"}>About</span>
             </div>
-            <div className={`text-[16px] font-body font-normal`}>
+            <div className={`text-[16px] font-body font-normal cursor-pointer`}>
+              <span className={"ml-[10px]"}>Why CraftHyve</span>
+            </div>
+            <div className={`text-[16px] font-body font-normal cursor-pointer`}>
               <span className={"ml-[10px]"}>Download</span>
             </div>
             <div
