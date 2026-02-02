@@ -66,26 +66,52 @@ const HomePage = () => {
             <Link
               to="/"
               className="btn btn-ghost text-xl font-heading p-0 text-darkgrey"
+              onClick={(e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
             >
               LOGO
             </Link>
           </div>
 
           <div className="hidden lg:grid  lg:grid-flow-col lg:gap-8 lg:auto-rows-max lg:mr-[70px]">
-            <div className={`text-[16px] font-body font-normal cursor-pointer`}>
+            <div
+              className={`text-[16px] font-body font-normal cursor-pointer`}
+              onClick={() =>
+                document
+                  .getElementById("how-it-works")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
+            >
               <span className={"ml-[10px]"}>About</span>
             </div>
-            <div className={`text-[16px] font-body font-normal cursor-pointer`}>
+            <div
+              className={`text-[16px] font-body font-normal cursor-pointer`}
+              onClick={() =>
+                document
+                  .getElementById("why-crafthyve")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
+            >
               <span className={"ml-[10px]"}>Why CraftHyve</span>
             </div>
-            <div className={`text-[16px] font-body font-normal cursor-pointer`}>
+            <div
+              className={`text-[16px] font-body font-normal cursor-pointer`}
+              onClick={() =>
+                document
+                  .getElementById("hyve-on-the-go")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
+            >
               <span className={"ml-[10px]"}>Download</span>
             </div>
-            <div
-              className={`text-[16px] font-body  border border-darkgrey rounded px-4 py-2 cursor-pointer`}
+            <Link
+              to="/auth"
+              className={`text-[16px] font-body border border-darkgrey rounded px-4 py-2 cursor-pointer`}
             >
               <span>Get Started</span>
-            </div>
+            </Link>
           </div>
           <div className="dropdown dropdown-end lg:hidden">
             <div
@@ -115,21 +141,45 @@ const HomePage = () => {
               tabIndex={0}
               className={`menu menu-sm dropdown-content z-[1] mt-3 w-52 p-2 shadow rounded-box ${isMenuOpen ? "block" : "hidden"}`}
             >
-              <li className="lg:hidden">
+              <li
+                className="lg:hidden cursor-pointer"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  document
+                    .getElementById("how-it-works")
+                    ?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
                 <div className="">
                   <p className="text-[16px] font-body font-normal ml-8">
                     About
                   </p>
                 </div>
               </li>
-              <li className="lg:hidden">
+              <li
+                className="lg:hidden cursor-pointer"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  document
+                    .getElementById("why-crafthyve")
+                    ?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
                 <div className="">
                   <p className="text-[16px] font-body font-normal ml-8">
                     Why CraftHyve
                   </p>
                 </div>
               </li>
-              <li className="lg:hidden">
+              <li
+                className="lg:hidden cursor-pointer"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  document
+                    .getElementById("hyve-on-the-go")
+                    ?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
                 <div className="">
                   <p className="text-[16px] font-body font-normal ml-8">
                     Download
@@ -157,7 +207,7 @@ const HomePage = () => {
             </ul>
           </div>
           <button
-            className="px-12 py-3 bg-yellow font-body font-medium rounded-[5px] text-[14px] hidden lg:block"
+            className="px-12 py-3 bg-yellow font-body font-medium rounded-[5px] text-[16px] hidden lg:block"
             onClick={() => navigate(`/auth/login`)}
           >
             Log In
@@ -179,12 +229,12 @@ const HomePage = () => {
               </p>
             </div>
 
-            <p className="font-body mt-8 w-[70%] md:w-full text-center md:text-left">
+            <p className="font-body mt-8 w-[70%] md:w-full text-center md:text-left font-medium text-lg">
               Where devs, designers, and cyber minds sharpen their craft -
               together.
             </p>
             <Link to="/auth">
-              <button className="btn bg-yellow text-darkgrey border-none font-body font-medium px-12 text-[16px] rounded hover:bg-yellow/90 mt-12">
+              <button className="btn bg-yellow text-darkgrey border-none font-body font-medium px-12 text-lg rounded hover:bg-yellow/90 mt-12">
                 Get Started
               </button>
             </Link>
@@ -252,7 +302,7 @@ const HomePage = () => {
               <p className="text-3xl font-heading text-darkgrey mb-4">
                 1. JOIN A HYVE
               </p>
-              <p className="text-[16px] font-body text-darkgrey font-medium">
+              <p className="text-lg font-body text-darkgrey font-medium">
                 Your Hyve is your family. Connect with other like minded
                 craftsmen within it. If you wish to be an owner and help others
                 hone their craft, create your own Hyve and mentor others.
@@ -274,7 +324,7 @@ const HomePage = () => {
               <p className="text-3xl font-heading text-darkgrey mb-4">
                 2. CHALLENGES
               </p>
-              <p className="text-[16px] font-body text-darkgrey font-medium">
+              <p className="text-lg font-body text-darkgrey font-medium">
                 Challenges are best for honing your craft. Choose a challenge in
                 your Hyve and give the steps you would take to accomplish the
                 challenge.
@@ -304,7 +354,7 @@ const HomePage = () => {
               <p className="text-3xl font-heading text-darkgrey mb-4">
                 3. FEEDBACK
               </p>
-              <p className="text-[16px] font-body text-darkgrey font-medium">
+              <p className="text-lg font-body text-darkgrey font-medium">
                 Rate your hyve mates, give feedback and have fun as you hone
                 your craft!
               </p>
@@ -416,7 +466,7 @@ const HomePage = () => {
       </section>
 
       {/* Download Section - Hyve on the Go */}
-      <section className="py-20 px-8 bg-yellow">
+      <section id="hyve-on-the-go" className="py-20 px-8 bg-yellow">
         <div className="max-w-7xl mx-auto">
           {/* Title with underlines */}
           <div className="text-center mb-12">
@@ -480,11 +530,11 @@ const HomePage = () => {
           <h2 className="text-5xl md:text-6xl font-heading text-darkgrey mb-6">
             READY TO JOIN THE MOVEMENT?
           </h2>
-          <p className="text-[16px] font-body font-medium text-darkgrey">
+          <p className="text-lg font-body font-medium text-darkgrey">
             Sign up today and start your journey with Crafthyve.
           </p>
           <Link to="/auth">
-            <button className="btn bg-yellow text-darkgrey border-none font-body font-semibold px-12 text-[16px] rounded hover:bg-yellow/90 mt-12">
+            <button className="btn bg-yellow text-darkgrey border-none font-body font-semibold px-12 text-lg rounded hover:bg-yellow/90 mt-12">
               Get Started
             </button>
           </Link>
