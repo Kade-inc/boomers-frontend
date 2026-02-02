@@ -416,44 +416,54 @@ const HomePage = () => {
       </section>
 
       {/* Download Section - Hyve on the Go */}
-      <section className="py-20 px-8 bg-white">
+      <section className="py-20 px-8 bg-yellow">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-5xl md:text-6xl font-heading text-center text-darkgrey mb-8">
-            HYVE ON THE GO
-          </h2>
-          <p className="text-xl font-body text-center text-lightgrey mb-12 max-w-2xl mx-auto">
-            Stay connected with the Crafthyve mobile app. Available on iOS and
-            Android.
-          </p>
+          {/* Title with underlines */}
+          <div className="text-center mb-12">
+            <h2 className="text-5xl md:text-6xl font-heading text-darkgrey">
+              HYVE ON THE GO
+            </h2>
+            <div className="flex flex-col items-center mt-2 gap-2">
+              <div className="w-36 h-[4px] bg-darkgrey ml-16 md:ml-24"></div>
+              <div className="w-36 h-[4px] bg-darkgrey"></div>
+            </div>
+          </div>
+
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            {/* App Store Badges */}
-            <div className="flex flex-col items-center md:items-end gap-6">
-              <a
-                href="#"
-                className="hover:opacity-80 transition"
-                aria-label="Download on App Store"
-              >
-                <img
-                  src={appStoreBadge}
-                  alt="Download on App Store"
-                  className="h-14"
-                />
-              </a>
-              <a
-                href="#"
-                className="hover:opacity-80 transition"
-                aria-label="Get it on Google Play"
-              >
-                <img
-                  src={googlePlayBadge}
-                  alt="Get it on Google Play"
-                  className="h-14"
-                />
-              </a>
+            {/* Left side - Text and App Store Badges */}
+            <div className="flex flex-col items-center md:items-start">
+              <p className="text-lg font-body text-darkgrey text-center md:text-left font-medium">
+                Take the Hyve with you and get your notifications, give feedback
+                & submit solutions on the go through the mobile app!
+              </p>
+              <div className="flex flex-row items-center gap-4">
+                <a
+                  href="#"
+                  className="hover:opacity-80 transition"
+                  aria-label="Get it on Google Play"
+                >
+                  <img
+                    src={googlePlayBadge}
+                    alt="Get it on Google Play"
+                    className="w-[200px]"
+                  />
+                </a>
+                <a
+                  href="#"
+                  className="hover:opacity-80 transition"
+                  aria-label="Download on App Store"
+                >
+                  <img
+                    src={appStoreBadge}
+                    alt="Download on App Store"
+                    className="w-[200px]"
+                  />
+                </a>
+              </div>
             </div>
 
-            {/* Smartphone Images */}
-            <div className="flex justify-center md:justify-start">
+            {/* Right side - Smartphone Images */}
+            <div className="flex justify-center md:justify-end">
               <img
                 src={smartphones}
                 alt="Mobile app preview"
@@ -465,16 +475,16 @@ const HomePage = () => {
       </section>
 
       {/* Call to Action Section */}
-      <section className="py-20 px-8 bg-gradient-to-br from-yellow to-yellow/80">
+      <section className="py-20 px-8 bg-gray-50">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-5xl md:text-6xl font-heading text-darkgrey mb-6">
             READY TO JOIN THE MOVEMENT?
           </h2>
-          <p className="text-xl font-body text-darkgrey mb-10">
+          <p className="text-[16px] font-body font-medium text-darkgrey">
             Sign up today and start your journey with Crafthyve.
           </p>
           <Link to="/auth">
-            <button className="btn bg-darkgrey text-white border-none font-body font-semibold px-16 py-4 text-lg rounded hover:bg-darkgrey/90">
+            <button className="btn bg-yellow text-darkgrey border-none font-body font-semibold px-12 text-[16px] rounded hover:bg-yellow/90 mt-12">
               Get Started
             </button>
           </Link>
@@ -486,6 +496,16 @@ const HomePage = () => {
         <div className="max-w-7xl mx-auto text-center">
           <p className="font-body text-sm">
             © 2025 Crafthyve. All rights reserved.
+          </p>
+          <p className="font-body text-sm mt-4">
+            Made with ❤️ from{" "}
+            <a
+              href="https://www.teamkade.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              KADE
+            </a>
           </p>
         </div>
       </footer>
