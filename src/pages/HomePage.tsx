@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
-import teamMembers from "../assets/landing/team-members.png";
 import smartphones from "../assets/landing/smartphones.png";
 import appStoreBadge from "../assets/landing/app-store-badge.png";
 import googlePlayBadge from "../assets/landing/google-play-badge.png";
 import landingHero from "../assets/landing-hero.png";
+import howItWorks1 from "../assets/how-it-works-1.png";
+import howItWorks2 from "../assets/how-it-works-2.png";
+import howItWorks3 from "../assets/how-it-works-3.png";
 
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -153,7 +155,7 @@ const HomePage = () => {
 
         {/* Hero Content */}
         <div className="min-h-screen flex justify-between flex-col md:flex-row items-center md:items-start">
-          <div className="text-darkgrey md:ml-40 mt-60 md:mt-40 leading-[1.1] md:leading-[1.2] md:w-[30%] flex flex-col items-center md:items-start">
+          <div className="text-darkgrey md:ml-40 mt-60 md:mt-40 leading-[1.0] md:w-[30%] flex flex-col items-center md:items-start">
             <div>
               <p className="text-[50px] md:text-[80px] font-heading font-bold">
                 BUILD.
@@ -203,66 +205,89 @@ const HomePage = () => {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-20 px-8 bg-white">
+      <section id="how-it-works" className="py-20 px-8 bg-yellow">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-5xl md:text-6xl font-heading text-center text-darkgrey mb-16">
             HOW IT WORKS
           </h2>
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="grid md:grid-cols-2 gap-12 items-start">
             {/* Steps */}
-            <div className="space-y-8">
-              {/* Step 1 */}
-              <div className="flex gap-6">
-                <div className="flex-shrink-0 w-16 h-16 bg-yellow rounded-full flex items-center justify-center">
-                  <span className="text-3xl font-heading text-darkgrey">1</span>
-                </div>
-                <div>
-                  <h3 className="text-2xl font-heading text-darkgrey mb-2">
-                    Sign Up
-                  </h3>
-                  <p className="text-lg font-body text-lightgrey">
-                    Create your account and set up your profile.
-                  </p>
-                </div>
-              </div>
-
-              {/* Step 2 */}
-              <div className="flex gap-6">
-                <div className="flex-shrink-0 w-16 h-16 bg-green rounded-full flex items-center justify-center">
-                  <span className="text-3xl font-heading text-white">2</span>
-                </div>
-                <div>
-                  <h3 className="text-2xl font-heading text-darkgrey mb-2">
-                    Join a Hyve
-                  </h3>
-                  <p className="text-lg font-body text-lightgrey">
-                    Browse and join hyves based on your interests.
-                  </p>
-                </div>
-              </div>
-
-              {/* Step 3 */}
-              <div className="flex gap-6">
-                <div className="flex-shrink-0 w-16 h-16 bg-yellow rounded-full flex items-center justify-center">
-                  <span className="text-3xl font-heading text-darkgrey">3</span>
-                </div>
-                <div>
-                  <h3 className="text-2xl font-heading text-darkgrey mb-2">
-                    Start Collaborating
-                  </h3>
-                  <p className="text-lg font-body text-lightgrey">
-                    Engage in projects, discussions, and events.
-                  </p>
-                </div>
-              </div>
+            <div className="space-y-8 hidden md:block">
+              <img
+                src={howItWorks1}
+                alt="How it works"
+                className="w-[80%] h-auto object-contain"
+              />
             </div>
 
             {/* Image */}
-            <div className="flex justify-center">
+            <div className="flex flex-col items-start">
+              <p className="text-3xl font-heading text-darkgrey mb-4">
+                1. JOIN A HYVE
+              </p>
+              <p className="text-[16px] font-body text-darkgrey">
+                Your Hyve is your family. Connect with other like minded
+                craftsmen within it. If you wish to be an owner and help others
+                hone their craft, create your own Hyve and mentor others.
+              </p>
+            </div>
+
+            <div className="space-y-8 md:hidden">
               <img
-                src={teamMembers}
-                alt="Team collaboration"
-                className="w-full max-w-lg rounded-lg shadow-xl"
+                src={howItWorks1}
+                alt="How it works"
+                className="w-full h-auto object-contain"
+              />
+            </div>
+
+            {/* Steps */}
+
+            {/* Image */}
+            <div className="flex flex-col items-start">
+              <p className="text-3xl font-heading text-darkgrey mb-4">
+                2. CHALLENGES
+              </p>
+              <p className="text-[16px] font-body text-darkgrey">
+                Challenges are best for honing your craft. Choose a challenge in
+                your Hyve and give the steps you would take to accomplish the
+                challenge.
+              </p>
+            </div>
+
+            <div className="space-y-8">
+              <img
+                src={howItWorks2}
+                alt="How it works"
+                className="w-full md:w-[80%] h-auto object-contain"
+              />
+            </div>
+
+            {/* Steps */}
+
+            <div className="space-y-8 hidden md:block">
+              <img
+                src={howItWorks3}
+                alt="How it works"
+                className="w-[80%] h-auto object-contain"
+              />
+            </div>
+
+            {/* Image */}
+            <div className="flex flex-col items-start">
+              <p className="text-3xl font-heading text-darkgrey mb-4">
+                3. FEEDBACK
+              </p>
+              <p className="text-[16px] font-body text-darkgrey">
+                Rate your hyve mates, give feedback and have fun as you hone
+                your craft!
+              </p>
+            </div>
+
+            <div className="space-y-8 block md:hidden">
+              <img
+                src={howItWorks3}
+                alt="How it works"
+                className="w-full h-auto object-contain"
               />
             </div>
           </div>
