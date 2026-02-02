@@ -4,12 +4,11 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
-// Import assets
-import dashboardHero from "../assets/landing/dashboard-hero.png";
 import teamMembers from "../assets/landing/team-members.png";
 import smartphones from "../assets/landing/smartphones.png";
 import appStoreBadge from "../assets/landing/app-store-badge.png";
 import googlePlayBadge from "../assets/landing/google-play-badge.png";
+import landingHero from "../assets/landing-hero.png";
 
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -85,36 +84,37 @@ const HomePage = () => {
         </nav>
 
         {/* Hero Content */}
-        <div className="relative min-h-screen flex items-center justify-center px-8">
+        <div className="min-h-screen flex justify-between flex-col md:flex-row items-center md:items-start">
+          <div className="text-darkgrey md:ml-40 mt-60 md:mt-40 leading-[1.1] md:leading-[1.2] md:w-[30%] flex flex-col items-center md:items-start">
+            <div>
+              <p className="text-[50px] md:text-[80px] font-heading font-bold">
+                BUILD.
+              </p>
+              <p className="text-[50px] md:text-[80px] font-heading font-bold">
+                GET RATED.
+              </p>
+              <p className="text-[50px] md:text-[80px] font-heading font-bold">
+                LEVEL UP.
+              </p>
+            </div>
+
+            <p className="font-body mt-8 w-[70%] md:w-full text-center md:text-left">
+              Where devs, designers, and cyber minds sharpen their craft -
+              together.
+            </p>
+            <Link to="/auth">
+              <button className="btn bg-yellow text-darkgrey border-none font-body font-medium px-12 text-[16px] rounded hover:bg-yellow/90 mt-12">
+                Get Started
+              </button>
+            </Link>
+          </div>
           {/* Background Image */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-20">
+          <div className="mt-40 w-[50%] hidden md:block">
             <img
-              src={dashboardHero}
+              src={landingHero}
               alt="Dashboard preview"
               className="max-w-4xl w-full h-auto object-contain"
             />
-          </div>
-
-          {/* Hero Text */}
-          <div className="relative z-10 text-center max-w-4xl">
-            <h1 className="text-6xl md:text-7xl lg:text-8xl font-heading text-darkgrey mb-6 leading-tight">
-              Join the Hyve, Find Your Tribe
-            </h1>
-            <p className="text-xl md:text-2xl font-body text-lightgrey mb-12">
-              Connect, Collaborate, and Create with Like-Minded Individuals.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/auth">
-                <button className="btn bg-yellow text-darkgrey border-none font-body font-semibold px-12 text-lg rounded hover:bg-yellow/90">
-                  Get Started
-                </button>
-              </Link>
-              <a href="#how-it-works">
-                <button className="btn bg-transparent text-darkgrey border-2 border-darkgrey font-body font-semibold px-12 text-lg rounded hover:bg-darkgrey hover:text-white">
-                  Learn More
-                </button>
-              </a>
-            </div>
           </div>
         </div>
       </section>
