@@ -12,6 +12,7 @@ import landingHero from "../assets/landing-hero.png";
 
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,43 +46,99 @@ const HomePage = () => {
       {/* Hero Section */}
       <section className="relative min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         {/* Navigation Bar */}
-        <nav className="absolute top-0 left-0 right-0 z-10 px-8 py-6">
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
-            <div className="text-3xl font-heading font-bold text-darkgrey">
+
+        <div className="navbar flex md:px-10 px-5 md:pt-4 fixed z-40 text-darkgrey justify-between">
+          <div className="flex p-0 w-[20%] md:w-[20%]">
+            <Link
+              to="/"
+              className="btn btn-ghost text-xl font-heading p-0 text-darkgrey"
+            >
               LOGO
+            </Link>
+          </div>
+
+          <div className="hidden lg:grid  lg:grid-flow-col lg:gap-8 lg:auto-rows-max lg:mr-[70px]">
+            <div className={`text-[16px] font-body font-normal`}>
+              <span className={"ml-[10px]"}>About</span>
             </div>
-            <div className="hidden md:flex items-center gap-8">
-              <a
-                href="#home"
-                className="text-darkgrey font-body hover:text-yellow transition"
-              >
-                Home
-              </a>
-              <a
-                href="#how-it-works"
-                className="text-darkgrey font-body hover:text-yellow transition"
-              >
-                How it works
-              </a>
-              <a
-                href="#why-crafthyve"
-                className="text-darkgrey font-body hover:text-yellow transition"
-              >
-                Why Crafthyve
-              </a>
-              <Link to="/auth/login">
-                <button className="text-darkgrey font-body hover:text-yellow transition">
-                  Sign In
-                </button>
-              </Link>
-              <Link to="/auth">
-                <button className="btn bg-yellow text-darkgrey border-none font-body font-semibold px-8 rounded hover:bg-yellow/90">
-                  Get Started
-                </button>
-              </Link>
+            <div className={`text-[16px] font-body font-normal`}>
+              <span className={"ml-[10px]"}>Download</span>
+            </div>
+            <div
+              className={`text-[16px] font-body  border border-darkgrey rounded px-4 py-2 cursor-pointer`}
+            >
+              <span>Get Started</span>
             </div>
           </div>
-        </nav>
+          <div className="dropdown dropdown-end lg:hidden">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-ghost btn-circle avatar"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              <div className="flex items-center justify-center">
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+              </div>
+            </div>
+            <ul
+              tabIndex={0}
+              className={`menu menu-sm dropdown-content z-[1] mt-3 w-52 p-2 shadow rounded-box ${isMenuOpen ? "block" : "hidden"}`}
+            >
+              <li className="lg:hidden">
+                <div className="">
+                  <p className="text-[16px] font-body font-normal ml-8">
+                    About
+                  </p>
+                </div>
+              </li>
+              <li className="lg:hidden">
+                <div className="">
+                  <p className="text-[16px] font-body font-normal ml-8">
+                    Download
+                  </p>
+                </div>
+              </li>
+              <li className="lg:hidden">
+                <div className="flex items-center border border-darkgrey rounded px-4 py-2 mt-2 ">
+                  <Link to="/auth">
+                    <p className="text-[16px] font-body font-normal  ml-8">
+                      Get Started
+                    </p>
+                  </Link>
+                </div>
+              </li>
+              <li>
+                <div className="flex items-center bg-yellow rounded px-4 py-2 mt-2 ">
+                  <Link to="/auth/login">
+                    <p className="text-[16px] font-body font-normal  ml-14">
+                      Log In
+                    </p>
+                  </Link>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <button
+            className="px-12 py-3 bg-yellow font-body font-medium rounded-[5px] text-[14px] hidden lg:block"
+            onClick={() => navigate(`/auth/login`)}
+          >
+            Log In
+          </button>
+        </div>
 
         {/* Hero Content */}
         <div className="min-h-screen flex justify-between flex-col md:flex-row items-center md:items-start">
