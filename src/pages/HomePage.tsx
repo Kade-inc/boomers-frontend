@@ -11,6 +11,7 @@ import landingHero from "../assets/landing-hero.png";
 import howItWorks1 from "../assets/how-it-works-1.png";
 import howItWorks2 from "../assets/how-it-works-2.png";
 import howItWorks3 from "../assets/how-it-works-3.png";
+import hyveDotted from "../assets/hyve-dotted.svg";
 
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -205,8 +206,18 @@ const HomePage = () => {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-20 px-8 bg-yellow">
-        <div className="max-w-7xl mx-auto">
+      <section
+        id="how-it-works"
+        className="py-20 px-8 bg-yellow relative overflow-hidden"
+      >
+        {/* Decorative dotted pattern overlay */}
+        <img
+          src={hyveDotted}
+          alt=""
+          aria-hidden="true"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120px] h-auto opacity-60 pointer-events-none"
+        />
+        <div className="max-w-7xl mx-auto relative z-10">
           <h2 className="text-5xl md:text-6xl font-heading text-center text-darkgrey mb-16">
             HOW IT WORKS
           </h2>
