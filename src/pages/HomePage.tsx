@@ -4,11 +4,14 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
-import teamMembers from "../assets/landing/team-members.png";
 import smartphones from "../assets/landing/smartphones.png";
 import appStoreBadge from "../assets/landing/app-store-badge.png";
 import googlePlayBadge from "../assets/landing/google-play-badge.png";
 import landingHero from "../assets/landing-hero.png";
+import howItWorks1 from "../assets/how-it-works-1.png";
+import howItWorks2 from "../assets/how-it-works-2.png";
+import howItWorks3 from "../assets/how-it-works-3.png";
+import hyveDotted from "../assets/hyve-dotted.svg";
 
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -57,29 +60,58 @@ const HomePage = () => {
         {/* Navigation Bar */}
 
         <div
-          className={`navbar flex md:px-10 px-5 md:pt-4 fixed z-40 text-darkgrey justify-between transition-all duration-300 ${isScrolled ? "bg-white/80 backdrop-blur-md shadow-sm" : ""}`}
+          className={`navbar flex md:px-10 px-5 md:pt-4 fixed z-40 text-black justify-between transition-all duration-300 ${isScrolled ? "bg-white/80 backdrop-blur-md shadow-sm" : ""}`}
         >
           <div className="flex p-0 w-[20%] md:w-[20%]">
             <Link
               to="/"
-              className="btn btn-ghost text-xl font-heading p-0 text-darkgrey"
+              className="btn btn-ghost text-xl font-heading p-0"
+              onClick={(e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
             >
               LOGO
             </Link>
           </div>
 
           <div className="hidden lg:grid  lg:grid-flow-col lg:gap-8 lg:auto-rows-max lg:mr-[70px]">
-            <div className={`text-[16px] font-body font-normal`}>
+            <div
+              className={`text-[16px] font-body font-normal cursor-pointer`}
+              onClick={() =>
+                document
+                  .getElementById("how-it-works")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
+            >
               <span className={"ml-[10px]"}>About</span>
             </div>
-            <div className={`text-[16px] font-body font-normal`}>
-              <span className={"ml-[10px]"}>Download</span>
+            <div
+              className={`text-[16px] font-body font-normal cursor-pointer`}
+              onClick={() =>
+                document
+                  .getElementById("why-crafthyve")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
+            >
+              <span className={"ml-[10px]"}>Why CraftHyve</span>
             </div>
             <div
-              className={`text-[16px] font-body  border border-darkgrey rounded px-4 py-2 cursor-pointer`}
+              className={`text-[16px] font-body font-normal cursor-pointer`}
+              onClick={() =>
+                document
+                  .getElementById("hyve-on-the-go")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
+            >
+              <span className={"ml-[10px]"}>Download</span>
+            </div>
+            <Link
+              to="/auth"
+              className={`text-[16px] font-body border border-black rounded px-4 py-2 cursor-pointer`}
             >
               <span>Get Started</span>
-            </div>
+            </Link>
           </div>
           <div className="dropdown dropdown-end lg:hidden">
             <div
@@ -109,14 +141,45 @@ const HomePage = () => {
               tabIndex={0}
               className={`menu menu-sm dropdown-content z-[1] mt-3 w-52 p-2 shadow rounded-box ${isMenuOpen ? "block" : "hidden"}`}
             >
-              <li className="lg:hidden">
+              <li
+                className="lg:hidden cursor-pointer"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  document
+                    .getElementById("how-it-works")
+                    ?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
                 <div className="">
                   <p className="text-[16px] font-body font-normal ml-8">
                     About
                   </p>
                 </div>
               </li>
-              <li className="lg:hidden">
+              <li
+                className="lg:hidden cursor-pointer"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  document
+                    .getElementById("why-crafthyve")
+                    ?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                <div className="">
+                  <p className="text-[16px] font-body font-normal ml-8">
+                    Why CraftHyve
+                  </p>
+                </div>
+              </li>
+              <li
+                className="lg:hidden cursor-pointer"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  document
+                    .getElementById("hyve-on-the-go")
+                    ?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
                 <div className="">
                   <p className="text-[16px] font-body font-normal ml-8">
                     Download
@@ -124,7 +187,7 @@ const HomePage = () => {
                 </div>
               </li>
               <li className="lg:hidden">
-                <div className="flex items-center border border-darkgrey rounded px-4 py-2 mt-2 ">
+                <div className="flex items-center border border-black rounded px-4 py-2 mt-2 ">
                   <Link to="/auth">
                     <p className="text-[16px] font-body font-normal  ml-8">
                       Get Started
@@ -144,7 +207,7 @@ const HomePage = () => {
             </ul>
           </div>
           <button
-            className="px-12 py-3 bg-yellow font-body font-medium rounded-[5px] text-[14px] hidden lg:block"
+            className="px-12 py-3 bg-yellow font-body font-medium rounded-[5px] text-[16px] hidden lg:block"
             onClick={() => navigate(`/auth/login`)}
           >
             Log In
@@ -153,7 +216,7 @@ const HomePage = () => {
 
         {/* Hero Content */}
         <div className="min-h-screen flex justify-between flex-col md:flex-row items-center md:items-start">
-          <div className="text-darkgrey md:ml-40 mt-60 md:mt-40 leading-[1.1] md:leading-[1.2] md:w-[30%] flex flex-col items-center md:items-start">
+          <div className="text-black md:ml-40 mt-60 md:mt-40 leading-[1.0] md:w-[30%] flex flex-col items-center md:items-start">
             <div>
               <p className="text-[50px] md:text-[80px] font-heading font-bold">
                 BUILD.
@@ -166,12 +229,12 @@ const HomePage = () => {
               </p>
             </div>
 
-            <p className="font-body mt-8 w-[70%] md:w-full text-center md:text-left">
+            <p className="font-body mt-8 w-[70%] md:w-full text-center md:text-left font-medium text-lg">
               Where devs, designers, and cyber minds sharpen their craft -
               together.
             </p>
             <Link to="/auth">
-              <button className="btn bg-yellow text-darkgrey border-none font-body font-medium px-12 text-[16px] rounded hover:bg-yellow/90 mt-12">
+              <button className="btn bg-yellow text-black border-none font-body font-medium px-12 text-lg rounded hover:bg-yellow/90 mt-12">
                 Get Started
               </button>
             </Link>
@@ -203,66 +266,105 @@ const HomePage = () => {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-20 px-8 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-5xl md:text-6xl font-heading text-center text-darkgrey mb-16">
-            HOW IT WORKS
-          </h2>
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+      <section
+        id="how-it-works"
+        className="py-20 px-8 bg-yellow relative overflow-hidden"
+      >
+        {/* Decorative dotted pattern overlay */}
+        <img
+          src={hyveDotted}
+          alt=""
+          aria-hidden="true"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120px] h-auto opacity-60 pointer-events-none"
+        />
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-5xl md:text-6xl font-heading text-black">
+              HOW IT WORKS
+            </h2>
+            <div className="flex flex-col items-center mt-2 gap-2">
+              <div className="w-36 h-[4px] bg-black ml-16 md:ml-24"></div>
+              <div className="w-36 h-[4px] bg-black"></div>
+            </div>
+          </div>
+          <div className="grid md:grid-cols-2 gap-12 md:gap-y-40">
             {/* Steps */}
-            <div className="space-y-8">
-              {/* Step 1 */}
-              <div className="flex gap-6">
-                <div className="flex-shrink-0 w-16 h-16 bg-yellow rounded-full flex items-center justify-center">
-                  <span className="text-3xl font-heading text-darkgrey">1</span>
-                </div>
-                <div>
-                  <h3 className="text-2xl font-heading text-darkgrey mb-2">
-                    Sign Up
-                  </h3>
-                  <p className="text-lg font-body text-lightgrey">
-                    Create your account and set up your profile.
-                  </p>
-                </div>
-              </div>
-
-              {/* Step 2 */}
-              <div className="flex gap-6">
-                <div className="flex-shrink-0 w-16 h-16 bg-green rounded-full flex items-center justify-center">
-                  <span className="text-3xl font-heading text-white">2</span>
-                </div>
-                <div>
-                  <h3 className="text-2xl font-heading text-darkgrey mb-2">
-                    Join a Hyve
-                  </h3>
-                  <p className="text-lg font-body text-lightgrey">
-                    Browse and join hyves based on your interests.
-                  </p>
-                </div>
-              </div>
-
-              {/* Step 3 */}
-              <div className="flex gap-6">
-                <div className="flex-shrink-0 w-16 h-16 bg-yellow rounded-full flex items-center justify-center">
-                  <span className="text-3xl font-heading text-darkgrey">3</span>
-                </div>
-                <div>
-                  <h3 className="text-2xl font-heading text-darkgrey mb-2">
-                    Start Collaborating
-                  </h3>
-                  <p className="text-lg font-body text-lightgrey">
-                    Engage in projects, discussions, and events.
-                  </p>
-                </div>
-              </div>
+            <div className="space-y-8 hidden md:block">
+              <img
+                src={howItWorks1}
+                alt="How it works"
+                className="w-[80%] h-auto object-contain"
+              />
             </div>
 
             {/* Image */}
-            <div className="flex justify-center">
+            <div className="flex flex-col items-start">
+              <p className="text-3xl font-heading text-black mb-4">
+                1. JOIN A HYVE
+              </p>
+              <p className="text-lg font-body text-black font-medium">
+                Your Hyve is your family. Connect with other like minded
+                craftsmen within it. If you wish to be an owner and help others
+                hone their craft, create your own Hyve and mentor others.
+              </p>
+            </div>
+
+            <div className="space-y-8 md:hidden">
               <img
-                src={teamMembers}
-                alt="Team collaboration"
-                className="w-full max-w-lg rounded-lg shadow-xl"
+                src={howItWorks1}
+                alt="How it works"
+                className="w-full h-auto object-contain"
+              />
+            </div>
+
+            {/* Steps */}
+
+            {/* Image */}
+            <div className="flex flex-col items-start">
+              <p className="text-3xl font-heading text-black mb-4">
+                2. CHALLENGES
+              </p>
+              <p className="text-lg font-body text-black font-medium">
+                Challenges are best for honing your craft. Choose a challenge in
+                your Hyve and give the steps you would take to accomplish the
+                challenge.
+              </p>
+            </div>
+
+            <div className="space-y-8">
+              <img
+                src={howItWorks2}
+                alt="How it works"
+                className="w-full md:w-[80%] h-auto object-contain"
+              />
+            </div>
+
+            {/* Steps */}
+
+            <div className="space-y-8 hidden md:block">
+              <img
+                src={howItWorks3}
+                alt="How it works"
+                className="w-[80%] h-auto object-contain"
+              />
+            </div>
+
+            {/* Image */}
+            <div className="flex flex-col items-start">
+              <p className="text-3xl font-heading text-black mb-4">
+                3. FEEDBACK
+              </p>
+              <p className="text-lg font-body text-black font-medium">
+                Rate your hyve mates, give feedback and have fun as you hone
+                your craft!
+              </p>
+            </div>
+
+            <div className="space-y-8 block md:hidden">
+              <img
+                src={howItWorks3}
+                alt="How it works"
+                className="w-full h-auto object-contain"
               />
             </div>
           </div>
@@ -272,127 +374,146 @@ const HomePage = () => {
       {/* Why Crafthyve Section */}
       <section id="why-crafthyve" className="py-20 px-8 bg-gray-50">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-5xl md:text-6xl font-heading text-center text-darkgrey mb-16">
-            WHY CRAFTHYVE
-          </h2>
-          <div className="grid md:grid-cols-3 gap-12">
-            {/* Connect */}
-            <div className="text-center">
-              <div className="w-20 h-20 bg-yellow rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg
-                  className="w-10 h-10 text-darkgrey"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-heading text-darkgrey mb-4">
-                Connect
-              </h3>
-              <p className="text-lg font-body text-lightgrey">
-                Find and connect with people who share your passions.
-              </p>
+          <div className="text-center mb-16">
+            <h2 className="text-5xl md:text-6xl font-heading text-black">
+              WHY CRAFTHYVE
+            </h2>
+            <div className="flex flex-col items-center mt-2 gap-2">
+              <div className="w-36 h-[4px] bg-black ml-16 md:ml-24"></div>
+              <div className="w-36 h-[4px] bg-black"></div>
             </div>
-
-            {/* Collaborate */}
-            <div className="text-center">
-              <div className="w-20 h-20 bg-green rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg
-                  className="w-10 h-10 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-heading text-darkgrey mb-4">
-                Collaborate
-              </h3>
-              <p className="text-lg font-body text-lightgrey">
-                Work together on exciting projects and challenges.
-              </p>
-            </div>
-
-            {/* Create */}
-            <div className="text-center">
-              <div className="w-20 h-20 bg-yellow rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg
-                  className="w-10 h-10 text-darkgrey"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-heading text-darkgrey mb-4">
-                Create
-              </h3>
-              <p className="text-lg font-body text-lightgrey">
-                Bring your ideas to life with the support of your hyve.
-              </p>
+          </div>
+          <div className="flex justify-center">
+            <div className="border-2 border-green rounded-2xl p-8 md:p-12 max-w-2xl w-full">
+              <ul className="space-y-4">
+                <li className="flex items-start gap-3">
+                  <svg
+                    className="w-6 h-6 text-green flex-shrink-0 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span className="text-lg font-body text-black">
+                    Guaranteed problem solving improvement.
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg
+                    className="w-6 h-6 text-green flex-shrink-0 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span className="text-lg font-body text-black">
+                    Share completed challenges with others online (Linkedin, X,
+                    etc)
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg
+                    className="w-6 h-6 text-green flex-shrink-0 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span className="text-lg font-body text-black">
+                    Connect with experienced professionals.
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <svg
+                    className="w-6 h-6 text-green flex-shrink-0 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span className="text-lg font-body text-black">
+                    Build portfolio of projects.
+                  </span>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
       </section>
 
       {/* Download Section - Hyve on the Go */}
-      <section className="py-20 px-8 bg-white">
+      <section id="hyve-on-the-go" className="pt-20 px-8 bg-yellow">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-5xl md:text-6xl font-heading text-center text-darkgrey mb-8">
-            HYVE ON THE GO
-          </h2>
-          <p className="text-xl font-body text-center text-lightgrey mb-12 max-w-2xl mx-auto">
-            Stay connected with the Crafthyve mobile app. Available on iOS and
-            Android.
-          </p>
+          {/* Title with underlines */}
+          <div className="text-center mb-12">
+            <h2 className="text-5xl md:text-6xl font-heading text-black">
+              HYVE ON THE GO
+            </h2>
+            <div className="flex flex-col items-center mt-2 gap-2">
+              <div className="w-36 h-[4px] bg-black ml-16 md:ml-24"></div>
+              <div className="w-36 h-[4px] bg-black"></div>
+            </div>
+          </div>
+
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            {/* App Store Badges */}
-            <div className="flex flex-col items-center md:items-end gap-6">
-              <a
-                href="#"
-                className="hover:opacity-80 transition"
-                aria-label="Download on App Store"
-              >
-                <img
-                  src={appStoreBadge}
-                  alt="Download on App Store"
-                  className="h-14"
-                />
-              </a>
-              <a
-                href="#"
-                className="hover:opacity-80 transition"
-                aria-label="Get it on Google Play"
-              >
-                <img
-                  src={googlePlayBadge}
-                  alt="Get it on Google Play"
-                  className="h-14"
-                />
-              </a>
+            {/* Left side - Text and App Store Badges */}
+            <div className="flex flex-col items-center md:items-start">
+              <p className="text-lg font-body text-black text-center md:text-left font-medium">
+                Take the Hyve with you and get your notifications, give feedback
+                & submit solutions on the go through the mobile app!
+              </p>
+              <div className="flex flex-row items-center gap-4">
+                <a
+                  href="#"
+                  className="hover:opacity-80 transition"
+                  aria-label="Get it on Google Play"
+                >
+                  <img
+                    src={googlePlayBadge}
+                    alt="Get it on Google Play"
+                    className="w-[200px]"
+                  />
+                </a>
+                <a
+                  href="#"
+                  className="hover:opacity-80 transition"
+                  aria-label="Download on App Store"
+                >
+                  <img
+                    src={appStoreBadge}
+                    alt="Download on App Store"
+                    className="w-[200px]"
+                  />
+                </a>
+              </div>
             </div>
 
-            {/* Smartphone Images */}
-            <div className="flex justify-center md:justify-start">
+            {/* Right side - Smartphone Images */}
+            <div className="flex justify-center md:justify-end">
               <img
                 src={smartphones}
                 alt="Mobile app preview"
@@ -404,16 +525,16 @@ const HomePage = () => {
       </section>
 
       {/* Call to Action Section */}
-      <section className="py-20 px-8 bg-gradient-to-br from-yellow to-yellow/80">
+      <section className="py-20 px-8 bg-gray-50">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-5xl md:text-6xl font-heading text-darkgrey mb-6">
+          <h2 className="text-5xl md:text-6xl font-heading text-black mb-6">
             READY TO JOIN THE MOVEMENT?
           </h2>
-          <p className="text-xl font-body text-darkgrey mb-10">
+          <p className="text-lg font-body font-medium text-black">
             Sign up today and start your journey with Crafthyve.
           </p>
           <Link to="/auth">
-            <button className="btn bg-darkgrey text-white border-none font-body font-semibold px-16 py-4 text-lg rounded hover:bg-darkgrey/90">
+            <button className="btn bg-yellow text-black border-none font-body font-semibold px-12 text-lg rounded hover:bg-yellow/90 mt-12">
               Get Started
             </button>
           </Link>
@@ -421,10 +542,20 @@ const HomePage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-darkgrey text-white py-8 px-8">
+      <footer className="bg-black text-white py-8 px-8">
         <div className="max-w-7xl mx-auto text-center">
           <p className="font-body text-sm">
             © 2025 Crafthyve. All rights reserved.
+          </p>
+          <p className="font-body text-sm mt-4">
+            Made with ❤️ from{" "}
+            <a
+              href="https://www.teamkade.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              KADE
+            </a>
           </p>
         </div>
       </footer>
