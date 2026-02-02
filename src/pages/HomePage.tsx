@@ -13,7 +13,16 @@ import landingHero from "../assets/landing-hero.png";
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     const token = Cookies.get("token");
@@ -47,7 +56,9 @@ const HomePage = () => {
       <section className="relative min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         {/* Navigation Bar */}
 
-        <div className="navbar flex md:px-10 px-5 md:pt-4 fixed z-40 text-darkgrey justify-between">
+        <div
+          className={`navbar flex md:px-10 px-5 md:pt-4 fixed z-40 text-darkgrey justify-between transition-all duration-300 ${isScrolled ? "bg-white/80 backdrop-blur-md shadow-sm" : ""}`}
+        >
           <div className="flex p-0 w-[20%] md:w-[20%]">
             <Link
               to="/"
