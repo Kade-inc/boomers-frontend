@@ -11,6 +11,7 @@ import howItWorks1 from "../assets/how-it-works-1.png";
 import howItWorks2 from "../assets/how-it-works-2.png";
 import howItWorks3 from "../assets/how-it-works-3.png";
 import hyveDotted from "../assets/hyve-dotted.svg";
+import crafthyveLogo from "../assets/craftyhyve-logo-full.svg";
 
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -70,7 +71,11 @@ const HomePage = () => {
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
             >
-              LOGO
+              <img
+                src={crafthyveLogo}
+                alt="CraftHyve Logo"
+                className="w-[200px]"
+              />
             </Link>
           </div>
 
@@ -243,7 +248,7 @@ const HomePage = () => {
             <img
               src={landingHero}
               alt="Dashboard preview"
-              className="max-w-4xl w-full h-auto object-contain"
+              className="max-w-4xl w-full h-auto object-contain shadow-lg"
             />
           </div>
         </div>
@@ -292,7 +297,7 @@ const HomePage = () => {
               <img
                 src={howItWorks1}
                 alt="How it works"
-                className="w-[80%] h-auto object-contain"
+                className="w-[80%] h-auto object-contain rounded-md shadow-md"
               />
             </div>
 
@@ -334,7 +339,7 @@ const HomePage = () => {
               <img
                 src={howItWorks2}
                 alt="How it works"
-                className="w-full md:w-[80%] h-auto object-contain"
+                className="w-full md:w-[80%] h-auto object-contain rounded-md shadow-md"
               />
             </div>
 
@@ -344,7 +349,7 @@ const HomePage = () => {
               <img
                 src={howItWorks3}
                 alt="How it works"
-                className="w-[80%] h-auto object-contain"
+                className="w-[80%] h-auto object-contain rounded-md shadow-md"
               />
             </div>
 
@@ -363,7 +368,7 @@ const HomePage = () => {
               <img
                 src={howItWorks3}
                 alt="How it works"
-                className="w-full h-auto object-contain"
+                className="w-full h-auto object-contain rounded-md shadow-md"
               />
             </div>
           </div>
