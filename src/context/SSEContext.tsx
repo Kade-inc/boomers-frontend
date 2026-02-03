@@ -52,7 +52,7 @@ export const SSEProvider = ({ children }: SSEProviderProps) => {
 
     // Create SSE connection with auth token in query params
     // Note: EventSource doesn't support custom headers, so we pass token as query param
-    const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:5001";
+    const baseUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:5001";
     const sseUrl = `${baseUrl}/api/notifications/stream`;
 
     console.log("SSE: Connecting to", sseUrl);

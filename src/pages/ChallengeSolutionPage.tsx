@@ -559,6 +559,7 @@ const ChallengeSolutionPage = () => {
                 {descOpen && (
                   <div className="h-[70vh] overflow-scroll">
                     <CKEditor
+                      // @ts-expect-error CKEditor types are incompatible between packages
                       editor={ClassicEditor}
                       data={solution?.challenge.description}
                       disabled={true}

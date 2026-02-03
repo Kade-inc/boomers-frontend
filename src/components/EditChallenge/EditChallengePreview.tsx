@@ -58,6 +58,7 @@ function EditChallengePreview({
         <p className="mt-8 mb-2 text-[16px]">Description</p>
         <div className="text-darkgrey">
           <CKEditor
+            // @ts-expect-error CKEditor types are incompatible between packages
             editor={ClassicEditor}
             data={description}
             disabled={true}
