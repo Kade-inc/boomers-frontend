@@ -150,7 +150,7 @@ class APIClient {
       const axiosError = error as AxiosError;
       toast.error(
         (axiosError.response?.data as ErrorResponse)?.message ??
-        axiosError.message,
+          axiosError.message,
       );
       throw axiosError;
     }
@@ -784,7 +784,8 @@ class APIClient {
     } catch (error: any) {
       const axiosError = error as AxiosError;
       toast.error(
-        `Error posting challenge comment: ${axiosError.response?.data ?? axiosError.message
+        `Error posting challenge comment: ${
+          axiosError.response?.data ?? axiosError.message
         }`,
       );
       throw error; // Throw the error to allow React Query to handle it
@@ -1262,7 +1263,8 @@ class APIClient {
     } catch (error: any) {
       const axiosError = error as AxiosError;
       toast.error(
-        `Error beginning challenge solution: ${axiosError.response?.data ?? axiosError.message
+        `Error beginning challenge solution: ${
+          axiosError.response?.data ?? axiosError.message
         }`,
       );
       throw error; // Throw the error to allow React Query to handle it
@@ -1289,7 +1291,8 @@ class APIClient {
     } catch (error: any) {
       const axiosError = error as AxiosError;
       toast.error(
-        `Error adding solution step: ${axiosError.response?.data ?? axiosError.message
+        `Error adding solution step: ${
+          axiosError.response?.data ?? axiosError.message
         }`,
       );
       throw error; // Throw the error to allow React Query to handle it
@@ -1317,7 +1320,8 @@ class APIClient {
     } catch (error: any) {
       const axiosError = error as AxiosError;
       toast.error(
-        `Error updating solution step: ${axiosError.response?.data ?? axiosError.message
+        `Error updating solution step: ${
+          axiosError.response?.data ?? axiosError.message
         }`,
       );
       throw error; // Throw the error to allow React Query to handle it
@@ -1371,7 +1375,8 @@ class APIClient {
     } catch (error: any) {
       const axiosError = error as AxiosError;
       toast.error(
-        `Error updating solution: ${axiosError.response?.data ?? axiosError.message
+        `Error updating solution: ${
+          axiosError.response?.data ?? axiosError.message
         }`,
       );
       throw error; // Throw the error to allow React Query to handle it
