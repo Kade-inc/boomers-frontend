@@ -216,6 +216,10 @@ const router = createBrowserRouter([
         ),
         children: [
           {
+            path: "new",
+            element: withSuspense(<Chat />),
+          },
+          {
             path: ":chatId",
             element: withSuspense(<Chat />),
           },

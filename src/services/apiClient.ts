@@ -2144,6 +2144,26 @@ class APIClient {
       throw axiosError;
     }
   };
+
+  // Create a chat and send the first message atomically (lazy chat creation)
+  createChatAndSendMessage = async (recipientId: string, text: string) => {
+    try {
+      const response = await this.axiosInstance.post(
+        `/api/messages/with-chat`,
+        { recipientId, text },
+        {
+          headers: {
+            requiresAuth: true,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error("Error sending message");
+      throw axiosError;
+    }
+  };
 }
 
 export default APIClient;

@@ -94,35 +94,30 @@ const ChatSearchModal = ({ isOpen, onClose }: ModalTriggerProps) => {
     setIsCreatingChat(true);
 
     try {
-      // For profiles (users), create a one-to-one chat
+      // For profiles (users), use lazy chat creation
       if (result.type === "profile") {
-        // Use user_id for profiles, not _id (which is MongoDB ObjectId)
-        // The search results return both _id and user_id for profiles
         const otherUserId = result.user_id || result._id;
         const members = [user.user_id, otherUserId];
 
-        // Try to create or get existing chat
+        // First check if a chat already exists
         try {
-          const response = await apiClient.createChat(members);
-          onClose();
-          navigate(`/chat/${response._id}`);
-        } catch (error: unknown) {
-          // If chat already exists (409), use the returned chat
-          const axiosError = error as {
-            response?: { status?: number; data?: { data?: { _id?: string } } };
-          };
-          if (
-            axiosError.response?.status === 409 &&
-            axiosError.response?.data?.data
-          ) {
+          const existingChat = await apiClient.findChat(members);
+          if (existingChat) {
+            // Chat exists, navigate directly to it
             onClose();
-            navigate(`/chat/${axiosError.response.data.data._id}`);
-          } else {
-            throw error;
+            navigate(`/chat/${existingChat._id}`);
+            return;
           }
+        } catch {
+          // No existing chat found, continue to create draft
         }
+
+        // No existing chat - navigate to draft chat view
+        // The chat will be created when the first message is sent
+        onClose();
+        navigate(`/chat/new?userId=${otherUserId}`);
       } else {
-        // For teams, create a group chat with all team members
+        // For teams, create a group chat with all team members (existing behavior)
         try {
           const response = await apiClient.createGroupChat(
             result._id,

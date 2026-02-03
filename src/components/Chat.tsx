@@ -1,4 +1,4 @@
-import { useParams, useOutletContext } from "react-router-dom";
+import { useParams, useOutletContext, useSearchParams } from "react-router-dom";
 import { useMemo } from "react";
 import ChatConversation from "./Chat/ChatConversation";
 import useAuthStore from "../stores/useAuthStore";
@@ -33,11 +33,16 @@ interface OutletContext {
 
 const Chat = () => {
   const { chatId } = useParams<{ chatId: string }>();
+  const [searchParams] = useSearchParams();
   const { user } = useAuthStore();
   const context = useOutletContext<OutletContext>();
   const userProfiles = context?.userProfiles || new Map();
   const setShowDetailsPanel = context?.setShowDetailsPanel;
   const setDetailsProfile = context?.setDetailsProfile;
+
+  // Check if this is a draft chat (no chatId, but userId in query params)
+  const draftUserId = searchParams.get("userId");
+  const isDraft = !chatId && !!draftUserId;
 
   const { data: chats } = useGetChats(user?.user_id || "");
 
@@ -47,11 +52,12 @@ const Chat = () => {
     return chats.find((c: ChatType) => c._id === chatId) || null;
   }, [chats, chatId]);
 
-  // Derive other member ID
+  // Derive other member ID - for draft, use draftUserId
   const otherMemberId = useMemo(() => {
+    if (isDraft) return draftUserId;
     if (!currentChat || !user?.user_id) return undefined;
     return currentChat.members.find((id) => id !== user.user_id);
-  }, [currentChat, user?.user_id]);
+  }, [currentChat, user?.user_id, isDraft, draftUserId]);
 
   // Check cache first for the profile
   const cachedProfile = otherMemberId
@@ -68,7 +74,8 @@ const Chat = () => {
   const otherMemberProfile =
     cachedProfile || (fetchedProfile as UserProfile | undefined);
 
-  if (!chatId) {
+  // For draft chats without chatId, we still show the conversation UI
+  if (!chatId && !isDraft) {
     return (
       <div className="flex items-center justify-center h-full">
         <p className="text-base-content/60">No chat selected</p>
@@ -79,13 +86,15 @@ const Chat = () => {
   return (
     <div className="h-full">
       <ChatConversation
-        chatId={chatId}
+        chatId={chatId || ""}
         otherMemberId={otherMemberId}
         otherMemberProfile={otherMemberProfile}
         isGroup={currentChat?.isGroup}
         groupName={currentChat?.groupName}
         onShowDetails={setShowDetailsPanel}
         onSetDetailsProfile={setDetailsProfile}
+        isDraft={isDraft}
+        draftOtherUserId={draftUserId || undefined}
       />
     </div>
   );

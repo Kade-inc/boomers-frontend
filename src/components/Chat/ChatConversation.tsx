@@ -11,6 +11,7 @@ import ChatInput from "./ChatInput";
 import ChatDetailsPanel from "./ChatDetailsPanel";
 import { useGetMessages } from "../../hooks/Chats/useGetMessages";
 import { useSendMessage } from "../../hooks/Chats/useSendMessage";
+import { useSendFirstMessage } from "../../hooks/Chats/useSendFirstMessage";
 import { useChatSocket } from "../../hooks/Chats/useChatSocket";
 import useAuthStore from "../../stores/useAuthStore";
 import { ChatMessage as ChatMessageType } from "../../entities/ChatMessage";
@@ -43,6 +44,8 @@ interface ChatConversationProps {
   groupColor?: string;
   onShowDetails?: (show: boolean) => void;
   onSetDetailsProfile?: (profile: DetailsProfile | null) => void;
+  isDraft?: boolean;
+  draftOtherUserId?: string;
 }
 
 const ChatConversation = ({
@@ -54,6 +57,8 @@ const ChatConversation = ({
   groupColor,
   onShowDetails,
   onSetDetailsProfile,
+  isDraft = false,
+  draftOtherUserId,
 }: ChatConversationProps) => {
   const navigate = useNavigate();
   const { user } = useAuthStore();
@@ -62,14 +67,17 @@ const ChatConversation = ({
   const [showDetails, setShowDetails] = useState(false);
   const [isOtherUserTyping, setIsOtherUserTyping] = useState(false);
 
+  // Only fetch messages if not a draft (drafts have no messages yet)
   const {
     data: messages,
     isLoading,
     isError,
     refetch,
-  } = useGetMessages(chatId);
+  } = useGetMessages(isDraft ? "" : chatId);
 
   const { mutate: sendMessage, isPending: isSending } = useSendMessage();
+  const { mutate: sendFirstMessage, isPending: isSendingFirst } =
+    useSendFirstMessage();
 
   // Handle new messages from socket
   const handleNewMessage = useCallback(
@@ -123,6 +131,21 @@ const ChatConversation = ({
   }, [messages]);
 
   const handleSendMessage = (text: string) => {
+    // For draft chats, create the chat and send the first message atomically
+    if (isDraft && draftOtherUserId) {
+      sendFirstMessage(
+        { recipientId: draftOtherUserId, text },
+        {
+          onSuccess: (data) => {
+            // Navigate to the actual chat after creation
+            navigate(`/chat/${data.chat._id}`, { replace: true });
+          },
+        },
+      );
+      return;
+    }
+
+    // Regular message sending for existing chats
     if (!chatId) return;
     sendMessage({ chatId, text });
   };
@@ -342,7 +365,7 @@ const ChatConversation = ({
         onSendMessage={handleSendMessage}
         onTyping={handleTyping}
         onStopTyping={handleStopTyping}
-        disabled={isSending}
+        disabled={isSending || isSendingFirst}
       />
 
       {/* Details Panel (Mobile Only - Desktop uses sidebar in ChatLayout) */}
