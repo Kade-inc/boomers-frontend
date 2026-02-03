@@ -9,7 +9,6 @@ import APIClient from "../../services/apiClient";
 const apiClient = new APIClient("/api/teams");
 
 const useDeleteChallenge = (): UseMutationResult<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   any,
   Error,
   {

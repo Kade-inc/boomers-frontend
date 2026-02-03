@@ -1,4 +1,3 @@
-/* eslint-disable react/react-in-jsx-scope */
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";

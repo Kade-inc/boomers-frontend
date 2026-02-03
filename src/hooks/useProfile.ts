@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import APIClient from "../services/apiClient";
 import UpdatedUserProfile from "../entities/UpdatedUserProfile";
