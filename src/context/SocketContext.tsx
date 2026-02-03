@@ -29,7 +29,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
 
   useEffect(() => {
     if (user?.user_id) {
-      const newSocket = io("http://localhost:5001", {
+      const serverUrl =
+        import.meta.env.VITE_SERVER_URL || "http://localhost:5001";
+      const newSocket = io(serverUrl, {
         transports: ["websocket", "polling"],
       });
 

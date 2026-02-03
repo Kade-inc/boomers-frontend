@@ -64,10 +64,10 @@ const SpotlightCard = ({
                   <div className="flex items-center mb-2 font-medium">
                     {team?.domain || domain}
 
-                    {(team?.subDomain || subDomain) && (
+                    {(team?.subdomain || subDomain) && (
                       <>
                         <div className="bg-white rounded-full w-1 h-1 mx-1"></div>
-                        {team?.subDomain || subDomain}
+                        {team?.subdomain || subDomain}
                       </>
                     )}
 

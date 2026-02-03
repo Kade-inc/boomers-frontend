@@ -40,6 +40,7 @@ const ChallengeDescriptionModal = ({
         <div className="font-body flex flex-col items-center">
           <div className="h-[70vh] overflow-scroll text-darkgrey">
             <CKEditor
+              // @ts-expect-error CKEditor types are incompatible between packages
               editor={ClassicEditor}
               data={solution?.challenge?.description || ""}
               disabled={true}

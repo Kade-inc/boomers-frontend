@@ -69,12 +69,13 @@ function DescriptionForm({
       </h2>
       <div>
         <CKEditor
+          // @ts-expect-error CKEditor types are incompatible between packages
           editor={ClassicEditor}
           config={{
             extraPlugins: [ImageCustomUploadAdapterPlugin], // Use the custom adapter for image uploads
           }}
           data={description}
-          onChange={(event, editor) => {
+          onChange={(_event, editor) => {
             const data = editor.getData();
             debouncedSave(data);
             setHasContent(data.trim() !== "");
