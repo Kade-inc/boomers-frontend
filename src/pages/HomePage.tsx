@@ -244,11 +244,11 @@ const HomePage = () => {
             </Link>
           </div>
           {/* Background Image */}
-          <div className="mt-40 w-[50%] hidden md:block">
+          <div className="mt-40 hidden md:block md:w-[40%]">
             <img
               src={landingHero}
               alt="Dashboard preview"
-              className="max-w-4xl w-full h-auto object-contain shadow-lg"
+              className="w-full h-auto object-contain shadow-lg"
             />
           </div>
         </div>
