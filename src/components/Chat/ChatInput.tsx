@@ -56,8 +56,8 @@ const ChatInput = ({
   };
 
   return (
-    <div className="flex items-end gap-2 p-4 bg-base-100 border-t border-base-200">
-      <div className="flex-1 relative">
+    <div className="flex items-center gap-2 p-4 bg-base-100 border-t border-base-200">
+      <div className="flex-1 relative flex items-center">
         <textarea
           value={message}
           onChange={handleChange}
