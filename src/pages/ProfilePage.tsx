@@ -14,11 +14,14 @@ import { MdOutlineInterests } from "react-icons/md";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import ViewProfilePicture from "../components/Modals/ViewProfilePictureModal";
 import { TbPhone, TbWorld } from "react-icons/tb";
+import DeleteAccountModal from "../components/Modals/DeleteAccountModal";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
 const ProfilePage = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
   const { user } = useAuthStore();
@@ -53,6 +56,9 @@ const ProfilePage = () => {
     }
     return user;
   }, [userId, userProfile, user]);
+
+  // Check if viewing own profile
+  const isOwnProfile = !userId || userId === user.user_id;
 
   if (userId && userProfilePending)
     return (
@@ -261,6 +267,36 @@ const ProfilePage = () => {
             )}
           </div>
         </div>
+
+        {/* Danger Zone - Only show for own profile */}
+        {isOwnProfile && (
+          <div className="bg-base-200 mt-4 shadow-custom text-base-content rounded-[5px] border border-red-500/30">
+            <div className="p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <ExclamationTriangleIcon className="w-6 h-6 text-red-500" />
+                <h1 className="font-body font-semibold text-base md:text-lg text-red-500">
+                  Danger Zone
+                </h1>
+              </div>
+              <p className="text-base-content/70 font-body text-sm mb-4">
+                Once you delete your account, there is no going back. Your data
+                will be permanently removed after 30 days.
+              </p>
+              <button
+                onClick={() => setIsDeleteModalOpen(true)}
+                className="btn bg-red-600 hover:bg-red-700 text-white font-body font-semibold"
+              >
+                Delete Account
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Delete Account Modal */}
+        <DeleteAccountModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+        />
       </div>
     </div>
   );
