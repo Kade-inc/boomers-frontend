@@ -11,15 +11,10 @@ import Notification from "../entities/Notification";
 import NotificationItem from "../components/NotificationItem";
 import useMarkAllNotificationsRead from "../hooks/Notifications/useMarkAllNotificationsRead";
 import useNotificationsStore from "../stores/useNotificationsStore";
-import { io, Socket } from "socket.io-client";
-import Team from "../entities/Team";
 import { useQueryClient } from "@tanstack/react-query";
 
-const serverUrl = "http://localhost:5001";
-const socket: Socket = io(serverUrl);
-
 function AppLayout() {
-  const { userTeams, user, userChallenges, isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const notifications = useNotificationsStore((state) => state.notifications);
   const setNotifications = useNotificationsStore(
     (state) => state.setNotifications,
@@ -27,10 +22,6 @@ function AppLayout() {
   const isLoading = useLoadingStore((state) => state.isLoading);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-
-  const addNotification = useNotificationsStore(
-    (state) => state.addNotification,
-  );
 
   // Fetch initial notifications.
   // Here we assume that the user is authenticated if `user` exists.
@@ -51,43 +42,8 @@ function AppLayout() {
     }
   }, [fetchedNotifications, isSuccess, setNotifications]);
 
-  // Join personal room on mount (when user data is available).
-  useEffect(() => {
-    if (user && user.user_id) {
-      socket.emit("joinUser", { userId: user.user_id });
-      // console.log("Joined personal room for user:", user.user_id);
-    }
-  }, [user]);
-
-  // Join all team rooms once userTeams are available.
-  useEffect(() => {
-    if (userTeams && userTeams.length > 0) {
-      userTeams.forEach((team: Team) => {
-        socket.emit("joinTeam", { teamId: team._id });
-      });
-    }
-  }, [userTeams]);
-
-  // Join challenge rooms for all user challenges
-  useEffect(() => {
-    if (userChallenges && userChallenges.length > 0) {
-      userChallenges.forEach((challenge) => {
-        socket.emit("joinChallenge", { challengeId: challenge._id });
-      });
-    }
-  }, [userChallenges]);
-
-  // Listen for new notifications.
-  useEffect(() => {
-    socket.on("pushNotification", (notification) => {
-      console.log("Received pushNotification:", notification);
-      addNotification(notification);
-    });
-
-    return () => {
-      socket.off("pushNotification");
-    };
-  }, [addNotification]);
+  // Note: Real-time notifications are now handled by SSEContext
+  // which is wrapped around the app in main.tsx
 
   // Prepare notifications lists.
   const unreadNotifications =
@@ -101,11 +57,6 @@ function AppLayout() {
   const handleMarkAllAsRead = () => {
     mutate({});
   };
-
-  // useEffect(() => {
-  //   const token = Cookies.get("token");
-  //   if (!token) navigate("/");
-  // }, []);
 
   const handleNotificationRedirect = (notification: Notification) => {
     if (
