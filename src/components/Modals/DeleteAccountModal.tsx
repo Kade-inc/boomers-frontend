@@ -12,7 +12,7 @@ interface DeleteAccountModalProps {
 const DeleteAccountModal = ({ isOpen, onClose }: DeleteAccountModalProps) => {
   const [confirmText, setConfirmText] = useState("");
   const navigate = useNavigate();
-  const { user } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const deleteAccountMutation = useDeleteAccount(user.user_id || "");
 
   const isConfirmed = confirmText === "DELETE";
@@ -23,7 +23,12 @@ const DeleteAccountModal = ({ isOpen, onClose }: DeleteAccountModalProps) => {
     deleteAccountMutation.mutate(undefined, {
       onSuccess: () => {
         onClose();
+        // Navigate first, then logout after a delay so navigation can complete
         navigate("/account-deleted");
+        // Delay logout to allow navigation to complete before auth state changes
+        setTimeout(() => {
+          logout();
+        }, 100);
       },
     });
   };

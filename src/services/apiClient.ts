@@ -717,8 +717,6 @@ class APIClient {
   };
 
   deleteAccount = async (userId: string, requiresAuth = true) => {
-    const { logout } = useAuthStore.getState();
-
     try {
       const response = await this.axiosInstance.delete(
         `${this.endpoint}/${userId}`,
@@ -728,8 +726,7 @@ class APIClient {
           },
         },
       );
-      // Logout the user immediately after deletion is initiated
-      logout();
+      // Don't logout here - let the caller handle navigation first, then logout
       return response.data;
     } catch (error: unknown) {
       const axiosError = error as AxiosError;
