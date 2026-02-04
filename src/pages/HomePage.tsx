@@ -144,7 +144,7 @@ const HomePage = () => {
             </div>
             <ul
               tabIndex={0}
-              className={`menu menu-sm dropdown-content z-[1] mt-3 w-52 p-2 shadow rounded-box ${isMenuOpen ? "block" : "hidden"}`}
+              className={`menu menu-sm dropdown-content z-[1] mt-3 w-52 p-2 shadow rounded-md bg-white ${isMenuOpen ? "block" : "hidden"}`}
             >
               <li
                 className="lg:hidden cursor-pointer"
