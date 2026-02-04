@@ -17,6 +17,7 @@ import useUpdateChallenge from "../hooks/Challenges/useUpdateChallenge";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
 import Preview from "../components/CreateChallenge/Preview";
 import { useNavigate } from "react-router-dom";
+import * as Sentry from "@sentry/react";
 
 type ExtendedChallengeInterface = Challenge & {
   teamName?: string;
@@ -160,7 +161,9 @@ function CreateChallenge() {
               return;
             }
           } else {
-            console.error("An unexpected error occurred:", error);
+            Sentry.captureException(error, {
+              extra: { context: "Create challenge error" },
+            });
           }
         }
       }

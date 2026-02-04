@@ -56,8 +56,6 @@ const ChallengeSolutionPage = () => {
     refetch: refetchSolution,
   } = useGetSolution(challengeId!, solutionId!);
 
-  console.log("SOL: ", solution);
-
   useEffect(() => {
     if (
       solutionError instanceof AxiosError &&
@@ -105,8 +103,6 @@ const ChallengeSolutionPage = () => {
   const { mutate: addSolutionComment, isPending: isAddingSolutionComment } =
     useAddSolutionComment();
 
-  console.log(solution);
-
   // Step management
   const [stepInput, setStepInput] = useState("");
   const [steps, setSteps] = useState<
@@ -139,7 +135,6 @@ const ChallengeSolutionPage = () => {
     challengeId!,
     solutionId!,
   );
-  console.log(solutionRatings);
 
   const { mutate: postSolutionRating, isPending: isPostingSolutionRating } =
     usePostSolutionRating();
@@ -201,7 +196,6 @@ const ChallengeSolutionPage = () => {
 
   useEffect(() => {
     if (solutionRatings) {
-      console.log(solutionRatings);
       const rating = solutionRatings.find(
         (rating) => rating.user_id === user.user_id,
       );

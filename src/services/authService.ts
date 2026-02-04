@@ -1,8 +1,9 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
+import * as Sentry from "@sentry/react";
 
-const API_URL = "http://localhost:5001/api";
+const API_URL = `${import.meta.env.VITE_API_URL}/api`;
 
 export interface LoginResponse {
   accessToken: string;
@@ -41,7 +42,7 @@ export const logout = async (): Promise<void> => {
     try {
       await axios.post(`${API_URL}/users/logout`, { refreshToken });
     } catch (error) {
-      console.error("Logout error:", error);
+      Sentry.captureException(error, { extra: { context: "Logout error" } });
     }
   }
   Cookies.remove("token");
@@ -71,7 +72,9 @@ export const getDecodedToken = (): DecodedToken | null => {
   try {
     return jwtDecode<DecodedToken>(token);
   } catch (error) {
-    console.error("Error decoding token:", error);
+    Sentry.captureException(error, {
+      extra: { context: "Token decode error" },
+    });
     return null;
   }
 };

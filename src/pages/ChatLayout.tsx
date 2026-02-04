@@ -38,12 +38,6 @@ const ChatLayout = () => {
     refetch: refetchChats,
   } = useGetChats(user?.user_id || "");
 
-  // Debug logging
-  console.log("ChatLayout - user:", user);
-  console.log("ChatLayout - user_id:", user?.user_id);
-  console.log("ChatLayout - chats:", chats);
-  console.log("ChatLayout - isLoading:", isLoadingChats);
-
   // Derive member IDs that need profile fetching (exclude current user)
   const memberIdsToFetch = useMemo(() => {
     if (!chats || !user?.user_id) return [];

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import APIClient from "../services/apiClient";
+import * as Sentry from "@sentry/react";
 
 interface UseShareUrlOptions {
   resourceType: "challenge" | "solution" | "team";
@@ -50,7 +51,9 @@ export function useShareUrl({
       await navigator.clipboard.writeText(result.shortUrl);
       toast.success("Link copied to clipboard!");
     } catch (error) {
-      console.error("Error creating short URL:", error);
+      Sentry.captureException(error, {
+        extra: { context: "Error creating short URL" },
+      });
     } finally {
       setIsLoading(false);
     }

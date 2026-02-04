@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import APIClient from "../services/apiClient";
+import * as Sentry from "@sentry/react";
 
 const apiClient = new APIClient("/api/team-member/join");
 
@@ -22,7 +23,9 @@ const useJoinTeamRequest = () => {
     },
 
     onError: (error) => {
-      console.error("Failed to update request status:", error);
+      Sentry.captureException(error, {
+        extra: { context: "Failed to update team join request status" },
+      });
     },
 
     onSettled: () => {

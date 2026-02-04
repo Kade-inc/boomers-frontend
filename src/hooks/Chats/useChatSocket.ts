@@ -23,7 +23,6 @@ export const useChatSocket = ({
 
     // Join the chat room
     socket.emit("joinChat", { chatId });
-    console.log(`Joined chat room: ${chatId}`);
 
     // Listen for new messages
     if (onNewMessage) {
@@ -46,7 +45,6 @@ export const useChatSocket = ({
     // Cleanup: leave room and remove listeners
     return () => {
       socket.emit("leaveChat", { chatId });
-      console.log(`Left chat room: ${chatId}`);
 
       if (onNewMessage) {
         socket.off("newMessage", onNewMessage);

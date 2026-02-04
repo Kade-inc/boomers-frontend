@@ -9,6 +9,7 @@ import {
 import useAuthStore from "../stores/useAuthStore";
 import useNotificationsStore from "../stores/useNotificationsStore";
 import Cookies from "js-cookie";
+import * as Sentry from "@sentry/react";
 
 interface SSEContextType {
   isConnected: boolean;
@@ -35,13 +36,11 @@ export const SSEProvider = ({ children }: SSEProviderProps) => {
 
   const connect = useCallback(() => {
     if (!user?.user_id) {
-      console.log("SSE: No user ID, skipping connection");
       return null;
     }
 
     const token = Cookies.get("token");
     if (!token) {
-      console.log("SSE: No auth token, skipping connection");
       return null;
     }
 
@@ -54,8 +53,6 @@ export const SSEProvider = ({ children }: SSEProviderProps) => {
     // Note: EventSource doesn't support custom headers, so we pass token as query param
     const baseUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:5001";
     const sseUrl = `${baseUrl}/api/notifications/stream`;
-
-    console.log("SSE: Connecting to", sseUrl);
 
     // Create a custom EventSource-like connection using fetch for auth headers
     const controller = new AbortController();
@@ -83,14 +80,12 @@ export const SSEProvider = ({ children }: SSEProviderProps) => {
 
         setIsConnected(true);
         setRetryCount(0);
-        console.log("SSE: Connected successfully");
 
         const readStream = () => {
           reader
             .read()
             .then(({ done, value }) => {
               if (done) {
-                console.log("SSE: Stream ended");
                 setIsConnected(false);
                 handleReconnect();
                 return;
@@ -120,13 +115,12 @@ export const SSEProvider = ({ children }: SSEProviderProps) => {
                 if (eventType === "notification" && data) {
                   try {
                     const notification = JSON.parse(data);
-                    console.log("SSE: Received notification:", notification);
                     addNotification(notification);
                   } catch (e) {
-                    console.error("SSE: Failed to parse notification:", e);
+                    Sentry.captureException(e, {
+                      extra: { context: "SSE notification parse" },
+                    });
                   }
-                } else if (eventType === "connected") {
-                  console.log("SSE: Connection confirmed:", data);
                 }
               });
 
@@ -135,7 +129,9 @@ export const SSEProvider = ({ children }: SSEProviderProps) => {
             })
             .catch((error) => {
               if (error.name !== "AbortError") {
-                console.error("SSE: Read error:", error);
+                Sentry.captureException(error, {
+                  extra: { context: "SSE read error" },
+                });
                 setIsConnected(false);
                 handleReconnect();
               }
@@ -146,7 +142,9 @@ export const SSEProvider = ({ children }: SSEProviderProps) => {
       })
       .catch((error) => {
         if (error.name !== "AbortError") {
-          console.error("SSE: Connection error:", error);
+          Sentry.captureException(error, {
+            extra: { context: "SSE connection error" },
+          });
           setIsConnected(false);
           handleReconnect();
         }
@@ -158,7 +156,6 @@ export const SSEProvider = ({ children }: SSEProviderProps) => {
   const handleReconnect = useCallback(() => {
     // Exponential backoff: 1s, 2s, 4s, 8s, 16s, max 30s
     const delay = Math.min(1000 * Math.pow(2, retryCount), 30000);
-    console.log(`SSE: Reconnecting in ${delay}ms (attempt ${retryCount + 1})`);
 
     setTimeout(() => {
       setRetryCount((prev) => prev + 1);
