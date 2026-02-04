@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import APIClient from "../services/apiClient";
+import * as Sentry from "@sentry/react";
 
 const apiClient = new APIClient("/api/team-member/join");
 
@@ -20,8 +20,10 @@ const useSendTeamRequest = () => {
       queryClient.invalidateQueries({ queryKey: ["team-member-requests"] });
       queryClient.invalidateQueries({ queryKey: ["joinRequests"] });
     },
-    onError: (error: any) => {
-      console.error("Failed to update request status:", error);
+    onError: (error: unknown) => {
+      Sentry.captureException(error, {
+        extra: { context: "Failed to send team request" },
+      });
     },
   });
 };

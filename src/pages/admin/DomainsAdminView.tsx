@@ -242,7 +242,6 @@ const DomainsAdminView = () => {
           await deleteDomainMutation.mutateAsync(deleteConfirmation.id);
           break;
         case "subdomain":
-          console.log("HERE");
           await deleteSubdomainMutation.mutateAsync(deleteConfirmation.id);
           break;
         case "topic":

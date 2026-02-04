@@ -5,6 +5,7 @@ import useTeam from "../../hooks/useTeam";
 import Team from "../../entities/Team";
 import useSendTeamRequest from "../../hooks/useSendTeamRequest";
 import useAuthStore from "../../stores/useAuthStore";
+import * as Sentry from "@sentry/react";
 
 type ModalTriggerProps = {
   isOpen: boolean;
@@ -40,7 +41,9 @@ const RecommendationsModal = ({
           //invalidate
         },
         onError: (error) => {
-          console.error("Request failed:", error);
+          Sentry.captureException(error, {
+            extra: { context: "Request failed" },
+          });
         },
       },
     );

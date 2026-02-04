@@ -7,6 +7,7 @@ import { UserCircleIcon } from "@heroicons/react/24/solid";
 import JoinRequest from "../../entities/JoinRequest";
 import User from "../../entities/User";
 import DomainTopic from "../../entities/DomainTopic";
+import * as Sentry from "@sentry/react";
 
 interface ActionDialogProps {
   selectedPendingMemberAction: JoinRequest | null;
@@ -69,7 +70,9 @@ const ActionModal = ({ selectedPendingMemberAction }: ActionDialogProps) => {
           setActionStatus(status === "APPROVED" ? "accepted" : "rejected");
         },
         onError: (error) => {
-          console.error("Error handling join request:", error);
+          Sentry.captureException(error, {
+            extra: { context: "Error handling join request" },
+          });
         },
         onSettled: () => {
           setIsAccepting(false);

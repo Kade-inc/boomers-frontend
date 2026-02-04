@@ -1,6 +1,7 @@
 import toast from "react-hot-toast";
 import useAuthStore from "../stores/useAuthStore";
 import useLoadingStore from "../stores/useLoadingStore";
+import * as Sentry from "@sentry/react";
 
 interface Loader {
   file: Promise<File | null>;
@@ -46,7 +47,9 @@ class ImageUploadAdapter {
         })
         .catch((error) => {
           this.setLoading(false);
-          console.error("Upload failed:", error);
+          Sentry.captureException(error, {
+            extra: { context: "Image upload failed" },
+          });
           toast.error("Failed to upload image. Please try again");
           throw error;
         });

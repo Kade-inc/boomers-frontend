@@ -12,6 +12,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
+import * as Sentry from "@sentry/react";
 
 interface MemberRequestDialogProps {
   mode: "request" | "member";
@@ -75,7 +76,6 @@ const MemberRequestDialog = ({
   // Fetch teams based on the selected request or member
   const activeUserId =
     mode === "member" ? selectedTeamMember?._id : selectedRequest?.user_id;
-  // console.log("activeUserId:", activeUserId);
   const {
     data: teams,
     isLoading,
@@ -84,8 +84,6 @@ const MemberRequestDialog = ({
     userId: activeUserId || "",
     enabled: !!dialogRef.current?.open,
   });
-
-  // console.log("DATA: ", teams);
 
   //close modal
   const closeModal = () => {
@@ -132,7 +130,9 @@ const MemberRequestDialog = ({
           },
         );
       } catch (error) {
-        console.error("Error removing team member:", error);
+        Sentry.captureException(error, {
+          extra: { context: "Error removing team member" },
+        });
       } finally {
         setIsRemoveLoading(false);
       }
@@ -158,7 +158,9 @@ const MemberRequestDialog = ({
           setShowRejectionInput(false); // Hide rejection input AFTER success
         },
         onError: (error) => {
-          console.error("Error handling join request:", error);
+          Sentry.captureException(error, {
+            extra: { context: "Error handling join request" },
+          });
         },
         onSettled: () => {
           setIsAccepting(false);

@@ -7,6 +7,7 @@ import {
 } from "react";
 import { io, Socket } from "socket.io-client";
 import useAuthStore from "../stores/useAuthStore";
+import * as Sentry from "@sentry/react";
 
 interface SocketContextType {
   socket: Socket | null;
@@ -36,19 +37,19 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       });
 
       newSocket.on("connect", () => {
-        console.log("Socket connected:", newSocket.id);
         setIsConnected(true);
         // Join user's personal room for direct notifications
         newSocket.emit("joinUser", { userId: user.user_id });
       });
 
       newSocket.on("disconnect", () => {
-        console.log("Socket disconnected");
         setIsConnected(false);
       });
 
       newSocket.on("connect_error", (error) => {
-        console.error("Socket connection error:", error);
+        Sentry.captureException(error, {
+          extra: { context: "Socket connection error" },
+        });
         setIsConnected(false);
       });
 

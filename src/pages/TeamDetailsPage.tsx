@@ -24,6 +24,7 @@ import AuthenticationModal from "../components/Modals/AuthenticationModal";
 import { IoArrowBack } from "react-icons/io5";
 import useShareUrl from "../hooks/useShareUrl";
 import { ShareIcon } from "@heroicons/react/24/outline";
+import * as Sentry from "@sentry/react";
 
 const TeamDetailsPage = () => {
   const location = useLocation();
@@ -147,7 +148,9 @@ const TeamDetailsPage = () => {
 
   const handleRequestClick = () => {
     if (!teamId) {
-      console.error("teamId is undefined");
+      Sentry.captureMessage("teamId is undefined in TeamDetailsPage", {
+        level: "error",
+      });
       return;
     }
 
@@ -164,7 +167,9 @@ const TeamDetailsPage = () => {
           //invalidate
         },
         onError: (error) => {
-          console.error("Request failed:", error);
+          Sentry.captureException(error, {
+            extra: { context: "Team join request failed" },
+          });
         },
       },
     );

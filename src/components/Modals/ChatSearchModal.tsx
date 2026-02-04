@@ -9,6 +9,7 @@ import { IoIosSearch } from "react-icons/io";
 import useAuthStore from "../../stores/useAuthStore";
 import APIClient from "../../services/apiClient";
 import toast from "react-hot-toast";
+import * as Sentry from "@sentry/react";
 
 type ModalTriggerProps = {
   isOpen: boolean;
@@ -135,12 +136,16 @@ const ChatSearchModal = ({ isOpen, onClose }: ModalTriggerProps) => {
           }
           navigate(`/chat/${chatId}`);
         } catch (error) {
-          console.error("Error creating group chat:", error);
+          Sentry.captureException(error, {
+            extra: { context: "Error creating group chat" },
+          });
           throw error;
         }
       }
     } catch (error) {
-      console.error("Error creating chat:", error);
+      Sentry.captureException(error, {
+        extra: { context: "Error creating chat" },
+      });
       toast.error("Failed to start chat");
     } finally {
       setIsCreatingChat(false);
