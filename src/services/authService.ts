@@ -3,7 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 import * as Sentry from "@sentry/react";
 
-const API_URL = "http://localhost:5001/api";
+const API_URL = `${import.meta.env.VITE_API_URL}/api`;
 
 export interface LoginResponse {
   accessToken: string;
