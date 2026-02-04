@@ -52,6 +52,9 @@ const LoginForm = () => {
           className="w-full px-4 py-[2%] md:px-24"
           onSubmit={handleSubmit(onSubmit)}
         >
+          <h2 className="block md:hidden font-heading text-[30px]">
+            <Link to="/">LOGO</Link>
+          </h2>
           <p className="font-extrabold text-[50px] font-heading">SIGN IN</p>
           <p className="py-[2.6%] text-[18px] font-semibold font-body">
             Enter your credentials to sign in
