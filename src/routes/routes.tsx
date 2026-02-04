@@ -43,6 +43,7 @@ const ChallengeSolutionPage = lazy(
 );
 const AdminLogin = lazy(() => import("../pages/AdminLogin"));
 const ChatLayout = lazy(() => import("../pages/ChatLayout"));
+const AccountDeletedPage = lazy(() => import("../pages/AccountDeletedPage"));
 
 const loadingDots = (
   <div className="flex justify-center items-center h-screen bg-base-100">
@@ -246,6 +247,11 @@ const router = createBrowserRouter([
   {
     path: "/signup-verification",
     element: withSuspense(<SignupVerificationSuccess />),
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/account-deleted",
+    element: withSuspense(<AccountDeletedPage />),
     errorElement: <ErrorPage />,
   },
   {

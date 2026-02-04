@@ -716,6 +716,28 @@ class APIClient {
     }
   };
 
+  deleteAccount = async (userId: string, requiresAuth = true) => {
+    try {
+      const response = await this.axiosInstance.delete(
+        `${this.endpoint}/${userId}`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      // Don't logout here - let the caller handle navigation first, then logout
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error deleting account: ",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
   getChallengeComments = async (challengeId: string, requiresAuth = true) => {
     try {
       const response = await this.axiosInstance.get(
