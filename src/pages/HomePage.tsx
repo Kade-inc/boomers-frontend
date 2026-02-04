@@ -12,6 +12,7 @@ import howItWorks2 from "../assets/how-it-works-2.png";
 import howItWorks3 from "../assets/how-it-works-3.png";
 import hyveDotted from "../assets/hyve-dotted.svg";
 import crafthyveLogo from "../assets/craftyhyve-logo-full.svg";
+import heroMobile from "../assets/hero-mobile-cropped.png";
 
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -220,7 +221,7 @@ const HomePage = () => {
 
         {/* Hero Content */}
         <div className="min-h-screen flex justify-between flex-col md:flex-row items-center md:items-start">
-          <div className="text-black md:ml-40 mt-60 md:mt-40 leading-[1.0] md:w-[30%] flex flex-col items-center md:items-start">
+          <div className="text-black md:ml-40 mt-40 leading-[1.0] md:w-[30%] flex flex-col items-center md:items-start">
             <div>
               <p className="text-[50px] md:text-[80px] font-heading font-bold">
                 BUILD.
@@ -251,6 +252,13 @@ const HomePage = () => {
               className="w-full h-auto object-contain shadow-lg"
             />
           </div>
+          <div className="mt-10 block md:hidden md:w-[40%] flex justify-center">
+            <img
+              src={heroMobile}
+              alt="Dashboard preview"
+              className="w-[60%] h-auto object-contain shadow-lg"
+            />
+          </div>
         </div>
 
         {/* Scroll Indicator */}
@@ -260,7 +268,7 @@ const HomePage = () => {
               .getElementById("how-it-works")
               ?.scrollIntoView({ behavior: "smooth" })
           }
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce cursor-pointer hover:scale-110 transition-transform"
+          className="hidden md:block absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce cursor-pointer hover:scale-110 transition-transform"
           aria-label="Scroll to content"
         >
           <div className="w-6 h-10 border-2 border-darkgrey rounded-full flex items-start justify-center p-2">

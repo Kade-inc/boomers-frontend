@@ -14,6 +14,7 @@ import useClearSearchHistory from "../hooks/Search/useClearSearchHistory";
 import { useState, useEffect, useRef } from "react";
 import useSearchResults from "../hooks/Search/useSearchResults";
 import { useDebounce } from "../hooks/useDebounce";
+import craftHyveLogoSelf from "../assets/crafthyve-logo-self.svg";
 
 function NavigationBar() {
   const currentRoute = useLocation();
@@ -103,7 +104,7 @@ function NavigationBar() {
           to="/dashboard"
           className="btn btn-ghost text-xl font-heading p-0 text-base-content"
         >
-          LOGO
+          <img src={craftHyveLogoSelf} alt="Craft Hyve" className="w-9 h-9" />
         </Link>
       </div>
 
