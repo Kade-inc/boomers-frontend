@@ -47,7 +47,7 @@ const SignupVerificationSuccess = () => {
           setJoinTeamSuccess(true);
         },
         onError: (error) => {
-          toast.error(error.message);
+          toast.error((error as Error).message);
         },
       },
     );
@@ -70,7 +70,7 @@ const SignupVerificationSuccess = () => {
           }
         },
         onError: (error) => {
-          toast.error(error.message);
+          toast.error((error as Error).message);
         },
       },
     );
