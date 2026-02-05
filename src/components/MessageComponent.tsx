@@ -1,16 +1,16 @@
 import { Link } from "react-router-dom";
 import Message from "../entities/message";
+import logoFull from "../assets/craftyhyve-logo-full.svg";
 
 const MessageComponent = ({ img, message, submessage, height }: Message) => {
   return (
-    <div className={`relative ${height || "h-screen"} flex flex-col`}>
-      <div className="flex items-center justify-center w-full pt-[10px]">
-        <h1 className="text-2xl font-bold">
-          {" "}
-          <Link to="/">LOGO</Link>
-        </h1>
-      </div>
-      <div className="flex flex-col items-center justify-center h-full">
+    <div className={`relative ${height || "h-screen"} flex flex-col  pt-20`}>
+      <h1 className="flex items-center justify-center ">
+        <Link to="/">
+          <img src={logoFull} alt="logo" className="w-52" />
+        </Link>
+      </h1>
+      <div className="flex flex-col items-center mt-20 h-full">
         <img
           src={img}
           className="w-[150px] sm:w-1/4 md:w-1/6 lg:w-[200px] h-[150px] sm:h-auto lg:h-[200px]  object-cover mb-6"

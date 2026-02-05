@@ -8,6 +8,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import useSignUpStore from "../stores/signUpStore";
 import { useState } from "react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
+import craftHyveLogoSelf from "../assets/crafthyve-logo-self.svg";
 
 const schema = z
   .object({
@@ -83,11 +84,17 @@ const SignupForm = () => {
   return (
     <div className="text-darkgrey">
       <form
-        className="w-full px-4 py-[2%] md:px-24"
+        className="w-full px-4 pb-[2%] pt-8 md:px-24"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <h2 className="block md:hidden font-heading text-[30px]">
-          <Link to="/">LOGO</Link>
+        <h2 className="block md:hidden font-heading text-[30px] flex justify-center">
+          <Link to="/">
+            <img
+              src={craftHyveLogoSelf}
+              alt="CraftyHyve Logo"
+              className="w-12"
+            />
+          </Link>
         </h2>
         <p className="font-extrabold text-[50px] font-heading">SIGN UP</p>
         <p className="py-[2.6%] text-[18px] font-semibold font-body">

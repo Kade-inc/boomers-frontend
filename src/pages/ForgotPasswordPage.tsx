@@ -40,7 +40,7 @@ const ForgotPassword = () => {
           <p className="font-bold text-[26px] lg:text-[30px] font-body">
             Forgot Password?
           </p>
-          <p className="py-[2.6%] text-[16px] lg:text-[20px] font-semibold font-body">
+          <p className="py-[2.6%] text-[16px] lg:text-[20px] font-semibold font-body text-center">
             Enter your email to receive a password reset link
           </p>
         </div>

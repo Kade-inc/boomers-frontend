@@ -1,16 +1,20 @@
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import success from "../assets/confetti-svgrepo-com 1.jpg";
+import logoFull from "../assets/craftyhyve-logo-full.svg";
 
 const ResetPasswordSuccess = () => {
   const navigate = useNavigate();
   return (
     <>
-      <div className="flex flex-col justify-center items-center text-[#393E46] bg-white h-full">
+      <div className="flex flex-col  items-center text-[#393E46] bg-white min-h-screen">
         <div className="flex flex-col justify-center items-center mt-40 mb-4 lg:mt-14 lg:mb-4">
           <h2 className="block font-heading text-[30px] p-0 lg:p-10 lg:text-[50px]">
-            <Link to="/">LOGO</Link>
+            <Link to="/">
+              <img src={logoFull} alt="logo" className="w-52" />
+            </Link>
           </h2>
+
           <p className="text-darkgrey mt-12 md:mt-14 lg:mt-16 font-body font-bold text-[18px] lg:text-[25px]">
             Success!
           </p>
