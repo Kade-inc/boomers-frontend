@@ -55,33 +55,49 @@ const ChatInput = ({
     }
   };
 
+  const MAX_CHARS = 2000;
+  const isOverLimit = message.length > MAX_CHARS;
+
   return (
-    <div className="flex items-center gap-2 p-4 bg-base-100 border-t border-base-200">
-      <div className="flex-1 relative flex items-center">
-        <textarea
-          value={message}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-          placeholder={placeholder}
-          disabled={disabled}
-          rows={1}
-          className="textarea textarea-bordered w-full resize-none bg-base-100 focus:outline-none text-base-content min-h-[48px] max-h-[120px] py-3"
-          style={{ height: "48px" }}
-          onInput={(e) => {
-            const target = e.target as HTMLTextAreaElement;
-            target.style.height = "48px";
-            target.style.height = `${Math.min(target.scrollHeight, 120)}px`;
-          }}
-        />
+    <div className="flex flex-col border-t border-base-200 bg-base-100">
+      <div className="flex items-center gap-2 p-4">
+        <div className="flex-1 relative flex items-center">
+          <textarea
+            value={message}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            placeholder={placeholder}
+            disabled={disabled}
+            rows={1}
+            className={`textarea textarea-bordered w-full resize-none bg-base-100 focus:outline-none text-base-content min-h-[48px] max-h-[120px] py-3 ${
+              isOverLimit ? "textarea-error" : ""
+            }`}
+            style={{ height: "48px" }}
+            onInput={(e) => {
+              const target = e.target as HTMLTextAreaElement;
+              target.style.height = "48px";
+              target.style.height = `${Math.min(target.scrollHeight, 120)}px`;
+            }}
+          />
+        </div>
+        <button
+          onClick={handleSend}
+          disabled={!message.trim() || disabled || isOverLimit}
+          className="btn bg-yellow text-darkgrey hover:bg-yellow/80 min-h-[48px] px-4 disabled:opacity-50"
+        >
+          <span className="hidden md:inline mr-1">Send</span>
+          <PaperAirplaneIcon className="w-5 h-5" />
+        </button>
       </div>
-      <button
-        onClick={handleSend}
-        disabled={!message.trim() || disabled}
-        className="btn bg-yellow text-darkgrey hover:bg-yellow/80 min-h-[48px] px-4 disabled:opacity-50"
-      >
-        <span className="hidden md:inline mr-1">Send</span>
-        <PaperAirplaneIcon className="w-5 h-5" />
-      </button>
+      <div className="px-4 pb-2 text-right">
+        <span
+          className={`text-xs ${
+            isOverLimit ? "text-error font-bold" : "text-base-content/60"
+          }`}
+        >
+          {message.length}/{MAX_CHARS}
+        </span>
+      </div>
     </div>
   );
 };
