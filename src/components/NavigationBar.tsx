@@ -104,7 +104,11 @@ function NavigationBar() {
           to="/dashboard"
           className="btn btn-ghost text-xl font-heading p-0 text-base-content"
         >
-          <img src={craftHyveLogoSelf} alt="Craft Hyve" className="w-9 h-9" />
+          <img
+            src={craftHyveLogoSelf}
+            alt="Craft Hyve"
+            className="w-9 h-9 [html[data-theme='dark']_&]:brightness-0 [html[data-theme='dark']_&]:invert"
+          />
         </Link>
       </div>
 
