@@ -1,6 +1,8 @@
 import { Link, Outlet } from "react-router-dom";
-import image from "../assets/khamkeo-vilaysing-rpVQJbZMw8o-unsplash (1) 1.png";
+import image from "../assets/authentication-page.png";
 import boomer from "../assets/boomer.svg";
+// import logo from "../assets/crafthyve-logo-self.svg";
+import logoFull from "../assets/craftyhyve-logo-full.svg";
 
 const Layout = () => {
   return (
@@ -10,7 +12,13 @@ const Layout = () => {
         <div className="absolute top-[4%] left-[5%] p-4 text-white font-normal text-[40px]">
           <h1 className="font-heading">
             {" "}
-            <Link to="/">LOGO</Link>
+            <Link to="/">
+              <img
+                src={logoFull}
+                alt="logo"
+                className="brightness-0 invert w-48"
+              />
+            </Link>
           </h1>
         </div>
         <div className="absolute top-[28.6%] left-1/2 p-4  -translate-x-1/2 w-[87%]">
