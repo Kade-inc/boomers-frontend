@@ -813,6 +813,30 @@ class APIClient {
       throw error; // Throw the error to allow React Query to handle it
     }
   };
+
+  // Delete Team
+  deleteTeam = async (teamId: string, requiresAuth = true) => {
+    try {
+      const response = await this.axiosInstance.delete(
+        `${this.endpoint}/${teamId}`,
+        {
+          headers: {
+            requiresAuth,
+          },
+        },
+      );
+      const { data } = response.data;
+      return data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error(
+        "Error deleting team",
+        axiosError.response?.data ?? axiosError.message,
+      );
+      throw axiosError;
+    }
+  };
+
   // Leave Team
   leaveTeam = async (teamId: string, requiresAuth = true) => {
     try {

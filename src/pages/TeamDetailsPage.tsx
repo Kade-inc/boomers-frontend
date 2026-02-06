@@ -24,6 +24,7 @@ import AuthenticationModal from "../components/Modals/AuthenticationModal";
 import { IoArrowBack } from "react-icons/io5";
 import useShareUrl from "../hooks/useShareUrl";
 import { ShareIcon } from "@heroicons/react/24/outline";
+import DeleteTeamDialog from "../components/Modals/DeleteTeamDialog";
 import * as Sentry from "@sentry/react";
 
 const TeamDetailsPage = () => {
@@ -74,6 +75,15 @@ const TeamDetailsPage = () => {
   const openAuthenticationDialog = () => {
     const modal = document.getElementById(
       "authentication_modal",
+    ) as HTMLDialogElement | null;
+    if (modal) {
+      modal.showModal();
+    }
+  };
+
+  const openDeleteTeamDialog = () => {
+    const modal = document.getElementById(
+      "delete_team_modal",
     ) as HTMLDialogElement | null;
     if (modal) {
       modal.showModal();
@@ -335,6 +345,14 @@ const TeamDetailsPage = () => {
                           onClick={() => navigate(`/teams/${teamId}/edit`)}
                         >
                           Edit
+                        </button>
+                      )}
+                      {owner && (
+                        <button
+                          className="text-white text-[14px] bg-[#C83A3A] font-body font-medium rounded px-4 py-1 hover:bg-[#a52a2a]"
+                          onClick={openDeleteTeamDialog}
+                        >
+                          Delete
                         </button>
                       )}
                       <button
@@ -730,6 +748,7 @@ const TeamDetailsPage = () => {
         />
         <TeamOwnerDialog selectedTeamMember={team.members[0]} />
         <AuthenticationModal team={team} />
+        <DeleteTeamDialog teamId={teamId as string} />
       </>
     </div>
   );
