@@ -75,14 +75,14 @@ const HomePage = () => {
               <img
                 src={crafthyveLogo}
                 alt="CraftHyve Logo"
-                className="w-[200px]"
+                className="w-[160px]"
               />
             </Link>
           </div>
 
           <div className="hidden lg:grid  lg:grid-flow-col lg:gap-8 lg:auto-rows-max lg:mr-[70px]">
             <div
-              className={`text-[16px] font-body font-normal cursor-pointer`}
+              className={`text-sm font-body font-normal cursor-pointer`}
               onClick={() =>
                 document
                   .getElementById("how-it-works")
@@ -92,7 +92,7 @@ const HomePage = () => {
               <span className={"ml-[10px]"}>About</span>
             </div>
             <div
-              className={`text-[16px] font-body font-normal cursor-pointer`}
+              className={`text-sm font-body font-normal cursor-pointer`}
               onClick={() =>
                 document
                   .getElementById("why-crafthyve")
@@ -102,7 +102,7 @@ const HomePage = () => {
               <span className={"ml-[10px]"}>Why CraftHyve</span>
             </div>
             <div
-              className={`text-[16px] font-body font-normal cursor-pointer`}
+              className={`text-sm font-body font-normal cursor-pointer`}
               onClick={() =>
                 document
                   .getElementById("hyve-on-the-go")
@@ -113,7 +113,7 @@ const HomePage = () => {
             </div>
             <Link
               to="/auth"
-              className={`text-[16px] font-body border border-black rounded px-4 py-2 cursor-pointer`}
+              className={`text-sm font-body border border-black rounded px-4 py-2 cursor-pointer`}
             >
               <span>Get Started</span>
             </Link>
@@ -212,7 +212,7 @@ const HomePage = () => {
             </ul>
           </div>
           <button
-            className="px-12 py-3 bg-yellow font-body font-medium rounded-[5px] text-[16px] hidden lg:block"
+            className="px-10 py-2 bg-yellow font-body font-medium rounded-[5px] text-sm hidden lg:block"
             onClick={() => navigate(`/auth/login`)}
           >
             Log In
@@ -221,25 +221,25 @@ const HomePage = () => {
 
         {/* Hero Content */}
         <div className="min-h-screen flex justify-between flex-col md:flex-row items-center md:items-start">
-          <div className="text-black md:ml-40 mt-40 leading-[1.0] md:w-[30%] flex flex-col items-center md:items-start">
+          <div className="text-black md:ml-40 mt-40 leading-[1.1] md:leading-[1.0] md:w-[30%] flex flex-col items-center md:items-start">
             <div>
-              <p className="text-[50px] md:text-[80px] font-heading font-bold">
+              <p className="text-[60px] md:text-[80px] font-heading font-bold">
                 BUILD.
               </p>
-              <p className="text-[50px] md:text-[80px] font-heading font-bold">
+              <p className="text-[60px] md:text-[80px] font-heading font-bold">
                 GET RATED.
               </p>
-              <p className="text-[50px] md:text-[80px] font-heading font-bold">
+              <p className="text-[60px] md:text-[80px] font-heading font-bold">
                 LEVEL UP.
               </p>
             </div>
 
-            <p className="font-body mt-8 w-[70%] md:w-full text-center md:text-left font-medium text-lg">
+            <p className="font-body mt-8 w-[70%] md:w-full text-center md:text-left font-medium text-sm">
               Where devs, designers, and cyber minds sharpen their craft -
               together.
             </p>
             <Link to="/auth">
-              <button className="btn bg-yellow text-black border-none font-body font-medium px-12 text-lg rounded hover:bg-yellow/90 mt-12">
+              <button className="btn bg-yellow text-black border-none font-body font-medium px-12 text-sm rounded hover:bg-yellow/90 mt-12">
                 Get Started
               </button>
             </Link>
@@ -280,7 +280,7 @@ const HomePage = () => {
       {/* How It Works Section */}
       <section
         id="how-it-works"
-        className="py-20 px-8 bg-yellow relative overflow-hidden"
+        className="py-20 px-20 bg-yellow relative overflow-hidden"
       >
         {/* Decorative dotted pattern overlay */}
         <img
@@ -314,7 +314,7 @@ const HomePage = () => {
               <p className="text-3xl font-heading text-black mb-4">
                 1. JOIN A HYVE
               </p>
-              <p className="text-lg font-body text-black font-medium">
+              <p className="text-sm font-body text-black font-medium">
                 Your Hyve is your family. Connect with other like minded
                 craftsmen within it. If you wish to be an owner and help others
                 hone their craft, create your own Hyve and mentor others.
@@ -336,14 +336,14 @@ const HomePage = () => {
               <p className="text-3xl font-heading text-black mb-4">
                 2. CHALLENGES
               </p>
-              <p className="text-lg font-body text-black font-medium">
+              <p className="text-sm font-body text-black font-medium">
                 Challenges are best for honing your craft. Choose a challenge in
                 your Hyve and give the steps you would take to accomplish the
                 challenge.
               </p>
             </div>
 
-            <div className="space-y-8">
+            <div className="space-y-8 md:flex md:justify-end">
               <img
                 src={howItWorks2}
                 alt="How it works"
@@ -366,7 +366,7 @@ const HomePage = () => {
               <p className="text-3xl font-heading text-black mb-4">
                 3. FEEDBACK
               </p>
-              <p className="text-lg font-body text-black font-medium">
+              <p className="text-sm font-body text-black font-medium">
                 Rate your hyve mates, give feedback and have fun as you hone
                 your craft!
               </p>
@@ -412,7 +412,7 @@ const HomePage = () => {
                       d="M5 13l4 4L19 7"
                     />
                   </svg>
-                  <span className="text-lg font-body text-black">
+                  <span className="text-sm font-body text-black">
                     Guaranteed problem solving improvement.
                   </span>
                 </li>
@@ -430,7 +430,7 @@ const HomePage = () => {
                       d="M5 13l4 4L19 7"
                     />
                   </svg>
-                  <span className="text-lg font-body text-black">
+                  <span className="text-sm font-body text-black">
                     Share completed challenges with others online (Linkedin, X,
                     etc)
                   </span>
@@ -449,7 +449,7 @@ const HomePage = () => {
                       d="M5 13l4 4L19 7"
                     />
                   </svg>
-                  <span className="text-lg font-body text-black">
+                  <span className="text-sm font-body text-black">
                     Connect with experienced professionals.
                   </span>
                 </li>
@@ -467,7 +467,7 @@ const HomePage = () => {
                       d="M5 13l4 4L19 7"
                     />
                   </svg>
-                  <span className="text-lg font-body text-black">
+                  <span className="text-sm font-body text-black">
                     Build portfolio of projects.
                   </span>
                 </li>
@@ -478,7 +478,7 @@ const HomePage = () => {
       </section>
 
       {/* Download Section - Hyve on the Go */}
-      <section id="hyve-on-the-go" className="pt-20 px-8 bg-yellow">
+      <section id="hyve-on-the-go" className="pt-20 px-20 bg-yellow">
         <div className="max-w-7xl mx-auto">
           {/* Title with underlines */}
           <div className="text-center mb-12">
@@ -494,7 +494,7 @@ const HomePage = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             {/* Left side - Text and App Store Badges */}
             <div className="flex flex-col items-center md:items-start">
-              <p className="text-lg font-body text-black text-center md:text-left font-medium">
+              <p className="text-sm font-body text-black text-center md:text-left font-medium">
                 Take the Hyve with you and get your notifications, give feedback
                 & submit solutions on the go through the mobile app!
               </p>
@@ -507,7 +507,7 @@ const HomePage = () => {
                   <img
                     src={googlePlayBadge}
                     alt="Get it on Google Play"
-                    className="w-[200px]"
+                    className="w-[130px]"
                   />
                 </a>
                 <a
@@ -518,7 +518,7 @@ const HomePage = () => {
                   <img
                     src={appStoreBadge}
                     alt="Download on App Store"
-                    className="w-[200px]"
+                    className="w-[130px]"
                   />
                 </a>
               </div>
@@ -529,7 +529,7 @@ const HomePage = () => {
               <img
                 src={smartphones}
                 alt="Mobile app preview"
-                className="w-full max-w-md"
+                className="w-full md:w-[400px] max-w-md"
               />
             </div>
           </div>
@@ -542,11 +542,11 @@ const HomePage = () => {
           <h2 className="text-5xl md:text-6xl font-heading text-black mb-6">
             READY TO JOIN THE MOVEMENT?
           </h2>
-          <p className="text-lg font-body font-medium text-black">
+          <p className="text-sm font-body font-medium text-black">
             Sign up today and start your journey with Crafthyve.
           </p>
           <Link to="/auth">
-            <button className="btn bg-yellow text-black border-none font-body font-semibold px-12 text-lg rounded hover:bg-yellow/90 mt-12">
+            <button className="btn bg-yellow text-black border-none font-body font-medium px-10 text-sm rounded hover:bg-yellow/90 mt-8">
               Get Started
             </button>
           </Link>
