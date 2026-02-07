@@ -332,8 +332,6 @@ const EditProfileModal = ({ isOpen, onClose, user }: ModalTriggerProps) => {
       newForm.append("interests", JSON.stringify(payload));
     }
 
-    await mutation.mutateAsync(newForm);
-
     const updateData = await mutation.mutateAsync(newForm);
     setUser(updateData);
     onClose();

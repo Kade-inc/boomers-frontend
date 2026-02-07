@@ -354,7 +354,7 @@ function NavigationBar() {
                 }
               >
                 <div
-                  className={`flex items-center text-[16px] font-body font-normal ${pathname === "/" || pathname === "/dashboard" ? "text-darkgrey" : ""}`}
+                  className={`flex items-center text-sm font-body font-normal ${pathname === "/" || pathname === "/dashboard" ? "text-darkgrey" : ""}`}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -377,7 +377,7 @@ function NavigationBar() {
                 to="/chat"
               >
                 <div
-                  className={`flex items-center text-[16px] font-body font-normal ${pathname === "/chat" ? "text-darkgrey" : ""}`}
+                  className={`flex items-center text-sm font-body font-normal ${pathname === "/chat" ? "text-darkgrey" : ""}`}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -401,7 +401,7 @@ function NavigationBar() {
                 to="/teams"
               >
                 <div
-                  className={`flex items-center text-[16px] font-body font-normal ${pathname === "/teams" ? "text-darkgrey" : ""}`}
+                  className={`flex items-center text-sm font-body font-normal ${pathname === "/teams" ? "text-darkgrey" : ""}`}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
