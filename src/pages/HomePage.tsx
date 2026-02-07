@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
-import smartphones from "../assets/landing/smartphones.png";
+import smartphones from "../assets/landing/smartphones.webp";
 import appStoreBadge from "../assets/landing/app-store-badge.png";
 import googlePlayBadge from "../assets/landing/google-play-badge.png";
 import landingHero from "../assets/landing-hero.png";
@@ -12,7 +12,7 @@ import howItWorks2 from "../assets/how-it-works-2.png";
 import howItWorks3 from "../assets/how-it-works-3.png";
 import hyveDotted from "../assets/hyve-dotted.svg";
 import crafthyveLogo from "../assets/craftyhyve-logo-full.svg";
-import heroMobile from "../assets/hero-mobile-cropped.png";
+import heroMobile from "../assets/hero-mobile-cropped.webp";
 
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -325,7 +325,7 @@ const HomePage = () => {
               <img
                 src={howItWorks1}
                 alt="How it works"
-                className="w-full h-auto object-contain"
+                className="w-full h-auto object-contain rounded-md shadow-md"
               />
             </div>
 
