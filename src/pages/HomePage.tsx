@@ -396,7 +396,7 @@ const HomePage = () => {
             </div>
           </div>
           <div className="flex justify-center">
-            <div className="border-2 border-green rounded-2xl p-8 md:p-12 max-w-2xl w-full">
+            <div className="border-2 border-green rounded-tl-[80px] rounded-br-[80px] p-8 md:p-12 max-w-2xl w-full">
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <svg
