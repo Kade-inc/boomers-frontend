@@ -16,6 +16,8 @@ import useSearchResults from "../hooks/Search/useSearchResults";
 import { useDebounce } from "../hooks/useDebounce";
 import craftHyveLogoSelf from "../assets/crafthyve-logo-self.svg";
 import { useGetChats } from "../hooks/Chats/useGetChats";
+import { useSocket } from "../context/SocketContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 function NavigationBar() {
   const currentRoute = useLocation();
@@ -32,6 +34,20 @@ function NavigationBar() {
   const { data: chats } = useGetChats(user?.user_id || "");
   const hasUnreadMessages =
     chats?.some((chat) => (chat.unreadCount ?? 0) > 0) ?? false;
+
+  // Listen for chatUpdated events globally to refresh unread indicator in real-time
+  const { socket } = useSocket();
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    if (!socket) return;
+    const handleChatUpdated = () => {
+      queryClient.invalidateQueries({ queryKey: ["chats"] });
+    };
+    socket.on("chatUpdated", handleChatUpdated);
+    return () => {
+      socket.off("chatUpdated", handleChatUpdated);
+    };
+  }, [socket, queryClient]);
 
   const handleLogout = async () => {
     await mutation.mutateAsync();
