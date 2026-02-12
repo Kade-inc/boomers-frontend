@@ -1,6 +1,8 @@
 import { UserCircleIcon } from "@heroicons/react/24/solid";
+import { EllipsisVerticalIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useNavigate, useParams } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
+import { useState, useRef, useEffect } from "react";
 
 interface ChatListItemProps {
   chatId: string;
@@ -12,6 +14,8 @@ interface ChatListItemProps {
   isRead?: boolean;
   isGroup?: boolean;
   groupColor?: string;
+  canDelete?: boolean;
+  onDelete?: (chatId: string) => void;
 }
 
 const ChatListItem = ({
@@ -23,10 +27,14 @@ const ChatListItem = ({
   unreadCount = 0,
   isGroup = false,
   groupColor,
+  canDelete = false,
+  onDelete,
 }: ChatListItemProps) => {
   const navigate = useNavigate();
   const { chatId: activeChatId } = useParams();
   const isSelected = activeChatId === chatId;
+  const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const handleClick = () => {
     navigate(`/chat/${chatId}`);
@@ -42,10 +50,38 @@ const ChatListItem = ({
     }
   };
 
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowMenu(false);
+      }
+    };
+
+    if (showMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showMenu]);
+
+  const handleMenuClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowMenu(!showMenu);
+  };
+
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowMenu(false);
+    onDelete?.(chatId);
+  };
+
   return (
     <div
       onClick={handleClick}
-      className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+      className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors group relative ${
         isSelected
           ? "bg-yellow/20 border-l-4 border-yellow"
           : "hover:bg-base-200"
@@ -77,9 +113,37 @@ const ChatListItem = ({
           <span className="font-semibold text-base-content truncate">
             {name}
           </span>
-          <span className="text-xs text-base-content/60 flex-shrink-0 ml-2">
-            {formatTime(lastMessageTime)}
-          </span>
+          <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+            <span className="text-xs text-base-content/60">
+              {formatTime(lastMessageTime)}
+            </span>
+
+            {/* Three-dot menu */}
+            {canDelete && (
+              <div ref={menuRef} className="relative">
+                <button
+                  onClick={handleMenuClick}
+                  className="p-1 rounded-full opacity-0 group-hover:opacity-100 hover:bg-base-300 transition-opacity"
+                  title="Chat options"
+                >
+                  <EllipsisVerticalIcon className="w-4 h-4 text-base-content/60" />
+                </button>
+
+                {/* Dropdown menu */}
+                {showMenu && (
+                  <div className="absolute right-0 top-full mt-1 bg-base-100 rounded-lg shadow-lg border border-base-200 py-1 z-50 min-w-[140px]">
+                    <button
+                      onClick={handleDeleteClick}
+                      className="flex items-center gap-2 w-full px-3 py-2 text-sm text-error hover:bg-base-200 transition-colors"
+                    >
+                      <TrashIcon className="w-4 h-4" />
+                      Delete Chat
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
         <div className="flex items-center justify-between mt-1">
           <p className="text-sm text-base-content/60 truncate">

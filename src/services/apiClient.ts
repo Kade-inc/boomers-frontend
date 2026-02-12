@@ -2191,6 +2191,22 @@ class APIClient {
     }
   };
 
+  // Delete a chat (soft-delete for individual, hard-delete for group)
+  deleteChat = async (chatId: string) => {
+    try {
+      const response = await this.axiosInstance.delete(`/api/chats/${chatId}`, {
+        headers: {
+          requiresAuth: true,
+        },
+      });
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      toast.error("Error deleting chat");
+      throw axiosError;
+    }
+  };
+
   // Create a chat and send the first message atomically (lazy chat creation)
   createChatAndSendMessage = async (recipientId: string, text: string) => {
     try {
