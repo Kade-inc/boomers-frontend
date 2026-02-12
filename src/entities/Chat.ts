@@ -12,4 +12,5 @@ export interface Chat {
   teamId?: string;
   teamColor?: string;
   lastMessage?: ChatMessage | null;
+  unreadCount?: number;
 }

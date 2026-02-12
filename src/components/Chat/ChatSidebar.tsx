@@ -179,6 +179,7 @@ const ChatSidebar = ({ onNewChatClick, userProfiles }: ChatSidebarProps) => {
                 groupColor={displayInfo.groupColor}
                 lastMessage={chat.lastMessage?.text}
                 lastMessageTime={chat.lastMessage?.createdAt || chat.updatedAt}
+                unreadCount={chat.unreadCount || 0}
                 canDelete={canDeleteChat(chat)}
                 onDelete={handleDeleteRequest}
               />

@@ -2207,6 +2207,25 @@ class APIClient {
     }
   };
 
+  // Mark a chat as read for the current user
+  markChatRead = async (chatId: string) => {
+    try {
+      const response = await this.axiosInstance.put(
+        `/api/chats/${chatId}/read`,
+        {},
+        {
+          headers: {
+            requiresAuth: true,
+          },
+        },
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
+      throw axiosError;
+    }
+  };
+
   // Create a chat and send the first message atomically (lazy chat creation)
   createChatAndSendMessage = async (recipientId: string, text: string) => {
     try {

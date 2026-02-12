@@ -6,9 +6,11 @@ import { FiInbox, FiMessageSquare } from "react-icons/fi";
 import ChatSearchModal from "../components/Modals/ChatSearchModal";
 import ChatSidebar from "../components/Chat/ChatSidebar";
 import ChatDetailsPanel from "../components/Chat/ChatDetailsPanel";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Chat } from "../entities/Chat";
 import { useGetUserProfilesById } from "../hooks/useGetUserProfilesById";
+import { useSocket } from "../context/SocketContext";
+import { useQueryClient } from "@tanstack/react-query";
 
 // Details profile info passed to sidebar
 interface DetailsProfile {
@@ -24,12 +26,28 @@ const ChatLayout = () => {
   const { user } = useAuthStore();
   const location = useLocation();
   const isChildRoute = location.pathname !== "/chat";
+  const { socket } = useSocket();
+  const queryClient = useQueryClient();
 
   const [isChatSearchOpen, setIsChatSearchOpen] = useState(false);
   const [showDetailsPanel, setShowDetailsPanel] = useState(false);
   const [detailsProfile, setDetailsProfile] = useState<DetailsProfile | null>(
     null,
   );
+
+  // Listen for chatUpdated events to refresh sidebar in real-time
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleChatUpdated = () => {
+      queryClient.invalidateQueries({ queryKey: ["chats"] });
+    };
+
+    socket.on("chatUpdated", handleChatUpdated);
+    return () => {
+      socket.off("chatUpdated", handleChatUpdated);
+    };
+  }, [socket, queryClient]);
 
   const {
     data: chats,

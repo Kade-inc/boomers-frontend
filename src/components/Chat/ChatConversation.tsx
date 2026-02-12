@@ -13,6 +13,7 @@ import { useGetMessages } from "../../hooks/Chats/useGetMessages";
 import { useSendMessage } from "../../hooks/Chats/useSendMessage";
 import { useSendFirstMessage } from "../../hooks/Chats/useSendFirstMessage";
 import { useChatSocket } from "../../hooks/Chats/useChatSocket";
+import { useMarkChatRead } from "../../hooks/Chats/useMarkChatRead";
 import useAuthStore from "../../stores/useAuthStore";
 import { ChatMessage as ChatMessageType } from "../../entities/ChatMessage";
 import { format } from "date-fns";
@@ -66,6 +67,9 @@ const ChatConversation = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [isOtherUserTyping, setIsOtherUserTyping] = useState(false);
+
+  // Mark chat as read when user views it
+  useMarkChatRead(isDraft ? undefined : chatId);
 
   // Only fetch messages if not a draft (drafts have no messages yet)
   const {

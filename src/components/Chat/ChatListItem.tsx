@@ -82,9 +82,7 @@ const ChatListItem = ({
     <div
       onClick={handleClick}
       className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors group relative ${
-        isSelected
-          ? "bg-yellow/20 border-l-4 border-yellow"
-          : "hover:bg-base-200"
+        isSelected ? "bg-yellow/20" : "hover:bg-base-200"
       }`}
     >
       {/* Avatar */}
@@ -123,7 +121,7 @@ const ChatListItem = ({
               <div ref={menuRef} className="relative">
                 <button
                   onClick={handleMenuClick}
-                  className="p-1 rounded-full opacity-0 group-hover:opacity-100 hover:bg-base-300 transition-opacity"
+                  className="p-1 rounded-full opacity-0 group-hover:opacity-100 hover:bg-base-content/10 transition-opacity"
                   title="Chat options"
                 >
                   <EllipsisVerticalIcon className="w-4 h-4 text-base-content/60" />
@@ -151,17 +149,9 @@ const ChatListItem = ({
           </p>
           <div className="flex items-center gap-1 flex-shrink-0 ml-2">
             {unreadCount > 0 ? (
-              <span className="bg-yellow text-darkgrey text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+              <span className="bg-yellow text-darkgrey text-xs font-medium rounded-full w-5 h-5 flex items-center justify-center">
                 {unreadCount > 9 ? "9+" : unreadCount}
               </span>
-            ) : lastMessage ? (
-              <svg
-                className="w-4 h-4 text-base-content/40"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-              </svg>
             ) : null}
           </div>
         </div>
