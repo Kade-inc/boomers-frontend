@@ -177,12 +177,21 @@ function NavigationBar() {
                         <input
                           type="text"
                           placeholder="Search"
-                          className="input w-full rounded-full pl-10 text-[12px] md:text-base font-body bg-grey input-bordered"
+                          className="input w-full rounded-full pl-10 pr-9 text-[12px] md:text-base font-body bg-grey input-bordered"
                           onChange={handleFilter}
                           onKeyDown={handleKeyDown}
                           value={searchQuery}
                           autoFocus
                         />
+                        {searchQuery && (
+                          <button
+                            type="button"
+                            onClick={() => setSearchQuery("")}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-base-300 transition-colors"
+                          >
+                            <XMarkIcon className="w-5 h-5 text-base-content/60" />
+                          </button>
+                        )}
                       </div>
                       {!searchQuery ? (
                         <div>
